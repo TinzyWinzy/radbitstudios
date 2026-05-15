@@ -8,6 +8,7 @@ import { ArrowRight, BarChart, Lightbulb, Users, Briefcase, TrendingUp, Clipboar
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { registerVisibilityHandler } from "@/lib/device";
+import { AdUnit } from "@/components/adsense";
 import {
   Carousel,
   CarouselContent,
@@ -310,6 +311,10 @@ export default function LandingPage() {
             </div>
         </section>
 
+        {/* Ad placement after testimonials */}
+        <section className="container mx-auto py-8 max-w-4xl">
+          <AdUnit slot="testimonials-bottom" format="rectangle" className="min-h-[90px]" />
+        </section>
 
         {/* 7. Final Conversion Section */}
         <section className="relative py-20 md:py-32 overflow-hidden">

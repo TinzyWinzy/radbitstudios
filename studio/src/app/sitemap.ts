@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://radbit-sme-hub-ck05x.web.app";
+  const baseUrl = "https://radbitstudios.co.zw";
 
   return [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },

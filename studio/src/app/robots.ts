@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/dashboard", "/assessment", "/toolkit", "/budget-calculator", "/tenders", "/community", "/messages", "/mentor", "/settings"],
     },
-    sitemap: "https://radbit-sme-hub-ck05x.web.app/sitemap.xml",
+    sitemap: "https://radbitstudios.co.zw/sitemap.xml",
   };
 }
