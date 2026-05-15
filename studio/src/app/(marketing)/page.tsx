@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from 'next-intl';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BarChart, Lightbulb, Users, Briefcase, TrendingUp, ClipboardCheck, Wrench } from "lucide-react";
 import Link from "next/link";
@@ -100,6 +101,7 @@ const heroFeatures = [
 ];
 
 export default function LandingPage() {
+    const t = useTranslations();
     useEffect(() => {
       registerVisibilityHandler(
         () => { /* unload heavy resources when hidden */ },
@@ -129,7 +131,7 @@ export default function LandingPage() {
                     transition={{ duration: 0.8 }}
                     className="space-y-6 text-center md:text-left"
                 >
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">Transform Your SME with AI-Powered Tools</h1>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">{t('app.tagline')}</h1>
                     <p className="text-lg text-muted-foreground">Assess, grow, and connect — all in one platform built for Zimbabwean entrepreneurs.</p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                         <Button asChild size="lg">
