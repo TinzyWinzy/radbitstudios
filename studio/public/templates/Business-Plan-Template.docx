@@ -1,0 +1,247 @@
+"use client";
+
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Copy, FileText, Loader2, Zap, ExternalLink, Landmark } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import Link from 'next/link';
+
+// Import the new dedicated flows
+import { generateBusinessPlan } from "@/ai/flows/generate-business-plan";
+import { generateInvoice } from "@/ai/flows/generate-invoice";
+import { generateMarketingPlan } from "@/ai/flows/generate-marketing-plan";
+import { generateEmploymentContract } from "@/ai/flows/generate-employment-contract";
+import { generateCompanyProfile } from "@/ai/flows/generate-company-profile";
+import { generateCashFlowStatement } from "@/ai/flows/generate-cash-flow-statement";
+import { Separator } from "@/components/ui/separator";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
+
+
+const aiTemplates = [
+  {
+    title: "Business Plan Template",
+    description: "Generate a comprehensive template to outline your business goals, strategies, and financial forecasts.",
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    flow: () => generateBusinessPlan({ brief: "A standard business plan for an SME." }),
+  },
+  {
+    title: "Professional Invoice",
+    description: "Generate a professional invoice template, compliant with ZIMRA guidelines for required fields.",
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    flow: () => generateInvoice({ brief: "A standard invoice for a business in Zimbabwe." }),
+  },
+  {
+    title: "Marketing Plan Outline",
+    description: "Structure your marketing efforts, from target audience analysis to budget allocation.",
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    flow: () => generateMarketingPlan({ brief: "A marketing plan outline for a small business." }),
+  },
+  {
+    title: "Employment Contract",
+    description: "Generate a standard employment contract for hiring new team members in Zimbabwe.",
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    flow: () => generateEmploymentContract({ brief: "A standard employment contract for a Zimbabwean company." }),
+  },
+   {
+    title: "Company Profile",
+    description: "Create a stunning company profile to showcase your business to potential clients and partners.",
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    flow: () => generateCompanyProfile({ brief: "A company profile for a startup or SME." }),
+  },
+  {
+    title: "Cash Flow Statement",
+    description: "Track the flow of cash in and out of your business with this essential financial template.",
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    flow: () => generateCashFlowStatement({ brief: "A simple cash flow statement for a small business." }),
+  }
+];
+
+const externalResources = [
+    {
+        title: "ZIMRA e-Services",
+        description: "Access the official portal for tax registration, filing, and payments.",
+        icon: <Landmark className="h-8 w-8 text-primary" />,
+        href: "https://efiling.zimra.co.zw/"
+    },
+    {
+        title: "Company Registration (ZIMConnect)",
+        description: "Register your company and conduct name searches through the official government portal.",
+        icon: <Landmark className="h-8 w-8 text-primary" />,
+        href: "https://zimeservices.pfms.gov.zw/"
+    },
+    {
+        title: "Reserve Bank of Zimbabwe",
+        description: "Find official exchange rates, monetary policy statements, and financial regulations.",
+        icon: <Landmark className="h-8 w-8 text-primary" />,
+        href: "https://www.rbz.co.zw/"
+    }
+];
+
+export default function TemplatesPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null);
+  const [generatedContent, setGeneratedContent] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+  const { toast } = useToast();
+
+  const handleGenerate = async (template: typeof aiTemplates[0]) => {
+    setIsLoading(true);
+    setActiveTemplate(template.title);
+    setGeneratedContent(""); 
+    setShowDialog(true);
+    try {
+      const result = await template.flow();
+      setGeneratedContent(result.templateContent);
+    } catch (error) {
+      console.error("Error generating template:", error);
+      toast({
+        title: "Generation Failed",
+        description: "Could not generate the template. Please try again.",
+        variant: "destructive",
+      });
+       // Close the dialog on error
+      setShowDialog(false);
+    } finally {
+      setIsLoading(false);
+      setActiveTemplate(null);
+    }
+  };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(generatedContent);
+    toast({
+      title: "Copied to Clipboard!",
+      description: "You can now paste the template into your document editor.",
+    });
+  };
+
+
+  return (
+    <>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Resource Hub & AI Templates</h1>
+          <p className="text-muted-foreground mt-2">
+            Generate documents with AI, download templates, or access key official resources.
+          </p>
+        </div>
+        
+        <div className="space-y-4">
+            <h2 className="text-xl font-semibold tracking-tight">Official Resources & Links</h2>
+             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                 {externalResources.map((resource) => (
+                    <Card key={resource.title} className="flex flex-col">
+                        <CardHeader>
+                            <div className="flex items-center gap-4">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                                {resource.icon}
+                            </div>
+                            <CardTitle className="text-lg">{resource.title}</CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="flex-1">
+                            <p className="text-muted-foreground text-sm">
+                            {resource.description}
+                            </p>
+                        </CardContent>
+                        <CardFooter>
+                            <Button asChild variant="outline" className="w-full">
+                                <Link href={resource.href} target="_blank" rel="noopener noreferrer">
+                                    Visit Site <ExternalLink className="ml-2 h-4 w-4" />
+                                </Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                 ))}
+             </div>
+        </div>
+
+        <Separator />
+        
+        <div className="space-y-4">
+            <h2 className="text-xl font-semibold tracking-tight">AI Template Generator</h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {aiTemplates.map((template) => (
+                <Card key={template.title} className="flex flex-col">
+                <CardHeader>
+                    <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                        {template.icon}
+                    </div>
+                    <CardTitle className="text-lg">{template.title}</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="flex-1">
+                    <p className="text-muted-foreground text-sm">
+                    {template.description}
+                    </p>
+                </CardContent>
+                <CardFooter>
+                    <Button 
+                    className="w-full"
+                    onClick={() => handleGenerate(template)} 
+                    disabled={isLoading}
+                    >
+                    {isLoading && activeTemplate === template.title ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Zap className="mr-2 h-4 w-4" />
+                    )}
+                    {isLoading && activeTemplate === template.title ? "Generating..." : "Generate with AI"}
+                    </Button>
+                </CardFooter>
+                </Card>
+            ))}
+            </div>
+        </div>
+      </div>
+
+      <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+        <AlertDialogContent className="max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generated Template Ready</AlertDialogTitle>
+            <AlertDialogDescription>
+              Review your AI-generated template below. You can copy it to your clipboard.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <ScrollArea className="h-96 w-full rounded-md border p-4">
+            {isLoading ? (
+                <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-[75%]" />
+                </div>
+            ) : (
+                <MarkdownRenderer content={generatedContent} />
+            )}
+          </ScrollArea>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={handleCopyToClipboard} disabled={isLoading || !generatedContent}>
+              <Copy className="mr-2 h-4 w-4"/> Copy to Clipboard
+            </Button>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}

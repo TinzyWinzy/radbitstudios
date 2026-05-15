@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline — Radbit SME Hub</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #192633;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+    .container { max-width: 400px; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: #94a3b8; line-height: 1.6; margin-bottom: 2rem; }
+    .icon { font-size: 4rem; margin-bottom: 1rem; }
+    .actions { display: flex; flex-direction: column; gap: 0.75rem; }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary { background: #33D6C2; color: #192633; font-weight: 600; }
+    .btn-secondary { background: #334155; color: #e2e8f0; }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: #334155;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>
+      Radbit SME Hub works without internet.
+      Your saved assessments, cached tenders, and community posts are still available.
+    </p>
+    <div class="badge" id="syncBadge" style="display:none">
+      <span id="syncCount">0</span> item(s) pending sync
+    </div>
+    <div class="actions">
+      <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+      <a href="/tenders" class="btn btn-secondary">Browse Cached Tenders</a>
+      <a href="/assessment" class="btn btn-secondary">Continue Assessment</a>
+      <button onclick="window.location.reload()" class="btn btn-secondary">Retry Connection</button>
+    </div>
+  </div>
+  <script>
+    // Show pending sync count
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(reg => {
+        // Listen for sync status messages from SW
+        navigator.serviceWorker.addEventListener('message', event => {
+          if (event.data.type === 'SYNC_UPDATE') {
+            const badge = document.getElementById('syncBadge');
+            const count = document.getElementById('syncCount');
+            if (event.data.count > 0) {
+              badge.style.display = 'inline-block';
+              count.textContent = event.data.count;
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        });
+      });
+    }
+    // Listen for online event
+    window.addEventListener('online', () => { window.location.reload(); });
+  </script>
+</body>
+</html>

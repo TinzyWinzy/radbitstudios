@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default deny all to ensure explicit permissions are set.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // USERS
+    // Users can read/write their own document. Authenticated users can list others for messaging.
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+      allow list: if request.auth != null;
+    }
+
+    // ASSESSMENTS
+    // Users can create their own assessments.
+    // They can only get/list/delete their own assessments.
+    match /assessments/{assessmentId} {
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow get, delete: if request.auth.uid == resource.data.userId;
+      // Allow querying a user's own assessments, optionally ordered by creation date.
+      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+    }
+    
+    // GENERATIONS (AI AGENT HISTORY)
+    // Users can create their own generation history.
+    // They can only read/delete their own history items.
+    match /generations/{generationId} {
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow read, delete: if request.auth.uid == resource.data.userId;
+      // Allow querying a user's own generations, optionally ordered by creation date.
+      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+    }
+
+    // BUDGETS
+    // Users have full control over their own budget document.
+    match /budgets/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // BOOKMARKS
+    // Users have full control over their own bookmarks subcollection.
+    match /users/{userId}/bookmarks/{bookmarkId} {
+        allow read, write, delete: if request.auth.uid == userId;
+    }
+
+    // COMMUNITY THREADS
+    match /threads/{threadId} {
+      allow get, list: if request.auth != null;
+      allow create: if request.auth.uid == request.resource.data.authorId;
+      // Any authenticated user can update only the replyCount and lastReplyAt fields.
+      allow update: if request.auth != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['replyCount', 'lastReplyAt']);
+      
+      // THREAD REPLIES
+      match /replies/{replyId} {
+        allow get, list, create: if request.auth != null;
+        // Only the thread author can update a reply (to mark it as best answer).
+        allow update: if request.auth.uid == get(/databases/$(database)/documents/threads/$(threadId)).data.authorId;
+      }
+    }
+
+    // CONVERSATIONS (DIRECT MESSAGING)
+    match /conversations/{conversationId} {
+        allow get: if request.auth.uid in resource.data.participants;
+        // Allow a user to list only conversations they are a part of.
+        allow list: if request.auth != null && request.query.where.participants 'array-contains' request.auth.uid;
+        allow create: if request.auth.uid in request.resource.data.participants;
+        // Allow a participant to update only the lastMessage field.
+        allow update: if request.auth.uid in resource.data.participants && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastMessage']);
+
+        // MESSAGES SUBCOLLECTION
+        match /messages/{messageId} {
+            // Only conversation participants can read or create messages.
+            allow read, create: if request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
+        }
+    }
+  }
+}
