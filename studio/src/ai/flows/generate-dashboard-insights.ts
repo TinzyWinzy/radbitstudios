@@ -1,87 +1,54 @@
-
 'use server';
 
-/**
- * @fileOverview This file defines a Genkit flow for generating dynamic insights
- * for the user's dashboard, including daily tips and recommendations.
- *
- * - generateDashboardInsights - Generates personalized content for the dashboard.
- * - GenerateDashboardInsightsInput - The input type for the function.
- * - GenerateDashboardInsightsOutput - The return type for the function.
- */
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-import { CacheService } from '@/services/cache-service';
+import { z } from 'zod';
+import { AIGateway } from '@/services/ai/ai-gateway';
 
 const GenerateDashboardInsightsInputSchema = z.object({
-  userId: z.string().describe("The unique ID of the user."),
-  businessDescription: z.string().describe('A description of the user\'s business.'),
-  industry: z.string().describe('The industry the user\'s business operates in (e.g., Agribusiness, Retail, Technology).'),
+  userId: z.string(),
+  businessDescription: z.string(),
+  industry: z.string(),
 });
 export type GenerateDashboardInsightsInput = z.infer<typeof GenerateDashboardInsightsInputSchema>;
 
 const GenerateDashboardInsightsOutputSchema = z.object({
-  dailyTips: z.array(z.string()).describe('A list of 2-3 short, actionable daily tips relevant to the user\'s industry.'),
-  recommendations: z.array(z.string()).describe('A list of 2-3 personalized, strategic recommendations based on the user\'s business description.'),
+  dailyTips: z.array(z.string()),
+  recommendations: z.array(z.string()),
 });
 export type GenerateDashboardInsightsOutput = z.infer<typeof GenerateDashboardInsightsOutputSchema>;
 
-// Initialize a cache for this flow. Cache results for 4 hours (14400 seconds).
-const insightsCache = new CacheService<GenerateDashboardInsightsOutput>(14400);
+const gateway = new AIGateway();
 
-export async function generateDashboardInsights(
-  input: GenerateDashboardInsightsInput
-): Promise<GenerateDashboardInsightsOutput> {
-  return generateDashboardInsightsFlow(input);
+export async function generateDashboardInsights(input: GenerateDashboardInsightsInput): Promise<GenerateDashboardInsightsOutput> {
+  const prompt = `Business Industry: ${input.industry}\nBusiness Description: ${input.businessDescription}`;
+
+  const systemPrompt = `You are an expert business consultant for Zimbabwean SMEs. Generate personalized content for the user's dashboard.
+
+Generate the following as a JSON object with these exact keys:
+{
+  "dailyTips": ["tip 1", "tip 2", "tip 3"],
+  "recommendations": ["rec 1", "rec 2"]
 }
 
-const prompt = ai.definePrompt({
-  name: 'generateDashboardInsightsPrompt',
-  input: {schema: GenerateDashboardInsightsInputSchema},
-  output: {schema: GenerateDashboardInsightsOutputSchema},
-  prompt: `You are an expert business consultant for Zimbabwean SMEs. Your task is to generate personalized content for a user's dashboard based on their business profile.
+1. dailyTips: Exactly 3 short, actionable tips relevant to their industry in Zimbabwe.
+2. recommendations: Exactly 2 strategic, personalized recommendations based on their specific business description.
 
-User's Business Industry: {{{industry}}}
-User's Business Description: {{{businessDescription}}}
+Keep language encouraging, simple, and direct. Return ONLY valid JSON.`;
 
-Generate the following content:
-1.  **Daily Tips**: Create a list of exactly 3 short, actionable daily tips. These tips should be general enough for the specified industry but still highly relevant and practical for a small business in Zimbabwe.
-2.  **AI Recommendations**: Create a list of exactly 2 strategic, personalized recommendations. These should be directly inspired by the user's specific business description and offer clear, next-step advice.
+  const result = await gateway.generate({
+    prompt,
+    systemPrompt,
+    difficulty: 'simple',
+    maxTokens: 1024,
+    jsonMode: true,
+  });
 
-Keep the language encouraging, simple, and direct.
-`,
-});
-
-const generateDashboardInsightsFlow = ai.defineFlow(
-  {
-    name: 'generateDashboardInsightsFlow',
-    inputSchema: GenerateDashboardInsightsInputSchema,
-    outputSchema: GenerateDashboardInsightsOutputSchema,
-  },
-  async (input) => {
-    const cacheKey = input.userId;
-    try {
-      const cachedInsights = insightsCache.get(cacheKey);
-
-      if (cachedInsights) {
-        console.log(`[Cache HIT] Returning cached insights for user ${cacheKey}`);
-        return cachedInsights;
-      }
-
-      console.log(`[Cache MISS] Generating new insights for user ${cacheKey}`);
-      const {output} = await prompt(input);
-
-      if (output) {
-        insightsCache.set(cacheKey, output);
-      }
-      
-      return output ?? {dailyTips: [], recommendations: []};
-    } catch (error) {
-      console.error('[generateDashboardInsightsFlow] Error:', error);
-      throw new Error(
-        `Dashboard insights generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
-      );
-    }
+  try {
+    const parsed = JSON.parse(result.content);
+    return {
+      dailyTips: parsed.dailyTips || [],
+      recommendations: parsed.recommendations || [],
+    };
+  } catch {
+    return { dailyTips: [], recommendations: [] };
   }
-);
+}

@@ -1,73 +1,63 @@
-
 'use server';
 
-/**
- * @fileOverview Curates relevant tenders and news articles from user-provided text content using AI.
- *
- * - curateTendersNews - A function that analyzes text and filters it for relevance.
- * - CurateTendersNewsInput - The input type for the curateTendersNews function.
- * - CurateTendersNewsOutput - The return type for the curateTendersNews function.
- */
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { z } from 'zod';
+import { AIGateway } from '@/services/ai/ai-gateway';
 
 const CurateTendersNewsInputSchema = z.object({
-  content: z.string().describe('A block of text containing one or more articles to be analyzed and curated.'),
-  userQuery: z.string().describe('A query describing the user\'s business or interests, used to determine relevance.'),
+  content: z.string().describe('Block of text containing articles to analyze.'),
+  userQuery: z.string().describe('The user\'s business or interests for relevance filtering.'),
 });
-
 export type CurateTendersNewsInput = z.infer<typeof CurateTendersNewsInputSchema>;
 
 const ArticleSchema = z.object({
-  title: z.string().describe('The title of the tender or news article.'),
-  summary: z.string().describe('A concise summary of the article.'),
-  source: z.string().url().describe('The original URL of the article, if available in the text.'),
-  category: z.string().describe("A relevant category for the article (e.g., 'Tender', 'News', 'Policy Update')."),
-  isRelevant: z.boolean().describe('Whether the article is relevant to the user\'s query.'),
-  expiryDate: z.string().optional().describe('The deadline or expiry date for a tender, if available (YYYY-MM-DD).')
+  title: z.string(),
+  summary: z.string(),
+  source: z.string().url(),
+  category: z.string(),
+  isRelevant: z.boolean(),
+  expiryDate: z.string().optional(),
 });
 
 const CurateTendersNewsOutputSchema = z.object({
-  articles: z.array(ArticleSchema).describe('The curated list of structured articles that were deemed relevant.'),
+  articles: z.array(ArticleSchema),
 });
-
 export type CurateTendersNewsOutput = z.infer<typeof CurateTendersNewsOutputSchema>;
 
+const gateway = new AIGateway();
+
 export async function curateTendersNews(input: CurateTendersNewsInput): Promise<CurateTendersNewsOutput> {
-  return curateTendersNewsFlow(input);
+  const systemPrompt = `You analyze blocks of text and curate them for a user.
+
+User's Interest: ${input.userQuery}
+
+Analyze the text content. For each distinct article:
+1. Extract title, concise summary, source URL, and category ('Tender', 'News', or 'Policy Update').
+2. If a tender, extract the expiry date (YYYY-MM-DD).
+3. Determine if relevant to the user's interest.
+4. Return ONLY a JSON object with key "articles" containing an array of article objects.
+
+Format:
+{
+  "articles": [
+    { "title": "...", "summary": "...", "source": "https://...", "category": "Tender", "isRelevant": true, "expiryDate": "2026-07-15" }
+  ]
 }
 
-const prompt = ai.definePrompt({
-  name: 'curateTendersNewsPrompt',
-  input: {schema: CurateTendersNewsInputSchema},
-  output: {schema: CurateTendersNewsOutputSchema},
-  prompt: `You are an AI assistant that analyzes a block of text and curates it for a user.
+Only include relevant articles. Return ONLY valid JSON.`;
 
-  User's Interest: {{{userQuery}}}
+  const result = await gateway.generate({
+    prompt: input.content,
+    systemPrompt,
+    difficulty: 'complex',
+    maxTokens: 2048,
+    jsonMode: true,
+  });
 
-  Analyze the text content provided below. The text may contain one or more articles. For each distinct article you can identify:
-  1. Extract the article title, a concise summary, the source URL (if present), and the category ('Tender', 'News', or 'Policy Update').
-  2. If it is a tender, extract the expiry date if available.
-  3. Determine if the article is relevant to the user's stated interest.
-  4. Construct a list of article objects. Only include articles in the final output array that you determine to be relevant.
-
-  Content to analyze:
-  {{{content}}}
-  `,
-});
-
-const curateTendersNewsFlow = ai.defineFlow(
-  {
-    name: 'curateTendersNewsFlow',
-    inputSchema: CurateTendersNewsInputSchema,
-    outputSchema: CurateTendersNewsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    // Ensure we always return a valid object, even if the AI fails or finds no relevant articles.
-    return output ?? { articles: [] };
+  try {
+    const parsed = JSON.parse(result.content);
+    const validated = CurateTendersNewsOutputSchema.safeParse(parsed);
+    return validated.success ? validated.data : { articles: [] };
+  } catch {
+    return { articles: [] };
   }
-);
-
-    
+}
