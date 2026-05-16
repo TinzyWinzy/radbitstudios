@@ -2,6 +2,36 @@
 # https://firebase.google.com/docs/app-hosting/configure
 
 runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
   maxInstances: 10
+
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: radbit-sme-hub-ck05x
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:87727434217:web:8b8adcecb5e57268f38378
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: radbit-sme-hub-ck05x.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyDkTQOsxEmIdj5Gv3Ht460ekjqR24jp3sA
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: radbit-sme-hub-ck05x.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "87727434217"
+    availability:
+      - BUILD
+      - RUNTIME
