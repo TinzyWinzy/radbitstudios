@@ -81,11 +81,11 @@ export function WaveField({
         ctx.lineTo(0, canvas.height);
         ctx.closePath();
 
-        const parsedHue = parseFloat(wave.hue);
         const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, `hsla(${parsedHue}, 0)`);
-        gradient.addColorStop(0.3 + t * 0.001 * wave.freq * 100, `hsla(${parsedHue}, ${wave.alpha})`);
-        gradient.addColorStop(1, `hsla(${parsedHue}, 0)`);
+        const midStop = Math.min(0.3 + t * 0.001 * wave.freq * 100, 1);
+        gradient.addColorStop(0, `hsla(${wave.hue}, 0)`);
+        gradient.addColorStop(midStop, `hsla(${wave.hue}, ${wave.alpha})`);
+        gradient.addColorStop(1, `hsla(${wave.hue}, 0)`);
         ctx.fillStyle = gradient;
         ctx.fill();
       }

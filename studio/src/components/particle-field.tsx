@@ -11,6 +11,7 @@ interface Particle {
   baseRadius: number;
   alpha: number;
   hue: number;
+  colorStr: string;
   life: number;
   maxLife: number;
   layer: number;
@@ -79,6 +80,7 @@ export function ParticleField({
           baseRadius: (Math.random() * 2 + 0.5) * (1 + layer * 0.5),
           alpha: (0.15 + Math.random() * 0.25) * (1 - layer * 0.15),
           hue: parseFloat(hue),
+          colorStr: hue,
           life: 0,
           maxLife: Math.random() * 300 + 100,
           layer,
@@ -175,20 +177,20 @@ export function ParticleField({
           for (let j = 1; j < p.trail.length; j++) {
             ctx.lineTo(p.trail[j].x, p.trail[j].y);
           }
-          ctx.strokeStyle = `hsla(${p.hue}, ${p.alpha * 0.3})`;
+          ctx.strokeStyle = `hsla(${p.colorStr}, ${p.alpha * 0.3})`;
           ctx.lineWidth = p.radius * 0.5;
           ctx.stroke();
         }
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, ${p.alpha})`;
+        ctx.fillStyle = `hsla(${p.colorStr}, ${p.alpha})`;
         ctx.fill();
 
         if (p.layer === 0) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius * 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(${p.hue}, ${p.alpha * 0.08})`;
+          ctx.fillStyle = `hsla(${p.colorStr}, ${p.alpha * 0.08})`;
           ctx.fill();
         }
       }
@@ -207,7 +209,7 @@ export function ParticleField({
             ctx.lineTo(particlesArr[j].x, particlesArr[j].y);
             const avgHue = (particlesArr[i].hue + particlesArr[j].hue) / 2;
             const lineAlpha = (1 - dist / maxDist) * 0.12 * (1 - particlesArr[i].layer * 0.1);
-            ctx.strokeStyle = `hsla(${avgHue}, ${lineAlpha})`;
+            ctx.strokeStyle = `hsla(${avgHue}, 95%, 50%, ${lineAlpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

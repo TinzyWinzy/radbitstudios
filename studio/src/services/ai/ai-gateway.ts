@@ -19,16 +19,19 @@ export interface AIGatewayResponse {
   error?: string;
 }
 
-const MODEL_ROUTES: Record<TaskDifficulty, { model: string; provider: 'openai' | 'anthropic'; costPer1kInput: number; costPer1kOutput: number }[]> = {
+const MODEL_ROUTES: Record<TaskDifficulty, { model: string; provider: 'gemini' | 'openai' | 'anthropic'; costPer1kInput: number; costPer1kOutput: number }[]> = {
   simple: [
+    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0 },
     { model: 'gpt-4o-mini', provider: 'openai', costPer1kInput: 0.00015, costPer1kOutput: 0.0006 },
     { model: 'claude-3-haiku', provider: 'anthropic', costPer1kInput: 0.00025, costPer1kOutput: 0.00125 },
   ],
   complex: [
+    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0 },
     { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.0025, costPer1kOutput: 0.01 },
     { model: 'claude-3.5-sonnet', provider: 'anthropic', costPer1kInput: 0.003, costPer1kOutput: 0.015 },
   ],
   creative: [
+    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0 },
     { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.005, costPer1kOutput: 0.015 },
   ],
 };
@@ -61,11 +64,19 @@ function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number):
 
 function sanitizeError(err: unknown): string {
   const msg = err instanceof Error ? err.message : String(err);
-  const sensitive = ['sk-', 'Bearer ', 'AIza', 'api-key', 'x-api-key', 'authorization'];
+  const sensitive = ['sk-', 'Bearer ', 'AIza', 'api-key', 'x-api-key', 'authorization', 'key='];
   for (const s of sensitive) {
     if (msg.toLowerCase().includes(s.toLowerCase())) return 'AI service error (details suppressed)';
   }
   return msg;
+}
+
+function extractJsonFromResponse(text: string): string {
+  const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (jsonMatch) return jsonMatch[1].trim();
+  const braceMatch = text.match(/\{[\s\S]*\}/);
+  if (braceMatch) return braceMatch[0];
+  return text;
 }
 
 export class AIGateway {
@@ -81,8 +92,9 @@ export class AIGateway {
     return true;
   }
 
-  private validateApiKeys(): { openai: boolean; anthropic: boolean } {
+  private validateApiKeys(): { gemini: boolean; openai: boolean; anthropic: boolean } {
     return {
+      gemini: !!process.env.GOOGLE_GENAI_API_KEY,
       openai: !!process.env.OPENAI_API_KEY,
       anthropic: !!process.env.ANTHROPIC_API_KEY,
     };
@@ -100,7 +112,8 @@ export class AIGateway {
     }
 
     const keys = this.validateApiKeys();
-    if (!keys.openai) {
+    const hasAnyKey = keys.gemini || keys.openai || keys.anthropic;
+    if (!hasAnyKey) {
       return { content: this.getFallbackResponse(difficulty), model: 'fallback-no-key', tokensUsed: 0, costUsd: 0, cached: false, error: 'AI service not configured (missing API key).' };
     }
 
@@ -157,6 +170,11 @@ export class AIGateway {
           lastError = 'AI request timed out';
         }
 
+        const modelHasNoKey = selected.provider === 'gemini' && !keys.gemini
+          || selected.provider === 'openai' && !keys.openai
+          || selected.provider === 'anthropic' && !keys.anthropic;
+        if (modelHasNoKey) break;
+
         if (attempt < MAX_RETRIES) {
           console.warn(`AI call attempt ${attempt + 1} failed: ${lastError}, retrying...`);
           await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
@@ -165,12 +183,16 @@ export class AIGateway {
       }
     }
 
-    if (route.length > 1) {
+    const fallbackRoute = route.slice(1).find(r =>
+      r.provider === 'gemini' && keys.gemini
+      || r.provider === 'openai' && keys.openai
+      || r.provider === 'anthropic' && keys.anthropic
+    );
+    if (fallbackRoute) {
       try {
-        const fallback = route[1];
-        const content = await this.callModel(fallback.provider, fallback.model, request);
+        const content = await this.callModel(fallbackRoute.provider, fallbackRoute.model, request);
         return {
-          content, model: fallback.model,
+          content, model: fallbackRoute.model,
           tokensUsed: estimatedTokens, costUsd: estimatedCost, cached: false,
           error: `Primary model failed. Used fallback.`,
         };
@@ -191,9 +213,44 @@ export class AIGateway {
   }
 
   private async callModel(provider: string, model: string, request: AIGatewayRequest): Promise<string> {
+    if (provider === 'gemini') return this.callGemini(model, request);
     if (provider === 'openai') return this.callOpenAI(model, request);
     if (provider === 'anthropic') return this.callAnthropic(model, request);
     throw new Error(`Unknown provider: ${provider}`);
+  }
+
+  private async callGemini(model: string, request: AIGatewayRequest): Promise<string> {
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
+    if (!apiKey) throw new Error('GOOGLE_GENAI_API_KEY not set');
+
+    const modelName = model.includes('/') ? model : `models/${model}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;
+
+    const body: any = {
+      contents: [{ parts: [{ text: request.prompt }] }],
+      generationConfig: {
+        maxOutputTokens: request.maxTokens || 2048,
+        temperature: request.temperature ?? 0.7,
+      },
+    };
+    if (request.systemPrompt) {
+      body.systemInstruction = { parts: [{ text: request.systemPrompt }] };
+    }
+    if (request.jsonMode) {
+      body.generationConfig.responseMimeType = 'application/json';
+    }
+
+    const res = await fetchWithTimeout(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }, REQUEST_TIMEOUT_MS);
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || `Gemini API error (${res.status})`);
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return request.jsonMode ? extractJsonFromResponse(text) : text;
   }
 
   private async callOpenAI(model: string, request: AIGatewayRequest): Promise<string> {
