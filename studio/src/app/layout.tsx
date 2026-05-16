@@ -8,7 +8,6 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { organizationSchema } from "@/lib/seo";
-import Script from 'next/script';
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
 
@@ -39,11 +38,10 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-body antialiased`}>
-        <Script
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
         <AuthProvider>
           <ThemeProvider

@@ -3,11 +3,11 @@ const CACHE_VERSION = 'v1';
 const STATIC_CACHE = `radbit-static-${CACHE_VERSION}`;
 const API_CACHE = `radbit-api-${CACHE_VERSION}`;
 
-const STATIC_ASSETS = ['/offline'];
-
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(STATIC_CACHE).then((cache) =>
+      cache.add('/').catch(() => {})
+    )
   );
   self.skipWaiting();
 });
