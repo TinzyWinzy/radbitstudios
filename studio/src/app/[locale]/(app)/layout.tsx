@@ -40,6 +40,7 @@ import {
   Send,
   Loader2,
   Wand2,
+  PenSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -76,6 +77,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: "/community", label: "Community", icon: <Users /> },
     { href: "/messages", label: "Messages", icon: <Send /> },
     { href: "/mentor", label: "AI Mentor", icon: <MessageCircle /> },
+    { href: "/dashboard/blog", label: "Blog", icon: <PenSquare /> },
   ];
 
   if (loading || !user) {
