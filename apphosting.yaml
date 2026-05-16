@@ -35,13 +35,3 @@ env:
     availability:
       - BUILD
       - RUNTIME
-  - variable: NEXT_PUBLIC_SANITY_PROJECT_ID
-    value: YOUR_SANITY_PROJECT_ID
-    availability:
-      - BUILD
-      - RUNTIME
-  - variable: NEXT_PUBLIC_SANITY_DATASET
-    value: production
-    availability:
-      - BUILD
-      - RUNTIME

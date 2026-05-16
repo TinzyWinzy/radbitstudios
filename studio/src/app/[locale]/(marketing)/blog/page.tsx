@@ -1,13 +1,8 @@
-import { fetchPosts } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
-import type { Post } from "@/sanity/types";
+import { getAllPosts } from "@/lib/blog";
 import Link from "next/link";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
-
 export default async function BlogPage() {
-  const posts: Post[] = await fetchPosts();
+  const posts = getAllPosts();
 
   return (
     <div className="container py-16">
@@ -22,57 +17,42 @@ export default async function BlogPage() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <Link
-              key={post._id}
-              href={`/blog/${post.slug.current}`}
-              className="group rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden hover:border-primary/30 transition-all duration-300"
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="group rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 hover:border-primary/30 transition-all duration-300"
             >
-              {post.mainImage && (() => {
-                const imgUrl = urlFor(post.mainImage);
-                if (!imgUrl) return null;
-                return (
-                  <div className="aspect-[16/9] overflow-hidden">
-                    <img
-                      src={imgUrl.width(600).height(338).url()}
-                      alt=""
-                      className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                );
-              })()}
-              <div className="p-5">
+              {post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {post.categories?.map((cat) => (
+                  {post.tags.slice(0, 3).map((tag) => (
                     <span
-                      key={cat.title}
+                      key={tag}
                       className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary"
                     >
-                      {cat.title}
+                      {tag}
                     </span>
                   ))}
                 </div>
-                <h2 className="font-headline text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  {post.title}
-                </h2>
-                {post.excerpt && (
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                )}
-                <div className="flex items-center gap-3 mt-4 text-xs text-muted-foreground">
-                  {post.author?.name && (
-                    <span>{post.author.name}</span>
-                  )}
-                  {post.publishedAt && (
-                    <time dateTime={post.publishedAt}>
-                      {new Date(post.publishedAt).toLocaleDateString("en-ZW", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </time>
-                  )}
-                </div>
-              </div>
+              )}
+              <h2 className="font-headline text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                {post.title}
+              </h2>
+              {post.excerpt && (
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                  {post.excerpt}
+                </p>
+              )}
+              {post.date && (
+                <time
+                  dateTime={post.date}
+                  className="block mt-4 text-xs text-muted-foreground"
+                >
+                  {new Date(post.date).toLocaleDateString("en-ZW", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </time>
+              )}
             </Link>
           ))}
         </div>
