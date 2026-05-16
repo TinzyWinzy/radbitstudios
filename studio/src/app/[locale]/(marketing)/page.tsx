@@ -19,6 +19,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 
 const ParticleField = lazy(() => import("@/components/particle-field").then(m => ({ default: m.ParticleField })));
+const WaveField = lazy(() => import("@/components/wave-field").then(m => ({ default: m.WaveField })));
 
 function useParallax(ref: React.RefObject<HTMLElement | null>, offset: [number, number] = [0, 0]) {
   const { scrollYProgress } = useScroll({
@@ -31,22 +32,42 @@ function useParallax(ref: React.RefObject<HTMLElement | null>, offset: [number, 
 function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const bgY = useParallax(sectionRef, [0, -80]);
+  const midY = useParallax(sectionRef, [0, -40]);
+  const fgY = useParallax(sectionRef, [0, -20]);
 
   return (
     <section ref={sectionRef} className="relative min-h-[calc(100vh-4rem)] flex items-center overflow-hidden">
       <Suspense fallback={null}>
-        <ParticleField
-          className="absolute inset-0 z-0"
-          particleCount={100}
-          mouseRadius={200}
-          connectionDistance={150}
+        <WaveField
+          className="absolute inset-0 z-0 opacity-40"
+          waveCount={5}
+          speed={0.4}
+          amplitude={50}
+          mouseReactivity={0.6}
         />
       </Suspense>
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/0 via-background/0 to-background" />
-      <GyeNyame className="absolute -top-20 -right-20 z-[1] w-64 h-64 text-primary/5 dark:text-primary/[0.03]" />
-      <Sankofa className="absolute -bottom-20 -left-20 z-[1] w-48 h-48 text-primary/5 dark:text-primary/[0.03]" />
-      <motion.div style={{ y: bgY }} className="absolute inset-0 z-[1]">
+      <Suspense fallback={null}>
+        <ParticleField
+          className="absolute inset-0 z-[1]"
+          particleCount={120}
+          mouseRadius={200}
+          connectionDistance={150}
+          depthLayers={3}
+          showTrails={true}
+          waveDistortion={true}
+          orbitStrength={0.03}
+        />
+      </Suspense>
+      <div className="absolute inset-0 z-[2] bg-gradient-to-b from-background/0 via-background/0 to-background" />
+      <motion.div style={{ y: bgY }} className="absolute inset-0 z-[2]">
         <ChevronPattern variant="background" className="text-primary" />
+      </motion.div>
+      <motion.div style={{ y: midY }} className="absolute inset-0 z-[3] pointer-events-none">
+        <GyeNyame className="absolute -top-10 -right-10 w-72 h-72 text-primary/[0.04] dark:text-primary/[0.02]" />
+        <Sankofa className="absolute top-1/3 -left-16 w-56 h-56 text-primary/[0.03] dark:text-primary/[0.015]" />
+      </motion.div>
+      <motion.div style={{ y: fgY }} className="absolute inset-0 z-[3] pointer-events-none">
+        <Dwennimmen className="absolute bottom-1/4 right-1/4 w-32 h-32 text-primary/[0.05] dark:text-primary/[0.025]" />
       </motion.div>
       <div className="container relative z-10 py-20">
         <div className="max-w-3xl mx-auto text-center space-y-8">
@@ -105,6 +126,9 @@ function HeroSection() {
 }
 
 function HowItWorksSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const floatY1 = useParallax(sectionRef, [0, -60]);
+  const floatY2 = useParallax(sectionRef, [0, 40]);
   const steps = [
     {
       icon: <BarChart className="h-6 w-6" />,
@@ -127,8 +151,14 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative py-24 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-[0.03]" />
+      <motion.div style={{ y: floatY1 }} className="absolute inset-0 z-0 pointer-events-none">
+        <Sankofa className="absolute top-16 left-1/4 w-40 h-40 text-primary/[0.03] dark:text-primary/[0.015]" />
+      </motion.div>
+      <motion.div style={{ y: floatY2 }} className="absolute inset-0 z-0 pointer-events-none">
+        <Dwennimmen className="absolute bottom-16 right-1/4 w-36 h-36 text-primary/[0.025] dark:text-primary/[0.012]" />
+      </motion.div>
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -184,6 +214,8 @@ function HowItWorksSection() {
 }
 
 function FeaturesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const floatY = useParallax(sectionRef, [0, -70]);
   const features = [
     {
       icon: <BarChart className="h-6 w-6" />,
@@ -216,9 +248,12 @@ function FeaturesSection() {
   ];
 
   return (
-    <section className="relative py-24 md:py-32">
+    <section ref={sectionRef} className="relative py-24 md:py-32">
       <div className="absolute inset-0 bg-muted/30" />
       <ChevronPattern variant="background" className="text-primary opacity-[0.02]" />
+      <motion.div style={{ y: floatY }} className="absolute inset-0 z-0 pointer-events-none">
+        <GyeNyame className="absolute top-1/2 -translate-y-1/2 -right-20 w-80 h-80 text-primary/[0.02] dark:text-primary/[0.01]" />
+      </motion.div>
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -275,10 +310,16 @@ function FeaturesSection() {
 }
 
 function MetricsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const floatY = useParallax(sectionRef, [0, -50]);
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section ref={sectionRef} className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
       <ChevronPattern variant="background" className="text-primary opacity-[0.02]" />
+      <motion.div style={{ y: floatY }} className="absolute inset-0 z-0 pointer-events-none">
+        <Dwennimmen className="absolute top-1/4 left-1/6 w-48 h-48 text-primary/[0.03] dark:text-primary/[0.015]" />
+        <Sankofa className="absolute bottom-1/4 right-1/6 w-40 h-40 text-secondary/[0.03] dark:text-secondary/[0.015]" />
+      </motion.div>
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -318,6 +359,8 @@ function MetricsSection() {
 }
 
 function TestimonialsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const floatY = useParallax(sectionRef, [0, 60]);
   const testimonials = [
     {
       name: "Tafadzwa M.",
@@ -337,8 +380,12 @@ function TestimonialsSection() {
   ];
 
   return (
-    <section className="relative py-24 md:py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative py-24 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-[0.02]" />
+      <motion.div style={{ y: floatY }} className="absolute inset-0 z-0 pointer-events-none">
+        <GyeNyame className="absolute -top-10 -right-10 w-64 h-64 text-primary/[0.04] dark:text-primary/[0.02]" />
+        <Dwennimmen className="absolute -bottom-10 -left-10 w-52 h-52 text-primary/[0.03] dark:text-primary/[0.015]" />
+      </motion.div>
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -393,14 +440,26 @@ function CTASection() {
   return (
     <section className="relative py-32 overflow-hidden">
       <Suspense fallback={null}>
-        <ParticleField
-          className="absolute inset-0 z-0"
-          particleCount={50}
-          mouseRadius={150}
-          connectionDistance={100}
+        <WaveField
+          className="absolute inset-0 z-0 opacity-30"
+          waveCount={3}
+          speed={0.2}
+          amplitude={35}
+          mouseReactivity={0.4}
         />
       </Suspense>
-      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-primary/10 via-background/80 to-secondary/10" />
+      <Suspense fallback={null}>
+        <ParticleField
+          className="absolute inset-0 z-[1]"
+          particleCount={60}
+          mouseRadius={150}
+          connectionDistance={100}
+          depthLayers={2}
+          showTrails={true}
+          waveDistortion={true}
+        />
+      </Suspense>
+      <div className="absolute inset-0 z-[2] bg-gradient-to-r from-primary/10 via-background/80 to-secondary/10" />
       <ChevronPattern variant="divider" direction="up" className="absolute top-0 z-10" />
       <div className="container relative z-10 text-center space-y-8">
         <motion.div

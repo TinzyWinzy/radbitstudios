@@ -3,18 +3,21 @@ import { AIGateway } from '@/services/ai/ai-gateway';
 import { BruteForceProtection, encrypt, decrypt, sanitizeHTML } from '@/services/security/index';
 
 describe('AIGateway', () => {
-  it('returns fallback response when no API keys configured', async () => {
+  it('returns no-key response when no API keys configured', async () => {
     const gateway = new AIGateway();
     const result = await gateway.generate({ prompt: 'test', difficulty: 'simple' });
-    expect(result.model).toBe('fallback');
+    expect(result.model).toBe('fallback-no-key');
     expect(result.content).toContain('unavailable');
   });
 
   it('respects user budget limits', async () => {
+    const { OPENAI_API_KEY } = process.env;
+    process.env.OPENAI_API_KEY = 'sk-test';
     const gateway = new AIGateway();
     gateway.setUserBudget('user-1', 0);
     const result = await gateway.generate({ prompt: 'test', userId: 'user-1' });
     expect(result.model).toBe('budget-limit');
+    process.env.OPENAI_API_KEY = OPENAI_API_KEY;
   });
 });
 
