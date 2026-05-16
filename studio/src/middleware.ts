@@ -10,7 +10,7 @@ const i18nMiddleware = createMiddleware({
 });
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
-const JWKS_URL = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
+const JWKS_URL = 'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com';
 
 let jwksCache: ReturnType<typeof createRemoteJWKSet> | null = null;
 function getJWKS() {
