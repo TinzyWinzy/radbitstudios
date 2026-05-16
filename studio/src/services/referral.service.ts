@@ -50,10 +50,10 @@ export class ReferralService {
 
         // Award 50 AI credits to new user
         const newUserRef = doc(db, 'users', newUserId);
-        transaction.update(newUserRef, {
+        transaction.set(newUserRef, {
           [`usage.templateGeneration.remaining`]: increment(50),
           [`usage.templateGeneration.total`]: increment(50),
-        });
+        }, { merge: true });
       });
 
       return { success: true, message: 'Referral applied! You both get bonus AI credits.' };
