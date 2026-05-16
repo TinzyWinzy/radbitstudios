@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: radbit-sme-hub-ck05x
+  NEXT_PUBLIC_FIREBASE_APP_ID: 1:87727434217:web:8b8adcecb5e57268f38378
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: radbit-sme-hub-ck05x.firebasestorage.app
+  NEXT_PUBLIC_FIREBASE_API_KEY: AIzaSyDkTQOsxEmIdj5Gv3Ht460ekjqR24jp3sA
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: radbit-sme-hub-ck05x.firebaseapp.com
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "87727434217"
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & TypeCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: studio/package-lock.json
+      - run: npm ci
+        working-directory: studio
+      - run: npm run lint
+        working-directory: studio
+      - run: npm run typecheck
+        working-directory: studio
+
+  test:
+    name: Tests
+    needs: lint-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: studio/package-lock.json
+      - run: npm ci
+        working-directory: studio
+      - run: npm test
+        working-directory: studio
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: studio/package-lock.json
+      - run: npm ci
+        working-directory: studio
+      - run: npm run build
+        working-directory: studio

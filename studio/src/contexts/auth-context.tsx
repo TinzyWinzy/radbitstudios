@@ -97,8 +97,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
         await fetchAndSetUser(authUser);
+        const token = await authUser.getIdToken();
+        document.cookie = `__session=${token}; path=/; max-age=3600; SameSite=Lax; ${location.protocol === 'https:' ? 'Secure;' : ''}`;
       } else {
         setUser(null);
+        document.cookie = '__session=; path=/; max-age=0; SameSite=Lax;';
       }
       setLoading(false);
     });
@@ -134,6 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    document.cookie = '__session=; path=/; max-age=0; SameSite=Lax;';
     return signOut(auth);
   };
 

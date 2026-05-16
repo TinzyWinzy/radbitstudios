@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimit } from '@/services/rate-limiter';
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const rl = rateLimit(`payments:${ip}`, { maxRequests: 20, windowMs: 60000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: 'Too many requests' }, {
+      status: 429,
+      headers: { 'Retry-After': String(rl.retryAfter) },
+    });
+  }
+
   try {
     const body = await req.json();
     const { action } = body;
