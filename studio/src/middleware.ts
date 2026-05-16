@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { jwtVerify } from 'jose/jwt/verify';
+import { createRemoteJWKSet } from 'jose/jwks/remote';
 
 const i18nMiddleware = createMiddleware({
   locales: ['en', 'sn', 'nd', 'pt'],

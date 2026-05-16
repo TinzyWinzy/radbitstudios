@@ -2,11 +2,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/contexts/auth-context";
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
+import { getLocale } from 'next-intl/server';
 import { organizationSchema } from "@/lib/seo";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
@@ -24,7 +20,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
-  const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -43,19 +38,7 @@ export default async function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
           crossOrigin="anonymous"
         />
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NextIntlClientProvider messages={messages}>
-              {children}
-            </NextIntlClientProvider>
-            <Toaster />
-          </ThemeProvider>
-        </AuthProvider>
+        {children}
         <script
           dangerouslySetInnerHTML={{
             __html: `
