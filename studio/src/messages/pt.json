@@ -1,12 +1,28 @@
 {
-  "auth.signOut": "Sair",
-  "nav.dashboard": "Painel",
-  "nav.assessment": "Avaliação",
-  "assessment.title": "Avaliação de Prontidão Digital",
-  "assessment.step": "Pergunta {current} de {total}",
-  "tenders.search": "Pesquisar concursos...",
-  "community.newThread": "Nova Discussão",
-  "mentor.title": "Mentor de Negócios IA",
-  "offline.title": "Estás Offline",
-  "common.loading": "A carregar..."
+  "auth": {
+    "signOut": "Sair"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "assessment": "Avaliação"
+  },
+  "assessment": {
+    "title": "Avaliação de Prontidão Digital",
+    "step": "Pergunta {current} de {total}"
+  },
+  "tenders": {
+    "search": "Pesquisar concursos..."
+  },
+  "community": {
+    "newThread": "Nova Discussão"
+  },
+  "mentor": {
+    "title": "Mentor de Negócios IA"
+  },
+  "offline": {
+    "title": "Estás Offline"
+  },
+  "common": {
+    "loading": "A carregar..."
+  }
 }

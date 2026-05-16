@@ -1,12 +1,28 @@
 {
-  "auth.signOut": "Phuma",
-  "nav.dashboard": "Idasibhodi",
-  "nav.assessment": "Uhlolo",
-  "assessment.title": "Uhlolo Lokulungele Ubuchwepheshe",
-  "assessment.step": "Umbuzo {current} we {total}",
-  "tenders.search": "Funa amathenda...",
-  "community.newThread": "Nkosombi oMutsha",
-  "mentor.title": "Umcebisi Webhizinisi we-AI",
-  "offline.title": "Kakukho i-Intanethi",
-  "common.loading": "Iyalayisha..."
+  "auth": {
+    "signOut": "Phuma"
+  },
+  "nav": {
+    "dashboard": "Idasibhodi",
+    "assessment": "Uhlolo"
+  },
+  "assessment": {
+    "title": "Uhlolo Lokulungele Ubuchwepheshe",
+    "step": "Umbuzo {current} we {total}"
+  },
+  "tenders": {
+    "search": "Funa amathenda..."
+  },
+  "community": {
+    "newThread": "Nkosombi oMutsha"
+  },
+  "mentor": {
+    "title": "Umcebisi Webhizinisi we-AI"
+  },
+  "offline": {
+    "title": "Kakukho i-Intanethi"
+  },
+  "common": {
+    "loading": "Iyalayisha..."
+  }
 }

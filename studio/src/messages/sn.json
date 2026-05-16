@@ -1,12 +1,28 @@
 {
-  "auth.signOut": "Budai",
-  "nav.dashboard": "Dashboard",
-  "nav.assessment": "Ongororo",
-  "assessment.title": "Ongororo Yekugadzirira Dhijitari",
-  "assessment.step": "Mubvunzo {current} we {total}",
-  "tenders.search": "Tsvaga mabasa...",
-  "community.newThread": "Nyaya Itsva",
-  "mentor.title": "Mupangamazano Webhizimusi eAI",
-  "offline.title": "Hauna Internet",
-  "common.loading": "Kutakura..."
+  "auth": {
+    "signOut": "Budai"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "assessment": "Ongororo"
+  },
+  "assessment": {
+    "title": "Ongororo Yekugadzirira Dhijitari",
+    "step": "Mubvunzo {current} we {total}"
+  },
+  "tenders": {
+    "search": "Tsvaga mabasa..."
+  },
+  "community": {
+    "newThread": "Nyaya Itsva"
+  },
+  "mentor": {
+    "title": "Mupangamazano Webhizimusi eAI"
+  },
+  "offline": {
+    "title": "Hauna Internet"
+  },
+  "common": {
+    "loading": "Kutakura..."
+  }
 }
