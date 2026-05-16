@@ -32,6 +32,9 @@ export default function MarketingLayout({
             <Link href="/tenders" className="text-muted-foreground hover:text-foreground transition-colors">
               Tenders
             </Link>
+            <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+              Blog
+            </Link>
           </nav>
           <div className="flex flex-1 items-center justify-end space-x-3">
             <ThemeToggle />
