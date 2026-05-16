@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useEffect } from "react";
@@ -6,15 +5,15 @@ import { usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/auth-context";
 
 const PAGE_TITLES: Record<string, string> = {
-  "/dashboard": "Dashboard - Radbit SME Hub",
-  "/assessment": "Assessment - Radbit SME Hub",
-  "/toolkit": "AI Toolkit - Radbit SME Hub",
-  "/budget-calculator": "Budget Calculator - Radbit SME Hub",
-  "/tenders": "Tenders & News - Radbit SME Hub",
-  "/community": "Community - Radbit SME Hub",
-  "/messages": "Messages - Radbit SME Hub",
-  "/mentor": "AI Mentor - Radbit SME Hub",
-  "/settings": "Settings - Radbit SME Hub",
+  "/dashboard": "Dashboard — Radbit",
+  "/assessment": "Assessment — Radbit",
+  "/toolkit": "AI Toolkit — Radbit",
+  "/budget-calculator": "Budget Calculator — Radbit",
+  "/tenders": "Tenders — Radbit",
+  "/community": "Community — Radbit",
+  "/messages": "Messages — Radbit",
+  "/mentor": "AI Mentor — Radbit",
+  "/settings": "Settings — Radbit",
 };
 import {
   SidebarProvider,
@@ -44,6 +43,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
+import { GyeNyame } from "@/components/adinkra-symbols";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
@@ -90,9 +90,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2">
-            <Icons.logo className="size-6 shrink-0" />
-            <span className="text-lg font-semibold">Radbit SME Hub</span>
+          <div className="flex items-center gap-3 px-2">
+            <Icons.radbit className="size-7 shrink-0" />
+            <span className="font-headline text-lg font-bold tracking-wide">RADBIT</span>
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -113,7 +113,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             ))}
           </SidebarMenu>
         </SidebarContent>
-        <SidebarFooter>
+        <SidebarFooter className="relative">
+          <GyeNyame className="absolute bottom-2 right-2 h-8 w-8 text-primary/[0.04] pointer-events-none" />
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
@@ -137,16 +138,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-14 max-w-7xl items-center">
             <SidebarTrigger className="mr-4" />
-            <div className="flex-1">
-              {/* Breadcrumbs or Page Title can go here */}
-            </div>
+            <div className="flex-1" />
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                 <Bell className="h-5 w-5" />
-                <span className="sr-only">Notifications</span>
               </Button>
               <ThemeToggle />
               <UserNav />

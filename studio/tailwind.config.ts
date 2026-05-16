@@ -1,4 +1,3 @@
-
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -19,7 +18,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['var(--font-body)', 'sans-serif'],
-        headline: ['var(--font-body)', 'sans-serif'],
+        headline: ['var(--font-headline)', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -81,36 +80,57 @@ export default {
       },
       keyframes: {
         'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
         },
         blob: {
-            "0%": { transform: "translate(0px, 0px) scale(1)" },
-            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-            "100%": { transform: "translate(0px, 0px) scale(1)" },
-        }
+          "0%": { transform: "translate(0px, 0px) scale(1)" },
+          "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+          "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+          "100%": { transform: "translate(0px, 0px) scale(1)" },
+        },
+        'chevron-slide': {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        'particle-float': {
+          "0%, 100%": { transform: "translateY(0) scale(1)", opacity: "0.4" },
+          "50%": { transform: "translateY(-20px) scale(1.2)", opacity: "0.8" },
+        },
+        'glow-pulse': {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" },
+          "50%": { boxShadow: "0 0 40px hsl(var(--primary) / 0.6)" },
+        },
+        'gradient-shift': {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        'logo-draw': {
+          "0%": { strokeDashoffset: "100" },
+          "100%": { strokeDashoffset: "0" },
+        },
+        'float': {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'blob': 'blob 7s infinite',
+        'chevron-slide': 'chevron-slide 3s linear infinite',
+        'particle-float': 'particle-float 6s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+        'gradient-shift': 'gradient-shift 3s ease infinite',
+        'logo-draw': 'logo-draw 1.5s ease forwards',
+        'float': 'float 3s ease-in-out infinite',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
-
-    

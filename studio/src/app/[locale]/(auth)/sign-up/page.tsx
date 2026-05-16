@@ -1,21 +1,12 @@
-
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Icons } from '@/components/icons';
@@ -30,7 +21,6 @@ const signUpSchema = z.object({
   path: ['confirmPassword'],
 });
 
-
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +33,7 @@ export default function SignUpPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    document.title = 'Sign Up - Radbit SME Hub';
+    document.title = 'Create Account — Radbit';
   }, []);
 
   useEffect(() => {
@@ -66,7 +56,6 @@ export default function SignUpPage() {
 
     try {
       await signUp(email, password);
-      // The redirect will be handled by the effect hook
     } catch (error: any) {
       toast({
         title: 'Sign Up Failed',
@@ -82,7 +71,6 @@ export default function SignUpPage() {
     setIsGoogleLoading(true);
     try {
         await signInWithGoogle();
-        // The redirect will be handled by the effect hook
     } catch (error: any) {
         toast({
             title: 'Google Sign In Failed',
@@ -94,81 +82,91 @@ export default function SignUpPage() {
     }
   }
 
-
   return (
-    <Card>
-      <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl">Create an account</CardTitle>
-        <CardDescription>
-          Enter your email below to create your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
-            {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Icons.logo className="mr-2 h-4 w-4" />}
-            Sign Up with Google
-        </Button>
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
+    <div className="p-8 space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="font-headline text-2xl font-bold tracking-tight">Create Your Account</h1>
+        <p className="text-sm text-muted-foreground">Join the Radbit ecosystem</p>
+      </div>
+
+      <Button
+        variant="outline"
+        className="w-full h-11 font-medium"
+        onClick={handleGoogleSignIn}
+        disabled={isGoogleLoading || isLoading}
+      >
+        {isGoogleLoading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.logo className="mr-2 h-4 w-4" />
+        )}
+        Continue with Google
+      </Button>
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-border/50" />
         </div>
-        <form onSubmit={handleSignUp} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading || isGoogleLoading}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading || isGoogleLoading}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="confirm-password">Confirm Password</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              disabled={isLoading || isGoogleLoading}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
-            {isLoading && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Create Account
-          </Button>
-        </form>
-      </CardContent>
-      <CardFooter className="flex justify-center text-sm">
-        <p>
-          Already have an account?{' '}
-          <Link href="/sign-in" className="font-semibold underline">
-            Sign In
-          </Link>
-        </p>
-      </CardFooter>
-    </Card>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">Or email</span>
+        </div>
+      </div>
+
+      <form onSubmit={handleSignUp} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading || isGoogleLoading}
+            required
+            className="h-11"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading || isGoogleLoading}
+            required
+            className="h-11"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <Input
+            id="confirm-password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            disabled={isLoading || isGoogleLoading}
+            required
+            className="h-11"
+          />
+        </div>
+        <Button type="submit" className="w-full h-11 font-headline tracking-wider" disabled={isLoading || isGoogleLoading}>
+          {isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <>
+              Create Account <ChevronRight className="ml-2 h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </form>
+
+      <p className="text-center text-sm text-muted-foreground">
+        Already a member?{' '}
+        <Link href="/sign-in" className="font-semibold text-primary hover:underline">
+          Sign In
+        </Link>
+      </p>
+    </div>
   );
 }
