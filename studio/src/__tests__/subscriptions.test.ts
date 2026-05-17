@@ -13,8 +13,8 @@ describe("subscriptionPlans", () => {
       prices[p.name] = p.price;
     });
     expect(prices["Free"]).toBe(0);
-    expect(prices["Growth"]).toBe(15);
-    expect(prices["Pro"]).toBe(40);
+    expect(prices["Growth"]).toBe(5);
+    expect(prices["Pro"]).toBe(15);
   });
 
   it("Free plan has the fewest credits", () => {

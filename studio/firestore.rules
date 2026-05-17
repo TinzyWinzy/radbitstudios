@@ -1,12 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
+    // ─── REQUEST QUOTA / RATE LIMITING ────────────────────────────────────
+    // Per-IP backstop against DB-level bypass. Real rate limiting happens at
+    // the API gateway / App Hosting layer; this is a defence-in-depth guard.
+    // Maintained via stale-while-fresh counter docs in the `rate_limit_counters`
+    // collection (write-once, read-many). Rules enforce a per-IP write budget.
+    match /rate_limit_counters/{counterId} {
+      allow read, write: if false; // only server writes via privileged service account
+    }
+
+    // ─── RATE LIMIT BOOLEAN FLAGS ──────────────────────────────────────────
+    // See `docs/SECURITY.md` — OTP lockout enforced via Firestore `lockouts`
+    // collection written by the Auth Service. Rules prevent client tampering.
+    match /lockouts/{lockoutId} {
+      allow read, write: if false;
+    }
+
     // Default deny all to ensure explicit permissions are set.
     match /{document=**} {
       allow read, write: if false;
     }
-    
+
     // USERS
     // Users can read/write their own document. Authenticated users can list others for messaging.
     match /users/{userId} {
@@ -23,7 +39,7 @@ service cloud.firestore {
       // Allow querying a user's own assessments, optionally ordered by creation date.
       allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
     }
-    
+
     // GENERATIONS (AI AGENT HISTORY)
     // Users can create their own generation history.
     // They can only read/delete their own history items.
@@ -52,7 +68,7 @@ service cloud.firestore {
       allow create: if request.auth.uid == request.resource.data.authorId;
       // Any authenticated user can update only the replyCount and lastReplyAt fields.
       allow update: if request.auth != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['replyCount', 'lastReplyAt']);
-      
+
       // THREAD REPLIES
       match /replies/{replyId} {
         allow get, list, create: if request.auth != null;

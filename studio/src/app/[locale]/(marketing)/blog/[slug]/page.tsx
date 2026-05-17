@@ -115,7 +115,7 @@ export default function BlogPostPage({
       {post.imageUrl && (
         <img
           src={post.imageUrl}
-          alt=""
+          alt={post.title}
           className="w-full rounded-xl mb-8 aspect-[16/9] object-cover"
         />
       )}

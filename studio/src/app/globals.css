@@ -4,73 +4,73 @@
 
 @layer base {
   :root {
-    --background: 40 20% 97%;
-    --foreground: 30 15% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 30 15% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 15% 12%;
-    --primary: 40 95% 50%;
+    --background: 0 0% 3%;
+    --foreground: 40 20% 95%;
+    --card: 0 0% 6%;
+    --card-foreground: 40 20% 95%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 40 20% 95%;
+    --primary: 40 95% 55%;
     --primary-foreground: 40 10% 5%;
-    --secondary: 185 80% 40%;
+    --secondary: 185 85% 45%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 40 15% 92%;
-    --muted-foreground: 30 10% 40%;
-    --accent: 8 70% 45%;
+    --muted: 40 10% 12%;
+    --muted-foreground: 30 10% 50%;
+    --accent: 10 70% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 40 15% 85%;
-    --input: 40 15% 85%;
-    --ring: 40 95% 50%;
+    --border: 40 10% 15%;
+    --input: 40 10% 15%;
+    --ring: 40 95% 55%;
     --radius: 0.75rem;
-    --chart-1: 40 95% 50%;
-    --chart-2: 185 80% 40%;
-    --chart-3: 8 70% 45%;
+    --chart-1: 40 95% 55%;
+    --chart-2: 185 85% 45%;
+    --chart-3: 10 70% 50%;
     --chart-4: 30 20% 50%;
     --chart-5: 160 60% 40%;
-    --sidebar-background: 40 15% 95%;
-    --sidebar-foreground: 30 15% 12%;
-    --sidebar-primary: 40 95% 45%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 40 20% 95%;
+    --sidebar-primary: 40 95% 55%;
     --sidebar-primary-foreground: 40 10% 5%;
-    --sidebar-accent: 185 80% 40%;
+    --sidebar-accent: 185 85% 45%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 40 15% 85%;
-    --sidebar-ring: 40 95% 50%;
+    --sidebar-border: 40 10% 12%;
+    --sidebar-ring: 40 95% 55%;
   }
 
   .dark {
-    --background: 30 15% 8%;
+    --background: 0 0% 3%;
     --foreground: 40 20% 95%;
-    --card: 30 15% 14%;
+    --card: 0 0% 6%;
     --card-foreground: 40 20% 95%;
-    --popover: 30 15% 14%;
+    --popover: 0 0% 6%;
     --popover-foreground: 40 20% 95%;
     --primary: 40 90% 55%;
     --primary-foreground: 30 20% 8%;
     --secondary: 185 90% 48%;
     --secondary-foreground: 185 20% 8%;
-    --muted: 30 10% 18%;
-    --muted-foreground: 30 10% 60%;
+    --muted: 30 10% 10%;
+    --muted-foreground: 30 10% 50%;
     --accent: 10 70% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 100%;
-    --border: 30 10% 22%;
-    --input: 30 10% 22%;
+    --border: 30 10% 15%;
+    --input: 30 10% 15%;
     --ring: 40 90% 55%;
     --chart-1: 40 90% 55%;
     --chart-2: 185 90% 48%;
     --chart-3: 10 70% 50%;
     --chart-4: 30 30% 55%;
     --chart-5: 160 60% 45%;
-    --sidebar-background: 30 15% 10%;
+    --sidebar-background: 0 0% 5%;
     --sidebar-foreground: 40 20% 95%;
     --sidebar-primary: 40 90% 55%;
     --sidebar-primary-foreground: 30 20% 8%;
     --sidebar-accent: 185 90% 48%;
     --sidebar-accent-foreground: 185 20% 8%;
-    --sidebar-border: 30 10% 22%;
+    --sidebar-border: 30 10% 15%;
     --sidebar-ring: 40 90% 55%;
   }
 }
@@ -95,7 +95,7 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
   }
   .bg-grid {
-    background-image: linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    background-image: linear-gradient(to right, hsl(var(--border) / 0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.15) 1px, transparent 1px);
   }
 }

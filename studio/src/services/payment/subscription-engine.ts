@@ -13,6 +13,7 @@ export interface ActiveSubscription {
   plan: SubscriptionPlanId;
   status: SubscriptionStatus;
   billingPeriod: BillingPeriod;
+  currency?: string;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
   cancelAtPeriodEnd: boolean;
@@ -72,6 +73,7 @@ export class SubscriptionEngine {
       plan,
       status: 'active',
       billingPeriod,
+      currency,
       currentPeriodStart: now,
       currentPeriodEnd: periodEnd,
       cancelAtPeriodEnd: false,
@@ -137,7 +139,7 @@ export class SubscriptionEngine {
 
     const payment = await this.payments.initiatePayment({
       amount: finalPrice,
-      currency: 'USD',
+      currency: data.currency || 'USD',
       description: `Radbit ${data.plan} renewal`,
       reference: `retry-${subscriptionId}-${Date.now()}`,
       userId: data.userId,

@@ -1,122 +1,153 @@
-// Radbit SME Hub — Service Worker
-const CACHE_VERSION = 'v1';
-const STATIC_CACHE = `radbit-static-${CACHE_VERSION}`;
-const API_CACHE = `radbit-api-${CACHE_VERSION}`;
+const CACHE_NAME = 'radbit-sme-v1';
+const STATIC_ASSETS = [
+  '/',
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
+  '/icons/badge-72x72.png',
+];
 
+/// Install: precache shell assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(STATIC_CACHE).then((cache) =>
-      cache.add('/').catch(() => {})
-    )
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
 
+/// Activate: prune old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((names) =>
-      Promise.all(names.filter((n) => n !== STATIC_CACHE && n !== API_CACHE).map((n) => caches.delete(n)))
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
     )
   );
   self.clients.claim();
 });
 
+/// Fetch: cache-first for static, network-first for API
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Skip non-GET
   if (request.method !== 'GET') return;
-  if (!url.protocol.startsWith('http')) return;
+  // Skip cross-origin
+  if (url.origin !== location.origin) return;
 
-  if (url.pathname.startsWith('/_next/static')) {
-    event.respondWith(cacheFirst(request));
-    return;
-  }
-
+  // API routes: network-first with offline fallback
   if (url.pathname.startsWith('/api/')) {
-    if (url.pathname.includes('/api/assessment')) {
-      event.respondWith(networkFirstWithTimeout(request, 5000));
-      return;
-    }
-    event.respondWith(staleWhileRevalidate(request));
+    event.respondWith(networkFirst(request));
     return;
   }
 
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      networkFirstWithTimeout(request).catch(() => caches.match('/'))
-    );
-    return;
-  }
-
-  event.respondWith(networkFirstWithTimeout(request));
+  // Static assets & pages: cache-first, stale-while-revalidate
+  event.respondWith(cacheFirstStaleRevalidate(request));
 });
 
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if (cached) return cached;
+async function networkFirst(request: Request): Promise<Response> {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      const cache = await caches.open(STATIC_CACHE);
+      const cache = await caches.open(CACHE_NAME);
       cache.put(request, response.clone());
     }
     return response;
   } catch {
-    return caches.match('/');
-  }
-}
-
-async function networkFirstWithTimeout(request, timeoutMs = 5000) {
-  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs));
-  try {
-    const response = await Promise.race([fetch(request), timeout]);
-    if (response.ok) {
-      const cache = await caches.open(API_CACHE);
-      cache.put(request, response.clone());
-    }
-    return response;
-  } catch {
+    // Offline: return from cache or fallback
     const cached = await caches.match(request);
-    return cached || new Response(JSON.stringify({ error: 'Offline' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
+    if (cached) return cached;
+    return new Response(JSON.stringify({ error: 'Offline' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
 
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(API_CACHE);
-  const cached = await cache.match(request);
-  const fetchPromise = fetch(request).then((response) => {
-    if (response.ok) { cache.put(request, response.clone()); }
+async function cacheFirstStaleRevalidate(request: Request): Promise<Response> {
+  const cached = await caches.match(request);
+  if (cached) {
+    // Revalidate in the background
+    fetch(request)
+      .then((response) => {
+        if (response.ok) caches.open(CACHE_NAME).then((c) => c.put(request, response));
+      })
+      .catch(() => {});
+    return cached;
+  }
+  return fetch(request).then((response) => {
+    if (response.ok) caches.open(CACHE_NAME).then((c) => c.put(request, response.clone()));
     return response;
-  }).catch(() => cached);
-  return cached || fetchPromise;
-}
-
-// Background Sync
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-assessment') event.waitUntil(syncQueue('pending-assessments', '/api/assessment/submit'));
-  if (event.tag === 'sync-community-post') event.waitUntil(syncQueue('pending-posts', '/api/community/posts'));
-});
-
-async function syncQueue(storeName, endpoint) {
-  const db = await openDB();
-  const items = await db.getAll(storeName);
-  for (const item of items) {
-    try {
-      const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(item.data) });
-      if (res.ok) await db.delete(storeName, item.id);
-    } catch (e) { console.error('Sync failed', e); }
-  }
-}
-
-async function openDB() {
-  return new Promise((resolve) => {
-    const r = indexedDB.open('radbit-sync-queue', 1);
-    r.onupgradeneeded = (e) => {
-      ['pending-assessments', 'pending-posts', 'pending-ai-requests'].forEach((n) => {
-        if (!e.target.result.objectStoreNames.contains(n)) e.target.result.createObjectStore(n, { keyPath: 'id' });
-      });
-    };
-    r.onsuccess = () => resolve(r.result);
   });
 }
+
+/// Background Sync: retry queued requests on reconnect
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-queued') {
+    event.waitUntil(syncQueuedRequests());
+  }
+});
+
+async function syncQueuedRequests(): Promise<void> {
+  const db = await openIndexedDB();
+  const tx = db.transaction('queuedRequests', 'readonly');
+  const store = tx.objectStore('queuedRequests');
+  const requests = await store.getAll();
+
+  for (const req of requests) {
+    try {
+      const response = await fetch(req.url, {
+        method: req.method,
+        headers: req.headers,
+        body: req.body,
+      });
+      if (response.ok) {
+        await store.delete(req.id);
+      }
+    } catch {
+      // Will retry on next sync event
+      break;
+    }
+  }
+}
+
+function openIndexedDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('RadbitSW', 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains('queuedRequests')) {
+        db.createObjectStore('queuedRequests', { keyPath: 'id' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+/// Push notification handler
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  const data = event.data.json();
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Radbit SME Hub', {
+      body: data.body || '',
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/badge-72x72.png',
+      data: data.url ? { url: data.url } : undefined,
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === '/' && 'focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow('/');
+    })
+  );
+});

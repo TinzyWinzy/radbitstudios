@@ -1,5 +1,5 @@
 export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
-export type PaymentProviderName = 'ecocash' | 'onemoney' | 'stripe' | 'payfast' | 'ozow';
+export type PaymentProviderName = 'ecocash' | 'paynow' | 'stripe' | 'payfast';
 
 export interface PaymentRequest {
   amount: number;

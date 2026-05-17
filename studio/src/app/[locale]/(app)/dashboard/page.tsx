@@ -20,12 +20,13 @@ import {
   RefreshCw,
   Loader2,
   Wand2,
-  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton";
+import { OnboardingWizard } from "@/components/onboarding-wizard";
+import { UsageSummary } from "@/components/usage-summary";
 import { generateDashboardInsights } from "@/ai/flows/generate-dashboard-insights";
 import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
@@ -60,6 +61,8 @@ const overviewCards = [
 ];
 
 import { checkAndDecrementUsage } from "@/services/usage-service";
+import { UpgradeModal } from "@/components/upgrade-modal";
+import type { UpgradeInfo } from "@/services/feature-gate";
 
 const chartConfig = {
     score: {
@@ -81,6 +84,7 @@ export default function DashboardPage() {
   const [dailyTips, setDailyTips] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [isLoadingInsights, setIsLoadingInsights] = useState(true);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
 
@@ -97,6 +101,11 @@ export default function DashboardPage() {
       try {
         const usageResult = await checkAndDecrementUsage(user.uid, 'dashboardInsights');
         if (!usageResult.success) {
+          if (usageResult.upgrade) {
+            setUpgradeInfo(usageResult.upgrade);
+            setIsLoadingInsights(false);
+            return;
+          }
           setDailyTips([usageResult.message]);
           setIsLoadingInsights(false);
           return;
@@ -182,24 +191,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-       {!hasCompletedProfile && (
-        <Card className="bg-primary/10 border-primary/20">
-          <CardHeader>
-            <CardTitle>Let&apos;s Get Your Profile Set Up</CardTitle>
-            <CardDescription>
-              To get personalized AI insights and recommendations, please tell us a little about your business.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild>
-              <Link href="/settings?tab=business">
-                <Settings className="mr-2 h-4 w-4" />
-                Complete Your Business Profile
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      <OnboardingWizard />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {overviewCards.map((card) => (
@@ -341,6 +333,12 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+        <UsageSummary user={user} />
+      </div>
+
+      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
   );
 }

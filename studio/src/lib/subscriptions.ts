@@ -36,7 +36,7 @@ export interface SubscriptionPlan {
     },
     {
       name: 'Growth',
-      price: 15,
+      price: 5,
       description: 'Unlock powerful tools to accelerate your growth.',
       features: [
         '10 Assessment Summaries',
@@ -56,7 +56,7 @@ export interface SubscriptionPlan {
     },
     {
       name: 'Pro',
-      price: 40,
+      price: 15,
       description: 'For power users who need unlimited access.',
       features: [
         'Unlimited Assessment Summaries',

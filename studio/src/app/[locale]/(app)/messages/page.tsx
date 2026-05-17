@@ -19,13 +19,15 @@ import { Card, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Send, Search, ArrowLeft } from 'lucide-react';
+import { Send, Search, ArrowLeft, Lock, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { z } from 'zod';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/contexts/auth-context';
+import { UpgradeModal } from "@/components/upgrade-modal";
+import type { UpgradeInfo } from "@/services/feature-gate";
 
 interface DbUser {
   uid: string;
@@ -58,6 +60,7 @@ export default function MessagesPage() {
   const [isLoadingConversations, setIsLoadingConversations] = useState(true);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
 
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -203,6 +206,38 @@ export default function MessagesPage() {
       return <div className="flex h-full items-center justify-center"><p>Please log in to view messages.</p></div>
   }
 
+  const plan = (currentUser as any).plan || 'Free';
+
+  if (plan === 'Free') {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-10rem)]">
+        <div className="text-center max-w-md p-8">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10 mb-4">
+            <Lock className="size-8 text-primary" />
+          </div>
+          <h2 className="font-headline text-2xl font-bold mb-2">Direct Messages Locked</h2>
+          <p className="text-muted-foreground mb-6">
+            Connect directly with other SME owners. Upgrade to Growth to unlock direct messaging.
+          </p>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 mb-6">
+            <p className="text-sm font-medium mb-1">Growth Plan — $5/mo</p>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li className="flex items-center gap-1.5"><Sparkles className="size-3 text-primary" /> Direct messaging with SMEs</li>
+              <li className="flex items-center gap-1.5"><Sparkles className="size-3 text-primary" /> 10x more credits on all tools</li>
+              <li className="flex items-center gap-1.5"><Sparkles className="size-3 text-primary" /> Unlimited tenders & insights</li>
+            </ul>
+          </div>
+          <button
+            onClick={() => window.location.href = '/settings?tab=plan'}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            Upgrade to Growth — $5/mo
+          </button>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="h-[calc(100vh-10rem)]">
@@ -338,6 +373,7 @@ export default function MessagesPage() {
         </div>
 
       </Card>
+      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
   );
 }

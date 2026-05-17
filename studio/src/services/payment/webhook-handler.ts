@@ -1,5 +1,6 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { PayNowProvider } from './providers/paynow.provider';
 
 export class WebhookHandler {
   async handle(provider: string, rawPayload: any): Promise<{ status: 'processed' | 'duplicate' | 'ignored'; eventId?: string }> {
@@ -69,6 +70,9 @@ export class WebhookHandler {
       case 'payfast': {
         return { id: payload.m_payment_id, type: payload.payment_status === 'COMPLETE' ? 'payment.completed' : 'payment.failed', data: payload };
       }
+      case 'paynow': {
+        return { id: payload.reference, type: payload.status === 'Paid' ? 'payment.completed' : 'payment.failed', data: payload };
+      }
       default:
         return null;
     }
@@ -133,6 +137,9 @@ export class WebhookHandler {
       case 'payfast': {
         // PayFast uses MD5 signature verification
         return true;
+      }
+      case 'paynow': {
+        return new PayNowProvider().verifyITNHash(payload);
       }
       default:
         return true;

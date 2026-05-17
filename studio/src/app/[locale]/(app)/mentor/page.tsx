@@ -19,6 +19,8 @@ import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { sendMessageAction } from './actions';
 import { checkAndDecrementUsage } from '@/services/usage-service';
+import { UpgradeModal } from "@/components/upgrade-modal";
+import type { UpgradeInfo } from "@/services/feature-gate";
 import { type User } from 'firebase/auth';
 
 // Define a custom user type for better type safety
@@ -42,6 +44,7 @@ export default function MentorPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -64,6 +67,10 @@ export default function MentorPage() {
 
     const usageResult = await checkAndDecrementUsage(user.uid, 'mentorChat');
     if (!usageResult.success) {
+      if (usageResult.upgrade) {
+        setUpgradeInfo(usageResult.upgrade);
+        return;
+      }
       toast({ title: 'Usage Limit Reached', description: usageResult.message, variant: 'destructive' });
       return;
     }
@@ -208,6 +215,7 @@ export default function MentorPage() {
             </form>
         </CardFooter>
       </Card>
+      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
   );
 }

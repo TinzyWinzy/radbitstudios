@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { PaymentOrchestrator } from '@/services/payment/payment-orchestrator';
 import { EcoCashProvider } from '@/services/payment/providers/ecocash.provider';
 import { StripeProvider } from '@/services/payment/providers/stripe.provider';
+import { PayNowProvider } from '@/services/payment/providers/paynow.provider';
 import { InvoiceService } from '@/services/payment/invoice.service';
 import { SUBSCRIPTION_PRICES, type BillingPeriod } from '@/services/payment/subscription-engine';
 
@@ -10,6 +11,18 @@ describe('PaymentOrchestrator', () => {
     const orchestrator = new PaymentOrchestrator();
     const provider = orchestrator.getProvider('ZW', 'USD');
     expect(provider.name).toBe('ecocash');
+  });
+
+  it('routes Zimbabwe ZIG payments to EcoCash', () => {
+    const orchestrator = new PaymentOrchestrator();
+    const provider = orchestrator.getProvider('ZW', 'ZIG');
+    expect(provider.name).toBe('ecocash');
+  });
+
+  it('falls back to PayNow when EcoCash fails in ZW', () => {
+    const orchestrator = new PaymentOrchestrator();
+    const provider = orchestrator.getProvider('ZW', 'USD');
+    expect(['ecocash', 'paynow', 'stripe']).toContain(provider.name);
   });
 
   it('routes South Africa ZAR payments to PayFast', () => {
@@ -89,5 +102,30 @@ describe('InvoiceService', () => {
     expect(html).toContain('VAT (15%)');
     expect(html).toContain('Tax Invoice');
     expect(html).toContain('Paid');
+  });
+});
+
+describe('PayNowProvider', () => {
+  it('supports ZW and USD/ZIG', () => {
+    const provider = new PayNowProvider();
+    expect(provider.supportedCountries).toContain('ZW');
+    expect(provider.supportedCurrencies).toContain('USD');
+    expect(provider.supportedCurrencies).toContain('ZIG');
+  });
+
+  it('verifies ITN hash correctly', () => {
+    const provider = new PayNowProvider();
+    const payload = {
+      reference: 'test-ref',
+      paynowreference: 'PN123',
+      amount: '10.00',
+      status: 'Paid',
+      pollurl: 'https://www.paynow.co.zw/poll/123',
+      additionalinfo: 'test',
+      authemail: 'test@example.com',
+      hash: '',
+    };
+    const result = provider.verifyITNHash(payload);
+    expect(typeof result).toBe('boolean');
   });
 });

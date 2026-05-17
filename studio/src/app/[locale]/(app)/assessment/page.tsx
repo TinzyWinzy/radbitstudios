@@ -17,6 +17,8 @@ import { db } from "@/lib/firebase/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/auth-context";
 import { checkAndDecrementUsage } from "@/services/usage-service";
+import { UpgradeModal } from "@/components/upgrade-modal";
+import type { UpgradeInfo } from "@/services/feature-gate";
 import { saveAssessmentDraft, getAssessmentDraft, deleteAssessmentDraft, createAutoSave, watchNetworkStatus } from "@/services/offline";
 
 const totalSteps = 15;
@@ -113,6 +115,7 @@ export default function AssessmentPage() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [benchmarkData, setBenchmarkData] = useState<any[] | null>(null);
   const [isLoadingBenchmark, setIsLoadingBenchmark] = useState(false);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user, refreshUserData } = useContext(AuthContext);
@@ -233,6 +236,12 @@ export default function AssessmentPage() {
      try {
         const usageResult = await checkAndDecrementUsage(user.uid, 'assessmentSummary');
         if (!usageResult.success) {
+            if (usageResult.upgrade) {
+                setUpgradeInfo(usageResult.upgrade);
+                setIsGeneratingSummary(false);
+                setIsLoadingBenchmark(false);
+                return;
+            }
             setAiSummary(usageResult.message + "\n\nYou can still view your results chart and download the report.");
             await refreshUserData();
             return;
@@ -535,6 +544,7 @@ export default function AssessmentPage() {
           )}
         </CardFooter>
       </Card>
+        <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
   );
 }

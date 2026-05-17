@@ -20,6 +20,8 @@ import { AuthContext } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase/firebase';
 import { collection, doc, setDoc, deleteDoc, getDocs, serverTimestamp, query } from 'firebase/firestore';
 import { checkAndDecrementUsage } from '@/services/usage-service';
+import { UpgradeModal } from "@/components/upgrade-modal";
+import type { UpgradeInfo } from "@/services/feature-gate";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -30,30 +32,28 @@ type ArticleWithBookmark = Article & { bookmarked: boolean; bookmarkId?: string 
 
 function ArticleItem({ article, onBookmarkToggle, isBookmarkedView = false }: { article: ArticleWithBookmark, onBookmarkToggle: () => void, isBookmarkedView?: boolean }) {
   return (
-    <div>
-        <div className="flex justify-between items-start">
-            <div className="space-y-1.5 flex-1">
-                <p className="font-semibold text-lg">{article.title}</p>
-                <p className="text-sm text-muted-foreground">{article.summary}</p>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
-                    <Badge variant="secondary">{article.category}</Badge>
-                    {article.expiryDate && (
-                        <span className="text-destructive">Expires: {article.expiryDate}</span>
-                    )}
-                     <a href={article.source} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary">
-                        Source <ExternalLink className="h-3 w-3" />
-                     </a>
-                </div>
-            </div>
-            <div className="flex items-center gap-2 ml-4">
-                <Button variant="ghost" size="icon" onClick={onBookmarkToggle}>
-                    <Bookmark className={cn("h-5 w-5", (article.bookmarked || isBookmarkedView) && "fill-primary text-primary")} />
-                    <span className="sr-only">Bookmark</span>
-                </Button>
-            </div>
+    <div className="flex justify-between items-start">
+      <div className="space-y-1.5 flex-1">
+        <p className="font-semibold text-lg">{article.title}</p>
+        <p className="text-sm text-muted-foreground">{article.summary}</p>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
+          <Badge variant="secondary">{article.category}</Badge>
+          {article.expiryDate && (
+            <span className="text-destructive">Expires: {article.expiryDate}</span>
+          )}
+          <a href={article.source} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary">
+            Source <ExternalLink className="h-3 w-3" />
+          </a>
         </div>
+      </div>
+      <div className="flex items-center gap-2 ml-4">
+        <Button variant="ghost" size="icon" onClick={onBookmarkToggle}>
+          <Bookmark className={cn("h-5 w-5", (article.bookmarked || isBookmarkedView) && "fill-primary text-primary")} />
+          <span className="sr-only">Bookmark</span>
+        </Button>
+      </div>
     </div>
-  )
+  );
 }
 
 export default function TendersPage() {
@@ -65,6 +65,7 @@ export default function TendersPage() {
   const [curatedArticles, setCuratedArticles] = useState<ArticleWithBookmark[]>([]);
   const [bookmarkedArticles, setBookmarkedArticles] = useState<Map<string, {id: string, article: Article}>>(new Map());
   const [isSyncingBookmarks, setIsSyncingBookmarks] = useState(true);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
 
   const fetchBookmarks = useCallback(async () => {
     if (!user) {
@@ -104,6 +105,11 @@ export default function TendersPage() {
     try {
       const usageResult = await checkAndDecrementUsage(user.uid, 'tendersCuration');
       if (!usageResult.success) {
+        if (usageResult.upgrade) {
+          setUpgradeInfo(usageResult.upgrade);
+          setIsLoading(false);
+          return;
+        }
         toast({ title: "Usage Limit Reached", description: usageResult.message, variant: 'destructive'});
         setIsLoading(false);
         return;
@@ -284,6 +290,7 @@ export default function TendersPage() {
             </Tabs>
         </Card>
       </div>
+      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
   );
 }

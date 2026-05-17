@@ -36,6 +36,8 @@ import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { generateBusinessInsight } from '@/ai/flows/generate-business-insight';
 import { checkAndDecrementUsage } from '@/services/usage-service';
+import { UpgradeModal } from "@/components/upgrade-modal";
+import type { UpgradeInfo } from "@/services/feature-gate";
 import { MarkdownRenderer } from '@/components/markdown-renderer';
 
 const formSchema = z.object({
@@ -70,6 +72,7 @@ export default function AiToolkitPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [generatedContent, setGeneratedContent] = useState('');
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -95,6 +98,11 @@ export default function AiToolkitPage() {
     try {
       const usageResult = await checkAndDecrementUsage(user.uid, 'templateGeneration');
       if (!usageResult.success) {
+        if (usageResult.upgrade) {
+          setUpgradeInfo(usageResult.upgrade);
+          setIsLoading(false);
+          return;
+        }
         toast({ title: 'Usage Limit Reached', description: usageResult.message, variant: 'destructive' });
         setIsLoading(false);
         return;
@@ -269,6 +277,7 @@ export default function AiToolkitPage() {
           </CardContent>
         </Card>
       </div>
+      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
   );
 }

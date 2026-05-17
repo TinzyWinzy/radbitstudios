@@ -2,6 +2,7 @@ import type { PaymentProvider, PaymentRequest, PaymentResponse } from './provide
 import { EcoCashProvider } from './providers/ecocash.provider';
 import { StripeProvider } from './providers/stripe.provider';
 import { PayFastProvider } from './providers/payfast.provider';
+import { PayNowProvider } from './providers/paynow.provider';
 
 export class PaymentOrchestrator {
   private providers = new Map<string, PaymentProvider>();
@@ -10,6 +11,7 @@ export class PaymentOrchestrator {
     this.registerProvider('ecocash', new EcoCashProvider());
     this.registerProvider('stripe', new StripeProvider());
     this.registerProvider('payfast', new PayFastProvider());
+    this.registerProvider('paynow', new PayNowProvider());
   }
 
   registerProvider(name: string, provider: PaymentProvider): void {
@@ -18,7 +20,7 @@ export class PaymentOrchestrator {
 
   getProvider(country: string, currency: string): PaymentProvider {
     const priority: Record<string, string[]> = {
-      ZW: ['ecocash', 'onemoney', 'stripe'],
+      ZW: ['ecocash', 'paynow', 'stripe'],
       ZA: ['payfast', 'stripe'],
       ZM: ['stripe'],
       BW: ['stripe'],
