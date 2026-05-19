@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeAllFeeds } from '@/services/news-scraper';
+import { invalidateCache } from '@/lib/scraper-cache';
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -9,8 +10,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const url = new URL(request.url);
+  const force = url.searchParams.get('force') === 'true';
+  if (force) {
+    invalidateCache('news:');
+  }
+
   try {
+    console.log('[API /api/scraper/news] Starting scrape...');
     const results = await scrapeAllFeeds();
+    console.log(`[API /api/scraper/news] Scrape complete: ${results.scraped} scraped, ${results.errors} errors`);
     return NextResponse.json({
       success: true,
       scraped: results.scraped,

@@ -1,7 +1,21 @@
 import parser from 'rss-parser';
-import { db } from '@/lib/firebase/firebase';
-import { getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
+import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
+import { upsertNewsBatch, getNews, newsFromDb, logSync } from '@/lib/sqlite';
+import fs from 'fs';
+import path from 'path';
+
+const logFile = path.join(process.cwd(), 'data', 'news-scraper.log');
+function logToFile(message: string) {
+  const timestamp = new Date().toISOString();
+  const line = `[${timestamp}] ${message}\n`;
+  try {
+    fs.appendFileSync(logFile, line);
+  } catch {
+    // Ignore log write errors
+  }
+  console.log(message);
+}
 
 export interface NewsArticle {
   id: string;
@@ -107,7 +121,7 @@ function extractIndustryTags(title: string, content: string): string[] {
 }
 
 function generateId(url: string): string {
-  return Buffer.from(url).toString('base64url').slice(0, 32);
+  return crypto.createHash('md5').update(url).digest('hex');
 }
 
 async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
@@ -132,6 +146,8 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
       const content = item.contentSnippet || item.content || item.summary || '';
       const category = classifyCategory(item.title, content, feed.industryMapping);
       const industryTags = extractIndustryTags(item.title, content);
+
+      logToFile(`[scrapeFeed] Item: link=${item.link}, title=${item.title?.slice(0, 50)}`);
 
       articles.push({
         id: generateId(item.link),
@@ -161,6 +177,17 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
   if (cached) return cached;
 
   const results = { scraped: 0, errors: 0 };
+  const allArticles: Array<{
+    id: string;
+    title: string;
+    summary?: string;
+    sourceUrl?: string;
+    sourceName?: string;
+    publishedAt?: Date;
+    category?: string;
+    industryTags?: string[];
+    region?: string;
+  }> = [];
 
   // Scrape in serial to avoid hammering feeds
   for (const feed of FEEDS) {
@@ -170,18 +197,38 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
       continue;
     }
 
-    try {
-      const { db } = await import('@/lib/firebase/firebase');
-      const { doc, setDoc } = await import('firebase/firestore');
-      const writes = articles.map(a => setDoc(doc(db, 'news', a.id), a, { merge: true }));
-      await Promise.allSettled(writes);
-      results.scraped += articles.length;
-    } catch {
-      results.errors++;
-    }
+    allArticles.push(...articles.map(a => ({
+      id: a.id,
+      title: a.title,
+      summary: a.summary,
+      sourceUrl: a.sourceUrl,
+      sourceName: a.sourceName,
+      publishedAt: a.publishedAt,
+      category: a.category,
+      industryTags: a.industryTags,
+      region: a.region,
+    })));
+    results.scraped += articles.length;
   }
 
-  setCached(cacheKey, results, 15 * 60 * 1000); // cache result for 15 min
+  if (allArticles.length > 0) {
+    logToFile(`Attempting to save ${allArticles.length} articles to SQLite`);
+    logToFile(`First article: ${JSON.stringify({ id: allArticles[0].id, title: allArticles[0].title?.slice(0, 50) })}`);
+    logToFile(`All IDs: ${allArticles.map(a => a.id).join(', ')}`);
+    try {
+      upsertNewsBatch(allArticles);
+      logToFile(`Saved ${results.scraped} articles to SQLite`);
+      logSync('news', results.scraped, 'success');
+    } catch (err: any) {
+      results.errors = allArticles.length;
+      logToFile(`SQLite write error: ${err.message}`);
+      logSync('news', 0, 'error', err.message);
+    }
+  } else {
+    logToFile('No articles to save');
+  }
+
+  setCached(cacheKey, results, 15 * 60 * 1000);
   return results;
 }
 
@@ -197,52 +244,33 @@ export async function getLatestNews(options: {
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const snapshot = await getDocs(query(collection(db, 'news'), orderBy('publishedAt', 'desc'), limit(200)));
-  let articles: NewsArticle[] = snapshot.docs.map(d => {
-    const data = d.data();
-    return {
-      ...data,
-      publishedAt: data.publishedAt?.toDate() || new Date(),
-      scrapedAt: data.scrapedAt?.toDate() || new Date(),
-      processedAt: data.processedAt?.toDate() || new Date(),
-    } as NewsArticle;
+  const records = getNews({
+    limit: 200,
+    category: category || undefined,
+    region,
   });
 
-  if (category) articles = articles.filter(a => a.category === category);
+  let articles: NewsArticle[] = records.map(newsFromDb);
+
   if (industry) articles = articles.filter(a =>
     a.industryTags.some(t => t.toLowerCase().includes(industry.toLowerCase()))
   );
-  if (region && region !== 'Africa') articles = articles.filter(a => a.region === region);
 
   const result = articles.slice(0, n);
-  setCached(cacheKey, result, 5 * 60 * 1000); // cache for 5 min
+  setCached(cacheKey, result, 5 * 60 * 1000);
   return result;
 }
 
 export async function getNewsForUser(userId: string): Promise<NewsArticle[]> {
-  const { getDoc, doc } = await import('firebase/firestore');
-  const userDoc = await getDoc(doc(db, 'users', userId));
-  const userData = userDoc.data();
-  const industry = userData?.industry || '';
-
-  if (!industry) return [];
-
-  const cacheKey = `news:user:${userId}:${industry}`;
+  const cacheKey = `news:user:${userId}`;
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const snapshot = await getDocs(query(collection(db, 'news'), orderBy('publishedAt', 'desc'), limit(100)));
-  const articles = snapshot.docs
-    .map(d => {
-      const data = d.data();
-      return { ...data, publishedAt: data.publishedAt?.toDate() || new Date(), scrapedAt: data.scrapedAt?.toDate() || new Date(), processedAt: data.processedAt?.toDate() || new Date() } as NewsArticle;
-    })
-    .filter(a =>
-      a.industryTags.some(t => t.toLowerCase().includes(industry.toLowerCase())) ||
-      a.title.toLowerCase().includes(industry.toLowerCase())
-    )
+  const records = getNews({ limit: 100 });
+  const articles = records
+    .map(newsFromDb)
     .slice(0, 15);
 
-  setCached(cacheKey, articles, 10 * 60 * 1000); // cache for 10 min
+  setCached(cacheKey, articles, 10 * 60 * 1000);
   return articles;
 }

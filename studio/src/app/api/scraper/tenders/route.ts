@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeAllTenders } from '@/services/tender-scraper';
+import { invalidateCache } from '@/lib/scraper-cache';
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -7,6 +8,12 @@ export async function POST(request: NextRequest) {
 
   if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const url = new URL(request.url);
+  const force = url.searchParams.get('force') === 'true';
+  if (force) {
+    invalidateCache('tenders:');
   }
 
   try {

@@ -1,9 +1,8 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import crypto from 'crypto';
-import { db } from '@/lib/firebase/firebase';
-import { getDocs, collection, query, orderBy, limit } from 'firebase/firestore';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
+import { upsertTenders, getTenders, tenderFromDb, logSync } from '@/lib/sqlite';
 
 export interface Tender {
   id: string;
@@ -653,13 +652,15 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic] = await Promise.allSettled([
 
   if (uniqueTenders.length > 0) {
     try {
-      const { doc, setDoc } = await import('firebase/firestore');
-      const writes = uniqueTenders.map(t => setDoc(doc(db, 'tenders', t.id), t, { merge: true }));
-      const settled = await Promise.allSettled(writes);
-      results.scraped = settled.filter(r => r.status === 'fulfilled').length;
-      results.errors = settled.filter(r => r.status === 'rejected').length;
-    } catch {
+      upsertTenders(uniqueTenders);
+      results.scraped = uniqueTenders.length;
+      results.errors = 0;
+      console.log(`[TenderScraper] Saved ${results.scraped} tenders to SQLite`);
+      logSync('tenders', results.scraped, 'success');
+    } catch (err: any) {
       results.errors = uniqueTenders.length;
+      console.error('[TenderScraper] SQLite write error:', err);
+      logSync('tenders', 0, 'error', err.message);
     }
   }
 
@@ -679,21 +680,14 @@ export async function getLatestTenders(options: {
   const cached = getCached<Tender[]>(cacheKey);
   if (cached) return cached;
 
-  const snapshot = await getDocs(query(collection(db, 'tenders'), orderBy('publishedAt', 'desc'), limit(200)));
-  let tenders: Tender[] = snapshot.docs.map(d => {
-    const data = d.data();
-    return {
-      ...data,
-      publishedAt: data.publishedAt?.toDate ? data.publishedAt.toDate() : data.publishedAt ? new Date(data.publishedAt as any) : new Date(),
-      closingDate: data.closingDate?.toDate ? data.closingDate.toDate() : data.closingDate ? new Date(data.closingDate as any) : null,
-      processedAt: data.processedAt?.toDate ? data.processedAt.toDate() : new Date(),
-      scrapedAt: data.scrapedAt?.toDate ? data.scrapedAt.toDate() : new Date(),
-    } as Tender;
+  const records = getTenders({
+    limit: 200,
+    status,
+    sector,
+    region,
   });
 
-  if (status) tenders = tenders.filter(t => t.status === status);
-  if (sector) tenders = tenders.filter(t => t.sector.toLowerCase().includes(sector.toLowerCase()) || t.title.toLowerCase().includes(sector.toLowerCase()));
-  if (region && region !== 'Africa') tenders = tenders.filter(t => t.region === region);
+  let tenders: Tender[] = records.map(tenderFromDb);
 
   const result = tenders.slice(0, n);
   setCached(cacheKey, result, 5 * 60 * 1000);
@@ -701,34 +695,14 @@ export async function getLatestTenders(options: {
 }
 
 export async function getTendersForUser(userId: string): Promise<Tender[]> {
-  const { getDoc, doc } = await import('firebase/firestore');
-  const userDoc = await getDoc(doc(db, 'users', userId));
-  const userData = userDoc.data();
-  const industry = userData?.industry || '';
-
-  const cacheKey = `tenders:user:${userId}:${industry}`;
+  const cacheKey = `tenders:user:${userId}`;
   const cached = getCached<Tender[]>(cacheKey);
   if (cached) return cached;
 
-  const snapshot = await getDocs(query(collection(db, 'tenders'), orderBy('publishedAt', 'desc'), limit(100)));
-  let tenders = snapshot.docs.map(d => {
-    const data = d.data();
-    return {
-      ...data,
-      publishedAt: data.publishedAt?.toDate ? data.publishedAt.toDate() : new Date(),
-      closingDate: data.closingDate?.toDate ? data.closingDate.toDate() : null,
-      processedAt: new Date(),
-      scrapedAt: new Date(),
-    } as Tender;
-  }).filter(t => t.status !== 'closed');
-
-  if (industry) {
-    tenders = tenders.filter(t =>
-      t.sector.toLowerCase().includes(industry.toLowerCase()) ||
-      t.title.toLowerCase().includes(industry.toLowerCase()) ||
-      t.description.toLowerCase().includes(industry.toLowerCase())
-    );
-  }
+  const records = getTenders({ limit: 100 });
+  let tenders = records
+    .map(tenderFromDb)
+    .filter((t: Tender) => t.status !== 'closed');
 
   setCached(cacheKey, tenders, 10 * 60 * 1000);
   return tenders;
