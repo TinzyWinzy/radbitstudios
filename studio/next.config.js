@@ -57,10 +57,7 @@ const sentryOptions = {
   widenClientFileUpload: true,
   hideSourceMaps: true,
   telemetry: false,
-  webpack: (config, { dev, isServer }) => {
-    if (isServer) {
-      config.externals = [...(config.externals || []), 'better-sqlite3'];
-    }
+  webpack: (config, { dev }) => {
     if (dev) {
       config.optimization = config.optimization || {};
       config.optimization.minimize = false;

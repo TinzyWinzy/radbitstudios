@@ -216,13 +216,13 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     logToFile(`First article: ${JSON.stringify({ id: allArticles[0].id, title: allArticles[0].title?.slice(0, 50) })}`);
     logToFile(`All IDs: ${allArticles.map(a => a.id).join(', ')}`);
     try {
-      upsertNewsBatch(allArticles);
+      await upsertNewsBatch(allArticles);
       logToFile(`Saved ${results.scraped} articles to SQLite`);
-      logSync('news', results.scraped, 'success');
+      await logSync('news', results.scraped, 'success');
     } catch (err: any) {
       results.errors = allArticles.length;
       logToFile(`SQLite write error: ${err.message}`);
-      logSync('news', 0, 'error', err.message);
+      await logSync('news', 0, 'error', err.message);
     }
   } else {
     logToFile('No articles to save');
@@ -244,7 +244,7 @@ export async function getLatestNews(options: {
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const records = getNews({
+  const records = await getNews({
     limit: 200,
     category: category || undefined,
     region,
@@ -266,7 +266,7 @@ export async function getNewsForUser(userId: string): Promise<NewsArticle[]> {
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const records = getNews({ limit: 100 });
+  const records = await getNews({ limit: 100 });
   const articles = records
     .map(newsFromDb)
     .slice(0, 15);

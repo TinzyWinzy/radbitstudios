@@ -652,15 +652,15 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic] = await Promise.allSettled([
 
   if (uniqueTenders.length > 0) {
     try {
-      upsertTenders(uniqueTenders);
+      await upsertTenders(uniqueTenders);
       results.scraped = uniqueTenders.length;
       results.errors = 0;
       console.log(`[TenderScraper] Saved ${results.scraped} tenders to SQLite`);
-      logSync('tenders', results.scraped, 'success');
+      await logSync('tenders', results.scraped, 'success');
     } catch (err: any) {
       results.errors = uniqueTenders.length;
       console.error('[TenderScraper] SQLite write error:', err);
-      logSync('tenders', 0, 'error', err.message);
+      await logSync('tenders', 0, 'error', err.message);
     }
   }
 
@@ -680,7 +680,7 @@ export async function getLatestTenders(options: {
   const cached = getCached<Tender[]>(cacheKey);
   if (cached) return cached;
 
-  const records = getTenders({
+  const records = await getTenders({
     limit: 200,
     status,
     sector,
@@ -699,7 +699,7 @@ export async function getTendersForUser(userId: string): Promise<Tender[]> {
   const cached = getCached<Tender[]>(cacheKey);
   if (cached) return cached;
 
-  const records = getTenders({ limit: 100 });
+  const records = await getTenders({ limit: 100 });
   let tenders = records
     .map(tenderFromDb)
     .filter((t: Tender) => t.status !== 'closed');

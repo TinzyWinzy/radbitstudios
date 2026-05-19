@@ -3,8 +3,8 @@ import { upsertNewsBatch, getNews, getDbStats } from '@/lib/sqlite';
 
 export async function GET() {
   try {
-    const stats = getDbStats();
-    const news = getNews({ limit: 10 });
+    const stats = await getDbStats();
+    const news = await getNews({ limit: 10 });
 
     return NextResponse.json({
       stats,
@@ -24,8 +24,8 @@ export async function POST() {
       { id: 'test-3', title: 'Test Article 3', sourceName: 'Test', publishedAt: new Date(), category: 'general' },
     ];
 
-    const count = upsertNewsBatch(testArticles);
-    const news = getNews({ limit: 10 });
+    const count = await upsertNewsBatch(testArticles);
+    const news = await getNews({ limit: 10 });
 
     return NextResponse.json({
       inserted: count,
