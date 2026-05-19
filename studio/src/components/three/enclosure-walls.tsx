@@ -1,6 +1,5 @@
 "use client";
-
-import { useMemo, useRef } from "react";
+import { createElement, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -10,6 +9,7 @@ interface EnclosureWallsProps {
   height?: number;
   segments?: number;
   blockRows?: number;
+  inverted?: boolean;
 }
 
 const stoneColors = [
@@ -20,18 +20,8 @@ const stoneColors = [
   "#6E6354",
 ];
 
-const techAccentColors = [
-  "#D4A853",
-  "#C49B4A",
-  "#B8903F",
-];
-
 function randomStoneColor() {
   return stoneColors[Math.floor(Math.random() * stoneColors.length)];
-}
-
-function randomTechAccent() {
-  return techAccentColors[Math.floor(Math.random() * techAccentColors.length)];
 }
 
 export function EnclosureWalls({
@@ -40,6 +30,7 @@ export function EnclosureWalls({
   height = 3.5,
   segments = 60,
   blockRows = 8,
+  inverted = false,
 }: EnclosureWallsProps) {
   const wallGroupRef = useRef<THREE.Group>(null);
 
@@ -120,66 +111,30 @@ export function EnclosureWalls({
     }
   });
 
-  return (
-    <group ref={wallGroupRef}>
-      <mesh position={[0, -height / 2 - 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[radiusX * 0.9, 64]} />
-        <meshStandardMaterial color="#3A3028" roughness={0.95} metalness={0.05} />
-      </mesh>
+  const e = createElement;
 
-      {wallBlocks.map((block, i) => (
-        <mesh key={i} position={block.pos} scale={block.scale}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial
-            color={block.color}
-            roughness={0.85}
-            metalness={0.03}
-            flatShading
-          />
-        </mesh>
-      ))}
-
-      {chevronBlocks.map((chev, i) => (
-        <group
-          key={`chev-${i}`}
-          position={chev.pos}
-          rotation={[0, -chev.angle + Math.PI / 2, 0]}
-        >
-          <mesh position={[0.15, 0, 0]} rotation={[0, 0, -0.6]}>
-            <boxGeometry args={[0.18, 0.18, 0.35]} />
-            <meshStandardMaterial
-              color="#BFA06A"
-              emissive="#D4A853"
-              emissiveIntensity={0.3}
-              roughness={0.3}
-              metalness={0.2}
-            />
-          </mesh>
-          <mesh position={[-0.15, 0, 0]} rotation={[0, 0, 0.6]}>
-            <boxGeometry args={[0.18, 0.18, 0.35]} />
-            <meshStandardMaterial
-              color="#BFA06A"
-              emissive="#D4A853"
-              emissiveIntensity={0.3}
-              roughness={0.3}
-              metalness={0.2}
-            />
-          </mesh>
-        </group>
-      ))}
-
-      <mesh position={[0, height / 2 + 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[radiusX * 0.88, radiusX * 0.92, 64]} />
-        <meshStandardMaterial
-          color="#D4A853"
-          emissive="#D4A853"
-          emissiveIntensity={0.15}
-          transparent
-          opacity={0.2}
-          roughness={0.4}
-          metalness={0.3}
-        />
-      </mesh>
-    </group>
+  return e('group', { ref: wallGroupRef },
+    e('mesh', { position: [0, -height / 2 - 0.2, 0], rotation: [-Math.PI / 2, 0, 0] },
+      e('circleGeometry', { args: [radiusX * 0.9, 64] }),
+      e('meshStandardMaterial', { color: "#3A3028", roughness: 0.95, metalness: 0.05 })
+    ),
+    ...wallBlocks.map((block, i) => e('mesh', { key: i, position: block.pos, scale: [inverted ? -block.scale[0] : block.scale[0], block.scale[1], block.scale[2]] },
+      e('boxGeometry', { args: [1, 1, 1] }),
+      e('meshStandardMaterial', { color: block.color, roughness: 0.85, metalness: 0.03, flatShading: true })
+    )),
+    ...chevronBlocks.map((chev, i) => e('group', { key: `chev-${i}`, position: chev.pos, rotation: [0, -chev.angle + Math.PI / 2, 0] },
+      e('mesh', { position: [0.15, 0, 0], rotation: [0, 0, -0.6] },
+        e('boxGeometry', { args: [0.18, 0.18, 0.35] }),
+        e('meshStandardMaterial', { color: "#BFA06A", emissive: "#D4A853", emissiveIntensity: 0.3, roughness: 0.3, metalness: 0.2 })
+      ),
+      e('mesh', { position: [-0.15, 0, 0], rotation: [0, 0, 0.6] },
+        e('boxGeometry', { args: [0.18, 0.18, 0.35] }),
+        e('meshStandardMaterial', { color: "#BFA06A", emissive: "#D4A853", emissiveIntensity: 0.3, roughness: 0.3, metalness: 0.2 })
+      )
+    )),
+    e('mesh', { position: [0, height / 2 + 0.02, 0], rotation: [-Math.PI / 2, 0, 0] },
+      e('ringGeometry', { args: [radiusX * 0.88, radiusX * 0.92, 64] }),
+      e('meshStandardMaterial', { color: "#D4A853", emissive: "#D4A853", emissiveIntensity: 0.15, transparent: true, opacity: 0.2, roughness: 0.4, metalness: 0.3 })
+    )
   );
 }

@@ -9,38 +9,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/resources/tools/business-name-generator" },
 };
 
-const prefixes = [
-  "Tafa", "Moyo", "Batsirai", "Pfumai", "Rufaro", "Chiedza", "Kuda", "Tariro", "Makanaka", "Rukudzo",
-  "Peace", "Hope", "Grace", "Destiny", "Build", "Prosper", "Rise", "Chief", "Grand", "Prime",
-];
-
-const suffixes = [
-  "Fresh", "Hub", "Enterprise", "Ventures", "Trading", "Solutions", "Holdings", "Industries", "Investments", "Generations",
-  "Foods", "Creations", "Works", "Systems", "Partners", "Holdings", "Empower", "Impact", "Routes", "Distributors",
-];
-
-const industryModifiers: Record<string, { prefix: string[]; suffix: string[] }> = {
-  default: { prefix: prefixes, suffix: suffixes },
-  agriculture: { prefix: ["Mupunga", "Zviyo", "Gere", "Mbeu", "Muriwo", "Tobacco", "Fertile", "Harvest", "Golden", "Soil"], suffix: ["Farms", "Harvest", "Grains", "Fresh Produce", "Orchards", "Fields", "Agri", "EcoFarm", "Foods", "Growing"] },
-  retail:     { prefix: ["Mbare", "Super", "Shoprite", "Quick", "Speedy", "Budget", "Urban", "Corner", "Main", "Express"], suffix: ["Store", "Mart", "Shop", "Bazaar", "Discount", "World", "Point", "Spot", "Retail", "Outlet"] },
-  services:   { prefix: ["QuickFix", "Service", "Pro", "Total", "Complete", "First", "Master", "Expert", "Care", "Support"], suffix: ["Services", "Solutions", "Care", "Assist", "Help", "Agency", "Centre", "Desk", "Support", "Web"] },
-  tech:       { prefix: ["Digital", "Smart", "Byte", "Code", "Logic", "Nexus", "Cipher", "Sync", "Tech", "Auto"], suffix: ["Systems", "Tech", "Labs", "Digital", "Software", "Apps", "Cloud", "Network", "Connect", "Dynamics"] },
-  food:       { prefix: ["Taste", "Flavor", "Savory", "Spice", "Fresh", "Bite", "Happy", "Comfort", "Family", "Sizzle"], suffix: ["Kitchen", "Kitchen", "Bites", "Cuisine", "Eats", "Grill", "Bakery", "Tables", "Flavors", "Cafe"] },
-  creative:   { prefix: ["Art", "Design", "Color", "Vision", "Frame", "Canvas", "Pixel", "Creative", "Bold", "Vivid"], suffix: ["Studio", "Designs", "Co.", "Agency", "Labs", "Lab", "Works", "Makers", "Creative", "Craft"] },
-};
-
-function generateNames(industry: string, count: number): string[] {
-  const mods = industryModifiers[industry] || industryModifiers.default;
-  const names: string[] = [];
-  for (let i = 0; i < count; i++) {
-    const prefix = mods.prefix[Math.floor(Math.random() * mods.prefix.length)];
-    const suffix = mods.suffix[Math.floor(Math.random() * mods.suffix.length)];
-    const connector = Math.random() > 0.5 ? " " : "";
-    names.push(`${prefix}${connector}${suffix}`);
-  }
-  return [...new Set(names)];
-}
-
 export default function BusinessNameGeneratorPage() {
   return (
     <div className="container max-w-2xl py-16">

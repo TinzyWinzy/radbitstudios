@@ -208,7 +208,11 @@ export default function MessagesPage() {
 
   const plan = (currentUser as any).plan || 'Free';
 
-  if (plan === 'Free') {
+  const TIER_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'] as const;
+  const userTierIndex = TIER_ORDER.indexOf(plan as any);
+  const minTierIndex = TIER_ORDER.indexOf('Growth');
+
+  if (userTierIndex < minTierIndex) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-10rem)]">
         <div className="text-center max-w-md p-8">

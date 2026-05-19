@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Group } from "./r3f-group";
 import * as THREE from "three";
 
 const stoneColor = new THREE.Color(0.42, 0.36, 0.28);
@@ -68,7 +69,7 @@ export function ConicalTower({
   });
 
   return (
-    <group ref={groupRef} position={position}>
+    <Group ref={groupRef} position={position}>
       {courseData.map((course, i) => (
         <mesh key={i} position={[0, course.y, 0]}>
           <cylinderGeometry args={[course.radius, course.radius, course.height, 32]} />
@@ -111,6 +112,6 @@ export function ConicalTower({
       </mesh>
 
       <pointLight position={[0, height / 2 + 0.5, 0]} intensity={0.8} color="#F5D742" distance={8} />
-    </group>
+    </Group>
   );
 }

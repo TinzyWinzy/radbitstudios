@@ -154,6 +154,36 @@ declare module "@react-three/fiber" {
       itemSize: number;
     };
     primitive: { object: THREE.Object3D | THREE.Material };
+    torusGeometry: { args?: [number, number, number, number?, number?, number?] };
+    lineSegments: { args?: [THREE.BufferGeometry, THREE.Material] };
+  }
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      group: any;
+      mesh: any;
+      points: any;
+      line: any & { geometry?: THREE.BufferGeometry; material?: THREE.Material | THREE.Material[] };
+      ambientLight: any;
+      directionalLight: any;
+      pointLight: any;
+      meshStandardMaterial: any;
+      meshBasicMaterial: any;
+      pointsMaterial: any;
+      lineBasicMaterial: any;
+      boxGeometry: any;
+      cylinderGeometry: any;
+      torusGeometry: any;
+      ringGeometry: any;
+      lineSegments: any;
+      planeGeometry: any;
+      sphereGeometry: any;
+      bufferGeometry: any;
+      bufferAttribute: any;
+      primitive: any;
+    }
   }
 }
 

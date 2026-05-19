@@ -14,6 +14,9 @@ env:
   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: radbit-sme-hub-ck05x.firebaseapp.com
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "87727434217"
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
 jobs:
   lint-and-typecheck:
@@ -63,4 +66,9 @@ jobs:
       - run: npm ci
         working-directory: studio
       - run: npm run build
+        working-directory: studio
+      - name: Upload Sentry source maps
+        if: github.ref == 'refs/heads/main'
+        run: |
+          npx @sentry/wizard@latest -i nextjs -t ${{ secrets.SENTRY_AUTH_TOKEN }}
         working-directory: studio

@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Group } from "./r3f-group";
 import * as THREE from "three";
 
 interface FloatingGlyphsProps {
@@ -66,7 +67,7 @@ export function FloatingGlyphs({ count = 12 }: FloatingGlyphsProps) {
   });
 
   return (
-    <group ref={groupRef}>
+    <Group ref={groupRef}>
       {glyphs.map((glyph, i) => (
         <mesh
           key={i}
@@ -81,6 +82,6 @@ export function FloatingGlyphs({ count = 12 }: FloatingGlyphsProps) {
           />
         </mesh>
       ))}
-    </group>
+    </Group>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase/firebase';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
@@ -27,20 +27,20 @@ export function OnboardingWizard() {
   const profileComplete = !!(user as any)?.businessName && !!((user as any)?.industry);
   const onboardingDone = dismissed || (profileComplete && hasAssessment);
 
-  useEffect(() => {
-    if (!user || dismissed) return;
-    if (profileComplete) {
-      checkAssessment();
-    }
-  }, [user, dismissed]);
-
-  async function checkAssessment() {
+  const checkAssessment = useCallback(async () => {
     if (!user) return;
     const assessmentsSnap = await getDoc(doc(db, 'assessments', user.uid));
     if (assessmentsSnap.exists()) {
       setHasAssessment(true);
     }
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || dismissed) return;
+    if (profileComplete) {
+      checkAssessment();
+    }
+  }, [user, dismissed, profileComplete, checkAssessment]);
 
   async function saveProfile() {
     if (!user || !businessName.trim() || !industry) return;

@@ -1,0 +1,50 @@
+{
+  "monitors": [
+    {
+      "name": "Production Health Check",
+      "url": "https://radbitsmehub.co.zw/api/health",
+      "interval": "5m",
+      "timeout": "10s",
+      "expected_status": 200,
+      "alert_channels": ["sentry", "email", "webhook"],
+      "regions": ["us-east", "eu-west", "af-south"]
+    },
+    {
+      "name": "Staging Health Check",
+      "url": "https://staging.radbitsmehub.co.zw/api/health",
+      "interval": "10m",
+      "timeout": "10s",
+      "expected_status": 200,
+      "alert_channels": ["sentry"]
+    },
+    {
+      "name": "API Endpoint Check",
+      "url": "https://radbitsmehub.co.zw/api/payments",
+      "method": "POST",
+      "body": "{\"action\": \"ping\"}",
+      "interval": "5m",
+      "timeout": "15s",
+      "expected_status": 200,
+      "alert_channels": ["sentry", "email"]
+    }
+  ],
+  "alerting": {
+    "sentry": {
+      "dsn": "${SENTRY_DSN}",
+      "project": "sme-hub"
+    },
+    "email": {
+      "recipients": ["ops@radbitstudios.com"],
+      "threshold": 2
+    },
+    "webhook": {
+      "url": "${SLACK_WEBHOOK_URL}",
+      "threshold": 1
+    }
+  },
+  "sla_targets": {
+    "availability": 99.9,
+    "response_time_p95": 500,
+    "response_time_p99": 1000
+  }
+}

@@ -45,7 +45,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(cacheFirstStaleRevalidate(request));
 });
 
-async function networkFirst(request: Request): Promise<Response> {
+async function networkFirst(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
@@ -54,7 +54,6 @@ async function networkFirst(request: Request): Promise<Response> {
     }
     return response;
   } catch {
-    // Offline: return from cache or fallback
     const cached = await caches.match(request);
     if (cached) return cached;
     return new Response(JSON.stringify({ error: 'Offline' }), {
@@ -64,10 +63,9 @@ async function networkFirst(request: Request): Promise<Response> {
   }
 }
 
-async function cacheFirstStaleRevalidate(request: Request): Promise<Response> {
+async function cacheFirstStaleRevalidate(request) {
   const cached = await caches.match(request);
   if (cached) {
-    // Revalidate in the background
     fetch(request)
       .then((response) => {
         if (response.ok) caches.open(CACHE_NAME).then((c) => c.put(request, response));
@@ -88,7 +86,7 @@ self.addEventListener('sync', (event) => {
   }
 });
 
-async function syncQueuedRequests(): Promise<void> {
+async function syncQueuedRequests() {
   const db = await openIndexedDB();
   const tx = db.transaction('queuedRequests', 'readonly');
   const store = tx.objectStore('queuedRequests');
@@ -111,7 +109,7 @@ async function syncQueuedRequests(): Promise<void> {
   }
 }
 
-function openIndexedDB(): Promise<IDBDatabase> {
+function openIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('RadbitSW', 1);
     request.onupgradeneeded = () => {

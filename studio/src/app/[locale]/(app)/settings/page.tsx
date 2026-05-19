@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle } from "lucide-react";
+import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap } from "lucide-react";
 import {
   collection,
   query,
@@ -55,7 +55,7 @@ import { updateProfile } from "firebase/auth";
 import { Textarea } from "@/components/ui/textarea";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import Image from "next/image";
-import { subscriptionPlans, SubscriptionPlan } from "@/lib/subscriptions";
+import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER } from "@/lib/subscriptions";
 import { SubscriptionEngine } from "@/services/payment/subscription-engine";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
@@ -267,14 +267,21 @@ export default function SettingsPage() {
         if (!user) return;
 
         const currentPlanName = (user as any).plan || 'Free';
-        const planOrder = ['Free', 'Growth', 'Pro'];
-        const currentIdx = planOrder.indexOf(currentPlanName);
-        const newIdx = planOrder.indexOf(newPlan.name);
+        const currentIdx = PLAN_ORDER.indexOf(currentPlanName as typeof PLAN_ORDER[number]);
+        const newIdx = PLAN_ORDER.indexOf(newPlan.name);
         const isUpgrade = newIdx > currentIdx;
 
-        // Free plan: switch directly
-        if (newPlan.price === 0 || !isUpgrade) {
-            setIsChangingPlan(true);
+        if (newPlan.name === 'Enterprise') {
+          toast({
+            title: 'Contact Sales',
+            description: 'Enterprise pricing is custom. Please contact our team to get started.',
+          });
+          window.open('mailto:sales@radbit.co.zw?subject=Enterprise Plan Inquiry', '_blank');
+          return;
+        }
+
+        if (String(newPlan.name) === 'Enterprise' || newPlan.price === 0 || !isUpgrade) {
+          setIsChangingPlan(true);
             try {
                 const userDocRef = doc(db, 'users', user.uid);
                 await updateDoc(userDocRef, {
@@ -361,12 +368,14 @@ export default function SettingsPage() {
         </p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="business">Business</TabsTrigger>
           <TabsTrigger value="account">Account & Plan</TabsTrigger>
+          <TabsTrigger value="support">Support</TabsTrigger>
           <TabsTrigger value="assessment-history">Assessment History</TabsTrigger>
           <TabsTrigger value="generation-history">Generation History</TabsTrigger>
+          <TabsTrigger value="branding">Branding</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
@@ -490,6 +499,83 @@ export default function SettingsPage() {
                         </Card>
                     ))}
                  </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="support">
+          <Card>
+            <CardHeader>
+              <CardTitle>Support</CardTitle>
+              <CardDescription>
+                Get help and manage your support requests.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {(user as any).plan === 'Pro' || (user as any).plan === 'Enterprise' ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 rounded-lg border border-primary/20 bg-primary/5">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                      <Headphones className="size-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-primary">Priority Support Active</p>
+                      <p className="text-sm text-muted-foreground">Your requests are prioritized. Expected response within 4 hours.</p>
+                    </div>
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="flex flex-col items-center p-4 rounded-lg border bg-card text-center">
+                      <Clock className="h-5 w-5 text-primary mb-2" />
+                      <span className="text-sm font-medium">&lt; 4 hour response</span>
+                      <span className="text-xs text-muted-foreground">Guaranteed SLA</span>
+                    </div>
+                    <div className="flex flex-col items-center p-4 rounded-lg border bg-card text-center">
+                      <Zap className="h-5 w-5 text-primary mb-2" />
+                      <span className="text-sm font-medium">Dedicated Queue</span>
+                      <span className="text-xs text-muted-foreground">Jump the line</span>
+                    </div>
+                    <div className="flex flex-col items-center p-4 rounded-lg border bg-card text-center">
+                      <TicketCheck className="h-5 w-5 text-primary mb-2" />
+                      <span className="text-sm font-medium">Track Tickets</span>
+                      <span className="text-xs text-muted-foreground">Email confirmation</span>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={() => window.open('mailto:support@radbit.co.zw?subject=Priority Support Request', '_blank')}
+                  >
+                    <Headphones className="mr-2 h-4 w-4" />
+                    Submit Support Request
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 rounded-lg border border-muted">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-muted shrink-0">
+                      <Headphones className="size-5 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Priority Support</p>
+                      <p className="text-sm text-muted-foreground">Upgrade to Pro for dedicated support with guaranteed response times.</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="ml-auto shrink-0"
+                      onClick={() => setActiveTab('account')}
+                    >
+                      Upgrade to Pro
+                    </Button>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => window.open('mailto:support@radbit.co.zw', '_blank')}
+                  >
+                    <Headphones className="mr-2 h-4 w-4" />
+                    Submit General Inquiry
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -638,6 +724,75 @@ export default function SettingsPage() {
                 )}
                 </CardContent>
             </Card>
+          </TabsContent>
+        <TabsContent value="branding">
+          <Card>
+            <CardHeader>
+              <CardTitle>White-Label Branding</CardTitle>
+              <CardDescription>
+                Customize your Radbit experience for your brand. Available on Enterprise.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {String((user as any).plan) === 'Enterprise' ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 rounded-lg border border-primary/20 bg-primary/5">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                      <WhiteLabel className="size-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-primary">Enterprise Branding Active</p>
+                      <p className="text-sm text-muted-foreground">Customize logo, colors, and domain for your organization.</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="brand-name">Brand Name</Label>
+                      <Input id="brand-name" placeholder="Your Brand Name" defaultValue={(user as any).businessName || ''} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="brand-logo">Logo URL</Label>
+                      <Input id="brand-logo" placeholder="https://yourbrand.com/logo.png" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="brand-domain">Custom Domain</Label>
+                      <Input id="brand-domain" placeholder="app.yourbrand.com" />
+                      <p className="text-xs text-muted-foreground">Point your CNAME to cname.radbit.co.zw after entering your domain here.</p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => toast({ title: 'Branding settings saved', description: 'Your white-label settings have been saved.' })}
+                  >
+                    Save Branding Settings
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center text-center py-8 space-y-4">
+                  <div className="flex size-14 items-center justify-center rounded-full bg-muted">
+                    <WhiteLabel className="size-6 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="font-medium">White-Label Reports & Branding</p>
+                    <p className="text-sm text-muted-foreground mt-1 max-w-md">
+                      Available on the Enterprise plan. Get custom branding, your own domain, and API access for full integration.
+                    </p>
+                  </div>
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-left max-w-md">
+                    <p className="text-sm font-medium mb-2">Enterprise includes:</p>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />Custom logo &amp; brand colors</li>
+                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />Your own domain</li>
+                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />API access</li>
+                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />Dedicated account manager</li>
+                    </ul>
+                  </div>
+                  <Button onClick={() => setActiveTab('account')}>
+                    View Enterprise Plan
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
       <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />

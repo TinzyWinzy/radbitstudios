@@ -1,9 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Globe, FileCheck, Truck, Calculator } from "lucide-react";
-
-const F =
-  (process.env.FRONTEND_URL || "https://radbitsmehub.co.zw").replace(/\/$/, "");
 
 const steps = [
   {

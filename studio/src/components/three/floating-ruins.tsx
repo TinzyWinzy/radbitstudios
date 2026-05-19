@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Group } from "./r3f-group";
 import * as THREE from "three";
 
 interface FloatingRuinsProps {
@@ -53,6 +54,7 @@ export function FloatingRuins({ count = 18, radius = 12 }: FloatingRuinsProps) {
         isAccent,
       };
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [count, radius]);
 
   const meshRefs = useRef<(THREE.Mesh | null)[]>([]);
@@ -78,7 +80,7 @@ export function FloatingRuins({ count = 18, radius = 12 }: FloatingRuinsProps) {
   });
 
   return (
-    <group ref={groupRef}>
+    <Group ref={groupRef}>
       {instances.map((inst, i) => (
         <mesh
           key={i}
@@ -112,6 +114,6 @@ export function FloatingRuins({ count = 18, radius = 12 }: FloatingRuinsProps) {
           />
         </mesh>
       )}
-    </group>
+    </Group>
   );
 }

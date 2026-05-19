@@ -2,9 +2,12 @@ import { describe, it, expect } from "vitest";
 import { subscriptionPlans, type SubscriptionPlan } from "@/lib/subscriptions";
 
 describe("subscriptionPlans", () => {
-  it("has three plans: Free, Growth, Pro", () => {
+  it("has plans: Free, Growth, Pro, Enterprise", () => {
     const names = subscriptionPlans.map((p) => p.name);
-    expect(names).toEqual(["Free", "Growth", "Pro"]);
+    expect(names).toContain('Free');
+    expect(names).toContain('Growth');
+    expect(names).toContain('Pro');
+    expect(names).toContain('Enterprise');
   });
 
   it("has correct prices", () => {

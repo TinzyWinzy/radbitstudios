@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { createElement, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Group } from "./r3f-group";
 import * as THREE from "three";
 
 export function ZimbabweBird() {
@@ -110,16 +111,10 @@ export function ZimbabweBird() {
   });
 
   return (
-    <group ref={groupRef} position={[0, 4.5, 0]} scale={[2.2, 2.2, 2.2]}>
-      <line geometry={lineGeometry}>
-        <lineBasicMaterial color="#D4A853" transparent opacity={0.6} />
-      </line>
-      <line geometry={wingRightGeo}>
-        <lineBasicMaterial color="#D4A853" transparent opacity={0.5} />
-      </line>
-      <line geometry={wingLeftGeo}>
-        <lineBasicMaterial color="#D4A853" transparent opacity={0.5} />
-      </line>
+    <Group ref={groupRef} position={[0, 4.5, 0]} scale={[2.2, 2.2, 2.2]}>
+      {createElement('line', { geometry: lineGeometry }, createElement('lineBasicMaterial', { color: "#D4A853", transparent: true, opacity: 0.6 }))}
+      {createElement('line', { geometry: wingRightGeo }, createElement('lineBasicMaterial', { color: "#D4A853", transparent: true, opacity: 0.5 }))}
+      {createElement('line', { geometry: wingLeftGeo }, createElement('lineBasicMaterial', { color: "#D4A853", transparent: true, opacity: 0.5 }))}
 
       <points>
         <bufferGeometry>
@@ -141,6 +136,6 @@ export function ZimbabweBird() {
       </points>
 
       <pointLight position={[0, 0, 0]} intensity={0.5} color="#F5D742" distance={5} />
-    </group>
+    </Group>
   );
 }

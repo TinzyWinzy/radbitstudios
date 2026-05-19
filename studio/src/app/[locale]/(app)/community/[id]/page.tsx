@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowLeft, Send, ThumbsUp, CheckCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Send, ThumbsUp, CheckCircle, Loader2, BarChart3, TrendingUp, MessageSquare, Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +29,9 @@ import { moderateCommunityContent } from '@/ai/flows/moderate-community-content'
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/contexts/auth-context';
+import { checkFeatureAccess } from '@/services/feature-gate';
+import { UpgradeModal } from '@/components/upgrade-modal';
+import type { UpgradeInfo } from '@/services/feature-gate';
 
 
 interface Thread {
@@ -57,7 +60,7 @@ export default function ThreadDetailPage() {
   const params = useParams();
   const threadId = params.id as string;
   const { user } = useContext(AuthContext);
-  
+
   const [thread, setThread] = useState<Thread | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
   const [newReply, setNewReply] = useState('');
@@ -65,12 +68,23 @@ export default function ThreadDetailPage() {
   const [isLoadingThread, setIsLoadingThread] = useState(true);
   const [isLoadingReplies, setIsLoadingReplies] = useState(true);
   const [isPosting, setIsPosting] = useState(false);
-  
+  const [analyticsAccess, setAnalyticsAccess] = useState<{ allowed: boolean; upgrade?: UpgradeInfo }>({ allowed: false });
+  const [threadStats, setThreadStats] = useState({ totalReplies: 0, totalLikes: 0, avgReplyLength: 0 });
+
   const { toast } = useToast();
 
-useEffect(() => {
+  useEffect(() => {
     document.title = 'Community - Radbit SME Hub';
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    const checkAccess = async () => {
+      const result = await checkFeatureAccess(user.uid, 'communityPostAnalytics');
+      setAnalyticsAccess({ allowed: result.allowed, upgrade: result.upgrade });
+    };
+    checkAccess();
+  }, [user]);
 
   useEffect(() => {
     if (!threadId) return;
@@ -96,7 +110,7 @@ useEffect(() => {
         }
         setIsLoadingThread(false);
     });
-    
+
     const repliesCollectionRef = collection(db, 'threads', threadId, 'replies');
     const q = query(repliesCollectionRef, orderBy('createdAt', 'asc'));
 
@@ -113,13 +127,21 @@ useEffect(() => {
         })) as Reply[];
         setReplies(repliesData);
         setIsLoadingReplies(false);
+
+        if (analyticsAccess.allowed) {
+          const totalLikes = repliesData.reduce((sum, r) => sum + r.likes, 0);
+          const avgLen = repliesData.length > 0
+            ? Math.round(repliesData.reduce((sum, r) => sum + r.content.length, 0) / repliesData.length)
+            : 0;
+          setThreadStats({ totalReplies: repliesData.length, totalLikes, avgReplyLength: avgLen });
+        }
     });
 
     return () => {
         unsubscribeThread();
         unsubscribeReplies();
     };
-  }, [threadId]);
+  }, [threadId, analyticsAccess.allowed]);
 
 
   const handlePostReply = async () => {
@@ -328,8 +350,8 @@ useEffect(() => {
             <CardTitle>Post a Reply</CardTitle>
         </CardHeader>
         <CardContent>
-            <Textarea 
-                placeholder="Share your thoughts..." 
+            <Textarea
+                placeholder="Share your thoughts..."
                 className="h-32"
                 value={newReply}
                 onChange={e => setNewReply(e.target.value)}
@@ -343,6 +365,62 @@ useEffect(() => {
             </Button>
         </CardFooter>
       </Card>
+
+      {analyticsAccess.allowed && (
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-background">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              <CardTitle className="text-base">Community Analytics</CardTitle>
+              <Badge variant="default" className="ml-auto bg-primary text-primary-foreground text-xs">Pro</Badge>
+            </div>
+            <CardDescription>Insights for this thread</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="flex flex-col items-center p-3 rounded-lg bg-card">
+                <MessageSquare className="h-5 w-5 text-primary mb-1" />
+                <span className="text-2xl font-bold">{threadStats.totalReplies}</span>
+                <span className="text-xs text-muted-foreground">Replies</span>
+              </div>
+              <div className="flex flex-col items-center p-3 rounded-lg bg-card">
+                <Heart className="h-5 w-5 text-primary mb-1" />
+                <span className="text-2xl font-bold">{threadStats.totalLikes}</span>
+                <span className="text-xs text-muted-foreground">Likes</span>
+              </div>
+              <div className="flex flex-col items-center p-3 rounded-lg bg-card">
+                <TrendingUp className="h-5 w-5 text-primary mb-1" />
+                <span className="text-2xl font-bold">{threadStats.avgReplyLength}</span>
+                <span className="text-xs text-muted-foreground">Avg Length</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {!analyticsAccess.allowed && analyticsAccess.upgrade && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="p-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="h-6 w-6 text-primary" />
+              <div>
+                <p className="font-medium text-sm">Community Post Analytics</p>
+                <p className="text-xs text-muted-foreground">Unlock insights on replies, likes & engagement</p>
+              </div>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => window.location.href = '/settings?tab=plan'}>
+              Upgrade to Pro
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      <UpgradeModal
+        open={false}
+        onOpenChange={() => {}}
+        upgrade={analyticsAccess.upgrade ?? null}
+        onUpgrade={() => window.location.href = '/settings?tab=plan'}
+      />
     </div>
   );
 }

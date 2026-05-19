@@ -1,4 +1,5 @@
 const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts');
+const { withSentryConfig } = require('@sentry/nextjs');
 
 const csp = `
   default-src 'self';
@@ -49,4 +50,20 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+const sentryOptions = {
+  org: process.env.SENTRY_ORG || "radbit-studios",
+  project: process.env.SENTRY_PROJECT || "sme-hub",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  widenClientFileUpload: true,
+  hideSourceMaps: true,
+  telemetry: false,
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.optimization = config.optimization || {};
+      config.optimization.minimize = false;
+    }
+    return config;
+  },
+};
+
+module.exports = withSentryConfig(withNextIntl(nextConfig), sentryOptions);

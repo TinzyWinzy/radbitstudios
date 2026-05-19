@@ -6,9 +6,8 @@ import { Icons } from "@/components/icons";
 import Link from "next/link";
 
 /* Prevent error-boundary routes from being indexed */
-const _noindex = typeof document !== "undefined"
-  ? (() => { const m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex, follow'; document.head.appendChild(m); })()
-  : null;
+typeof document !== "undefined" &&
+  (() => { const m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex, follow'; document.head.appendChild(m); })();
 
 export default function MarketingError({
   error: _error,

@@ -86,7 +86,7 @@ export default function SignInPage() {
 
       <Button
         variant="outline"
-        className="w-full h-11 font-medium"
+        className="w-full h-11 font-medium border-primary/20 text-primary/80 hover:text-primary hover:border-primary/40 hover:bg-primary/5"
         onClick={handleGoogleSignIn}
         disabled={isGoogleLoading || isLoading}
       >
@@ -100,10 +100,10 @@ export default function SignInPage() {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-border/50" />
+          <span className="w-full border-t border-primary/10" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">Or email</span>
+          <span className="bg-card px-2 text-primary/50">Or email</span>
         </div>
       </div>
 
@@ -133,7 +133,7 @@ export default function SignInPage() {
             className="h-11"
           />
         </div>
-        <Button type="submit" className="w-full h-11 font-headline tracking-wider" disabled={isLoading || isGoogleLoading}>
+        <Button type="submit" className="w-full h-11 font-headline tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60" disabled={isLoading || isGoogleLoading}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (

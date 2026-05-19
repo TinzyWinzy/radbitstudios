@@ -1,16 +1,8 @@
 'use client';
 
-import type { Metadata } from "next";
 import { useState } from "react";
 import Link from "next/link";
-import { Calculator, ArrowRight } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: "VAT Calculator Zimbabwe — 15% VAT",
-  description:
-    "Free Zimbabwe VAT calculator. Calculate VAT-inclusive and VAT-exclusive prices at the 15% ZIMRA rate. Updated for 2026.",
-  alternates: { canonical: "/resources/tools/vat-calculator" },
-};
+import { Calculator } from "lucide-react";
 
 const RATE = 0.15;
 

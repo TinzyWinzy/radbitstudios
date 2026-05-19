@@ -1,77 +1,53 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Calculator, Lightbulb, Wrench, FileText, HelpCircle, CheckCircle, Sparkles } from "lucide-react";
-import { headers } from "next/headers";
-import { getMessages } from "next-intl/server";
+import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, FileText } from "lucide-react";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const messages = await getMessages();
-  const t = (key: string) => (messages as any)["resources"]?.[key] || key;
-  return {
-    title: t("meta.title"),
-    description: t("meta.description"),
-  };
-}
+const guides = [
+  {
+    slug: "zimra-tax-guide-smes",
+    title: "Tax in Zimbabwe for SMEs",
+    excerpt: "Everything you need to know about ZIMRA — taxes, filing deadlines, and common pitfalls every Zimbabwean SME owner should know.",
+    icon: <FileText className="h-6 w-6" />,
+    readTime: "15 min read",
+  },
+  {
+    slug: "ecocash-business-vs-personal",
+    title: "EcoCash Business vs Personal",
+    excerpt: "What the EcoCash Business upgrade actually changes — transaction limits, fees, compliance, and whether it's worth it for your SME.",
+    icon: <FileText className="h-6 w-6" />,
+    readTime: "10 min read",
+  },
+  {
+    slug: "sadc-export-guide",
+    title: "Exporting from Zimbabwe to SADC",
+    excerpt: "A practical walkthrough of exporting goods from Zimbabwe to SADC countries — documentation, duties, transport corridors, and common mistakes.",
+    icon: <FileText className="h-6 w-6" />,
+    readTime: "20 min read",
+  },
+  {
+    slug: "zim-business-planning",
+    title: "Business Planning in Zimbabwe",
+    excerpt: "How to build a business plan that works in Zimbabwe's unique economy — practical templates and local market insights.",
+    icon: <FileText className="h-6 w-6" />,
+    readTime: "12 min read",
+  },
+];
+
+const tools = [
+  {
+    slug: "vat-calculator",
+    title: "VAT Calculator Zimbabwe",
+    excerpt: "Calculate VAT-inclusive and VAT-exclusive prices for any transaction using the current ZIMRA 15% rate.",
+    icon: <Calculator className="h-6 w-6" />,
+  },
+  {
+    slug: "business-name-generator",
+    title: "Business Name Generator",
+    excerpt: "Get Shona, English, and bilingual business name suggestions tailored to your industry and values.",
+    icon: <Wrench className="h-6 w-6" />,
+  },
+];
 
 export default function ResourcesPage() {
-  const guides = [
-    {
-      slug: "register-business-zimbabwe",
-      title: "How to Register a Business in Zimbabwe (2026)",
-      excerpt: "Step-by-step guide to PACRA/ZIMRA registration, from company name search to tax clearance. Everything you need to know as a Zimbabwean SME.",
-      icon: <FileText className="h-6 w-6" />,
-      tags: ["Registration", "Compliance", "PACRA", "ZIMRA"],
-      readTime: "15 min read",
-    },
-    {
-      slug: "zimra-tax-guide-smes",
-      title: "ZIMRA Tax Guide for SMEs — QPD, VAT & Paye Explained",
-      excerpt: "A plain-English breakdown of Zimbabwe's tax obligations: when to register, what to pay, how to file, and how Radbit automates it.",
-      icon: <BookOpen className="h-6 w-6" />,
-      tags: ["Tax", "ZIMRA", "Accounting"],
-      readTime: "18 min read",
-    },
-    {
-      slug: "sadc-export-guide",
-      title: "SADC Export Guide for Zimbabwean SMEs",
-      excerpt: "How to tap into regional markets. Covers SADC trade protocols, customs documentation, and the most accessible export opportunities.",
-      icon: <Lightbulb className="h-6 w-6" />,
-      tags: ["Export", "SADC", "Trade"],
-      readTime: "14 min read",
-    },
-    {
-      slug: "ecocash-business-vs-personal",
-      title: "EcoCash Business vs Personal — Which Should You Use?",
-      excerpt: "A practical comparison of EcoCash merchant accounts versus personal wallets for SME transactions, including limits and fees.",
-      icon: <Wrench className="h-6 w-6" />,
-      tags: ["Payments", "EcoCash", "Mobile Money"],
-      readTime: "8 min read",
-    },
-    {
-      slug: "load-shedding-solutions-smes",
-      title: "Load-Shedding Solutions That Actually Work for SMEs",
-      excerpt: "Solar, inverters, generators — a cost-benefit breakdown so you can choose the right backup power solution for your business.",
-      icon: <Sparkles className="h-6 w-6" />,
-      tags: ["Infrastructure", "Energy", "Cost"],
-      readTime: "12 min read",
-    },
-  ];
-
-  const tools = [
-    {
-      slug: "vat-calculator",
-      title: "VAT Calculator Zimbabwe",
-      excerpt: "Calculate VAT-inclusive and VAT-exclusive prices for any transaction using the current ZIMRA 15% rate.",
-      icon: <Calculator className="h-6 w-6" />,
-    },
-    {
-      slug: "business-name-generator",
-      title: "Business Name Generator",
-      excerpt: "Get Shona, English, and bilingual business name suggestions tailored to your industry and values.",
-      icon: <Wrench className="h-6 w-6" />,
-    },
-  ];
-
   return (
     <div className="container py-16 max-w-5xl">
       {/* Breadcrumb */}

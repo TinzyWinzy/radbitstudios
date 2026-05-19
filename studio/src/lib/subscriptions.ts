@@ -1,6 +1,9 @@
 
+export const PLAN_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'] as const;
+export type PlanTier = typeof PLAN_ORDER[number];
+
 export interface SubscriptionPlan {
-    name: 'Free' | 'Growth' | 'Pro';
+    name: PlanTier;
     price: number;
     description: string;
     features: string[];
@@ -13,7 +16,7 @@ export interface SubscriptionPlan {
       templateGeneration: { remaining: number; total: number };
     };
   }
-  
+
   export const subscriptionPlans: SubscriptionPlan[] = [
     {
       name: 'Free',
@@ -43,14 +46,15 @@ export interface SubscriptionPlan {
         '50 Template Generations',
         '100 AI Mentor Messages',
         '25 Logo Generations',
-        'Unlimited Insights & Curation'
+        'Unlimited Insights & Curation',
+        'Direct Messaging'
       ],
       credits: {
         assessmentSummary: { remaining: 10, total: 10 },
         templateGeneration: { remaining: 50, total: 50 },
         mentorChat: { remaining: 100, total: 100 },
         logoGeneration: { remaining: 25, total: 25 },
-        dashboardInsights: { remaining: 999, total: 999 }, // Using a high number for "unlimited"
+        dashboardInsights: { remaining: 999, total: 999 },
         tendersCuration: { remaining: 999, total: 999 },
       },
     },
@@ -63,13 +67,35 @@ export interface SubscriptionPlan {
         'Unlimited Template Generations',
         'Unlimited AI Mentor Messages',
         '100 Logo Generations',
-        'Priority Support'
+        'Priority Support',
+        'Community Post Analytics'
       ],
       credits: {
         assessmentSummary: { remaining: 999, total: 999 },
         templateGeneration: { remaining: 999, total: 999 },
         mentorChat: { remaining: 999, total: 999 },
         logoGeneration: { remaining: 100, total: 100 },
+        dashboardInsights: { remaining: 9999, total: 9999 },
+        tendersCuration: { remaining: 9999, total: 9999 },
+      },
+    },
+    {
+      name: 'Enterprise',
+      price: 0,
+      description: 'Custom enterprise solutions for large organizations.',
+      features: [
+        'Everything in Pro',
+        'White-label Reports',
+        'API Access',
+        'Custom Integrations',
+        'Dedicated Account Manager',
+        'SLA Guarantee'
+      ],
+      credits: {
+        assessmentSummary: { remaining: 9999, total: 9999 },
+        templateGeneration: { remaining: 9999, total: 9999 },
+        mentorChat: { remaining: 9999, total: 9999 },
+        logoGeneration: { remaining: 9999, total: 9999 },
         dashboardInsights: { remaining: 9999, total: 9999 },
         tendersCuration: { remaining: 9999, total: 9999 },
       },

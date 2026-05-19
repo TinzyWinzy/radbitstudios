@@ -15,10 +15,12 @@ import {
 import { auth, db } from '@/lib/firebase/firebase';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { subscriptionPlans } from '@/lib/subscriptions';
+import type { UserRole } from '@/services/permissions';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  role: UserRole | null;
   signUp: (email: string, pass: string) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
   signInWithGoogle: () => Promise<any>;
@@ -29,6 +31,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
+  role: null,
   signUp: async () => {},
   signIn: async () => {},
   signInWithGoogle: async () => {},
@@ -81,6 +84,7 @@ const createUserDocument = async (user: User) => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<UserRole | null>(null);
   
   const fetchAndSetUser = useCallback(async (authUser: User) => {
     await createUserDocument(authUser);
@@ -91,6 +95,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUser(authUser);
     }
+    const idTokenResult = await authUser.getIdTokenResult();
+    const customRole = idTokenResult.claims['role'] as UserRole | undefined;
+    setRole(customRole ?? 'sme_owner');
   }, []);
 
   useEffect(() => {
@@ -144,6 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     user,
     loading,
+    role,
     signUp,
     signIn,
     signInWithGoogle,

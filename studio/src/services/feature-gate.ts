@@ -1,18 +1,17 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, runTransaction } from 'firebase/firestore';
-import { subscriptionPlans } from '@/lib/subscriptions';
+import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
 
 export type PlanName = 'Free' | 'Growth' | 'Pro' | 'Enterprise';
 export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'dashboardInsights' | 'tendersCuration' | 'mentorChat' | 'templateGeneration' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance';
 
-const TIER_LEVEL: Record<PlanName, number> = {
-  Free: 0,
-  Growth: 1,
-  Pro: 2,
-  Enterprise: 3,
-};
+export function getTierLevel(plan: PlanName): number {
+  return PLAN_ORDER.indexOf(plan);
+}
 
-const PLAN_INDEX: Record<PlanName, number> = { Free: 0, Growth: 1, Pro: 2, Enterprise: 3 };
+export function isTierAtLeast(userPlan: PlanName, requiredPlan: PlanName): boolean {
+  return PLAN_ORDER.indexOf(userPlan) >= PLAN_ORDER.indexOf(requiredPlan);
+}
 
 interface CreditGate {
   type: 'credit';
@@ -80,14 +79,14 @@ export function getUpgradePath(currentPlan: PlanName, feature: FeatureName): Upg
   return { ...UPGRADE_PATHS[currentPlan], feature: feature.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()) };
 }
 
-async function checkFeatureAccess(userId: string, feature: FeatureName): Promise<AccessResult> {
+export async function checkFeatureAccess(userId: string, feature: FeatureName): Promise<AccessResult> {
   const { plan, usage } = await getUserPlanData(userId);
   const gate = FEATURE_GATES[feature];
 
   if (!gate) return { allowed: true, message: '' };
 
   if (gate.type === 'tier') {
-    if (TIER_LEVEL[plan] < TIER_LEVEL[gate.minTier]) {
+    if (!isTierAtLeast(plan, gate.minTier)) {
       return {
         allowed: false,
         reason: 'insufficient_tier',
@@ -133,9 +132,9 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
       const usage = userData.usage?.[gate.creditKey];
 
       if (!usage || usage.remaining === undefined) {
-        const planIndex = PLAN_INDEX[plan];
+        const planIndex = PLAN_ORDER.indexOf(plan);
         const planCredits = planIndex < subscriptionPlans.length ? subscriptionPlans[planIndex]?.credits : null;
-        const total = (planCredits as any)?.[gate.creditKey]?.total ?? 999;
+        const total = planCredits?.[gate.creditKey as keyof typeof planCredits]?.total ?? 999;
         transaction.update(userDocRef, {
           [`usage.${gate.creditKey}.remaining`]: total - 1,
           [`usage.${gate.creditKey}.total`]: total,

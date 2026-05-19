@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Group } from "./r3f-group";
 import * as THREE from "three";
 
 interface NebulaCloudsProps {
@@ -113,7 +114,7 @@ export function NebulaClouds({ count = 4 }: NebulaCloudsProps) {
   });
 
   return (
-    <group ref={groupRef}>
+    <Group ref={groupRef}>
       {clouds.map((cloud, i) => (
         <mesh
           key={i}
@@ -123,6 +124,6 @@ export function NebulaClouds({ count = 4 }: NebulaCloudsProps) {
           rotation={cloud.rotation}
         />
       ))}
-    </group>
+    </Group>
   );
 }

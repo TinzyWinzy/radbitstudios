@@ -2,6 +2,7 @@
 
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { Group } from "./r3f-group";
 import * as THREE from "three";
 
 interface SouthernConstellationsProps {
@@ -126,6 +127,7 @@ export function SouthernConstellations({
         yBase,
       };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallRadiusX, wallRadiusZ, wallHeight]);
 
   useFrame((state) => {
@@ -143,9 +145,9 @@ export function SouthernConstellations({
   });
 
   return (
-    <group ref={groupRef}>
+    <Group ref={groupRef}>
       {constellationMeshes.map((data, i) => (
-        <group key={`constellation-${i}`}>
+        <Group key={`constellation-${i}`}>
           <points>
             <bufferGeometry>
               <bufferAttribute
@@ -181,8 +183,8 @@ export function SouthernConstellations({
               blending={THREE.AdditiveBlending}
             />
           </lineSegments>
-        </group>
+        </Group>
       ))}
-    </group>
+    </Group>
   );
 }

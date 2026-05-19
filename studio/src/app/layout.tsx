@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { getLocale } from 'next-intl/server';
@@ -69,6 +69,9 @@ export const metadata: Metadata = {
   },
   applicationName: "Radbit SME Hub",
   category: "business",
+};
+
+export const viewport: Viewport = {
   themeColor: '#B8860B',
 };
 
@@ -90,11 +93,11 @@ export default async function RootLayout({
           WebSite schema  — Google Site Search rich result
           Organization   — knowledge-panel / rich-cards coverage
         */}
-        <script type="application/ld+json"
+        <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema(FAQ_DATA)) }} />
-        <script type="application/ld+json"
+        <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }} />
-        <script type="application/ld+json"
+        <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
       </head>
       <body className={`${inter.variable} ${syne.variable} font-body antialiased`}>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HelpCircle, ChevronDown, ArrowRight } from "lucide-react";
-import { faqPageSchema, FAQ_DATA } from "@/lib/seo";
+import { faqPageSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "FAQ — Radbit SME Hub",
@@ -79,25 +79,9 @@ const faqItems: { category: string; questions: QnA_t[] }[] = [
 ];
 
 export default function FAQPage() {
-  const SITE_URL = (process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    name: "Radbit SME Hub — FAQ",
-    description: "Frequently asked questions about Radbit SME Hub",
-    inLanguage: "en",
-    url: `${SITE_URL}/resources/faq`,
-    mainEntity: faqItems.flatMap(cat =>
-      cat.questions.map(item => ({
-        "@type": "Question",
-        name: item.q,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: item.a,
-        },
-      }))
-    ),
-  };
+  const jsonLd = faqPageSchema(faqItems.flatMap(cat =>
+    cat.questions.map(item => ({ question: item.q, answer: item.a }))
+  ));
 
   return (
     <div className="container max-w-3xl py-16">

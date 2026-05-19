@@ -10,6 +10,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/toolkit": "AI Toolkit — Radbit",
   "/budget-calculator": "Budget Calculator — Radbit",
   "/tenders": "Tenders — Radbit",
+  "/news": "Business News — Radbit",
   "/community": "Community — Radbit",
   "/messages": "Messages — Radbit",
   "/mentor": "AI Mentor — Radbit",
@@ -42,6 +43,7 @@ import {
   Wand2,
   PenSquare,
   BookOpen,
+  Newspaper,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -52,7 +54,7 @@ import { motion } from 'framer-motion';
 import { UserNav } from "@/components/user-nav";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-    const { user, loading } = useContext(AuthContext);
+    const { user, loading, role } = useContext(AuthContext);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -69,18 +71,28 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       }
     }, [pathname]);
 
-  const menuItems = [
-    { href: "/dashboard", label: "Dashboard", icon: <Home /> },
-    { href: "/assessment", label: "Assessment", icon: <FileText /> },
-    { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 /> },
-    { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator /> },
-    { href: "/tenders", label: "Tenders & News", icon: <Briefcase /> },
-    { href: "/community", label: "Community", icon: <Users /> },
-    { href: "/messages", label: "Messages", icon: <Send /> },
-    { href: "/mentor", label: "AI Mentor", icon: <MessageCircle /> },
-    { href: "/resources", label: "Resources", icon: <BookOpen /> },
-    { href: "/dashboard/blog", label: "Blog", icon: <PenSquare /> },
-  ];
+    const userPlan = (user as any)?.plan || 'Free';
+    const TIER_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'] as const;
+    const userTierIndex = TIER_ORDER.indexOf(userPlan as any);
+
+    const canViewMessages = role !== 'sme_staff';
+    const canViewBlog = role === 'admin';
+    const minTierForMessages = TIER_ORDER.indexOf('Growth');
+    const showMessages = canViewMessages && userTierIndex >= minTierForMessages;
+
+    const menuItems = [
+      { href: "/dashboard", label: "Dashboard", icon: <Home /> },
+      { href: "/assessment", label: "Assessment", icon: <FileText /> },
+      { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 /> },
+      { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator /> },
+      { href: "/news", label: "Business News", icon: <Newspaper /> },
+      { href: "/tenders", label: "Tenders", icon: <Briefcase /> },
+      { href: "/community", label: "Community", icon: <Users /> },
+      ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send /> }] : []),
+      { href: "/mentor", label: "AI Mentor", icon: <MessageCircle /> },
+      { href: "/resources", label: "Resources", icon: <BookOpen /> },
+      ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog", icon: <PenSquare /> }] : []),
+    ];
 
   if (loading || !user) {
     return (

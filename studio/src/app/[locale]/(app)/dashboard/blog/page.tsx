@@ -1,33 +1,55 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useRouter } from "next/navigation";
 import { blogService, type BlogPost } from "@/services/blog.service";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AuthContext } from "@/contexts/auth-context";
 
 export default function AdminBlogPage() {
+  const { role } = useContext(AuthContext);
+  const router = useRouter();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const load = async () => {
-    setLoading(true);
-    const all = await blogService.listAll();
-    setPosts(all);
-    setLoading(false);
-  };
+  useEffect(() => {
+    if (role !== 'admin') {
+      router.push('/dashboard');
+      return;
+    }
+    const load = async () => {
+      setLoading(true);
+      const all = await blogService.listAll();
+      setPosts(all);
+      setLoading(false);
+    };
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role]);
 
-  useEffect(() => { load(); }, []);
+  if (role === null) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (role !== 'admin') return null;
 
   const togglePublish = async (id: string, current: boolean) => {
     await blogService.update(id, { published: !current });
-    load();
+    const all = await blogService.listAll();
+    setPosts(all);
   };
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Delete "${title}"?`)) return;
     await blogService.delete(id);
-    load();
+    const all = await blogService.listAll();
+    setPosts(all);
   };
 
   return (

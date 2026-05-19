@@ -32,18 +32,25 @@ const protectedPaths = [
   '/settings',
 ];
 
-async function verifyAuth(request: NextRequest): Promise<boolean> {
+const adminOnlyPaths = [
+  '/dashboard/blog',
+];
+
+async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolean; role: string | null }> {
   const sessionCookie = request.cookies.get('__session')?.value;
-  if (!sessionCookie) return false;
+  if (!sessionCookie) return { authenticated: false, role: null };
 
   try {
     const { payload } = await jwtVerify(sessionCookie, getJWKS(), {
       issuer: `https://securetoken.google.com/${PROJECT_ID}`,
       audience: PROJECT_ID,
     });
-    return !!payload;
+    return {
+      authenticated: true,
+      role: (payload['role'] as string) || 'sme_owner',
+    };
   } catch {
-    return false;
+    return { authenticated: false, role: null };
   }
 }
 
@@ -51,13 +58,17 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
+  const isAdminOnly = adminOnlyPaths.some(path => pathname.startsWith(path));
 
-  if (isProtected) {
-    const isAuthenticated = await verifyAuth(request);
-    if (!isAuthenticated) {
+  if (isProtected || isAdminOnly) {
+    const { authenticated, role } = await verifyAuth(request);
+    if (!authenticated) {
       const signInUrl = new URL('/sign-in', request.url);
       signInUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(signInUrl);
+    }
+    if (isAdminOnly && role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
 

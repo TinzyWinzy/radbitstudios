@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, BadgeDollarSign, Receipt, FileText, Calculator, BookOpen } from "lucide-react";
-import { articleSchema, breadcrumbSchema } from "@/lib/seo";
 
 const F =
   (process.env.FRONTEND_URL || "https://radbitsmehub.co.zw").replace(/\/$/, "");
@@ -48,21 +47,6 @@ const tableRows = [
 ];
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [article, crumbs] = await Promise.all([
-    Promise.resolve(articleSchema({
-      title: "ZIMRA Tax Guide for SMEs (2026)",
-      description: "Plain-English ZIMRA tax guide covering QPD, VAT, PAYE, and corporate income tax for Zimbabwean small business owners.",
-      url: "/resources/guides/zimra-tax-guide-smes",
-      authorName: "Radbit SME Hub",
-      publishedTime: "2026-01-15T00:00:00.000Z",
-    })),
-    Promise.resolve(breadcrumbSchema([
-      { name: "Home", url: "/" },
-      { name: "Resources", url: "/resources" },
-      { name: "ZIMRA Tax Guide", url: "/resources/guides/zimra-tax-guide-smes" },
-    ])),
-  ]);
-
   return {
     title: "ZIMRA Tax Guide for SMEs (2026) — Radbit SME Hub",
     description:

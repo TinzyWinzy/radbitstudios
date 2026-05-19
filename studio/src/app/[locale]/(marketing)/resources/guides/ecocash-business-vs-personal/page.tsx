@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, ArrowRight, Wallet, Shield, Percent } from "lucide-react";
+import { ArrowRight, Wallet } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "EcoCash Business vs Personal: Which Should You Use for Payments? (2026)",

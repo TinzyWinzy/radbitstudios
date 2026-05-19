@@ -20,6 +20,9 @@ import {
   RefreshCw,
   Loader2,
   Wand2,
+  Newspaper,
+  TrendingUp,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts"
@@ -338,8 +341,119 @@ export default function DashboardPage() {
         <UsageSummary user={user} />
       </div>
 
+      <div id="dashboard-news-insights" className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <NewsInsightsCard user={user} />
+      </div>
+
       <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
     </div>
+  );
+}
+
+function NewsInsightsCard({ user }: { user: any }) {
+  const [brief, setBrief] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const handleGenerate = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const { generatePersonalizedBrief } = await import('@/ai/flows/generate-personalized-brief');
+      const result = await generatePersonalizedBrief({
+        userId: user.uid,
+        businessName: user.businessName,
+        industry: user.industry,
+        businessDescription: user.businessDescription,
+        focusArea: 'both',
+      });
+      setBrief(result);
+    } catch (error) {
+      console.error('Error generating brief:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card className="lg:col-span-2 border-primary/20">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <CardTitle className="text-base">Industry Intelligence</CardTitle>
+          </div>
+          {!brief ? (
+            <Button size="sm" variant="outline" onClick={handleGenerate} disabled={loading} className="gap-1.5">
+              {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Newspaper className="h-3.5 w-3.5" />}
+              {loading ? 'Generating...' : 'Generate Brief'}
+            </Button>
+          ) : (
+            <Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)}>
+              {expanded ? 'Show less' : 'Show more'}
+            </Button>
+          )}
+        </div>
+        <CardDescription>
+          Live news and tender opportunities relevant to your business.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {!brief ? (
+          <div className="text-center py-6 text-muted-foreground">
+            <Newspaper className="h-8 w-8 mx-auto mb-2 opacity-30" />
+            <p className="text-sm">Click &quot;Generate Brief&quot; to get AI-curated news and tender recommendations for your industry.</p>
+          </div>
+        ) : (
+          <>
+            {brief.summary && (
+              <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">{brief.summary}</p>
+            )}
+            {brief.topStories?.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold flex items-center gap-1.5">
+                  <Newspaper className="h-4 w-4 text-primary" />
+                  Top Stories
+                </h4>
+                {(expanded ? brief.topStories : brief.topStories.slice(0, 2)).map((story: any, i: number) => (
+                  <div key={i} className="p-3 bg-card rounded-lg border border-border/50">
+                    <p className="text-sm font-medium">{story.headline}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{story.whyItMatters}</p>
+                    {story.actionStep && (
+                      <p className="text-xs text-primary mt-1 font-medium">Action: {story.actionStep}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {brief.relevantTenders?.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold flex items-center gap-1.5">
+                  <Briefcase className="h-4 w-4 text-primary" />
+                  Relevant Tenders
+                </h4>
+                <div className="space-y-1.5">
+                  {(expanded ? brief.relevantTenders : brief.relevantTenders.slice(0, 3)).map((t: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-border/50 text-sm">
+                      <div>
+                        <p className="font-medium text-sm">{t.title}</p>
+                        <p className="text-xs text-muted-foreground">Deadline: {t.deadline}</p>
+                      </div>
+                      <a href={t.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary font-medium flex items-center gap-1 hover:underline shrink-0 ml-2">
+                        Apply <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+                <Button asChild variant="link" className="text-xs px-0 text-primary">
+                  <Link href="/tenders">View all tenders <ArrowRight className="h-3 w-3 ml-1" /></Link>
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

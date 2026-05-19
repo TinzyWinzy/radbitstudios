@@ -1,298 +1,319 @@
-
 'use client';
 
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  Card, CardContent, CardHeader,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Bookmark, Zap, ExternalLink, Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { curateTendersNews, CurateTendersNewsOutput } from '@/ai/flows/curate-tenders-news';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Briefcase, Search, ExternalLink, Calendar, DollarSign, Building2,
+  Clock, AlertCircle, CheckCircle, Loader2, RefreshCw,
+  Bookmark, Zap
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
-import { db } from '@/lib/firebase/firebase';
-import { collection, doc, setDoc, deleteDoc, getDocs, serverTimestamp, query } from 'firebase/firestore';
-import { checkAndDecrementUsage } from '@/services/usage-service';
-import { UpgradeModal } from "@/components/upgrade-modal";
-import type { UpgradeInfo } from "@/services/feature-gate";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { getLatestTenders } from '@/services/tender-scraper';
+import { format, differenceInDays } from 'date-fns';
 
+type Tender = {
+  id: string;
+  title: string;
+  description: string;
+  organization: string;
+  sourceUrl: string;
+  sourceName: string;
+  publishedAt: Date;
+  closingDate: Date | null;
+  value: string | null;
+  category: string;
+  sector: string;
+  region: string;
+  requirements: string[];
+  status: 'open' | 'closing_soon' | 'closed' | 'awarded';
+};
 
-type Article = CurateTendersNewsOutput['articles'][0];
-type ArticleWithBookmark = Article & { bookmarked: boolean; bookmarkId?: string };
+const STATUS_CONFIG = {
+  open: { label: 'Open', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', icon: CheckCircle },
+  closing_soon: { label: 'Closing Soon', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', icon: Clock },
+  closed: { label: 'Closed', color: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400', icon: AlertCircle },
+  awarded: { label: 'Awarded', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', icon: Building2 },
+};
 
-function ArticleItem({ article, onBookmarkToggle, isBookmarkedView = false }: { article: ArticleWithBookmark, onBookmarkToggle: () => void, isBookmarkedView?: boolean }) {
+function TenderCard({ tender, onBookmark }: { tender: Tender & { bookmarked?: boolean }; onBookmark?: () => void }) {
+  const statusCfg = STATUS_CONFIG[tender.status] || STATUS_CONFIG.open;
+  const StatusIcon = statusCfg.icon;
+  const daysLeft = tender.closingDate ? differenceInDays(new Date(tender.closingDate), new Date()) : null;
+
   return (
-    <div className="flex justify-between items-start">
-      <div className="space-y-1.5 flex-1">
-        <p className="font-semibold text-lg">{article.title}</p>
-        <p className="text-sm text-muted-foreground">{article.summary}</p>
-        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
-          <Badge variant="secondary">{article.category}</Badge>
-          {article.expiryDate && (
-            <span className="text-destructive">Expires: {article.expiryDate}</span>
+    <div className="group p-5 rounded-xl border border-border/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <Badge className={cn('text-xs font-medium', statusCfg.color)}>
+              <StatusIcon className="h-3 w-3 mr-1" />
+              {statusCfg.label}
+            </Badge>
+            <Badge variant="outline" className="text-xs">
+              {tender.sector}
+            </Badge>
+            {tender.value && (
+              <Badge variant="outline" className="text-xs text-green-700 dark:text-green-400">
+                <DollarSign className="h-3 w-3 mr-0.5" />
+                {tender.value}
+              </Badge>
+            )}
+            {daysLeft !== null && daysLeft >= 0 && (
+              <Badge variant="outline" className={cn('text-xs ml-auto', daysLeft <= 7 ? 'text-red-600 border-red-200' : 'text-muted-foreground')}>
+                <Calendar className="h-3 w-3 mr-1" />
+                {daysLeft === 0 ? 'Closes today' : `${daysLeft}d left`}
+              </Badge>
+            )}
+          </div>
+
+          <h3 className="font-headline font-semibold text-base leading-snug mb-1.5 group-hover:text-primary transition-colors">
+            <a href={tender.sourceUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              {tender.title}
+            </a>
+          </h3>
+
+          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2.5">
+            <span className="flex items-center gap-1">
+              <Building2 className="h-3 w-3" />
+              {tender.organization}
+            </span>
+            {tender.closingDate && (
+              <span className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                Closes {format(new Date(tender.closingDate), 'dd MMM yyyy')}
+              </span>
+            )}
+          </div>
+
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+            {tender.description}
+          </p>
+
+          {tender.requirements.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {tender.requirements.slice(0, 3).map((req, i) => (
+                <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                  {req}
+                </span>
+              ))}
+            </div>
           )}
-          <a href={article.source} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary">
-            Source <ExternalLink className="h-3 w-3" />
-          </a>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground">{tender.sourceName}</span>
+            <a
+              href={tender.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-xs text-primary hover:underline font-medium"
+            >
+              View & Apply <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-2 ml-4">
-        <Button variant="ghost" size="icon" onClick={onBookmarkToggle}>
-          <Bookmark className={cn("h-5 w-5", (article.bookmarked || isBookmarkedView) && "fill-primary text-primary")} />
-          <span className="sr-only">Bookmark</span>
-        </Button>
+
+        {onBookmark && (
+          <Button variant="ghost" size="icon" onClick={onBookmark} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Bookmark className={cn('h-4 w-4', tender.bookmarked && 'fill-primary text-primary')} />
+            <span className="sr-only">Bookmark</span>
+          </Button>
+        )}
       </div>
     </div>
   );
 }
 
 export default function TendersPage() {
-  const { user, refreshUserData } = useContext(AuthContext);
-  const { toast } = useToast();
-  
-  const [contentToProcess, setContentToProcess] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [curatedArticles, setCuratedArticles] = useState<ArticleWithBookmark[]>([]);
-  const [bookmarkedArticles, setBookmarkedArticles] = useState<Map<string, {id: string, article: Article}>>(new Map());
-  const [isSyncingBookmarks, setIsSyncingBookmarks] = useState(true);
-  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
+  const { user } = useContext(AuthContext);
+  const [tenders, setTenders] = useState<Tender[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const fetchBookmarks = useCallback(async () => {
-    if (!user) {
-      setIsSyncingBookmarks(false);
-      return;
-    };
-    setIsSyncingBookmarks(true);
-    try {
-      const bookmarksColRef = collection(db, 'users', user.uid, 'bookmarks');
-      const q = query(bookmarksColRef);
-      const querySnapshot = await getDocs(q);
-      const bookmarks = new Map<string, {id: string, article: Article}>();
-      querySnapshot.forEach(doc => {
-        const articleData = doc.data() as Article;
-        // Use source as the key if available, otherwise title
-        const key = articleData.source || articleData.title;
-        bookmarks.set(key, {id: doc.id, article: articleData});
-      });
-      setBookmarkedArticles(bookmarks);
-    } catch (error) {
-      console.error("Error fetching bookmarks:", error);
-      toast({ title: "Error", description: "Could not fetch your saved bookmarks.", variant: "destructive" });
-    } finally {
-      setIsSyncingBookmarks(false);
-    }
-  }, [user, toast]);
-  
-  const handleCurate = useCallback(async () => {
-    if (!contentToProcess.trim() || !user) {
-      toast({ title: "Missing Content", description: "Please paste the content you want to curate.", variant: "destructive"});
-      return;
-    }
-
+  const loadTenders = async (showRefresh = false) => {
+    if (showRefresh) setIsRefreshing(true);
     setIsLoading(true);
-    setCuratedArticles([]);
-
     try {
-      const usageResult = await checkAndDecrementUsage(user.uid, 'tendersCuration');
-      if (!usageResult.success) {
-        if (usageResult.upgrade) {
-          setUpgradeInfo(usageResult.upgrade);
-          setIsLoading(false);
-          return;
-        }
-        toast({ title: "Usage Limit Reached", description: usageResult.message, variant: 'destructive'});
-        setIsLoading(false);
-        return;
-      }
-      await refreshUserData();
-      
-      const response = await curateTendersNews({ 
-          content: contentToProcess,
-          userQuery: `My business is in the ${(user as any).industry || 'general business'} sector.`,
-       });
-      let articles: Article[] = (response && response.articles) ? response.articles : [];
-      
-      const articlesWithBookmarks = articles.map(article => {
-        const key = article.source || article.title;
-        const bookmarkInfo = bookmarkedArticles.get(key);
-        return { 
-          ...article, 
-          bookmarked: !!bookmarkInfo,
-          bookmarkId: bookmarkInfo?.id
-        };
-      });
-      setCuratedArticles(articlesWithBookmarks);
-
+      const data = await getLatestTenders({ limit: 100 });
+      setTenders(data);
     } catch (error) {
-      console.error('Error curating content:', error);
-      toast({
-        title: 'Curation Failed',
-        description: 'An error occurred while processing the content. Please try again.',
-        variant: 'destructive',
-      });
+      console.error('Error loading tenders:', error);
     } finally {
       setIsLoading(false);
-    }
-  }, [contentToProcess, toast, user, bookmarkedArticles, refreshUserData]);
-
-  useEffect(() => {
-    if(user) {
-        fetchBookmarks();
-    } else {
-        setIsSyncingBookmarks(false);
-    }
-  }, [user, fetchBookmarks]);
-  
-  const toggleBookmark = async (article: ArticleWithBookmark) => {
-    if (!user) {
-        toast({ title: "Authentication Error", description: "You must be logged in to bookmark articles.", variant: "destructive"});
-        return;
-    }
-
-    const key = article.source || article.title;
-    const isBookmarked = bookmarkedArticles.has(key);
-
-    try {
-      if (!isBookmarked) {
-        const bookmarkDocRef = doc(collection(db, 'users', user.uid, 'bookmarks'));
-        const { bookmarked, bookmarkId, ...articleToSave } = article;
-        await setDoc(bookmarkDocRef, { ...articleToSave, savedAt: serverTimestamp() });
-        toast({ title: "Bookmarked!", description: `"${article.title}" has been saved.`});
-      } else {
-        const bookmarkInfo = bookmarkedArticles.get(key);
-        if (bookmarkInfo) {
-            const bookmarkDocRef = doc(db, 'users', user.uid, 'bookmarks', bookmarkInfo.id);
-            await deleteDoc(bookmarkDocRef);
-            toast({ title: "Bookmark Removed", description: `"${article.title}" has been removed from your saved list.`});
-        }
-      }
-      
-      await fetchBookmarks();
-
-    } catch(e) {
-      console.error("Error toggling bookmark:", e);
-      toast({ title: "Error", description: "Could not update your bookmark. Please try again.", variant: "destructive" });
+      if (showRefresh) setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
-    const articlesWithBookmarks = curatedArticles.map(article => {
-        const key = article.source || article.title;
-        const bookmarkInfo = bookmarkedArticles.get(key);
-        return { 
-          ...article, 
-          bookmarked: !!bookmarkInfo,
-          bookmarkId: bookmarkInfo?.id
-        };
-    });
-    setCuratedArticles(articlesWithBookmarks);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookmarkedArticles]);
+    loadTenders();
+  }, []);
 
-  const bookmarkedArray: ArticleWithBookmark[] = Array.from(bookmarkedArticles.values()).map(b => ({...b.article, bookmarked: true, bookmarkId: b.id}));
-  const remainingGenerations = (user as any)?.usage?.tendersCuration?.remaining ?? 0;
+  const handleRefresh = async () => {
+    try {
+      await fetch('/api/scraper/tenders', { method: 'POST' });
+    } catch { /* fire and forget */ }
+    await loadTenders(true);
+  };
+
+  const filteredTenders = tenders.filter(t => {
+    if (activeTab !== 'all' && t.status !== activeTab) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return (
+        t.title.toLowerCase().includes(q) ||
+        t.sector.toLowerCase().includes(q) ||
+        t.organization.toLowerCase().includes(q) ||
+        t.description.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
+
+  const openCount = tenders.filter(t => t.status === 'open').length;
+  const closingCount = tenders.filter(t => t.status === 'closing_soon').length;
+  const hasProfile = !!(user as any)?.industry;
 
   return (
-    <div className="grid gap-8 md:grid-cols-3">
-      <div className="md:col-span-1">
-        <Card>
-          <CardHeader>
-            <CardTitle>Curate Content</CardTitle>
-            <CardDescription>
-              Paste article text below and the AI will analyze and filter it based on your business profile.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="content">Content to Curate</Label>
-              <Textarea
-                id="content"
-                placeholder="Paste the full text of a news article or tender document here..."
-                className="h-36"
-                value={contentToProcess}
-                onChange={(e) => setContentToProcess(e.target.value)}
-                disabled={isLoading}
-              />
-               <p className="text-xs text-muted-foreground">Curation uses left: {remainingGenerations}</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <Briefcase className="h-7 w-7 text-primary" />
+            Tenders & Opportunities
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Active government and corporate tender opportunities curated for Zimbabwean SMEs.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="gap-2"
+        >
+          {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+          {isRefreshing ? 'Refreshing...' : 'Refresh Tenders'}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/20 dark:border-green-900">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+              <CheckCircle className="size-5 text-green-600 dark:text-green-400" />
             </div>
-            <Button className="w-full" onClick={handleCurate} disabled={isLoading || remainingGenerations <= 0}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <Zap className="mr-2 h-4 w-4" />}
-              {isLoading ? 'Curating...' : 'Curate with AI'}
-            </Button>
+            <div>
+              <p className="text-2xl font-bold">{openCount}</p>
+              <p className="text-xs text-muted-foreground">Open Tenders</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-yellow-200 bg-yellow-50/50 dark:bg-yellow-950/20 dark:border-yellow-900">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-900">
+              <Clock className="size-5 text-yellow-600 dark:text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{closingCount}</p>
+              <p className="text-xs text-muted-foreground">Closing Soon</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-primary/20">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+              <Zap className="size-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{tenders.filter(t => t.status !== 'closed').length}</p>
+              <p className="text-xs text-muted-foreground">Total Active</p>
+            </div>
           </CardContent>
         </Card>
       </div>
-      <div className="md:col-span-2">
-        <Card>
-            <Tabs defaultValue="curated">
-                <CardHeader>
-                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="curated">Curated</TabsTrigger>
-                        <TabsTrigger value="bookmarks">My Bookmarks</TabsTrigger>
-                    </TabsList>
-                </CardHeader>
-                <CardContent className="min-h-[400px]">
-                    <TabsContent value="curated">
-                        <div className="space-y-4">
-                        {isLoading ? (
-                            <div className="flex items-center justify-center h-40">
-                            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                            </div>
-                        ) : curatedArticles.length > 0 ? (
-                            curatedArticles.map((article, index) => (
-                            <div key={index}>
-                                <ArticleItem article={article} onBookmarkToggle={() => toggleBookmark(article)} />
-                                {index < curatedArticles.length - 1 && <Separator className="mt-4" />}
-                            </div>
-                            ))
-                        ) : (
-                            <div className="flex items-center justify-center h-40">
-                                <p className="text-muted-foreground text-center">
-                                Paste content in the box and click &ldquo;Curate with AI&rdquo; to get started.
-                                </p>
-                            </div>
-                        )}
-                        </div>
-                    </TabsContent>
-                    <TabsContent value="bookmarks">
-                         <div className="space-y-4">
-                            {isSyncingBookmarks ? (
-                                <div className="flex items-center justify-center h-40">
-                                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                                </div>
-                            ) : bookmarkedArray.length > 0 ? (
-                                bookmarkedArray.map((article, index) => (
-                                    <div key={article.source || article.title}>
-                                        <ArticleItem article={article} onBookmarkToggle={() => toggleBookmark(article)} isBookmarkedView={true} />
-                                        {index < bookmarkedArray.length - 1 && <Separator className="mt-4" />}
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="flex items-center justify-center h-40">
-                                    <p className="text-muted-foreground text-center">
-                                        You haven&apos;t bookmarked any articles yet.
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </TabsContent>
-                </CardContent>
-            </Tabs>
-        </Card>
-      </div>
-      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
+
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by sector, organization, keyword..."
+                className="pl-8"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+            {!hasProfile && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
+                <AlertCircle className="h-4 w-4" />
+                <span>Complete your profile for personalized tender matching</span>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <div className="flex items-center gap-2 mb-4">
+              {['all', 'open', 'closing_soon'].map(status => (
+                <Button
+                  key={status}
+                  variant={activeTab === status ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setActiveTab(status)}
+                  className="text-xs capitalize"
+                >
+                  {status === 'all' ? 'All' : STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label || status}
+                </Button>
+              ))}
+              <span className="ml-auto text-xs text-muted-foreground">
+                {filteredTenders.length} tenders
+              </span>
+            </div>
+
+            <TabsContent value={activeTab} className="mt-0">
+              {isLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className="space-y-2 p-5 rounded-xl border">
+                      <Skeleton className="h-4 w-1/3" />
+                      <Skeleton className="h-5 w-2/3" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  ))}
+                </div>
+              ) : filteredTenders.length > 0 ? (
+                <div className="space-y-3">
+                  {filteredTenders.map(tender => (
+                    <TenderCard
+                      key={tender.id}
+                      tender={tender}
+                      onBookmark={() => {}}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 text-muted-foreground">
+                  <Briefcase className="h-8 w-8 mx-auto mb-3 opacity-30" />
+                  <p className="text-lg font-medium mb-1">No tenders found</p>
+                  <p className="text-sm">
+                    {searchQuery ? 'Try different search terms.' : 'Tenders will appear here once scraped.'}
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }
-
-    
