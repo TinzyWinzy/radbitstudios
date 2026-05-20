@@ -1,7 +1,8 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, runTransaction } from 'firebase/firestore';
 import { generateEmbedding, cosineSimilarity } from './embeddings';
-import { searchRelevantContext, buildRAGContext } from './rag';
+import { searchRelevantContext } from './rag';
+import { buildRAGContext } from './rag';
 
 export type TaskDifficulty = 'simple' | 'complex' | 'creative';
 

@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/firebase';
-import {
-  collection, query, where, getDocs, getDoc, writeBatch, doc,
-} from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 import * as jose from 'jose';
 
 const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
@@ -40,8 +37,7 @@ async function exportUserData(uid: string): Promise<Record<string, any>> {
 
   for (const col of USER_COLLECTIONS) {
     try {
-      const q = query(collection(db, col), where('userId', '==', uid));
-      const snap = await getDocs(q);
+      const snap = await adminDb.collection(col).where('userId', '==', uid).get();
       data[col] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch {
       data[col] = [];
@@ -49,8 +45,8 @@ async function exportUserData(uid: string): Promise<Record<string, any>> {
   }
 
   try {
-    const userDoc = await getDoc(doc(db, 'users', uid));
-    data.profile = userDoc.exists() ? { id: userDoc.id, ...userDoc.data() } : null;
+    const userDoc = await adminDb.doc(`users/${uid}`).get();
+    data.profile = userDoc.exists ? { id: userDoc.id, ...userDoc.data() } : null;
   } catch {
     data.profile = null;
   }
@@ -63,12 +59,11 @@ async function deleteUserData(uid: string): Promise<string[]> {
 
   for (const col of USER_COLLECTIONS) {
     try {
-      const q = query(collection(db, col), where('userId', '==', uid));
-      const snap = await getDocs(q);
+      const snap = await adminDb.collection(col).where('userId', '==', uid).get();
       if (snap.empty) continue;
 
-      const batch = writeBatch(db);
-      snap.forEach(docSnap => batch.delete(doc(db, col, docSnap.id)));
+      const batch = adminDb.batch();
+      snap.forEach(docSnap => batch.delete(adminDb.doc(`${col}/${docSnap.id}`)));
       await batch.commit();
       deleted.push(`${col}: ${snap.size} docs`);
     } catch (err) {
@@ -78,8 +73,8 @@ async function deleteUserData(uid: string): Promise<string[]> {
   }
 
   try {
-    const userDocRef = doc(db, 'users', uid);
-    const batch = writeBatch(db);
+    const userDocRef = adminDb.doc(`users/${uid}`);
+    const batch = adminDb.batch();
     batch.delete(userDocRef);
     await batch.commit();
     deleted.push('users: 1 doc');

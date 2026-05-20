@@ -1,5 +1,4 @@
-import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 import { PayNowProvider } from './providers/paynow.provider';
 
 export class WebhookHandler {
@@ -9,9 +8,9 @@ export class WebhookHandler {
     if (!event) return { status: 'ignored' };
 
     // Idempotency: check if already processed
-    const idempotencyRef = doc(db, 'webhook_events', event.id);
-    const existing = await getDoc(idempotencyRef);
-    if (existing.exists()) return { status: 'duplicate', eventId: event.id };
+    const idempotencyRef = adminDb.doc(`webhook_events/${event.id}`);
+    const existing = await idempotencyRef.get();
+    if (existing.exists) return { status: 'duplicate', eventId: event.id };
 
     // Validate signature
     if (!this.verifySignature(provider, rawPayload)) {
@@ -36,7 +35,7 @@ export class WebhookHandler {
       }
 
       // Mark as processed
-      await setDoc(idempotencyRef, {
+      await idempotencyRef.set({
         id: event.id,
         provider,
         type: event.type,
@@ -82,13 +81,13 @@ export class WebhookHandler {
     const data = event.data;
     const subscriptionId = data.metadata?.reference || data.m_payment_id || data.id;
 
-    const subRef = doc(db, 'subscriptions', subscriptionId);
-    const sub = await getDoc(subRef);
-    if (!sub.exists()) return;
+    const subRef = adminDb.doc(`subscriptions/${subscriptionId}`);
+    const sub = await subRef.get();
+    if (!sub.exists) return;
 
-    await updateDoc(subRef, {
+    await subRef.update({
       status: 'active',
-      currentPeriodEnd: this.calculateNewPeriodEnd(sub.data().currentPeriodEnd?.toDate() || new Date(), sub.data().billingPeriod || 'monthly'),
+      currentPeriodEnd: this.calculateNewPeriodEnd(sub.data()!.currentPeriodEnd?.toDate() || new Date(), sub.data()!.billingPeriod || 'monthly'),
       updated: new Date(),
     });
   }
@@ -97,18 +96,18 @@ export class WebhookHandler {
     const subscriptionId = event.data.metadata?.reference || event.data.m_payment_id;
     if (!subscriptionId) return;
 
-    const subRef = doc(db, 'subscriptions', subscriptionId);
-    await updateDoc(subRef, { status: 'past_due', updated: new Date() });
+    const subRef = adminDb.doc(`subscriptions/${subscriptionId}`);
+    await subRef.update({ status: 'past_due', updated: new Date() });
   }
 
   private async handleSubscriptionRenewed(event: { data: { id: string } }): Promise<void> {
     const subscriptionId = event.data.id;
-    const subRef = doc(db, 'subscriptions', subscriptionId);
-    const sub = await getDoc(subRef);
-    if (!sub.exists()) return;
+    const subRef = adminDb.doc(`subscriptions/${subscriptionId}`);
+    const sub = await subRef.get();
+    if (!sub.exists) return;
 
-    await updateDoc(subRef, {
-      currentPeriodEnd: this.calculateNewPeriodEnd(new Date(), sub.data().billingPeriod || 'monthly'),
+    await subRef.update({
+      currentPeriodEnd: this.calculateNewPeriodEnd(new Date(), sub.data()!.billingPeriod || 'monthly'),
       updated: new Date(),
     });
   }

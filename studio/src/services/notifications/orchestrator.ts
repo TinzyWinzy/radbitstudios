@@ -1,6 +1,5 @@
 // Notification Orchestrator — channel routing by priority
-import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 
 export type NotificationChannel = 'whatsapp' | 'sms' | 'push' | 'email';
 export type NotificationPriority = 'critical' | 'high' | 'normal' | 'low';
@@ -82,8 +81,8 @@ class WhatsAppProvider implements ChannelProvider {
     if (!token || !phoneNumberId) return false;
 
     try {
-      const userDoc = await getDoc(doc(db, 'users', userId));
-      const phone = userDoc.data()?.phone;
+      const userSnap = await adminDb.doc(`users/${userId}`).get();
+      const phone = userSnap.data()?.phone;
       if (!phone) return false;
 
       const res = await fetch(`${this.baseUrl}/${phoneNumberId}/messages`, {
@@ -124,8 +123,8 @@ class SMSProvider implements ChannelProvider {
     if (!message) return false;
 
     try {
-      const userDoc = await getDoc(doc(db, 'users', userId));
-      const phone = userDoc.data()?.phone;
+      const userSnap = await adminDb.doc(`users/${userId}`).get();
+      const phone = userSnap.data()?.phone;
       if (!phone) return false;
 
       // In production: call Twilio API

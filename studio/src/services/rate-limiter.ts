@@ -55,8 +55,8 @@ function memoryCheck(key: string, config: RateLimitConfig): RateLimitResult {
 
 // ─── Firestore Fallback Tier ─────────────────────────────────────────────────
 
-import { db } from '@/lib/firebase/firebase';
-import { doc, runTransaction, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 const FIRESTORE_COUNTERS = 'ratelimit_counters';
 
@@ -74,12 +74,12 @@ interface FSCounter {
  */
 async function firestoreCheck(key: string, config: RateLimitConfig): Promise<RateLimitResult> {
   const now = Date.now();
-  const docRef = doc(db, FIRESTORE_COUNTERS, key);
+  const docRef = adminDb.doc(`${FIRESTORE_COUNTERS}/${key}`);
 
   try {
-    return await runTransaction(db, async (tx) => {
+    return await adminDb.runTransaction(async (tx) => {
       const snap = await tx.get(docRef);
-      let counter: FSCounter = snap.data() as FSCounter;
+      let counter = snap.data() as FSCounter | undefined;
 
       // Initialise or reset if window expired
       if (!counter || now - counter.windowStart >= config.windowMs) {
@@ -91,8 +91,8 @@ async function firestoreCheck(key: string, config: RateLimitConfig): Promise<Rat
         };
         tx.set(docRef, {
           ...counter,
-          lastReset: serverTimestamp(),
-          createdAt: serverTimestamp(),
+          lastReset: FieldValue.serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
         }, { merge: true });
         return { allowed: true, remaining: config.maxRequests - 1, limit: config.maxRequests };
       }

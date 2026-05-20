@@ -130,7 +130,7 @@ export class SubscriptionEngine {
   async retryPayment(subscriptionId: string): Promise<{ success: boolean; redirectUrl?: string }> {
     const subRef = doc(db, 'subscriptions', subscriptionId);
     const sub = await getDoc(subRef);
-    if (!sub.exists()) return { success: false };
+    if (!sub.exists) return { success: false };
 
     const data = sub.data() as ActiveSubscription;
     const price = SUBSCRIPTION_PRICES[data.plan][data.billingPeriod];

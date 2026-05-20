@@ -11,7 +11,7 @@ import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Lege
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { generateExportAssessment, GenerateExportAssessmentInput } from "@/ai/flows/generate-export-assessment";
 import { Skeleton } from "@/components/ui/skeleton";
-import { collection, addDoc, serverTimestamp, getDocs } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/auth-context";
@@ -216,35 +216,12 @@ export default function ExportAssessmentPage() {
 
   const fetchBenchmarkData = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "export_assessments"));
-      const allResponses: any[] = [];
-      querySnapshot.forEach((doc) => {
-        allResponses.push(...doc.data().responses);
-      });
-
-      if (allResponses.length === 0) {
-        setBenchmarkData([]);
-        return;
-      }
-
-      const categoryTotals: { [key: string]: { totalScore: number, count: number } } = {};
-      allResponses.forEach(response => {
-        if (!categoryTotals[response.category]) {
-          categoryTotals[response.category] = { totalScore: 0, count: 0 };
-        }
-        categoryTotals[response.category].totalScore += response.score;
-        categoryTotals[response.category].count += 1;
-      });
-
-      const calculatedBenchmark = Object.entries(categoryTotals).map(([category, data]) => ({
-        category,
-        benchmarkScore: (data.totalScore / (data.count * 4)) * 100,
-      }));
-      setBenchmarkData(calculatedBenchmark);
-
-    } catch (error) {
-      console.error("Error fetching benchmark data:", error);
-      toast({ title: "Benchmark Error", description: "Could not calculate SME benchmark data.", variant: "destructive" });
+      setIsLoadingBenchmark(true);
+      const res = await fetch('/api/assessments/benchmark');
+      const data = await res.json();
+      setBenchmarkData(data.benchmark || []);
+    } catch {
+      setBenchmarkData([]);
     } finally {
       setIsLoadingBenchmark(false);
     }

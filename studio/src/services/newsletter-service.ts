@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AIGateway } from '@/services/ai/ai-gateway';
-import { db } from '@/lib/firebase/firebase';
-import { doc, setDoc, getDocs, getDoc, collection, query, where, serverTimestamp } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 import { getCached, setCached } from '@/lib/scraper-cache';
 
 export interface NewsletterSubscription {
@@ -42,7 +42,7 @@ export async function subscribeUser(
   preferences: NewsletterPreferences
 ): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
   try {
-    const subRef = doc(db, 'newsletter_subscriptions', userId);
+    const subRef = adminDb.doc(`newsletter_subscriptions/${userId}`);
     const data: Omit<NewsletterSubscription, 'id'> & { userId: string } = {
       userId,
       email,
@@ -56,9 +56,9 @@ export async function subscribeUser(
       active: true,
     };
 
-    await setDoc(subRef, {
+    await subRef.set({
       ...data,
-      createdAt: serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
       lastSentAt: null,
     });
 
@@ -72,16 +72,15 @@ export async function updatePreferences(
   userId: string,
   preferences: Partial<NewsletterPreferences>
 ): Promise<{ success: boolean }> {
-  const subRef = doc(db, 'newsletter_subscriptions', userId);
-  await setDoc(subRef, { ...preferences, updatedAt: serverTimestamp() }, { merge: true });
+  const subRef = adminDb.doc(`newsletter_subscriptions/${userId}`);
+  await subRef.set({ ...preferences, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
   return { success: true };
 }
 
 export async function getUserSubscription(userId: string): Promise<NewsletterSubscription | null> {
-  const docRef = doc(db, 'newsletter_subscriptions', userId);
-  const snapshot = await getDoc(docRef);
-  if (!snapshot.exists()) return null;
-  const data = snapshot.data();
+  const snap = await adminDb.doc(`newsletter_subscriptions/${userId}`).get();
+  if (!snap.exists) return null;
+  const data = snap.data()!;
   return {
     ...data,
     createdAt: data.createdAt?.toDate() || new Date(),
@@ -180,22 +179,21 @@ Only include tenders with deadline within 30 days. Be specific and actionable.`;
 }
 
 export async function markDigestSent(userId: string): Promise<void> {
-  const subRef = doc(db, 'newsletter_subscriptions', userId);
-  await setDoc(subRef, { lastSentAt: serverTimestamp() }, { merge: true });
+  const subRef = adminDb.doc(`newsletter_subscriptions/${userId}`);
+  await subRef.set({ lastSentAt: FieldValue.serverTimestamp() }, { merge: true });
 }
 
 export async function getSubscribersForDigest(frequency: 'daily' | 'weekly'): Promise<NewsletterSubscription[]> {
-  const subsRef = collection(db, 'newsletter_subscriptions');
-  const snapshot = await getDocs(query(
-    subsRef,
-    where('frequency', '==', frequency),
-    where('active', '==', true)
-  ));
+  const snapshot = await adminDb
+    .collection('newsletter_subscriptions')
+    .where('frequency', '==', frequency)
+    .where('active', '==', true)
+    .get();
 
-  return snapshot.docs.map(doc => {
-    const data = doc.data();
+  return snapshot.docs.map(docSnap => {
+    const data = docSnap.data();
     return {
-      id: doc.id,
+      id: docSnap.id,
       ...data,
       createdAt: data.createdAt?.toDate() || new Date(),
       lastSentAt: data.lastSentAt?.toDate() || null,

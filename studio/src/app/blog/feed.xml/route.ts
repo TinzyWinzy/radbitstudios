@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
-import { blogService } from '@/services/blog.service';
+import { adminDb } from '@/lib/firebase/firebase-admin';
+
+export const dynamic = 'force-dynamic';
 
 const SITE_URL = 'https://radbitstudios.co.zw';
 
 export async function GET() {
-  const posts = await blogService.listPublished();
+  const snap = await adminDb
+    .collection('blog_posts')
+    .where('published', '==', true)
+    .orderBy('createdAt', 'desc')
+    .get();
+  const posts = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
   const now = new Date().toUTCString();
   const lastBuild = posts[0]?.createdAt?.toDate()?.toUTCString() || now;
 
@@ -17,7 +24,7 @@ export async function GET() {
       <guid isPermaLink="true">${SITE_URL}/blog/${post.slug}</guid>
       <description><![CDATA[${post.excerpt}]]></description>
       <pubDate>${pubDate}</pubDate>
-      ${post.tags.map(tag => `<category>${escapeXml(tag)}</category>`).join('')}
+      ${(post.tags as string[]).map((tag: string) => `<category>${escapeXml(tag)}</category>`).join('')}
     </item>`;
   }).join('');
 

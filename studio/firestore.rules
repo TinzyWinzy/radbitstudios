@@ -44,6 +44,36 @@ service cloud.firestore {
       allow read, write: if request.auth.uid == userId;
     }
 
+    // ─── EXPORT ASSESSMENTS ─────────────────────────────────────────────────
+    match /export_assessments/{assessmentId} {
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow get, delete: if request.auth.uid == resource.data.userId;
+      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+    }
+
+    // ─── REFERRAL CODES ────────────────────────────────────────────────────
+    // Allow anyone to read a referral code by ID to verify it exists.
+    // Only the owner can create their own code (userId must match).
+    match /referral_codes/{code} {
+      allow get: if request.auth != null;
+      allow create: if request.auth.uid == request.resource.data.userId;
+      // Transactions update usageCount — allow if authenticated & code belongs to someone
+      allow update: if request.auth != null;
+      allow list: if false;
+    }
+
+    // ─── RAG KNOWLEDGE BASE ─────────────────────────────────────────────────
+    // Used by AI flows (server-side). Readable by authenticated users for
+    // vector search queries. Only server-side writes (no client creates).
+    match /rag_documents/{docId} {
+      allow get, list: if request.auth != null;
+      allow create, update, delete: if false; // server-side only
+    }
+    match /rag_chunks/{chunkId} {
+      allow get, list: if request.auth != null;
+      allow create, update, delete: if false; // server-side only
+    }
+
     // ─── BOOKMARKS ─────────────────────────────────────────────────────────────
     match /users/{userId}/bookmarks/{bookmarkId} {
       allow read, write, delete: if request.auth.uid == userId;

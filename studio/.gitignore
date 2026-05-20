@@ -28,6 +28,11 @@ pnpm-debug.log*
 # local env files
 .env
 .env.local
+
+# Firebase service account keys
+service-account.json
+*-service-account.json
+*-service-account-key.json
 .env.development.local
 .env.test.local
 .env.production.local

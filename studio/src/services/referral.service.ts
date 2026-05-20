@@ -1,6 +1,6 @@
 // Referral program
-import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc, setDoc, increment, runTransaction, query, where, collection, getDocs, limit } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 export interface ReferralCode {
   code: string;
@@ -11,12 +11,11 @@ export interface ReferralCode {
 
 export class ReferralService {
   async getExistingCode(userId: string): Promise<string | null> {
-    const q = query(
-      collection(db, 'referral_codes'),
-      where('userId', '==', userId),
-      limit(1),
-    );
-    const snap = await getDocs(q);
+    const snap = await adminDb
+      .collection('referral_codes')
+      .where('userId', '==', userId)
+      .limit(1)
+      .get();
     if (snap.empty) return null;
     return snap.docs[0].id;
   }
@@ -29,7 +28,7 @@ export class ReferralService {
     let code = '';
     for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
 
-    await setDoc(doc(db, 'referral_codes', code), {
+    await adminDb.doc(`referral_codes/${code}`).set({
       userId,
       code,
       usageCount: 0,
@@ -41,32 +40,32 @@ export class ReferralService {
   }
 
   async applyReferral(referralCode: string, newUserId: string): Promise<{ success: boolean; message: string }> {
-    const codeRef = doc(db, 'referral_codes', referralCode);
-    const codeDoc = await getDoc(codeRef);
-    if (!codeDoc.exists()) return { success: false, message: 'Invalid referral code' };
+    const codeRef = adminDb.doc(`referral_codes/${referralCode}`);
+    const codeDoc = await codeRef.get();
+    if (!codeDoc.exists) return { success: false, message: 'Invalid referral code' };
 
-    const data = codeDoc.data();
+    const data = codeDoc.data()!;
     if (data.usageCount >= (data.maxUses || 50)) return { success: false, message: 'Referral code has expired' };
 
     try {
-      await runTransaction(db, async (transaction) => {
+      await adminDb.runTransaction(async (transaction) => {
         const codeSnap = await transaction.get(codeRef);
-        if (!codeSnap.exists()) throw new Error('Code gone');
+        if (!codeSnap.exists) throw new Error('Code gone');
 
-        transaction.update(codeRef, { usageCount: increment(1) });
+        transaction.update(codeRef, { usageCount: FieldValue.increment(1) });
 
         // Award 100 AI credits to referrer
-        const referrerRef = doc(db, 'users', data.userId);
+        const referrerRef = adminDb.doc(`users/${data.userId}`);
         transaction.update(referrerRef, {
-          [`usage.templateGeneration.remaining`]: increment(100),
-          [`usage.templateGeneration.total`]: increment(100),
+          [`usage.templateGeneration.remaining`]: FieldValue.increment(100),
+          [`usage.templateGeneration.total`]: FieldValue.increment(100),
         });
 
         // Award 50 AI credits to new user
-        const newUserRef = doc(db, 'users', newUserId);
+        const newUserRef = adminDb.doc(`users/${newUserId}`);
         transaction.set(newUserRef, {
-          [`usage.templateGeneration.remaining`]: increment(50),
-          [`usage.templateGeneration.total`]: increment(50),
+          [`usage.templateGeneration.remaining`]: FieldValue.increment(50),
+          [`usage.templateGeneration.total`]: FieldValue.increment(50),
         }, { merge: true });
       });
 

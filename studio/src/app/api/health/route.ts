@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 
 interface HealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy';
@@ -27,8 +26,8 @@ function getMemoryStatus(): 'ok' | 'warning' | 'critical' {
 
 async function checkDatabase(): Promise<'ok' | 'error'> {
   try {
-    const healthDoc = await getDoc(doc(db, '_health', 'ping'));
-    return healthDoc.exists() ? 'ok' : 'ok';
+    const healthDoc = await adminDb.doc('_health/ping').get();
+    return healthDoc.exists ? 'ok' : 'ok';
   } catch {
     return 'error';
   }
