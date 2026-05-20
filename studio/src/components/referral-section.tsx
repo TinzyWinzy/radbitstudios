@@ -14,15 +14,30 @@ export function ReferralSection() {
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const { user } = useContext(AuthContext);
   const { toast } = useToast();
 
   useEffect(() => {
     if (!user) return;
-    const stored = sessionStorage.getItem("radbit_referral_code");
-    if (stored) {
-      setCode(stored);
-    }
+    (async () => {
+      setFetching(true);
+      try {
+        const idToken = await user.getIdToken();
+        const res = await fetch("/api/referral/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+        });
+        const data = await res.json();
+        if (data.success && data.code) {
+          setCode(data.code);
+          try { sessionStorage.setItem("radbit_referral_code", data.code); } catch {}
+        }
+      } catch {} finally {
+        setFetching(false);
+      }
+    })();
   }, [user]);
 
   const handleGenerate = async () => {
@@ -79,7 +94,12 @@ export function ReferralSection() {
         </p>
       </div>
 
-      {!code ? (
+      {fetching ? (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading your referral code...
+        </div>
+      ) : !code ? (
         <Button onClick={handleGenerate} disabled={loading}>
           {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Share2 className="mr-2 h-4 w-4" />}
           {loading ? "Generating..." : "Generate Your Referral Code"}

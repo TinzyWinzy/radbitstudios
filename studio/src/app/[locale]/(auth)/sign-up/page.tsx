@@ -42,22 +42,16 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (user) {
+      const utm = getStoredUtm();
+      if (utm.ref) {
+        user.getIdToken().then((idToken) => {
+          const payload = JSON.stringify({ idToken, referralCode: utm.ref });
+          navigator.sendBeacon('/api/referral/apply', new Blob([payload], { type: 'application/json' }));
+        });
+      }
       router.push('/dashboard');
     }
   }, [user, router]);
-
-  useEffect(() => {
-    if (!user) return;
-    const utm = getStoredUtm();
-    if (!utm.ref) return;
-    user.getIdToken().then((idToken) => {
-      fetch('/api/referral/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken, referralCode: utm.ref }),
-      }).catch(() => {});
-    });
-  }, [user]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

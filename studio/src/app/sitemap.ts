@@ -39,10 +39,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${F}/resources/guides/load-shedding-solutions-smes`,  lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${F}/resources/guides/zim-business-planning`,        lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
 
-    // ── Privacy & Terms ───────────────────────────────────────────────────
-    { url: `${F}/privacy-policy`,                lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
-    { url: `${F}/terms-and-conditions`,          lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
-    { url: `${F}/cookie-policy`,                 lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
+    // ── Company pages ────────────────────────────────────────────────────
+    { url: `${F}/about`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.5  },
+    { url: `${F}/contact`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.4  },
+    { url: `${F}/privacy`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
+    { url: `${F}/terms`,                     lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
 
     // ── Free tools ───────────────────────────────────────────────────────
     { url: `${F}/resources/tools/vat-calculator`,                 lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },

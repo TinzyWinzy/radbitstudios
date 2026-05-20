@@ -549,10 +549,10 @@ function FooterSection() {
             {
               title: "Company",
               links: [
-                { href: "#", label: "About" },
-                { href: "#", label: "Contact" },
-                { href: "#", label: "Privacy" },
-                { href: "#", label: "Terms" },
+                { href: "/about", label: "About" },
+                { href: "/contact", label: "Contact" },
+                { href: "/privacy", label: "Privacy" },
+                { href: "/terms", label: "Terms" },
               ],
             },
             {

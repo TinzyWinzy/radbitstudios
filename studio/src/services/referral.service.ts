@@ -1,6 +1,6 @@
 // Referral program
 import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc, setDoc, increment, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, setDoc, increment, runTransaction, query, where, collection, getDocs, limit } from 'firebase/firestore';
 
 export interface ReferralCode {
   code: string;
@@ -10,7 +10,21 @@ export interface ReferralCode {
 }
 
 export class ReferralService {
+  async getExistingCode(userId: string): Promise<string | null> {
+    const q = query(
+      collection(db, 'referral_codes'),
+      where('userId', '==', userId),
+      limit(1),
+    );
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    return snap.docs[0].id;
+  }
+
   async generateCode(userId: string): Promise<string> {
+    const existing = await this.getExistingCode(userId);
+    if (existing) return existing;
+
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
     for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];

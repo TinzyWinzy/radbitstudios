@@ -48,19 +48,22 @@ export default function BusinessPlanningGuide() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            ...howToSchema({
-              name: "Business Planning in Zimbabwe for SMEs",
-              description: "A step-by-step guide to building a business plan that works in Zimbabwe's unique economic environment.",
-              steps,
-              url: pageUrl,
-            }),
-            ...breadcrumbSchema([
-              { name: "Home", url: "/" },
-              { name: "Resources", url: "/resources" },
-              { name: "Business Planning in Zimbabwe", url: pageUrl },
-            ]),
-          }),
+          __html: JSON.stringify(howToSchema({
+            name: "Business Planning in Zimbabwe for SMEs",
+            description: "A step-by-step guide to building a business plan that works in Zimbabwe's unique economic environment.",
+            steps,
+            url: pageUrl,
+          })),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Resources", url: "/resources" },
+            { name: "Business Planning in Zimbabwe", url: pageUrl },
+          ])),
         }}
       />
 
