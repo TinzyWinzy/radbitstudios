@@ -1,28 +1,92 @@
 {
+  "app": {
+    "name": "Radbit SME Hub",
+    "tagline": "Capacitar Pequenas Empresas do Zimbábue"
+  },
   "auth": {
-    "signOut": "Sair"
+    "signIn": "Entrar",
+    "signUp": "Criar Conta",
+    "signOut": "Sair",
+    "email": "E-mail",
+    "password": "Palavra-passe",
+    "confirmPassword": "Confirmar Palavra-passe",
+    "phone": "Número de Telefone",
+    "otpSent": "Código de verificação enviado para {phone}",
+    "otpPlaceholder": "Insira o código de 6 dígitos",
+    "continueWithGoogle": "Continuar com Google",
+    "continueWithPhone": "Continuar com Telefone",
+    "forgotPassword": "Esqueceu-se da Palavra-passe?"
   },
   "nav": {
     "dashboard": "Painel",
-    "assessment": "Avaliação"
+    "assessment": "Avaliação",
+    "toolkit": "Kit de Ferramentas IA",
+    "budget": "Calculadora de Orçamento",
+    "tenders": "Concursos & Notícias",
+    "community": "Comunidade",
+    "messages": "Mensagens",
+    "mentor": "Mentor IA",
+    "settings": "Configurações"
   },
   "assessment": {
     "title": "Avaliação de Prontidão Digital",
-    "step": "Pergunta {current} de {total}"
+    "step": "Pergunta {current} de {total}",
+    "next": "Seguinte",
+    "previous": "Anterior",
+    "submit": "Ver Resultados",
+    "restart": "Reiniciar Avaliação",
+    "offlineSaved": "Progresso guardado offline",
+    "resume": "Continuar de onde parou?",
+    "result": {
+      "title": "Os Seus Resultados",
+      "score": "Pontuação: {score}/100",
+      "benchmark": "Média PME: {avg}/100",
+      "aiSummary": "Resumo IA",
+      "download": "Baixar PDF"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo, {name}!",
+    "insights": "Insights IA",
+    "tips": "Dicas Diárias",
+    "quickActions": "Ações Rápidas",
+    "tenders": "Concursos do Dia",
+    "credits": "Créditos IA Restantes: {count}"
   },
   "tenders": {
-    "search": "Pesquisar concursos..."
+    "search": "Pesquisar concursos...",
+    "apply": "Candidatar-se",
+    "deadline": "Prazo: {date}",
+    "curate": "Selecionar com IA",
+    "bookmark": "Favorito",
+    "bookmarked": "Favoritado"
   },
   "community": {
-    "newThread": "Nova Discussão"
+    "newThread": "Nova Discussão",
+    "reply": "Responder",
+    "replyInWhatsApp": "Responder no WhatsApp",
+    "search": "Pesquisar discussões...",
+    "bestAnswer": "Melhor Resposta"
   },
   "mentor": {
-    "title": "Mentor de Negócios IA"
+    "title": "Mentor de Negócios IA",
+    "placeholder": "Faça uma pergunta sobre negócios...",
+    "syncPending": "Pendente de sincronização — será enviado quando online"
   },
   "offline": {
-    "title": "Estás Offline"
+    "title": "Estás Offline",
+    "message": "Algumas funcionalidades podem estar limitadas até restabelecer a ligação.",
+    "syncPending": "{count} itens pendentes de sincronização",
+    "cachedData": "A mostrar dados guardados anteriormente"
   },
   "common": {
-    "loading": "A carregar..."
+    "loading": "A carregar...",
+    "error": "Algo correu mal",
+    "retry": "Tentar Novamente",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "share": "Partilhar",
+    "download": "Baixar"
   }
 }

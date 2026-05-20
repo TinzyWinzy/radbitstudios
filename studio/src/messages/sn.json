@@ -1,28 +1,92 @@
 {
+  "app": {
+    "name": "Radbit SME Hub",
+    "tagline": "Kusimudzira Mabhizimisi Madiki eZimbabwe"
+  },
   "auth": {
-    "signOut": "Budai"
+    "signIn": "Pinda",
+    "signUp": "Gadzira Akaundi",
+    "signOut": "Budai",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Simbisa Password",
+    "phone": "Nhamba Yefoni",
+    "otpSent": "Khodhi yekusimbisa yatumirwa kuna {phone}",
+    "otpPlaceholder": "Isa khodhi yemanhamba matanhatu",
+    "continueWithGoogle": "Enderera neGoogle",
+    "continueWithPhone": "Enderera neFoni",
+    "forgotPassword": "Wakanganwa Password?"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "assessment": "Ongororo"
+    "assessment": "Ongororo",
+    "toolkit": "Chishandiso cheAI",
+    "budget": "Karukureta Yebhajeti",
+    "tenders": "Mabasa neNhau",
+    "community": "Nharaunda",
+    "messages": "Mameseji",
+    "mentor": "Mupangamazano weAI",
+    "settings": "Zvirongwa"
   },
   "assessment": {
     "title": "Ongororo Yekugadzirira Dhijitari",
-    "step": "Mubvunzo {current} we {total}"
+    "step": "Mubvunzo {current} we {total}",
+    "next": "Zvinotevera",
+    "previous": "Yapfuura",
+    "submit": "Ona Mhedzisiro",
+    "restart": "Tanga Zvakare Ongororo",
+    "offlineSaved": "Basa rakachengetwa pasina internet",
+    "resume": "Oenderera kubva pawakasiya?",
+    "result": {
+      "title": "Mhedzisiro Yako",
+      "score": "Matanho: {score}/100",
+      "benchmark": "Avhareji yeSME: {avg}/100",
+      "aiSummary": "Chidimbu cheAI",
+      "download": "Dhawunirodha PDF"
+    }
+  },
+  "dashboard": {
+    "welcome": "Tinokugamuchira, {name}!",
+    "insights": "Maonero eAI",
+    "tips": "Mazano Ezuva Nezuva",
+    "quickActions": "Zviito Zvinokurumidza",
+    "tenders": "Mabasa Anoenderana Nekutenda",
+    "credits": "AI Credits Asara: {count}"
   },
   "tenders": {
-    "search": "Tsvaga mabasa..."
+    "search": "Tsvaga mabasa...",
+    "apply": "Nyorera",
+    "deadline": "Zuva rekupedzisira: {date}",
+    "curate": "Sarudza neAI",
+    "bookmark": "Chengetedza",
+    "bookmarked": "Yakachengetedzwa"
   },
   "community": {
-    "newThread": "Nyaya Itsva"
+    "newThread": "Nyaya Itsva",
+    "reply": "Pindura",
+    "replyInWhatsApp": "Pindura muWhatsApp",
+    "search": "Tsvaga nhaurirano...",
+    "bestAnswer": "Mhinduro Yakanaka"
   },
   "mentor": {
-    "title": "Mupangamazano Webhizimusi eAI"
+    "title": "Mupangamazano Webhizimusi eAI",
+    "placeholder": "Bvunza mubvunzo webhizimusi...",
+    "syncPending": "Yakamirira kutumirwa — ichatumirwa kana paine internet"
   },
   "offline": {
-    "title": "Hauna Internet"
+    "title": "Hauna Internet",
+    "message": "Zvimwe zvinhu zvingashande zvishoma kusvika wabatanidzwa zvekare.",
+    "syncPending": "{count} zvinhu zvakamirira kutumirwa",
+    "cachedData": "Kuratidza data rakachengetwa kare"
   },
   "common": {
-    "loading": "Kutakura..."
+    "loading": "Kutakura...",
+    "error": "Chinhu chakakanganisika",
+    "retry": "Edza Zvakare",
+    "save": "Sevha",
+    "cancel": "Kanzura",
+    "delete": "Bvisa",
+    "share": "Goverana",
+    "download": "Dhawunirodha"
   }
 }

@@ -1,28 +1,92 @@
 {
+  "app": {
+    "name": "Radbit SME Hub",
+    "tagline": "Ukwakha Amabhizinisi Amancane eZimbabwe"
+  },
   "auth": {
-    "signOut": "Phuma"
+    "signIn": "Ngena",
+    "signUp": "Dala iAkhawunti",
+    "signOut": "Phuma",
+    "email": "I-imeyili",
+    "password": "Iphasiwedi",
+    "confirmPassword": "Qinisekisa Iphasiwedi",
+    "phone": "Inombolo Yocingo",
+    "otpSent": "Ikhodi yokuqinisekisa ithunyelwe ku {phone}",
+    "otpPlaceholder": "Faka ikhodi yamadijithi ayi-6",
+    "continueWithGoogle": "Qhubeka ngeGoogle",
+    "continueWithPhone": "Qhubeka ngocingo",
+    "forgotPassword": "Ukhohliwe Iphasiwedi?"
   },
   "nav": {
     "dashboard": "Idasibhodi",
-    "assessment": "Uhlolo"
+    "assessment": "Uhlolo",
+    "toolkit": "Ithuluzi le-AI",
+    "budget": "Isibali-mali",
+    "tenders": "Amathenda nezindaba",
+    "community": "Umphakathi",
+    "messages": "Imilayezo",
+    "mentor": "Umcebisi we-AI",
+    "settings": "Izilungiselelo"
   },
   "assessment": {
     "title": "Uhlolo Lokulungele Ubuchwepheshe",
-    "step": "Umbuzo {current} we {total}"
+    "step": "Umbuzo {current} we {total}",
+    "next": "Okulandelayo",
+    "previous": "Okwedlule",
+    "submit": "Buka Imiphumela",
+    "restart": "Qala Kabusha Uhlolo",
+    "offlineSaved": "Inqubekelaphambili igcinwe ungaxhunyiwe",
+    "resume": "Qhubeka lapho uyekele khona?",
+    "result": {
+      "title": "Imiphumela Yakho",
+      "score": "Amaphuzu: {score}/100",
+      "benchmark": "Isilinganiso se-SME: {avg}/100",
+      "aiSummary": "Isifinyezo se-AI",
+      "download": "Landa i-PDF"
+    }
+  },
+  "dashboard": {
+    "welcome": "Siyakwamukela, {name}!",
+    "insights": "Imibono ye-AI",
+    "tips": "Amacebo Ansuku zonke",
+    "quickActions": "Izenzo Ezisheshayo",
+    "tenders": "Amathenda Afanayo Namuhla",
+    "credits": "Amakhredithi e-AI Asele: {count}"
   },
   "tenders": {
-    "search": "Funa amathenda..."
+    "search": "Funa amathenda...",
+    "apply": "Faka Isicelo",
+    "deadline": "Usuku lokugcina: {date}",
+    "curate": "Hlunga nge-AI",
+    "bookmark": "Faka umaka",
+    "bookmarked": "Kumakwe"
   },
   "community": {
-    "newThread": "Nkosombi oMutsha"
+    "newThread": "Nkosombi oMutsha",
+    "reply": "Phendula",
+    "replyInWhatsApp": "Phendula nge-WhatsApp",
+    "search": "Sesha izingxoxo...",
+    "bestAnswer": "Impendulo Enhle"
   },
   "mentor": {
-    "title": "Umcebisi Webhizinisi we-AI"
+    "title": "Umcebisi Webhizinisi we-AI",
+    "placeholder": "Buza umbuzo webhizinisi...",
+    "syncPending": "Ilinde ukuvunyelwa — izothunyelwa lapho uxhumeke"
   },
   "offline": {
-    "title": "Kakukho i-Intanethi"
+    "title": "Kakukho i-Intanethi",
+    "message": "Eminye imisebenzi ingase ingasebenzi kahle ize uxhumeke.",
+    "syncPending": "{count} izinto ezilinde ukuthunyelwa",
+    "cachedData": "Kukhonjiswa idatha egcinwe ngaphambilini"
   },
   "common": {
-    "loading": "Iyalayisha..."
+    "loading": "Iyalayisha...",
+    "error": "Kukhona okungahambanga kahle",
+    "retry": "Zama Futhi",
+    "save": "Londoloza",
+    "cancel": "Khansela",
+    "delete": "Susa",
+    "share": "Yabelana",
+    "download": "Landa"
   }
 }

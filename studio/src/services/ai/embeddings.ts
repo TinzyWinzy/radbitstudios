@@ -8,8 +8,8 @@ function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number):
 }
 
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const apiKey = process.env.GOOGLE_GENAI_API_KEY;
-  if (!apiKey) throw new Error('GOOGLE_GENAI_API_KEY not set for embeddings');
+  const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GOOGLE_GENAI_API_KEY nor GEMINI_API_KEY set for embeddings');
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${EMBEDDING_MODEL}:embedContent?key=${apiKey}`;
 

@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/contexts/auth-context";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { AnalyticsTracker } from '@/components/analytics-tracker';
 
 export default async function LocaleLayout({
   children,
@@ -21,7 +22,9 @@ export default async function LocaleLayout({
         disableTransitionOnChange
       >
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <AnalyticsTracker>
+            {children}
+          </AnalyticsTracker>
         </NextIntlClientProvider>
         <Toaster />
       </ThemeProvider>
