@@ -18,6 +18,9 @@ import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
 import { getLatestTendersAction as getLatestTenders } from '@/app/actions';
 import { format, differenceInDays } from 'date-fns';
+import { checkFeatureAccess } from '@/services/feature-gate';
+import type { UpgradeInfo } from '@/services/feature-gate';
+import { UpgradeModal } from '@/components/upgrade-modal';
 
 type Tender = {
   id: string;
@@ -139,6 +142,7 @@ export default function TendersPage() {
   const [regionTab, setRegionTab] = useState<'zimbabwe' | 'regional'>('zimbabwe');
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
 
   const loadTenders = async (showRefresh = false) => {
     if (showRefresh) setIsRefreshing(true);
@@ -294,7 +298,26 @@ export default function TendersPage() {
               <Button
                 variant={regionTab === 'regional' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setRegionTab('regional')}
+                onClick={async () => {
+                  if (userPlan === 'Free') {
+                    if (user) {
+                      const access = await checkFeatureAccess(user.uid, 'tendersRegional');
+                      if (!access.allowed) {
+                        setUpgradeInfo(access.upgrade ?? null);
+                        return;
+                      }
+                    } else {
+                      setUpgradeInfo({
+                        upgradeTo: 'Growth',
+                        price: 5,
+                        message: 'SADC regional tenders require the Growth plan. Sign in and upgrade to unlock cross-border procurement opportunities.',
+                        feature: 'Tenders Regional',
+                      });
+                      return;
+                    }
+                  }
+                  setRegionTab('regional');
+                }}
                 className="text-xs"
               >
                 <Globe className="h-3 w-3 mr-1" />
@@ -316,17 +339,6 @@ export default function TendersPage() {
                       <Skeleton className="h-4 w-full" />
                     </div>
                   ))}
-                </div>
-              ) : isRegional && userPlan === 'Free' ? (
-                <div className="text-center py-16 border border-dashed rounded-xl border-muted-foreground/20">
-                  <Lock className="h-10 w-10 mx-auto mb-4 text-muted-foreground/40" />
-                  <h3 className="text-lg font-semibold mb-2">Upgrade to View Regional Tenders</h3>
-                  <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-                    SADC and South Africa tenders are available on the Growth plan and above. Upgrade to access cross-border procurement opportunities.
-                  </p>
-                  <Button asChild>
-                    <a href="/pricing">Upgrade Now</a>
-                  </Button>
                 </div>
               ) : filteredTenders.length > 0 ? (
                 <div className="space-y-3">
@@ -351,6 +363,13 @@ export default function TendersPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      <UpgradeModal
+        open={!!upgradeInfo}
+        onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }}
+        upgrade={upgradeInfo}
+        onUpgrade={() => window.location.href = user ? '/settings?tab=plan' : '/sign-in'}
+      />
     </div>
   );
 }
