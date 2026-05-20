@@ -21,7 +21,6 @@ import {
   collection,
   query,
   where,
-  orderBy,
   getDocs,
   Timestamp,
   writeBatch,
@@ -200,14 +199,16 @@ export default function SettingsPage() {
         try {
             const q = query(
                 collection(db, "assessments"),
-                where("userId", "==", user.uid), 
-                orderBy("createdAt", "desc")
+                where("userId", "==", user.uid)
             );
             const querySnapshot = await getDocs(q);
-            const historyData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as AssessmentHistory[];
+            const historyData = querySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() } as AssessmentHistory))
+                .sort((a, b) => {
+                    const aDate = (a as any).createdAt?.toDate?.() ?? new Date(0);
+                    const bDate = (b as any).createdAt?.toDate?.() ?? new Date(0);
+                    return bDate.getTime() - aDate.getTime();
+                });
             setAssessmentHistory(historyData);
         } catch (error) {
             console.error("Error fetching assessment history:", error);
@@ -223,14 +224,16 @@ export default function SettingsPage() {
         try {
             const q = query(
                 collection(db, "generations"),
-                where("userId", "==", user.uid),
-                orderBy("createdAt", "desc")
+                where("userId", "==", user.uid)
             );
             const querySnapshot = await getDocs(q);
-            const historyData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as GenerationHistory[];
+            const historyData = querySnapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() } as GenerationHistory))
+                .sort((a, b) => {
+                    const aDate = (a as any).createdAt?.toDate?.() ?? new Date(0);
+                    const bDate = (b as any).createdAt?.toDate?.() ?? new Date(0);
+                    return bDate.getTime() - aDate.getTime();
+                });
             setGenerationHistory(historyData);
         } catch (error) {
             console.error("Error fetching generation history:", error);

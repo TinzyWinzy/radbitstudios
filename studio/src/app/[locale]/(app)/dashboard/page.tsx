@@ -31,7 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OnboardingWizard } from "@/components/onboarding-wizard";
 import { UsageSummary } from "@/components/usage-summary";
 import { generateDashboardInsights } from "@/ai/flows/generate-dashboard-insights";
-import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
 import { AuthContext } from "@/contexts/auth-context";
 
@@ -138,13 +138,16 @@ export default function DashboardPage() {
         try {
             const q = query(
                 collection(db, "assessments"),
-                where("userId", "==", user.uid),
-                orderBy("createdAt", "desc"),
-                limit(1)
+                where("userId", "==", user.uid)
             );
             const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                const doc = querySnapshot.docs[0];
+            const sorted = querySnapshot.docs.sort((a, b) => {
+                const aDate = a.data().createdAt?.toDate?.() ?? new Date(0);
+                const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);
+                return bDate.getTime() - aDate.getTime();
+            });
+            if (sorted.length > 0) {
+                const doc = sorted[0];
                 const data = doc.data();
 
                 const categoryScores: { [key: string]: { totalScore: number; count: number } } = {};
