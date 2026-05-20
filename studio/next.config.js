@@ -1,17 +1,24 @@
 const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts');
 const { withSentryConfig } = require('@sentry/nextjs');
 
+const reportUri = process.env.SENTRY_DSN
+  ? `https://sentry.io/api/security-report/?sentry_key=${process.env.SENTRY_DSN.split('@')[0]?.split('//').pop()}`
+  : '';
+
 const csp = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://pagead2.googlesyndication.com https://*.firebaseio.com https://apis.google.com https://accounts.google.com https://js.stripe.com https://hooks.stripe.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob: https://placehold.co https://picsum.photos https://*.googleapis.com https://*.gstatic.com https://pagead2.googlesyndication.com https://*.doubleclick.net https://*.google.com https://googleads.g.doubleclick.net https://*.googleusercontent.com;
   font-src 'self' data:;
-  connect-src 'self' https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://firebasestorage.googleapis.com wss://*.firebaseio.com https://pagead2.googlesyndication.com https://apis.google.com https://accounts.google.com https://ep1.adtrafficquality.google https://googleads.g.doubleclick.net https://*.google.com https://*.doubleclick.net https://*.googleusercontent.com https://api.stripe.com https://www.paynow.co.zw https://hooks.stripe.com;
+  connect-src 'self' https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://firebasestorage.googleapis.com wss://*.firebaseio.com https://pagead2.googlesyndication.com https://apis.google.com https://accounts.google.com https://ep1.adtrafficquality.google https://googleads.g.doubleclick.net https://*.google.com https://*.doubleclick.net https://*.googleusercontent.com https://api.stripe.com https://www.paynow.co.zw https://hooks.stripe.com https://generativelanguage.googleapis.com;
   frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.firebaseapp.com https://accounts.google.com https://apis.google.com https://googleads.g.doubleclick.net https://*.doubleclick.net;
+  frame-ancestors 'none';
   object-src 'none';
   base-uri 'self';
   form-action 'self';
+  ${reportUri ? `report-uri ${reportUri};` : ''}
+  ${reportUri ? `report-to csp-endpoint;` : ''}
 `.replace(/\s{2,}/g, ' ').trim();
 
 /** @type {import('next').NextConfig} */

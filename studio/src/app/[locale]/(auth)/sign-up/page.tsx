@@ -27,6 +27,7 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
 
   const { user, signUp, signInWithGoogle } = useContext(AuthContext);
   const router = useRouter();
@@ -45,6 +46,12 @@ export default function SignUpPage() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    if (!acceptedPrivacy) {
+      toast({ title: 'Consent Required', description: 'Please accept the Privacy Policy to continue.', variant: 'destructive' });
+      setIsLoading(false);
+      return;
+    }
 
     const validation = signUpSchema.safeParse({ email, password, confirmPassword });
     if (!validation.success) {
@@ -150,7 +157,27 @@ export default function SignUpPage() {
             className="h-11"
           />
         </div>
-        <Button type="submit" className="w-full h-11 font-headline tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60" disabled={isLoading || isGoogleLoading}>
+        <div className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            id="privacy-consent"
+            checked={acceptedPrivacy}
+            onChange={e => setAcceptedPrivacy(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0"
+          />
+          <label htmlFor="privacy-consent" className="text-xs text-muted-foreground leading-relaxed">
+            I agree to the{' '}
+            <Link href="/privacy" className="text-primary hover:underline font-medium" target="_blank">
+              Privacy Policy
+            </Link>{' '}
+            and{' '}
+            <Link href="/terms" className="text-primary hover:underline font-medium" target="_blank">
+              Terms of Service
+            </Link>
+            . I consent to the collection and processing of my personal data as described.
+          </label>
+        </div>
+        <Button type="submit" className="w-full h-11 font-headline tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60" disabled={isLoading || isGoogleLoading || !acceptedPrivacy}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (

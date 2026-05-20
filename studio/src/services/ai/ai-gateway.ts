@@ -1,3 +1,8 @@
+import { db } from '@/lib/firebase/firebase';
+import { doc, getDoc, runTransaction } from 'firebase/firestore';
+import { generateEmbedding, cosineSimilarity } from './embeddings';
+import { searchRelevantContext, buildRAGContext } from './rag';
+
 export type TaskDifficulty = 'simple' | 'complex' | 'creative';
 
 export interface AIGatewayRequest {
@@ -8,6 +13,8 @@ export interface AIGatewayRequest {
   temperature?: number;
   userId?: string;
   jsonMode?: boolean;
+  enableRAG?: boolean;
+  ragCategory?: string;
 }
 
 export interface AIGatewayResponse {
@@ -19,20 +26,32 @@ export interface AIGatewayResponse {
   error?: string;
 }
 
-const MODEL_ROUTES: Record<TaskDifficulty, { model: string; provider: 'gemini' | 'openai' | 'anthropic'; costPer1kInput: number; costPer1kOutput: number }[]> = {
+interface ModelRoute {
+  model: string;
+  provider: 'gemini' | 'openai' | 'anthropic';
+  costPer1kInput: number;
+  costPer1kOutput: number;
+  minTier: number;
+}
+
+const TIER_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'];
+
+const MODEL_ROUTES: Record<TaskDifficulty, ModelRoute[]> = {
   simple: [
-    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0 },
-    { model: 'gpt-4o-mini', provider: 'openai', costPer1kInput: 0.00015, costPer1kOutput: 0.0006 },
-    { model: 'claude-3-haiku', provider: 'anthropic', costPer1kInput: 0.00025, costPer1kOutput: 0.00125 },
+    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
+    { model: 'gpt-4o-mini', provider: 'openai', costPer1kInput: 0.00015, costPer1kOutput: 0.0006, minTier: 1 },
+    { model: 'claude-3-haiku', provider: 'anthropic', costPer1kInput: 0.00025, costPer1kOutput: 0.00125, minTier: 2 },
   ],
   complex: [
-    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0 },
-    { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.0025, costPer1kOutput: 0.01 },
-    { model: 'claude-3.5-sonnet', provider: 'anthropic', costPer1kInput: 0.003, costPer1kOutput: 0.015 },
+    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
+    { model: 'gemini-1.5-pro', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 2 },
+    { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.0025, costPer1kOutput: 0.01, minTier: 2 },
+    { model: 'claude-3.5-sonnet', provider: 'anthropic', costPer1kInput: 0.003, costPer1kOutput: 0.015, minTier: 3 },
   ],
   creative: [
-    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0 },
-    { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.005, costPer1kOutput: 0.015 },
+    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
+    { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.005, costPer1kOutput: 0.015, minTier: 2 },
+    { model: 'claude-3.5-sonnet', provider: 'anthropic', costPer1kInput: 0.003, costPer1kOutput: 0.015, minTier: 3 },
   ],
 };
 
@@ -40,19 +59,65 @@ const REQUEST_TIMEOUT_MS = 25_000;
 const MAX_RETRIES = 2;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 30;
+const SEMANTIC_CACHE_TTL_MS = 86_400_000;
+const SEMANTIC_CACHE_MAX_SIZE = 500;
+const SEMANTIC_SIMILARITY_THRESHOLD = 0.92;
+const TOKEN_ESTIMATE_FACTOR = 4;
+
+interface CacheEntry {
+  response: AIGatewayResponse;
+  embedding: number[];
+  systemPrompt: string;
+  prompt: string;
+  expiry: number;
+}
 
 class SemanticCache {
-  private cache = new Map<string, { response: AIGatewayResponse; expiry: number }>();
+  private entries: CacheEntry[] = [];
 
-  get(key: string): AIGatewayResponse | null {
-    const entry = this.cache.get(key);
-    if (!entry) return null;
-    if (Date.now() > entry.expiry) { this.cache.delete(key); return null; }
-    return { ...entry.response, cached: true };
+  async find(query: string, systemPrompt: string): Promise<AIGatewayResponse | null> {
+    const now = Date.now();
+    this.entries = this.entries.filter(e => now < e.expiry);
+
+    if (this.entries.length === 0) return null;
+
+    const queryEmb = await generateEmbedding(query);
+    if (queryEmb.length === 0) return null;
+
+    let bestScore = 0;
+    let bestEntry: CacheEntry | null = null;
+
+    for (const entry of this.entries) {
+      if (entry.systemPrompt !== systemPrompt) continue;
+      const score = cosineSimilarity(queryEmb, entry.embedding);
+      if (score > bestScore) {
+        bestScore = score;
+        bestEntry = entry;
+      }
+    }
+
+    if (bestEntry && bestScore >= SEMANTIC_SIMILARITY_THRESHOLD) {
+      return { ...bestEntry.response, cached: true };
+    }
+    return null;
   }
 
-  set(key: string, response: AIGatewayResponse, ttlMs = 86400000): void {
-    this.cache.set(key, { response, expiry: Date.now() + ttlMs });
+  async store(systemPrompt: string, prompt: string, response: AIGatewayResponse): Promise<void> {
+    if (this.entries.length >= SEMANTIC_CACHE_MAX_SIZE) {
+      this.entries.sort((a, b) => a.expiry - b.expiry);
+      this.entries = this.entries.slice(0, Math.floor(SEMANTIC_CACHE_MAX_SIZE / 2));
+    }
+
+    const embedding = await generateEmbedding(prompt);
+    if (embedding.length === 0) return;
+
+    this.entries.push({
+      response,
+      embedding,
+      systemPrompt,
+      prompt,
+      expiry: Date.now() + SEMANTIC_CACHE_TTL_MS,
+    });
   }
 }
 
@@ -79,9 +144,12 @@ function extractJsonFromResponse(text: string): string {
   return text;
 }
 
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / TOKEN_ESTIMATE_FACTOR);
+}
+
 export class AIGateway {
   private cache = new SemanticCache();
-  private userBudgets = new Map<string, { used: number; limit: number }>();
   private requestLog: number[] = [];
 
   private checkRateLimit(): boolean {
@@ -100,8 +168,79 @@ export class AIGateway {
     };
   }
 
-  setUserBudget(userId: string, limitUsd: number): void {
-    this.userBudgets.set(userId, { used: 0, limit: limitUsd });
+  private async getUserPlan(userId: string): Promise<{ tier: number; planName: string } | null> {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (!userDoc.exists()) return null;
+      const data = userDoc.data();
+      const planName: string = data.plan || 'Free';
+      const tier = TIER_ORDER.indexOf(planName);
+      return { tier: tier >= 0 ? tier : 0, planName };
+    } catch {
+      return null;
+    }
+  }
+
+  selectRoute(
+    difficulty: TaskDifficulty,
+    userTier: number,
+    availableKeys: { gemini: boolean; openai: boolean; anthropic: boolean },
+  ): ModelRoute | null {
+    const routes = MODEL_ROUTES[difficulty];
+
+    const priority: Record<string, number> = { gemini: 0, openai: 1, anthropic: 2 };
+
+    const scored = routes
+      .filter(r => r.minTier <= userTier)
+      .filter(r =>
+        r.provider === 'gemini' && availableKeys.gemini ||
+        r.provider === 'openai' && availableKeys.openai ||
+        r.provider === 'anthropic' && availableKeys.anthropic
+      )
+      .sort((a, b) => {
+        if (a.costPer1kInput !== b.costPer1kInput) return a.costPer1kInput - b.costPer1kInput;
+        return (priority[a.provider] ?? 99) - (priority[b.provider] ?? 99);
+      });
+
+    return scored[0] || null;
+  }
+
+  private async fetchAndBudget(
+    userId: string | undefined,
+    estimatedCost: number,
+  ): Promise<{ allowed: boolean; error?: string }> {
+    if (!userId) return { allowed: true };
+
+    try {
+      const userDocRef = doc(db, 'users', userId);
+      const result = await runTransaction(db, async (transaction) => {
+        const userDoc = await transaction.get(userDocRef);
+        if (!userDoc.exists()) return { allowed: true };
+
+        const data = userDoc.data();
+        const usage: { used?: number; limit?: number } = data.aiBudget || { used: 0, limit: 10 };
+        const limit = usage.limit ?? 10;
+        const used = usage.used ?? 0;
+
+        if (used >= limit) {
+          return { allowed: false, error: 'AI usage limit reached for this billing period.' };
+        }
+
+        if (used + estimatedCost > limit) {
+          return { allowed: false, error: 'This request exceeds your remaining AI budget.' };
+        }
+
+        transaction.update(userDocRef, {
+          'aiBudget.used': used + estimatedCost,
+        });
+
+        return { allowed: true };
+      });
+
+      return result;
+    } catch {
+      return { allowed: true };
+    }
   }
 
   async generate(request: AIGatewayRequest): Promise<AIGatewayResponse> {
@@ -117,34 +256,41 @@ export class AIGateway {
       return { content: this.getFallbackResponse(difficulty), model: 'fallback-no-key', tokensUsed: 0, costUsd: 0, cached: false, error: 'AI service not configured (missing API key).' };
     }
 
-    if (request.userId) {
-      const budget = this.userBudgets.get(request.userId);
-      if (budget && budget.used >= budget.limit) {
-        return { content: '', model: 'budget-limit', tokensUsed: 0, costUsd: 0, cached: false, error: 'AI usage limit reached for this billing period.' };
-      }
+    const userPlan = request.userId ? await this.getUserPlan(request.userId) : null;
+    const userTier = userPlan?.tier ?? 0;
+
+    const route = this.selectRoute(difficulty, userTier, keys);
+    if (!route) {
+      return { content: this.getFallbackResponse(difficulty), model: 'no-route', tokensUsed: 0, costUsd: 0, cached: false, error: 'No suitable AI model available for your plan.' };
     }
 
-    const cacheKey = `${request.systemPrompt ?? ''}|${request.prompt}`;
-    const cached = this.cache.get(cacheKey);
-    if (cached) return cached;
+    const cacheHit = await this.cache.find(request.prompt, request.systemPrompt ?? '');
+    if (cacheHit) return cacheHit;
 
-    const route = MODEL_ROUTES[difficulty];
-    const selected = route[0];
-    const estimatedTokens = Math.ceil((request.prompt.length + (request.systemPrompt?.length ?? 0)) / 4);
-    const estimatedCost = (estimatedTokens / 1000) * (selected.costPer1kInput + selected.costPer1kOutput);
+    const ragContext = request.enableRAG
+      ? buildRAGContext(await searchRelevantContext(request.prompt, 5, 0.5, request.ragCategory))
+      : '';
 
-    if (request.userId) {
-      const budget = this.userBudgets.get(request.userId);
-      if (budget && budget.used + estimatedCost > budget.limit) {
-        return { content: '', model: 'budget-limit', tokensUsed: 0, costUsd: 0, cached: false, error: 'This request exceeds your remaining AI budget.' };
-      }
+    const augmentedPrompt = ragContext
+      ? `Use the following reference information to answer the user's question.\n\nReference information:\n${ragContext}\n\nUser question:\n${request.prompt}`
+      : request.prompt;
+
+    const estimatedInputTokens = estimateTokens(augmentedPrompt) + estimateTokens(request.systemPrompt ?? '');
+    const estimatedCost = (estimatedInputTokens / 1000) * (route.costPer1kInput + route.costPer1kOutput);
+
+    const budgetCheck = await this.fetchAndBudget(request.userId, estimatedCost);
+    if (!budgetCheck.allowed) {
+      return { content: '', model: 'budget-limit', tokensUsed: 0, costUsd: 0, cached: false, error: budgetCheck.error || 'Budget limit reached.' };
     }
 
-    let lastError: string = '';
+    let lastError = '';
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
-        const content = await this.callModel(selected.provider, selected.model, request);
+        const content = await this.callModel(route.provider, route.model, {
+          ...request,
+          prompt: augmentedPrompt,
+        });
 
         if (!content) {
           lastError = 'Empty response from AI model';
@@ -153,15 +299,14 @@ export class AIGateway {
         }
 
         const response: AIGatewayResponse = {
-          content, model: selected.model,
-          tokensUsed: estimatedTokens, costUsd: estimatedCost, cached: false,
+          content,
+          model: route.model,
+          tokensUsed: estimatedInputTokens,
+          costUsd: estimatedCost,
+          cached: false,
         };
 
-        this.cache.set(cacheKey, response);
-        if (request.userId) {
-          const budget = this.userBudgets.get(request.userId);
-          if (budget) budget.used += estimatedCost;
-        }
+        await this.cache.store(request.systemPrompt ?? '', request.prompt, response);
         return response;
       } catch (error: any) {
         lastError = sanitizeError(error);
@@ -170,30 +315,34 @@ export class AIGateway {
           lastError = 'AI request timed out';
         }
 
-        const modelHasNoKey = selected.provider === 'gemini' && !keys.gemini
-          || selected.provider === 'openai' && !keys.openai
-          || selected.provider === 'anthropic' && !keys.anthropic;
+        const modelHasNoKey =
+          (route.provider === 'gemini' && !keys.gemini) ||
+          (route.provider === 'openai' && !keys.openai) ||
+          (route.provider === 'anthropic' && !keys.anthropic);
         if (modelHasNoKey) break;
 
         if (attempt < MAX_RETRIES) {
           console.warn(`AI call attempt ${attempt + 1} failed: ${lastError}, retrying...`);
           await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
-          continue;
         }
       }
     }
 
-    const fallbackRoute = route.slice(1).find(r =>
-      r.provider === 'gemini' && keys.gemini
-      || r.provider === 'openai' && keys.openai
-      || r.provider === 'anthropic' && keys.anthropic
-    );
+    const fallbackRoute = MODEL_ROUTES[difficulty]
+      .filter(r => r.model !== route.model)
+      .filter(r => r.minTier <= userTier)
+      .find(r =>
+        (r.provider === 'gemini' && keys.gemini) ||
+        (r.provider === 'openai' && keys.openai) ||
+        (r.provider === 'anthropic' && keys.anthropic)
+      );
+
     if (fallbackRoute) {
       try {
         const content = await this.callModel(fallbackRoute.provider, fallbackRoute.model, request);
         return {
           content, model: fallbackRoute.model,
-          tokensUsed: estimatedTokens, costUsd: estimatedCost, cached: false,
+          tokensUsed: estimatedInputTokens, costUsd: (estimatedInputTokens / 1000) * (fallbackRoute.costPer1kInput + fallbackRoute.costPer1kOutput), cached: false,
           error: `Primary model failed. Used fallback.`,
         };
       } catch {

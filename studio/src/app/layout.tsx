@@ -3,6 +3,7 @@ import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { getLocale } from 'next-intl/server';
 import { organizationSchema, websiteSchema, faqPageSchema, FAQ_DATA } from "@/lib/seo";
+import { CookieBanner } from "@/components/cookie-banner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
 const syne = Syne({
@@ -107,6 +108,7 @@ export default async function RootLayout({
           crossOrigin="anonymous"
         />
         {children}
+        <CookieBanner />
         <script
           dangerouslySetInnerHTML={{
             __html: `

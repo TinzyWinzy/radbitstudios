@@ -26,6 +26,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<any>;
   logout: () => Promise<any>;
   refreshUserData: () => Promise<void>;
+  deleteAccount: () => Promise<{ success: boolean; error?: string }>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -37,6 +38,7 @@ export const AuthContext = createContext<AuthContextType>({
   signInWithGoogle: async () => {},
   logout: async () => {},
   refreshUserData: async () => {},
+  deleteAccount: async () => ({ success: false, error: 'Not initialized' }),
 });
 
 const createUserDocument = async (user: User) => {
@@ -148,6 +150,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return signOut(auth);
   };
 
+  const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return { success: false, error: 'No user signed in.' };
+
+      const idToken = await currentUser.getIdToken();
+
+      const res = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.error || 'Failed to delete account.' };
+
+      await currentUser.delete();
+      document.cookie = '__session=; path=/; max-age=0; SameSite=Lax;';
+      setUser(null);
+
+      return { success: true };
+    } catch (error: any) {
+      if (error.code === 'auth/requires-recent-login') {
+        return { success: false, error: 'Please sign out and sign back in, then try again. This is a security requirement.' };
+      }
+      return { success: false, error: error.message || 'An unexpected error occurred.' };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -156,7 +187,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     signIn,
     signInWithGoogle,
     logout,
-    refreshUserData
+    refreshUserData,
+    deleteAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

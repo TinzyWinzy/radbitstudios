@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap } from "lucide-react";
+import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap, Shield, Download } from "lucide-react";
 import {
   collection,
   query,
@@ -29,6 +29,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase/firebase";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import {
   Accordion,
@@ -87,8 +89,9 @@ const agentIcons: { [key: string]: React.ReactNode } = {
 
 
 export default function SettingsPage() {
-    const { user, loading: authLoading, refreshUserData } = useContext(AuthContext);
+    const { user, loading: authLoading, refreshUserData, deleteAccount } = useContext(AuthContext);
     const searchParams = useSearchParams();
+    const router = useRouter();
 
     const [activeTab, setActiveTab] = useState('profile');
     const [displayName, setDisplayName] = useState('');
@@ -103,6 +106,8 @@ export default function SettingsPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isChangingPlan, setIsChangingPlan] = useState(false);
     const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
     const { toast } = useToast();
 
      useEffect(() => {
@@ -359,6 +364,53 @@ export default function SettingsPage() {
 
     const currentPlanName = (user as any).plan || 'Free';
 
+    const handleDeleteAccount = async () => {
+      setIsDeleting(true);
+      setDeleteError(null);
+      const result = await deleteAccount();
+      setIsDeleting(false);
+      if (result.success) {
+        toast({ title: 'Account Deleted', description: 'Your account and data have been deleted.' });
+        router.push('/');
+      } else {
+        setDeleteError(result.error || 'Failed to delete account.');
+      }
+    };
+
+    const handleExportData = async () => {
+      setIsExporting(true);
+      try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) return;
+
+        const idToken = await currentUser.getIdToken();
+        const res = await fetch('/api/auth/delete-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken, exportOnly: true }),
+        });
+
+        if (!res.ok) {
+          toast({ title: 'Export Failed', description: 'Could not export data.', variant: 'destructive' });
+          return;
+        }
+
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `radbit-data-export-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast({ title: 'Data Exported', description: 'Your data has been downloaded.' });
+      } catch (err: any) {
+        toast({ title: 'Export Failed', description: err.message, variant: 'destructive' });
+      } finally {
+        setIsExporting(false);
+      }
+    };
+
   return (
     <div className="space-y-8">
       <div>
@@ -376,6 +428,7 @@ export default function SettingsPage() {
           <TabsTrigger value="assessment-history">Assessment History</TabsTrigger>
           <TabsTrigger value="generation-history">Generation History</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
+          <TabsTrigger value="privacy">Privacy & Data</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
@@ -725,6 +778,116 @@ export default function SettingsPage() {
                 </CardContent>
             </Card>
           </TabsContent>
+        <TabsContent value="privacy">
+          <Card>
+            <CardHeader>
+              <CardTitle>Privacy & Data</CardTitle>
+              <CardDescription>
+                Manage your data and privacy preferences in accordance with POPIA, GDPR, and the Zimbabwe Cyber Act.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-primary" />
+                  Privacy Policy
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Read how we collect, use, and protect your personal data in our{' '}
+                  <Link href="/privacy" className="text-primary hover:underline font-medium" target="_blank">
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
+              </div>
+
+              <div className="border-t border-border pt-4 space-y-4">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                  Delete Account
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Permanently delete your account and all associated data. This action cannot be undone.
+                  The following data will be removed:
+                </p>
+                <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                  <li>Your profile and business information</li>
+                  <li>Assessment history and results</li>
+                  <li>AI generation history</li>
+                  <li>Bookmarks and saved items</li>
+                  <li>Messages and conversations</li>
+                  <li>Notifications</li>
+                </ul>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="gap-2">
+                      <Trash2 className="h-4 w-4" />
+                      Delete My Account
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action permanently deletes your account and all associated data.
+                        This cannot be undone. Your data will be removed within 30 days.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    {deleteError && (
+                      <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
+                        {deleteError}
+                      </div>
+                    )}
+                    <AlertDialogFooter>
+                      <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        disabled={isDeleting}
+                        onClick={handleDeleteAccount}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        {isDeleting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          'Yes, Delete Everything'
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+
+              <div className="border-t border-border pt-4 space-y-4">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Download className="h-4 w-4 text-primary" />
+                  Data Portability
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  You have the right to request a copy of your personal data in a portable format (GDPR Article 20).
+                </p>
+                <Button variant="outline" size="sm" className="gap-2" onClick={handleExportData} disabled={isExporting}>
+                  {isExporting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Download className="h-4 w-4" />
+                  )}
+                  {isExporting ? 'Exporting...' : 'Export My Data'}
+                </Button>
+              </div>
+
+              <div className="border-t border-border pt-4">
+                <p className="text-xs text-muted-foreground">
+                  For questions about your data rights, contact{' '}
+                  <a href="mailto:privacy@radbitsmehub.co.zw" className="text-primary hover:underline">privacy@radbitsmehub.co.zw</a>.
+                  For POPIA enquiries, contact the Information Regulator (South Africa).
+                  For Zimbabwe Cyber Act enquiries, contact POTRAZ.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
         <TabsContent value="branding">
           <Card>
             <CardHeader>
