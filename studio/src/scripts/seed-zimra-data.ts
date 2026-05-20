@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config();
 
-import { indexDocument } from '@/services/ai/rag';
+import { indexDocument } from '@/services/ai/rag.server';
 
 const ZIMRA_KNOWLEDGE = [
   {

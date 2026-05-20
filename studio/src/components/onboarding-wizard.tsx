@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase/firebase';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, limit } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,8 +29,9 @@ export function OnboardingWizard() {
 
   const checkAssessment = useCallback(async () => {
     if (!user) return;
-    const assessmentsSnap = await getDoc(doc(db, 'assessments', user.uid));
-    if (assessmentsSnap.exists()) {
+    const q = query(collection(db, 'assessments'), where('userId', '==', user.uid), limit(1));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
       setHasAssessment(true);
     }
   }, [user]);

@@ -74,16 +74,26 @@ service cloud.firestore {
       allow create, update, delete: if false; // server-side only
     }
 
+    // ─── INVOICES ─────────────────────────────────────────────────────────────
+    match /invoices/{invoiceId} {
+      allow get: if request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+    }
+
     // ─── BOOKMARKS ─────────────────────────────────────────────────────────────
     match /users/{userId}/bookmarks/{bookmarkId} {
       allow read, write, delete: if request.auth.uid == userId;
     }
 
     // ─── BLOG POSTS ──────────────────────────────────────────────────────────
-    // Public read. Only users with admin role in Firebase custom claims can write.
-    match /posts/{postId} {
-      allow read: if request.auth != null;
-      allow create, update, delete: if request.auth != null && request.auth.token.role == 'admin';
+    // Public read for published posts. Admin dashboard uses adminDb for writes.
+    // Client-side blog listing reads published posts with userId filter.
+    match /blog_posts/{postId} {
+      allow get: if request.auth != null;
+      allow list: if request.auth != null;
+      allow create: if request.auth != null && request.auth.token.role == 'admin';
+      allow update, delete: if request.auth != null && request.auth.token.role == 'admin';
     }
 
     // ─── COMMUNITY THREADS ────────────────────────────────────────────────────
