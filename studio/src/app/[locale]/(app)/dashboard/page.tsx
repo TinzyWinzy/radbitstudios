@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -90,6 +90,7 @@ export default function DashboardPage() {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
+  const upgradeShown = useRef(false);
 
   const hasCompletedProfile = user && (user as any).businessName && (user as any).industry;
 
@@ -104,7 +105,8 @@ export default function DashboardPage() {
       try {
         const usageResult = await checkAndDecrementUsage(user.uid, 'dashboardInsights');
         if (!usageResult.success) {
-          if (usageResult.upgrade) {
+          if (usageResult.upgrade && !upgradeShown.current) {
+            upgradeShown.current = true;
             setUpgradeInfo(usageResult.upgrade);
             setIsLoadingInsights(false);
             return;
