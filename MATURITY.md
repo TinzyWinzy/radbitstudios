@@ -1,23 +1,23 @@
 # Radbit SME Hub — System Maturity Assessment & Implementation Plan
 
-## Maturity Rating: 4.5 / 10
+## Maturity Rating: 5.5 / 10
 
 ### Score Breakdown
 
 | Dimension | Score | Rationale |
 |---|---|---|
-| **Frontend** | 6.5 | Functional Next.js 14 app with 13 routes, 38 shadcn components, dark/light theme, responsive layout, Zod validation on key forms, error boundaries, loading states. Missing: PWA installability, offline support, i18n integration, performance budgets, device adaptation. |
-| **Backend** | 3.0 | MVP-level: Firebase Auth + Firestore + 6 Genkit AI flows. No API gateway, no microservices, no Redis, no queue system, no rate limiting enforcement, no WebSocket support. Graceful degradation not implemented. |
-| **Database** | 2.5 | Firestore (NoSQL) — insufficient for relational data (tenders, payments, subscriptions, invoices). No PostgreSQL, no RLS, no audit logging. Schema exists in docs/ but not deployed. |
-| **AI/ML** | 4.0 | 6 Genkit flows with Gemini 2.0 Flash. Zod schemas on all inputs, try/catch on all flows, caching on dashboard. Missing: multi-model routing, token budgeting, RAG, semantic caching, A/B testing, cost monitoring. |
-| **PWA & Offline** | 1.0 | Manifest + SW created but not wired into app. No service worker registration in root layout. No IndexedDB hooks integrated. No Background Sync usage. No offline detection in components. |
-| **Payments** | 0.5 | Subscription plan definitions exist. No payment integration, no EcoCash/Stripe, no multi-currency, no invoice generation, no billing engine, no webhook handling. |
-| **Communications** | 0.5 | Basic in-app toast notifications only. No WhatsApp integration, no SMS, no push notifications, no email, no notification orchestration, no WhatsApp menu. |
-| **Security** | 3.5 | Firestore rules are good. `.env` removed from git. Zod validation on inputs. Firebase Auth with OTP + Google. Missing: JWT rotation, RBAC beyond auth check, rate limiting enforcement, encryption at rest for PII, audit logging, CSP headers, brue force protection, OWASP scanning. |
-| **Compliance** | 1.0 | No compliance documentation integrated into codebase. No GDPR deletion flow wired. No POPIA/Zim Cyber Act consent capture. No cookie banner. No privacy policy in footer. |
-| **Infrastructure** | 2.0 | Firebase App Hosting with `apphosting.yaml`. No Terraform, no AWS, no Cloudflare, no CDN configuration deployed, no monitoring, no CI/CD pipeline beyond Firebase, no staging environment. |
-| **SEO & Content** | 1.5 | Sitemap + robots created. Per-page metadata added. No content hub, no structured data, no blog, no keyword targeting, no AdSense, no analytics pipeline. |
-| **Documentation** | 7.0 | Comprehensive docs: architecture, database, Terraform, cost estimates, DR runbook, AI gateway, payments, notifications, security, threat model, content strategy, platform overview. |
+| **Frontend** | 8.5 | **Hardened**: Wired service worker and manifest, robust loading states, error boundaries across all route groups, form validations using Zod, and device capability detection. Missing: performance budgets, manual asset pipeline optimization. |
+| **Backend** | 4.5 | **Improved**: Custom rate limiting, edge-level JWT verification for Firebase session cookies, input sanitization, and brute-force Map lockout. Missing: NestJS API Gateway migration, serverless database architecture. |
+| **Database** | 3.5 | **Improved**: Integrated IndexedDB for client-side offline assessment state caching and crash recovery. Missing: PostgreSQL relational database, DDL schemas not live. |
+| **AI/ML** | 5.0 | **Improved**: Wired up usage tracking and feature-gating for all AI flows, restricting features based on active user subscription plans. Missing: semantic caching, model routing, token budgeting, and RAG. |
+| **PWA & Offline** | 8.0 | **Hardened**: Service worker registration active in root layout, custom offline fallback page built, cache strategies (network first, stale-while-revalidate) configured, and IndexedDB auto-save wired. Missing: full background sync implementation. |
+| **Payments** | 8.5 | **Hardened**: Complete payment orchestration layer supporting EcoCash, Stripe, PayFast, and PayNow. Subscription state machine with dunning policies (3 retries) and ZIMRA-compliant invoices are fully coded and tested. Missing: Live production credential validation. |
+| **Communications** | 4.0 | **Improved**: Priority-based Notification Orchestrator routing to Meta Cloud API WhatsApp provider, Twilio SMS, and Push notifications. Missing: SMS/Push currently use mock/logging adapters; templates require Meta Cloud API activation. |
+| **Security** | 6.5 | **Hardened**: Added brute-force lockout, application-level AES-256-GCM PII encryption, JWT verification in edge middleware, and HTML sanitization. Missing: KMS integration for security keys, complete CSP header tuning. |
+| **Compliance** | 1.0 | **Unchanged**: No privacy policy page, cookie banner, or consent flow for POPIA/Zim Cyber Act is currently wired into the codebase. GDPR deletion flow is unimplemented. |
+| **Infrastructure** | 3.0 | **Improved**: Staging environment branch logic configured in `apphosting.yaml`. Missing: AWS provisioning, Terraform IaC, Meilisearch container, and multi-region failover. |
+| **SEO & Content** | 6.0 | **Hardened**: Automatic sitemaps, robots.txt, rich schema generation (FAQPage, WebSite, Organization) in root layout, and `/resources` page foundation. Missing: Content hub is not populated with real guides/articles. |
+| **Documentation** | 8.0 | **Excellent**: Architecture blueprints (C4 model, PostgreSQL DDL, cost estimates, DR runbooks, threat models) are fully organized and aligned with the codebase. |
 
 ## Implementation Roadmap
 
