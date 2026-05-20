@@ -23,6 +23,7 @@ import {
   Newspaper,
   TrendingUp,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts"
@@ -90,29 +91,32 @@ export default function DashboardPage() {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
+  const [creditsExhausted, setCreditsExhausted] = useState(false);
   const upgradeShown = useRef(false);
 
   const hasCompletedProfile = user && (user as any).businessName && (user as any).industry;
 
   useEffect(() => {
+    let mounted = true;
+
     const fetchDashboardInsights = async () => {
       if (!user || !hasCompletedProfile) {
-        setIsLoadingInsights(false);
+        if (mounted) setIsLoadingInsights(false);
         return;
       };
 
-      setIsLoadingInsights(true);
+      if (mounted) setIsLoadingInsights(true);
       try {
         const usageResult = await checkAndDecrementUsage(user.uid, 'dashboardInsights');
         if (!usageResult.success) {
           if (usageResult.upgrade && !upgradeShown.current) {
             upgradeShown.current = true;
-            setUpgradeInfo(usageResult.upgrade);
-            setIsLoadingInsights(false);
+            if (mounted) setUpgradeInfo(usageResult.upgrade);
+            if (mounted) setIsLoadingInsights(false);
             return;
           }
-          setDailyTips([usageResult.message]);
-          setIsLoadingInsights(false);
+          if (mounted) setCreditsExhausted(true);
+          if (mounted) setIsLoadingInsights(false);
           return;
         }
         const result = await generateDashboardInsights({
@@ -120,23 +124,27 @@ export default function DashboardPage() {
           businessDescription: (user as any).businessDescription || '',
           industry: (user as any).industry
         });
-        setDailyTips(result.dailyTips);
-        setRecommendations(result.recommendations);
+        if (mounted) {
+          setDailyTips(result.dailyTips);
+          setRecommendations(result.recommendations);
+        }
       } catch (error) {
         console.error("Error fetching dashboard insights:", error);
-        setDailyTips(["Error loading tips. Please refresh."]);
-        setRecommendations(["Error loading recommendations. Please refresh."]);
+        if (mounted) {
+          setDailyTips(["Error loading tips. Please refresh."]);
+          setRecommendations(["Error loading recommendations. Please refresh."]);
+        }
       } finally {
-        setIsLoadingInsights(false);
+        if (mounted) setIsLoadingInsights(false);
       }
     };
     
     const fetchAssessmentData = async () => {
         if (!user) {
-            setIsLoadingAssessment(false);
+            if (mounted) setIsLoadingAssessment(false);
             return;
         }
-        setIsLoadingAssessment(true);
+        if (mounted) setIsLoadingAssessment(true);
         try {
             const q = query(
                 collection(db, "assessments"),
@@ -148,7 +156,7 @@ export default function DashboardPage() {
                 const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);
                 return bDate.getTime() - aDate.getTime();
             });
-            if (sorted.length > 0) {
+            if (sorted.length > 0 && mounted) {
                 const doc = sorted[0];
                 const data = doc.data();
 
@@ -170,19 +178,21 @@ export default function DashboardPage() {
                     chartData,
                     aiSummary: data.summary,
                 });
-            } else {
+            } else if (mounted) {
                  setAssessmentData(null);
             }
         } catch (error) {
              console.error("Error fetching assessment data:", error);
-             setAssessmentData(null);
+             if (mounted) setAssessmentData(null);
         } finally {
-            setIsLoadingAssessment(false);
+            if (mounted) setIsLoadingAssessment(false);
         }
     }
 
     fetchDashboardInsights();
     fetchAssessmentData();
+
+    return () => { mounted = false; };
   }, [user, hasCompletedProfile]);
 
 
@@ -310,7 +320,7 @@ export default function DashboardPage() {
                       <Skeleton className="h-3 w-full" />
                   </div>
                </div>
-              ) : hasCompletedProfile ? (
+              ) : hasCompletedProfile && !creditsExhausted ? (
                 <>
                 <div>
                   <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Daily Tips</h3>
@@ -333,6 +343,22 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 </>
+              ) : creditsExhausted && hasCompletedProfile ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10">
+                    <Sparkles className="size-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-md">AI Insights Exhausted</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      You&apos;ve used all your dashboard insights credits for this billing period.
+                    </p>
+                  </div>
+                  <Button onClick={() => window.location.href = '/settings?tab=plan'}>
+                    Upgrade to Growth — $5/mo
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
               ) : (
                 <div className="text-center text-muted-foreground py-8">
                   <p>Complete your business profile to unlock personalized AI insights.</p>
