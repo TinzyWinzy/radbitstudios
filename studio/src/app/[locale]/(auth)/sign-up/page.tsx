@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Icons } from '@/components/icons';
 import { z } from 'zod';
+import { useUtm, getStoredUtm } from '@/hooks/use-utm';
 
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -33,6 +34,8 @@ export default function SignUpPage() {
   const router = useRouter();
   const { toast } = useToast();
 
+  useUtm();
+
   useEffect(() => {
     document.title = 'Create Account — Radbit';
   }, []);
@@ -42,6 +45,19 @@ export default function SignUpPage() {
       router.push('/dashboard');
     }
   }, [user, router]);
+
+  useEffect(() => {
+    if (!user) return;
+    const utm = getStoredUtm();
+    if (!utm.ref) return;
+    user.getIdToken().then((idToken) => {
+      fetch('/api/referral/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken, referralCode: utm.ref }),
+      }).catch(() => {});
+    });
+  }, [user]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

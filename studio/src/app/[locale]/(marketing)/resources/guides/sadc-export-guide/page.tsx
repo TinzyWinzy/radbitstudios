@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Globe, FileCheck, Truck, Calculator } from "lucide-react";
+import { FAQSchema } from "@/components/faq-schema";
 
 const steps = [
   {
@@ -118,6 +119,7 @@ export default function SadcExportGuidePage() {
               </div>
             ))}
           </div>
+          <FAQSchema questions={faq.map(({ q, a }) => ({ question: q, answer: a }))} />
         </section>
 
         {/* CTA */}

@@ -368,8 +368,14 @@ export default function AssessmentPage() {
 
   const handleShare = () => {
     if (!aiSummary) return;
-    const shareText = `*My Business Readiness Results from Radbit SME Hub:*\n\n${aiSummary}\n\nAssess your own business here: ${window.location.origin}/assessment`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+
+    let total = 0;
+    for (let i = 0; i < questions.length; i++) total += answers[i]?.score || 0;
+    const overallScore = Math.round(total / (questions.length * 4) * 100);
+
+    const scoreCardUrl = `${window.location.origin}/api/og/score?score=${overallScore}&user=${encodeURIComponent(user?.displayName || 'My Business')}&category=Digital%20Readiness`;
+    const shareText = `*My Score: ${overallScore}/100 — Digital Readiness Assessment* 🚀\n\n${aiSummary}\n\nAssess your own business: ${window.location.origin}/assessment`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + scoreCardUrl)}`;
     window.open(whatsappUrl, '_blank');
   }
 

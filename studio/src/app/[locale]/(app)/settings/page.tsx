@@ -32,6 +32,7 @@ import { db, auth } from "@/lib/firebase/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { ReferralSection } from "@/components/referral-section";
 import {
   Accordion,
   AccordionContent,
@@ -420,13 +421,14 @@ export default function SettingsPage() {
         </p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="business">Business</TabsTrigger>
           <TabsTrigger value="account">Account & Plan</TabsTrigger>
           <TabsTrigger value="support">Support</TabsTrigger>
           <TabsTrigger value="assessment-history">Assessment History</TabsTrigger>
           <TabsTrigger value="generation-history">Generation History</TabsTrigger>
+          <TabsTrigger value="referral">Referral</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
           <TabsTrigger value="privacy">Privacy & Data</TabsTrigger>
         </TabsList>
@@ -888,12 +890,25 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="branding">
+         <TabsContent value="referral">
           <Card>
             <CardHeader>
-              <CardTitle>White-Label Branding</CardTitle>
+              <CardTitle>Referral Program</CardTitle>
               <CardDescription>
-                Customize your Radbit experience for your brand. Available on Enterprise.
+                Invite other business owners to Radbit and earn AI credits.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <ReferralSection />
+            </CardContent>
+          </Card>
+         </TabsContent>
+         <TabsContent value="branding">
+          <Card>
+            <CardHeader>
+              <CardTitle>Branding</CardTitle>
+              <CardDescription>
+                Update your brands look and feel with a custom logo and theme.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

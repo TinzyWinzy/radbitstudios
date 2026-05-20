@@ -7,18 +7,33 @@ interface InArticleAdProps {
 }
 
 export function InArticleAd({ slot = "blog-in-article" }: InArticleAdProps) {
-  const ref = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const loaded = useRef(false);
 
   useEffect(() => {
-    if (ref.current) return;
-    ref.current = true;
-    try {
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-    } catch {}
+    if (loaded.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !loaded.current) {
+            loaded.current = true;
+            try {
+              ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+            } catch {}
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: "200px" }
+    );
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="my-8 flex justify-center">
+    <div ref={containerRef} className="my-8 flex justify-center">
       <ins
         className="adsbygoogle"
         style={{ display: "block", textAlign: "center" }}

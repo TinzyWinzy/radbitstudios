@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Wallet } from "lucide-react";
+import { FAQSchema } from "@/components/faq-schema";
 
 export const metadata: Metadata = {
   title: "EcoCash Business vs Personal: Which Should You Use for Payments? (2026)",
@@ -91,6 +92,7 @@ export default function EcoCashBusinessVsPersonalPage() {
               <div key={i}><h3 className="font-semibold mb-2">{item.q}</h3><p className="text-muted-foreground leading-relaxed">{item.a}</p></div>
             ))}
           </div>
+          <FAQSchema questions={faq.map(({ q, a }) => ({ question: q, answer: a }))} />
         </section>
 
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8">

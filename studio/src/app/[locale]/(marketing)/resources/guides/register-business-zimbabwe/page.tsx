@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Calendar, Building2, FileCheck, Stamp, Wallet } from "lucide-react";
+import { FAQSchema } from "@/components/faq-schema";
 
 const F =
   (process.env.FRONTEND_URL || "https://radbitsmehub.co.zw").replace(/\/$/, "");
@@ -154,6 +155,7 @@ export default function RegisterBusinessZimbabwePage() {
               </div>
             ))}
           </div>
+          <FAQSchema questions={faq.map(({ q, a }) => ({ question: q, answer: a }))} />
         </section>
 
         {/* CTA */}
