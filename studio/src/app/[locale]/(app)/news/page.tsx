@@ -16,10 +16,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
-import { getLatestNews } from '@/services/news-scraper';
+import { getLatestNewsAction as getLatestNews } from '@/app/actions';
 import { generatePersonalizedBrief } from '@/ai/flows/generate-personalized-brief';
 import { formatDistanceToNow } from 'date-fns';
-import type { NewsArticle } from '@/services/news-scraper';
+import type { NewsArticle } from '@/types/news';
 
 const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   policy: { label: 'Policy', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' },

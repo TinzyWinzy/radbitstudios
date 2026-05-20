@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
-import { getLatestTenders } from '@/services/tender-scraper';
+import { getLatestTendersAction as getLatestTenders } from '@/app/actions';
 import { format, differenceInDays } from 'date-fns';
 
 type Tender = {

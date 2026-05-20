@@ -4,6 +4,7 @@ import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { upsertNewsBatch, getNews, newsFromDb, logSync } from '@/lib/sqlite';
 import fs from 'fs';
 import path from 'path';
+import type { NewsArticle } from '@/types/news';
 
 const logFile = path.join(process.cwd(), 'data', 'news-scraper.log');
 function logToFile(message: string) {
@@ -17,19 +18,7 @@ function logToFile(message: string) {
   console.log(message);
 }
 
-export interface NewsArticle {
-  id: string;
-  title: string;
-  summary: string;
-  sourceUrl: string;
-  sourceName: string;
-  publishedAt: Date;
-  category: 'policy' | 'finance' | 'technology' | 'business' | 'regulatory' | 'general';
-  industryTags: string[];
-  region: string;
-  processedAt: Date;
-  scrapedAt: Date;
-}
+export type { NewsArticle };
 
 interface FeedConfig {
   url: string;
