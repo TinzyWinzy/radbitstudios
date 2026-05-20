@@ -35,6 +35,7 @@ import { generateDashboardInsights } from "@/ai/flows/generate-dashboard-insight
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
 import { AuthContext } from "@/contexts/auth-context";
+import { withRetry } from "@/lib/retry";
 
 
 const overviewCards = [
@@ -150,7 +151,7 @@ export default function DashboardPage() {
                 collection(db, "assessments"),
                 where("userId", "==", user.uid)
             );
-            const querySnapshot = await getDocs(q);
+            const querySnapshot = await withRetry(() => getDocs(q));
             const sorted = querySnapshot.docs.sort((a, b) => {
                 const aDate = a.data().createdAt?.toDate?.() ?? new Date(0);
                 const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);

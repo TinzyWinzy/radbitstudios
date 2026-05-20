@@ -29,10 +29,14 @@ export function OnboardingWizard() {
 
   const checkAssessment = useCallback(async () => {
     if (!user) return;
-    const q = query(collection(db, 'assessments'), where('userId', '==', user.uid), limit(1));
-    const snap = await getDocs(q);
-    if (!snap.empty) {
-      setHasAssessment(true);
+    try {
+      const q = query(collection(db, 'assessments'), where('userId', '==', user.uid), limit(1));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        setHasAssessment(true);
+      }
+    } catch (err) {
+      console.warn('[OnboardingWizard] Failed to check assessment:', err);
     }
   }, [user]);
 

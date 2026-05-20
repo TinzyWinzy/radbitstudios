@@ -16,6 +16,7 @@ import { auth, db } from '@/lib/firebase/firebase';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { subscriptionPlans } from '@/lib/subscriptions';
 import type { UserRole } from '@/services/permissions';
+import { withRetry } from '@/lib/retry';
 
 interface AuthContextType {
   user: User | null;
@@ -40,22 +41,6 @@ export const AuthContext = createContext<AuthContextType>({
   refreshUserData: async () => {},
   deleteAccount: async () => ({ success: false, error: 'Not initialized' }),
 });
-
-async function withRetry<T>(fn: () => Promise<T>, retries = 2): Promise<T> {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      if (i === retries) throw err;
-      if (err.code === 'permission-denied' || err.message?.includes('Missing or insufficient permissions')) {
-        await new Promise(r => setTimeout(r, 300 * (i + 1)));
-        continue;
-      }
-      throw err;
-    }
-  }
-  throw new Error('unreachable');
-}
 
 const createUserDocument = async (user: User) => {
     const userDocRef = doc(db, 'users', user.uid);
@@ -111,12 +96,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userDoc = await withRetry(() => getDoc(userDocRef));
     if (userDoc.exists()) {
       setUser({ ...authUser, ...userDoc.data() } as User);
+      const docRole = userDoc.data().role as UserRole | undefined;
+      if (docRole && ['sme_owner', 'sme_staff', 'admin'].includes(docRole)) {
+        setRole(docRole);
+      } else {
+        const idTokenResult = await authUser.getIdTokenResult();
+        setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
+      }
     } else {
       setUser(authUser);
+      const idTokenResult = await authUser.getIdTokenResult();
+      setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
     }
-    const idTokenResult = await authUser.getIdTokenResult();
-    const customRole = idTokenResult.claims['role'] as UserRole | undefined;
-    setRole(customRole ?? 'sme_owner');
   }, []);
 
   useEffect(() => {

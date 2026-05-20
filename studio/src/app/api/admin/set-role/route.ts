@@ -1,0 +1,46 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { adminApp } from '@/lib/firebase/firebase-admin';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
+
+const VALID_ROLES = ['sme_owner', 'sme_staff', 'admin'] as const;
+
+export async function POST(request: NextRequest) {
+  try {
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Missing authorization token' }, { status: 401 });
+    }
+
+    const idToken = authHeader.slice(7);
+    const adminAuth = getAuth(adminApp);
+
+    const decoded = await adminAuth.verifyIdToken(idToken);
+    const callerUid = decoded.uid;
+
+    const callerDoc = await getFirestore(adminApp).collection('users').doc(callerUid).get();
+    const callerData = callerDoc.data();
+    if (!callerData || callerData.role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden: admin role required' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { uid, role } = body as { uid: string; role: string };
+
+    if (!uid || !role) {
+      return NextResponse.json({ error: 'Missing uid or role' }, { status: 400 });
+    }
+    if (!VALID_ROLES.includes(role as any)) {
+      return NextResponse.json({ error: `Invalid role. Must be one of: ${VALID_ROLES.join(', ')}` }, { status: 400 });
+    }
+
+    await adminAuth.setCustomUserClaims(uid, { role });
+
+    await getFirestore(adminApp).collection('users').doc(uid).set({ role }, { merge: true });
+
+    return NextResponse.json({ success: true, uid, role });
+  } catch (error: any) {
+    console.error('[API /api/admin/set-role] Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
