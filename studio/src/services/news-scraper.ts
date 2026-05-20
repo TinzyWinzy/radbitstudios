@@ -1,7 +1,7 @@
 import parser from 'rss-parser';
 import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
-import { upsertNewsBatch, getNews, newsFromDb, logSync } from '@/lib/sqlite';
+import { saveNews, loadNews, safeNewsFromDb, saveLog } from '@/lib/scraper-storage';
 import fs from 'fs';
 import path from 'path';
 import type { NewsArticle } from '@/types/news';
@@ -205,13 +205,13 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     logToFile(`First article: ${JSON.stringify({ id: allArticles[0].id, title: allArticles[0].title?.slice(0, 50) })}`);
     logToFile(`All IDs: ${allArticles.map(a => a.id).join(', ')}`);
     try {
-      await upsertNewsBatch(allArticles);
-      logToFile(`Saved ${results.scraped} articles to SQLite`);
-      await logSync('news', results.scraped, 'success');
+      await saveNews(allArticles);
+      logToFile(`Saved ${results.scraped} articles`);
+      try { await saveLog('news', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
     } catch (err: any) {
       results.errors = allArticles.length;
-      logToFile(`SQLite write error: ${err.message}`);
-      await logSync('news', 0, 'error', err.message);
+      logToFile(`Write error: ${err.message}`);
+      try { await saveLog('news', 0, 'error', err.message); } catch { /* saveLog failed, ignore */ }
     }
   } else {
     logToFile('No articles to save');
@@ -233,13 +233,13 @@ export async function getLatestNews(options: {
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const records = await getNews({
+  const records = await loadNews({
     limit: 200,
     category: category || undefined,
     region,
   });
 
-  let articles: NewsArticle[] = records.map(newsFromDb);
+  let articles: NewsArticle[] = records.map(safeNewsFromDb);
 
   if (industry) articles = articles.filter(a =>
     a.industryTags.some(t => t.toLowerCase().includes(industry.toLowerCase()))
@@ -255,9 +255,9 @@ export async function getNewsForUser(userId: string): Promise<NewsArticle[]> {
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const records = await getNews({ limit: 100 });
+  const records = await loadNews({ limit: 100 });
   const articles = records
-    .map(newsFromDb)
+    .map(safeNewsFromDb)
     .slice(0, 15);
 
   setCached(cacheKey, articles, 10 * 60 * 1000);

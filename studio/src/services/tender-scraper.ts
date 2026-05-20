@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
-import { upsertTenders, getTenders, tenderFromDb, logSync } from '@/lib/sqlite';
+import { saveTenders, loadTenders, safeTenderFromDb, saveLog } from '@/lib/scraper-storage';
 
 export interface Tender {
   id: string;
@@ -781,15 +781,15 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.al
 
   if (uniqueTenders.length > 0) {
     try {
-      await upsertTenders(uniqueTenders);
+      await saveTenders(uniqueTenders);
       results.scraped = uniqueTenders.length;
       results.errors = 0;
-      console.log(`[TenderScraper] Saved ${results.scraped} tenders to SQLite`);
-      await logSync('tenders', results.scraped, 'success');
+      console.log(`[TenderScraper] Saved ${results.scraped} tenders`);
+      try { await saveLog('tenders', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
     } catch (err: any) {
       results.errors = uniqueTenders.length;
-      console.error('[TenderScraper] SQLite write error:', err);
-      await logSync('tenders', 0, 'error', err.message);
+      console.error('[TenderScraper] Write error:', err);
+      try { await saveLog('tenders', 0, 'error', err.message); } catch { /* saveLog failed, ignore */ }
     }
   }
 
@@ -809,14 +809,14 @@ export async function getLatestTenders(options: {
   const cached = getCached<Tender[]>(cacheKey);
   if (cached) return cached;
 
-  const records = await getTenders({
+  const records = await loadTenders({
     limit: 200,
     status,
     sector,
     region,
   });
 
-  let tenders: Tender[] = records.map(tenderFromDb);
+  let tenders: Tender[] = records.map(safeTenderFromDb);
 
   const result = tenders.slice(0, n);
   setCached(cacheKey, result, 5 * 60 * 1000);
@@ -828,9 +828,9 @@ export async function getTendersForUser(userId: string): Promise<Tender[]> {
   const cached = getCached<Tender[]>(cacheKey);
   if (cached) return cached;
 
-  const records = await getTenders({ limit: 100 });
+  const records = await loadTenders({ limit: 100 });
   let tenders = records
-    .map(tenderFromDb)
+    .map(safeTenderFromDb)
     .filter((t: Tender) => t.status !== 'closed');
 
   setCached(cacheKey, tenders, 10 * 60 * 1000);

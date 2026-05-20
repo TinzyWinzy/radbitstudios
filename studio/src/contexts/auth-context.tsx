@@ -41,9 +41,25 @@ export const AuthContext = createContext<AuthContextType>({
   deleteAccount: async () => ({ success: false, error: 'Not initialized' }),
 });
 
+async function withRetry<T>(fn: () => Promise<T>, retries = 2): Promise<T> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      if (i === retries) throw err;
+      if (err.code === 'permission-denied' || err.message?.includes('Missing or insufficient permissions')) {
+        await new Promise(r => setTimeout(r, 300 * (i + 1)));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error('unreachable');
+}
+
 const createUserDocument = async (user: User) => {
     const userDocRef = doc(db, 'users', user.uid);
-    const userDocSnap = await getDoc(userDocRef);
+    const userDocSnap = await withRetry(() => getDoc(userDocRef));
 
     if (!userDocSnap.exists()) {
         const { uid, email, displayName, photoURL } = user;
@@ -89,9 +105,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole | null>(null);
   
   const fetchAndSetUser = useCallback(async (authUser: User) => {
+    await authUser.getIdToken(true);
     await createUserDocument(authUser);
     const userDocRef = doc(db, 'users', authUser.uid);
-    const userDoc = await getDoc(userDocRef);
+    const userDoc = await withRetry(() => getDoc(userDocRef));
     if (userDoc.exists()) {
       setUser({ ...authUser, ...userDoc.data() } as User);
     } else {
