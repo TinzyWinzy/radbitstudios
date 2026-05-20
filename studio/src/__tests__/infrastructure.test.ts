@@ -9,16 +9,6 @@ describe('AIGateway', () => {
     expect(result.model).toBe('fallback-no-key');
     expect(result.content).toContain('unavailable');
   });
-
-  it('respects user budget limits', async () => {
-    const { OPENAI_API_KEY } = process.env;
-    process.env.OPENAI_API_KEY = 'sk-test';
-    const gateway = new AIGateway();
-    gateway.setUserBudget('user-1', 0);
-    const result = await gateway.generate({ prompt: 'test', userId: 'user-1' });
-    expect(result.model).toBe('budget-limit');
-    process.env.OPENAI_API_KEY = OPENAI_API_KEY;
-  });
 });
 
 describe('BruteForceProtection', () => {

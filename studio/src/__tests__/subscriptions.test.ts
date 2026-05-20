@@ -40,10 +40,13 @@ describe("subscriptionPlans", () => {
     const requiredKeys: (keyof SubscriptionPlan["credits"])[] = [
       "logoGeneration",
       "assessmentSummary",
+      "exportAssessment",
       "dashboardInsights",
       "tendersCuration",
       "mentorChat",
       "templateGeneration",
+      "tenderProposal",
+      "taxCopilot",
     ];
     for (const plan of subscriptionPlans) {
       for (const key of requiredKeys) {
