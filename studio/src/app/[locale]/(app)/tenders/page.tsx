@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Briefcase, Search, ExternalLink, Calendar, DollarSign, Building2,
   Clock, AlertCircle, CheckCircle, Loader2, RefreshCw,
-  Bookmark, Zap
+  Bookmark, Zap, Globe, Lock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
@@ -136,6 +136,7 @@ export default function TendersPage() {
   const [tenders, setTenders] = useState<Tender[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
+  const [regionTab, setRegionTab] = useState<'zimbabwe' | 'regional'>('zimbabwe');
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -164,8 +165,13 @@ export default function TendersPage() {
     await loadTenders(true);
   };
 
+  const userPlan = (user as any)?.plan || 'Free';
+  const isRegional = regionTab === 'regional';
+
   const filteredTenders = tenders.filter(t => {
     if (activeTab !== 'all' && t.status !== activeTab) return false;
+    if (isRegional && t.region === 'Zimbabwe') return false;
+    if (!isRegional && t.region !== 'Zimbabwe') return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       return (
@@ -263,7 +269,7 @@ export default function TendersPage() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               {['all', 'open', 'closing_soon'].map(status => (
                 <Button
                   key={status}
@@ -275,6 +281,26 @@ export default function TendersPage() {
                   {status === 'all' ? 'All' : STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label || status}
                 </Button>
               ))}
+              <div className="h-4 w-px bg-border mx-1" />
+              <Button
+                variant={regionTab === 'zimbabwe' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setRegionTab('zimbabwe')}
+                className="text-xs"
+              >
+                <Building2 className="h-3 w-3 mr-1" />
+                Zimbabwe
+              </Button>
+              <Button
+                variant={regionTab === 'regional' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setRegionTab('regional')}
+                className="text-xs"
+              >
+                <Globe className="h-3 w-3 mr-1" />
+                SADC Region
+                {userPlan === 'Free' && <Lock className="h-3 w-3 ml-1 text-muted-foreground" />}
+              </Button>
               <span className="ml-auto text-xs text-muted-foreground">
                 {filteredTenders.length} tenders
               </span>
@@ -290,6 +316,17 @@ export default function TendersPage() {
                       <Skeleton className="h-4 w-full" />
                     </div>
                   ))}
+                </div>
+              ) : isRegional && userPlan === 'Free' ? (
+                <div className="text-center py-16 border border-dashed rounded-xl border-muted-foreground/20">
+                  <Lock className="h-10 w-10 mx-auto mb-4 text-muted-foreground/40" />
+                  <h3 className="text-lg font-semibold mb-2">Upgrade to View Regional Tenders</h3>
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+                    SADC and South Africa tenders are available on the Growth plan and above. Upgrade to access cross-border procurement opportunities.
+                  </p>
+                  <Button asChild>
+                    <a href="/pricing">Upgrade Now</a>
+                  </Button>
                 </div>
               ) : filteredTenders.length > 0 ? (
                 <div className="space-y-3">

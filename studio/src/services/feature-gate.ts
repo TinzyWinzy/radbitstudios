@@ -3,7 +3,7 @@ import { doc, getDoc, runTransaction } from 'firebase/firestore';
 import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
 
 export type PlanName = 'Free' | 'Growth' | 'Pro' | 'Enterprise';
-export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'dashboardInsights' | 'tendersCuration' | 'mentorChat' | 'templateGeneration' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance';
+export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot';
 
 export function getTierLevel(plan: PlanName): number {
   return PLAN_ORDER.indexOf(plan);
@@ -27,11 +27,15 @@ type FeatureGate = CreditGate | TierGate;
 
 const FEATURE_GATES: Record<string, FeatureGate> = {
   assessmentSummary:     { type: 'credit', creditKey: 'assessmentSummary' },
+  exportAssessment:      { type: 'credit', creditKey: 'exportAssessment' },
   templateGeneration:    { type: 'credit', creditKey: 'templateGeneration' },
   mentorChat:            { type: 'credit', creditKey: 'mentorChat' },
   logoGeneration:        { type: 'credit', creditKey: 'logoGeneration' },
   dashboardInsights:     { type: 'credit', creditKey: 'dashboardInsights' },
   tendersCuration:       { type: 'credit', creditKey: 'tendersCuration' },
+  taxCopilot:            { type: 'credit', creditKey: 'taxCopilot' },
+  tenderProposal:        { type: 'credit', creditKey: 'tenderProposal' },
+  tendersRegional:       { type: 'tier', minTier: 'Growth' },
   directMessages:        { type: 'tier', minTier: 'Growth' },
   communityPostAnalytics: { type: 'tier', minTier: 'Pro' },
   prioritySupport:       { type: 'tier', minTier: 'Pro' },

@@ -10,10 +10,13 @@ export interface SubscriptionPlan {
     credits: {
       logoGeneration: { remaining: number; total: number };
       assessmentSummary: { remaining: number; total: number };
+      exportAssessment: { remaining: number; total: number };
       dashboardInsights: { remaining: number; total: number };
       tendersCuration: { remaining: number; total: number };
       mentorChat: { remaining: number; total: number };
       templateGeneration: { remaining: number; total: number };
+      tenderProposal: { remaining: number; total: number };
+      taxCopilot: { remaining: number; total: number };
     };
   }
 
@@ -30,11 +33,14 @@ export interface SubscriptionPlan {
       ],
       credits: {
         assessmentSummary: { remaining: 1, total: 1 },
+        exportAssessment: { remaining: 1, total: 1 },
         templateGeneration: { remaining: 5, total: 5 },
         mentorChat: { remaining: 10, total: 10 },
         logoGeneration: { remaining: 5, total: 5 },
         dashboardInsights: { remaining: 10, total: 10 },
         tendersCuration: { remaining: 10, total: 10 },
+        tenderProposal: { remaining: 2, total: 2 },
+        taxCopilot: { remaining: 5, total: 5 },
       },
     },
     {
@@ -51,11 +57,14 @@ export interface SubscriptionPlan {
       ],
       credits: {
         assessmentSummary: { remaining: 10, total: 10 },
+        exportAssessment: { remaining: 10, total: 10 },
         templateGeneration: { remaining: 50, total: 50 },
         mentorChat: { remaining: 100, total: 100 },
         logoGeneration: { remaining: 25, total: 25 },
         dashboardInsights: { remaining: 999, total: 999 },
         tendersCuration: { remaining: 999, total: 999 },
+        tenderProposal: { remaining: 20, total: 20 },
+        taxCopilot: { remaining: 50, total: 50 },
       },
     },
     {
@@ -72,11 +81,14 @@ export interface SubscriptionPlan {
       ],
       credits: {
         assessmentSummary: { remaining: 999, total: 999 },
+        exportAssessment: { remaining: 999, total: 999 },
         templateGeneration: { remaining: 999, total: 999 },
         mentorChat: { remaining: 999, total: 999 },
         logoGeneration: { remaining: 100, total: 100 },
         dashboardInsights: { remaining: 9999, total: 9999 },
         tendersCuration: { remaining: 9999, total: 9999 },
+        tenderProposal: { remaining: 999, total: 999 },
+        taxCopilot: { remaining: 9999, total: 9999 },
       },
     },
     {
@@ -93,11 +105,14 @@ export interface SubscriptionPlan {
       ],
       credits: {
         assessmentSummary: { remaining: 9999, total: 9999 },
+        exportAssessment: { remaining: 9999, total: 9999 },
         templateGeneration: { remaining: 9999, total: 9999 },
         mentorChat: { remaining: 9999, total: 9999 },
         logoGeneration: { remaining: 9999, total: 9999 },
         dashboardInsights: { remaining: 9999, total: 9999 },
         tendersCuration: { remaining: 9999, total: 9999 },
+        tenderProposal: { remaining: 9999, total: 9999 },
+        taxCopilot: { remaining: 9999, total: 9999 },
       },
     },
   ];

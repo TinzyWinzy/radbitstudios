@@ -607,6 +607,131 @@ async function scrapeStanbicBank(): Promise<Tender[]> {
   return results;
 }
 
+async function scrapeSADC(): Promise<Tender[]> {
+  const results: Tender[] = [];
+
+  try {
+    const r = await axios.get('https://www.sadc.int/procurement-opportunities', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+
+    const links = $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/procurement|tender|bid|rfq|opportunity/i) && !href.match(/login|register|signin/i));
+    }).map((_, el) => ({ text: $(el).text().trim(), href: $(el).attr('href') ?? '' })).get();
+
+    for (const link of links.slice(0, 20)) {
+      const fullHref = link.href.startsWith('http') ? link.href : `https://www.sadc.int${link.href}`;
+      if (link.text && link.text.length > 3) {
+        results.push(enrichTender({
+          title: link.text,
+          description: `SADC Procurement: ${link.text}`,
+          organization: 'SADC',
+          sourceUrl: fullHref,
+          closingDate: null,
+          value: null,
+          sector: classifySector(link.text),
+          category: 'Tender Notice',
+          requirements: [],
+          region: 'SADC',
+        }));
+      }
+    }
+
+    console.log(`[TenderScraper] SADC: scraped ${results.length} procurement opportunities`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] SADC failed: ${e.message.slice(0, 100)}`);
+  }
+
+  return results;
+}
+
+async function scrapeSAeTenders(): Promise<Tender[]> {
+  const results: Tender[] = [];
+
+  try {
+    const r = await axios.get('https://www.etenders.gov.za', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+
+    const seen = new Set<string>();
+
+    $('table tbody tr, table tr, .tender-item, .notice-item').each((_, row) => {
+      const cells = $(row).find('td').map((_, c) => $(c).text().trim().replace(/\s+/g, ' ')).get();
+      const link = $(row).find('a[href]').first();
+      const linkHref = link.attr('href') || '';
+      const linkText = link.text().trim().replace(/\s+/g, ' ');
+
+      if (!linkHref || linkHref === '#' || linkHref === '/') return;
+
+      const title = linkText || cells[0];
+      if (!title || title.length < 3) return;
+
+      const fullHref = linkHref.startsWith('http') ? linkHref : `https://www.etenders.gov.za${linkHref}`;
+      const key = fullHref.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      let closingDate: Date | null = null;
+      for (const cell of cells) {
+        const match = cell.match(/(?:close|deadline|due)[:\s]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
+        if (match) {
+          try { closingDate = new Date(match[1]); } catch { /* ignore */ }
+          break;
+        }
+      }
+
+      results.push(enrichTender({
+        title,
+        description: cells.join(' | '),
+        organization: 'South Africa eTenders',
+        sourceUrl: fullHref,
+        closingDate,
+        value: null,
+        sector: classifySector(title),
+        category: 'Tender Notice',
+        requirements: [],
+        region: 'South Africa',
+      }));
+    });
+
+    const standaloneLinks = $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|bid|rfq|procurement|notice/i) && !href.match(/login|register|signin|#/i));
+    }).map((_, el) => ({ text: $(el).text().trim(), href: $(el).attr('href') ?? '' })).get();
+
+    for (const link of standaloneLinks.slice(0, 10)) {
+      const fullHref = link.href.startsWith('http') ? link.href : `https://www.etenders.gov.za${link.href}`;
+      const key = fullHref.toLowerCase();
+      if (seen.has(key) || !link.text || link.text.length < 3) continue;
+      seen.add(key);
+
+      results.push(enrichTender({
+        title: link.text,
+        description: `South Africa eTenders: ${link.text}`,
+        organization: 'South Africa eTenders',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(link.text),
+        category: 'Tender Notice',
+        requirements: [],
+        region: 'South Africa',
+      }));
+    }
+
+    console.log(`[TenderScraper] SA eTenders: scraped ${results.length} tenders`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] SA eTenders failed: ${e.message.slice(0, 100)}`);
+  }
+
+  return results;
+}
+
 export async function scrapeAllTenders(): Promise<{ scraped: number; errors: number }> {
   const cacheKey = 'tenders:scrape:all_run';
   const cached = getCached<{ scraped: number; errors: number }>(cacheKey);
@@ -621,7 +746,7 @@ export async function scrapeAllTenders(): Promise<{ scraped: number; errors: num
     console.log(`[TenderScraper] proc.gov.zw: ${live.length} tenders`);
   }
 
-const [tot, ti, praz, idbz, undp, zimra, stanbic] = await Promise.allSettled([
+const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.allSettled([
     scrapeTendersOnTime(),
     scrapeTendersInfo(),
     scrapePRAZ(),
@@ -629,6 +754,8 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic] = await Promise.allSettled([
     scrapeUNDP(),
     scrapeZIMRA(),
     scrapeStanbicBank(),
+    scrapeSADC(),
+    scrapeSAeTenders(),
   ]);
 
   if (tot.status === 'fulfilled') allTenders.push(...tot.value);
@@ -638,6 +765,8 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic] = await Promise.allSettled([
   if (undp.status === 'fulfilled') allTenders.push(...undp.value);
   if (zimra.status === 'fulfilled') allTenders.push(...zimra.value);
   if (stanbic.status === 'fulfilled') allTenders.push(...stanbic.value);
+  if (sadc.status === 'fulfilled') allTenders.push(...sadc.value);
+  if (saet.status === 'fulfilled') allTenders.push(...saet.value);
 
   if (allTenders.length === 0) {
     console.log('[TenderScraper] All sources failed — falling back to mock data');
