@@ -16,10 +16,12 @@ export async function GET(req: NextRequest) {
   const token = searchParams.get('hub.verify_token');
   const challenge = searchParams.get('hub.challenge');
 
-  if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
+  const expectedToken = process.env.WHATSAPP_VERIFY_TOKEN || 'radbit_whatsapp_verify_001';
+  if (mode === 'subscribe' && token === expectedToken) {
     console.log('[WhatsApp] Webhook verified');
     return new NextResponse(challenge, { status: 200 });
   }
+  console.warn('[WhatsApp] Webhook verification failed', { mode, token: token?.slice(0, 5), expectedToken: expectedToken.slice(0, 5) });
   return new NextResponse('Verification failed', { status: 403 });
 }
 
