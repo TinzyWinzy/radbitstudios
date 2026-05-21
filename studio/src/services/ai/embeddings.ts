@@ -1,5 +1,6 @@
-const EMBEDDING_MODEL = 'text-embedding-005';
+const EMBEDDING_MODEL = 'gemini-embedding-001';
 const EMBEDDING_BATCH_SIZE = 100;
+const API_VERSION = 'v1';
 
 function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
   const controller = new AbortController();
@@ -11,7 +12,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GOOGLE_GENAI_API_KEY nor GEMINI_API_KEY set for embeddings');
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${EMBEDDING_MODEL}:embedContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${EMBEDDING_MODEL}:embedContent?key=${apiKey}`;
 
   const res = await fetchWithTimeout(url, {
     method: 'POST',

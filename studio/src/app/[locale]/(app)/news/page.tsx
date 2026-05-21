@@ -39,6 +39,8 @@ const INDUSTRY_BADGE_COLORS = [
 
 function NewsCard({ article, onBookmark }: { article: NewsArticle & { bookmarked?: boolean }; onBookmark?: () => void }) {
   const cat = CATEGORY_LABELS[article.category] || CATEGORY_LABELS.general;
+  const avgScore = article.impactScore && article.urgencyScore
+    ? Math.round((article.impactScore + article.urgencyScore) / 2) : null;
 
   return (
     <div className="group p-4 rounded-lg border border-border/50 hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 transition-all duration-200">
@@ -46,6 +48,16 @@ function NewsCard({ article, onBookmark }: { article: NewsArticle & { bookmarked
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <Badge className={cn('text-xs font-medium', cat.color)}>{cat.label}</Badge>
+            {avgScore !== null && avgScore >= 70 && (
+              <Badge variant="default" className="text-xs bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30">
+                <Zap className="h-3 w-3 mr-0.5" />{avgScore} impact
+              </Badge>
+            )}
+            {avgScore !== null && avgScore < 70 && avgScore >= 40 && (
+              <Badge variant="outline" className="text-xs text-muted-foreground">
+                {avgScore} impact
+              </Badge>
+            )}
             {article.industryTags.slice(0, 2).map((tag, i) => (
               <Badge key={tag} variant="outline" className={cn('text-xs', INDUSTRY_BADGE_COLORS[i % INDUSTRY_BADGE_COLORS.length])}>
                 {tag}
@@ -130,19 +142,25 @@ export default function NewsPage() {
     }
   };
 
-  const filteredNews = allNews.filter(article => {
-    if (activeCategory !== 'all' && article.category !== activeCategory) return false;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      return (
-        article.title.toLowerCase().includes(q) ||
-        article.summary.toLowerCase().includes(q) ||
-        article.sourceName.toLowerCase().includes(q) ||
-        article.industryTags.some(t => t.toLowerCase().includes(q))
-      );
-    }
-    return true;
-  });
+  const filteredNews = allNews
+    .filter(article => {
+      if (activeCategory !== 'all' && article.category !== activeCategory) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return (
+          article.title.toLowerCase().includes(q) ||
+          article.summary.toLowerCase().includes(q) ||
+          article.sourceName.toLowerCase().includes(q) ||
+          article.industryTags.some(t => t.toLowerCase().includes(q))
+        );
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const aScore = (a.impactScore || 0) + (a.urgencyScore || 0);
+      const bScore = (b.impactScore || 0) + (b.urgencyScore || 0);
+      return bScore - aScore;
+    });
 
   const categories = ['all', 'policy', 'finance', 'technology', 'business', 'regulatory'];
   const hasProfile = !!user?.industry;

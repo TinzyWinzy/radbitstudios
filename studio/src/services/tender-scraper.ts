@@ -3,6 +3,8 @@ import * as cheerio from 'cheerio';
 import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { saveTenders, loadTenders, safeTenderFromDb, saveLog } from '@/lib/scraper-storage';
+import { scoreBatch } from '@/services/scoring/content-scorer';
+import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
 
 export interface Tender {
   id: string;
@@ -21,6 +23,9 @@ export interface Tender {
   status: 'open' | 'closing_soon' | 'closed' | 'awarded';
   processedAt: Date;
   scrapedAt: Date;
+  impactScore?: number;
+  urgencyScore?: number;
+  confidenceScore?: number;
 }
 
 const SECTOR_KEYWORDS: Record<string, string[]> = {
@@ -785,6 +790,29 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.al
       results.scraped = uniqueTenders.length;
       results.errors = 0;
       console.log(`[TenderScraper] Saved ${results.scraped} tenders`);
+
+      // Score newly saved tenders (fire-and-forget)
+      scoreBatch(uniqueTenders.map(t => ({
+        id: t.id,
+        title: t.title,
+        summary: t.description || '',
+        sourceUrl: t.sourceUrl,
+        publishedAt: t.publishedAt,
+        closingDate: t.closingDate,
+        category: t.category,
+        type: 'tender' as const,
+      }))).then(scored => {
+        saveScores(scored.map(s => ({
+          contentId: s.id,
+          contentType: 'tender' as const,
+          impactScore: s.scores.impactScore,
+          urgencyScore: s.scores.urgencyScore,
+          confidenceScore: s.scores.confidenceScore,
+          reasoning: s.scores.reasoning,
+          scoredAt: new Date().toISOString(),
+        }))).catch(e => console.warn('[TenderScraper] Score save failed:', e));
+      }).catch(e => console.warn('[TenderScraper] Score generation failed:', e));
+
       try { await saveLog('tenders', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
     } catch (err: any) {
       results.errors = uniqueTenders.length;
@@ -818,6 +846,17 @@ export async function getLatestTenders(options: {
 
   let tenders: Tender[] = records.map(safeTenderFromDb);
 
+  // Enrich with scores
+  const scores = await loadScores(tenders.map(t => t.id));
+  for (const t of tenders) {
+    const s = scores.get(t.id);
+    if (s) {
+      t.impactScore = s.impactScore;
+      t.urgencyScore = s.urgencyScore;
+      t.confidenceScore = s.confidenceScore;
+    }
+  }
+
   const result = tenders.slice(0, n);
   setCached(cacheKey, result, 5 * 60 * 1000);
   return result;
@@ -832,6 +871,12 @@ export async function getTendersForUser(userId: string): Promise<Tender[]> {
   let tenders = records
     .map(safeTenderFromDb)
     .filter((t: Tender) => t.status !== 'closed');
+
+  const scores = await loadScores(tenders.map((t: Tender) => t.id));
+  for (const t of tenders) {
+    const s = scores.get(t.id);
+    if (s) { t.impactScore = s.impactScore; t.urgencyScore = s.urgencyScore; t.confidenceScore = s.confidenceScore; }
+  }
 
   setCached(cacheKey, tenders, 10 * 60 * 1000);
   return tenders;

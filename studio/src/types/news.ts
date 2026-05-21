@@ -10,4 +10,7 @@ export interface NewsArticle {
   region: string;
   processedAt: Date;
   scrapedAt: Date;
+  impactScore?: number;
+  urgencyScore?: number;
+  confidenceScore?: number;
 }

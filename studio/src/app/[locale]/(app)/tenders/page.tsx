@@ -37,6 +37,9 @@ type Tender = {
   region: string;
   requirements: string[];
   status: 'open' | 'closing_soon' | 'closed' | 'awarded';
+  impactScore?: number;
+  urgencyScore?: number;
+  confidenceScore?: number;
 };
 
 const STATUS_CONFIG = {
@@ -60,6 +63,16 @@ function TenderCard({ tender, onBookmark }: { tender: Tender & { bookmarked?: bo
               <StatusIcon className="h-3 w-3 mr-1" />
               {statusCfg.label}
             </Badge>
+            {tender.impactScore && tender.impactScore >= 70 && (
+              <Badge variant="default" className="text-xs bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30">
+                <Zap className="h-3 w-3 mr-0.5" />{tender.impactScore} impact
+              </Badge>
+            )}
+            {tender.impactScore && tender.impactScore < 70 && tender.impactScore >= 40 && (
+              <Badge variant="outline" className="text-xs text-muted-foreground">
+                {tender.impactScore} impact
+              </Badge>
+            )}
             <Badge variant="outline" className="text-xs">
               {tender.sector}
             </Badge>
@@ -172,21 +185,27 @@ export default function TendersPage() {
   const userPlan = user?.plan || 'Free';
   const isRegional = regionTab === 'regional';
 
-  const filteredTenders = tenders.filter(t => {
-    if (activeTab !== 'all' && t.status !== activeTab) return false;
-    if (isRegional && t.region === 'Zimbabwe') return false;
-    if (!isRegional && t.region !== 'Zimbabwe') return false;
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      return (
-        t.title.toLowerCase().includes(q) ||
-        t.sector.toLowerCase().includes(q) ||
-        t.organization.toLowerCase().includes(q) ||
-        t.description.toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
+  const filteredTenders = tenders
+    .filter(t => {
+      if (activeTab !== 'all' && t.status !== activeTab) return false;
+      if (isRegional && t.region === 'Zimbabwe') return false;
+      if (!isRegional && t.region !== 'Zimbabwe') return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return (
+          t.title.toLowerCase().includes(q) ||
+          t.sector.toLowerCase().includes(q) ||
+          t.organization.toLowerCase().includes(q) ||
+          t.description.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const aScore = (a.impactScore || 0) + (a.urgencyScore || 0);
+      const bScore = (b.impactScore || 0) + (b.urgencyScore || 0);
+      return bScore - aScore;
+    });
 
   const openCount = tenders.filter(t => t.status === 'open').length;
   const closingCount = tenders.filter(t => t.status === 'closing_soon').length;

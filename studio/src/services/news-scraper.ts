@@ -2,6 +2,9 @@ import parser from 'rss-parser';
 import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { saveNews, loadNews, safeNewsFromDb, saveLog } from '@/lib/scraper-storage';
+import { scoreBatch } from '@/services/scoring/content-scorer';
+import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
+import { getActiveSources, recordSourceFetch } from '@/services/discovery/source-store';
 import fs from 'fs';
 import path from 'path';
 import type { NewsArticle } from '@/types/news';
@@ -25,6 +28,7 @@ interface FeedConfig {
   sourceName: string;
   region: string;
   industryMapping: Record<string, string[]>;
+  _id?: string;
 }
 
 const FEEDS: FeedConfig[] = [
@@ -161,9 +165,11 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
 }
 
 export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: number }> {
-  const cacheKey = 'news:scrape:last_run';
-  const cached = getCached<{ scraped: number; errors: number }>(cacheKey);
-  if (cached) return cached;
+  const cacheKey = 'news:scrape:started';
+  if (!checkRateLimit('newsScrape', 'default').allowed) {
+    console.log('[NewsScraper] Rate limited — skipping scrape');
+    return { scraped: 0, errors: 0 };
+  }
 
   const results = { scraped: 0, errors: 0 };
   const allArticles: Array<{
@@ -178,11 +184,29 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     region?: string;
   }> = [];
 
+  // Load feeds from Firestore active_sources, fall back to hardcoded
+  let feeds = FEEDS;
+  try {
+    const active = await getActiveSources();
+    if (active.length > 0) {
+      feeds = active.map(a => ({
+        url: a.feedUrl,
+        sourceName: a.name,
+        region: a.region || 'Zimbabwe',
+        industryMapping: a.industryMapping || {},
+        _id: a.id,
+      }));
+    }
+  } catch {
+    console.log('[NewsScraper] Could not load active sources from Firestore, using hardcoded feeds');
+  }
+
   // Scrape in serial to avoid hammering feeds
-  for (const feed of FEEDS) {
+  for (const feed of feeds) {
     const articles = await scrapeFeed(feed);
     if (articles.length === 0) {
       results.errors++;
+      if (feed._id) recordSourceFetch(feed._id, false).catch(() => {});
       continue;
     }
 
@@ -198,6 +222,7 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
       region: a.region,
     })));
     results.scraped += articles.length;
+    if (feed._id) recordSourceFetch(feed._id, true).catch(() => {});
   }
 
   if (allArticles.length > 0) {
@@ -207,6 +232,28 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     try {
       await saveNews(allArticles);
       logToFile(`Saved ${results.scraped} articles`);
+
+      // Score newly saved articles (fire-and-forget)
+      scoreBatch(allArticles.map(a => ({
+        id: a.id,
+        title: a.title,
+        summary: a.summary || '',
+        sourceUrl: a.sourceUrl || '',
+        publishedAt: a.publishedAt || new Date(),
+        category: a.category,
+        type: 'news' as const,
+      }))).then(scored => {
+        saveScores(scored.map(s => ({
+          contentId: s.id,
+          contentType: 'news' as const,
+          impactScore: s.scores.impactScore,
+          urgencyScore: s.scores.urgencyScore,
+          confidenceScore: s.scores.confidenceScore,
+          reasoning: s.scores.reasoning,
+          scoredAt: new Date().toISOString(),
+        }))).catch(e => logToFile(`Score save failed: ${e}`));
+      }).catch(e => logToFile(`Score generation failed: ${e}`));
+
       try { await saveLog('news', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
     } catch (err: any) {
       results.errors = allArticles.length;
@@ -241,6 +288,17 @@ export async function getLatestNews(options: {
 
   let articles: NewsArticle[] = records.map(safeNewsFromDb);
 
+  // Enrich with scores
+  const scores = await loadScores(articles.map(a => a.id));
+  for (const a of articles) {
+    const s = scores.get(a.id);
+    if (s) {
+      a.impactScore = s.impactScore;
+      a.urgencyScore = s.urgencyScore;
+      a.confidenceScore = s.confidenceScore;
+    }
+  }
+
   if (industry) articles = articles.filter(a =>
     a.industryTags.some(t => t.toLowerCase().includes(industry.toLowerCase()))
   );
@@ -259,6 +317,12 @@ export async function getNewsForUser(userId: string): Promise<NewsArticle[]> {
   const articles = records
     .map(safeNewsFromDb)
     .slice(0, 15);
+
+  const scores = await loadScores(articles.map(a => a.id));
+  for (const a of articles) {
+    const s = scores.get(a.id);
+    if (s) { a.impactScore = s.impactScore; a.urgencyScore = s.urgencyScore; a.confidenceScore = s.confidenceScore; }
+  }
 
   setCached(cacheKey, articles, 10 * 60 * 1000);
   return articles;

@@ -104,6 +104,26 @@ service cloud.firestore {
       allow read, write: if false; // server-side only via Admin SDK
     }
 
+    // ─── SCORED ITEMS (server-side only via Admin SDK) ─────────────────────
+    match /scored_items/{contentId} {
+      allow get, list: if request.auth != null;
+      allow create, update, delete: if false; // server-side only via Admin SDK
+    }
+
+    // ─── SOURCE DISCOVERY (server-side only via Admin SDK) ────────────────
+    match /active_sources/{sourceId} {
+      allow read: if request.auth != null;
+      allow write: if false; // server-side only
+    }
+    match /discovered_sources/{sourceId} {
+      allow read: if request.auth != null;
+      allow write: if false; // server-side only
+    }
+    match /source_health/{sourceId} {
+      allow read: if request.auth != null;
+      allow write: if false; // server-side only
+    }
+
     // ─── BLOG POSTS ──────────────────────────────────────────────────────────
     // Public read for published posts. Admin dashboard uses adminDb for writes.
     // Client-side blog listing reads published posts with userId filter.
