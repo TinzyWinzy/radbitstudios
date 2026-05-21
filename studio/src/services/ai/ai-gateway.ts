@@ -1,8 +1,9 @@
-import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc, runTransaction } from 'firebase/firestore';
+import * as Sentry from '@sentry/nextjs';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 import { generateEmbedding, cosineSimilarity } from './embeddings';
 import { searchRelevantContext } from './rag';
 import { buildRAGContext } from './rag';
+import { checkRateLimit, RateLimits } from '@/services/rate-limiter';
 
 export type TaskDifficulty = 'simple' | 'complex' | 'creative';
 
@@ -58,8 +59,6 @@ const MODEL_ROUTES: Record<TaskDifficulty, ModelRoute[]> = {
 
 const REQUEST_TIMEOUT_MS = 25_000;
 const MAX_RETRIES = 2;
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const MAX_REQUESTS_PER_WINDOW = 30;
 const SEMANTIC_CACHE_TTL_MS = 86_400_000;
 const SEMANTIC_CACHE_MAX_SIZE = 500;
 const SEMANTIC_SIMILARITY_THRESHOLD = 0.92;
@@ -151,15 +150,6 @@ function estimateTokens(text: string): number {
 
 export class AIGateway {
   private cache = new SemanticCache();
-  private requestLog: number[] = [];
-
-  private checkRateLimit(): boolean {
-    const now = Date.now();
-    this.requestLog = this.requestLog.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
-    if (this.requestLog.length >= MAX_REQUESTS_PER_WINDOW) return false;
-    this.requestLog.push(now);
-    return true;
-  }
 
   private validateApiKeys(): { gemini: boolean; openai: boolean; anthropic: boolean } {
     return {
@@ -171,13 +161,14 @@ export class AIGateway {
 
   private async getUserPlan(userId: string): Promise<{ tier: number; planName: string } | null> {
     try {
-      const userDoc = await getDoc(doc(db, 'users', userId));
-      if (!userDoc.exists()) return null;
-      const data = userDoc.data();
-      const planName: string = data.plan || 'Free';
+      const userDoc = await adminDb.collection('users').doc(userId).get();
+      if (!userDoc.exists) return null;
+      const data = userDoc.data()!;
+      const planName: string = (data as any).plan || 'Free';
       const tier = TIER_ORDER.indexOf(planName);
       return { tier: tier >= 0 ? tier : 0, planName };
-    } catch {
+    } catch (err) {
+      Sentry.captureException(err, { tags: { domain: 'ai-gateway', operation: 'getUserPlan' }, extra: { userId } });
       return null;
     }
   }
@@ -213,12 +204,12 @@ export class AIGateway {
     if (!userId) return { allowed: true };
 
     try {
-      const userDocRef = doc(db, 'users', userId);
-      const result = await runTransaction(db, async (transaction) => {
+      const userDocRef = adminDb.collection('users').doc(userId);
+      const result = await adminDb.runTransaction(async (transaction) => {
         const userDoc = await transaction.get(userDocRef);
-        if (!userDoc.exists()) return { allowed: true };
+        if (!userDoc.exists) return { allowed: true };
 
-        const data = userDoc.data();
+        const data = userDoc.data() as any;
         const usage: { used?: number; limit?: number } = data.aiBudget || { used: 0, limit: 10 };
         const limit = usage.limit ?? 10;
         const used = usage.used ?? 0;
@@ -239,7 +230,8 @@ export class AIGateway {
       });
 
       return result;
-    } catch {
+    } catch (err) {
+      Sentry.captureException(err, { tags: { domain: 'ai-gateway', operation: 'fetchAndBudget' }, extra: { userId } });
       return { allowed: true };
     }
   }
@@ -247,13 +239,19 @@ export class AIGateway {
   async generate(request: AIGatewayRequest): Promise<AIGatewayResponse> {
     const difficulty = request.difficulty || 'simple';
 
-    if (!this.checkRateLimit()) {
+    const rateKey = request.userId ? `ai:${request.userId}` : 'ai:anonymous';
+    const rateResult = await checkRateLimit(rateKey, RateLimits.aiGenerate);
+    if (!rateResult.allowed) {
       return { content: '', model: 'rate-limited', tokensUsed: 0, costUsd: 0, cached: false, error: 'Too many requests. Please slow down.' };
     }
 
     const keys = this.validateApiKeys();
     const hasAnyKey = keys.gemini || keys.openai || keys.anthropic;
     if (!hasAnyKey) {
+      Sentry.captureMessage('AI gateway: no API keys configured', {
+        level: 'error',
+        tags: { domain: 'ai-gateway', operation: 'generate' },
+      });
       return { content: this.getFallbackResponse(difficulty), model: 'fallback-no-key', tokensUsed: 0, costUsd: 0, cached: false, error: 'AI service not configured (missing API key).' };
     }
 
@@ -324,10 +322,20 @@ export class AIGateway {
 
         if (attempt < MAX_RETRIES) {
           console.warn(`AI call attempt ${attempt + 1} failed: ${lastError}, retrying...`);
+          Sentry.captureException(error, {
+            tags: { domain: 'ai-gateway', operation: 'callModel', attempt: String(attempt + 1), model: route.model, provider: route.provider },
+            extra: { lastError, userId: request.userId },
+          });
           await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
         }
       }
     }
+
+    Sentry.captureMessage(`AI gateway exhausted retries for ${route.provider}/${route.model}`, {
+      level: 'error',
+      tags: { domain: 'ai-gateway', operation: 'generate' },
+      extra: { lastError, userId: request.userId, difficulty },
+    });
 
     const fallbackRoute = MODEL_ROUTES[difficulty]
       .filter(r => r.model !== route.model)
@@ -346,7 +354,11 @@ export class AIGateway {
           tokensUsed: estimatedInputTokens, costUsd: (estimatedInputTokens / 1000) * (fallbackRoute.costPer1kInput + fallbackRoute.costPer1kOutput), cached: false,
           error: `Primary model failed. Used fallback.`,
         };
-      } catch {
+      } catch (err) {
+        Sentry.captureException(err, {
+          tags: { domain: 'ai-gateway', operation: 'fallback', model: fallbackRoute.model, provider: fallbackRoute.provider },
+          extra: { primaryError: lastError, userId: request.userId },
+        });
         return {
           content: this.getFallbackResponse(difficulty), model: 'fallback',
           tokensUsed: 0, costUsd: 0, cached: false,

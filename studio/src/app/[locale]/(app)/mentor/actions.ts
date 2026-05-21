@@ -1,5 +1,6 @@
 'use server';
 
+import * as Sentry from '@sentry/nextjs';
 import { aiBusinessMentor, AiBusinessMentorInput } from '@/ai/flows/ai-business-mentor';
 import { getNewsForUser } from '@/services/news-scraper';
 import { getTendersForUser } from '@/services/tender-scraper';
@@ -47,6 +48,7 @@ export async function sendMessageAction(
 
   } catch (error: any) {
     console.error('Error in sendMessageAction:', error);
+    Sentry.captureException(error, { tags: { domain: 'mentor', operation: 'sendMessageAction' }, extra: { userId: input.userId } });
     throw new Error(error.message || 'Sorry, the AI mentor encountered an error. Please try again.');
   }
 }
@@ -60,31 +62,37 @@ export async function sendMessageWithNews(
     userId: string;
   }
 ): Promise<{ answer: string; newsCount: number; tenderCount: number }> {
-  const news = await getNewsForUser(input.userId);
-  const tenders = await getTendersForUser(input.userId);
+  try {
+    const news = await getNewsForUser(input.userId);
+    const tenders = await getTendersForUser(input.userId);
 
-  const newsCtx = news.length > 0
-    ? `\n\nLATEST NEWS for ${input.industry || 'your sector'}:\n` +
-      news.slice(0, 5).map((n, i) => `${i + 1}. ${n.title} (${n.sourceName})`).join('\n')
-    : '';
+    const newsCtx = news.length > 0
+      ? `\n\nLATEST NEWS for ${input.industry || 'your sector'}:\n` +
+        news.slice(0, 5).map((n, i) => `${i + 1}. ${n.title} (${n.sourceName})`).join('\n')
+      : '';
 
-  const tenderCtx = tenders.filter(t => t.status !== 'closed').length > 0
-    ? `\n\nOPEN TENDERS for ${input.industry || 'your sector'}:\n` +
-      tenders.slice(0, 5).map((t, i) => `${i + 1}. ${t.title} — ${t.organization}. ${t.value || ''}`).join('\n')
-    : '';
+    const tenderCtx = tenders.filter(t => t.status !== 'closed').length > 0
+      ? `\n\nOPEN TENDERS for ${input.industry || 'your sector'}:\n` +
+        tenders.slice(0, 5).map((t, i) => `${i + 1}. ${t.title} — ${t.organization}. ${t.value || ''}`).join('\n')
+      : '';
 
-  const enrichedQuery = input.query + (newsCtx || tenderCtx ? `\n\n[Context: ${newsCtx}${tenderCtx}]` : '');
+    const enrichedQuery = input.query + (newsCtx || tenderCtx ? `\n\n[Context: ${newsCtx}${tenderCtx}]` : '');
 
-  const response = await aiBusinessMentor({
-    query: enrichedQuery,
-    businessName: input.businessName,
-    industry: input.industry,
-    businessDescription: input.businessDescription,
-  });
+    const response = await aiBusinessMentor({
+      query: enrichedQuery,
+      businessName: input.businessName,
+      industry: input.industry,
+      businessDescription: input.businessDescription,
+    });
 
-  return {
-    answer: response.answer,
-    newsCount: news.length,
-    tenderCount: tenders.filter(t => t.status !== 'closed').length,
-  };
+    return {
+      answer: response.answer,
+      newsCount: news.length,
+      tenderCount: tenders.filter(t => t.status !== 'closed').length,
+    };
+  } catch (error: any) {
+    console.error('Error in sendMessageWithNews:', error);
+    Sentry.captureException(error, { tags: { domain: 'mentor', operation: 'sendMessageWithNews' }, extra: { userId: input.userId } });
+    throw new Error(error.message || 'Sorry, the AI mentor encountered an error. Please try again.');
+  }
 }

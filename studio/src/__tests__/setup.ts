@@ -1,4 +1,3 @@
-// Mock Firebase for test environment
 import { vi } from 'vitest';
 
 vi.mock('@/lib/firebase/firebase', () => ({
@@ -7,3 +6,25 @@ vi.mock('@/lib/firebase/firebase', () => ({
   db: {},
   storage: {},
 }));
+
+vi.mock('@/lib/firebase/firebase-admin', () => ({
+  adminApp: {},
+  adminDb: {
+    collection: vi.fn(),
+    doc: vi.fn(),
+    runTransaction: vi.fn(),
+  },
+}));
+
+vi.mock('@sentry/nextjs', () => ({
+  captureException: vi.fn(),
+  captureMessage: vi.fn(),
+}));
+
+vi.mock(import('@/services/rate-limiter'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    checkRateLimit: vi.fn().mockResolvedValue({ allowed: true, remaining: 29, limit: 30 }),
+  };
+});

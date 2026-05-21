@@ -3,7 +3,6 @@ import {
   getTierLevel,
   isTierAtLeast,
   getUpgradePath,
-  type PlanName,
   type FeatureName,
 } from "@/services/feature-gate";
 
@@ -94,7 +93,6 @@ describe("getUpgradePath", () => {
 });
 
 describe("upgrade path pricing", () => {
-  const plans: PlanName[] = ["Free", "Growth", "Pro", "Enterprise"];
   const freeFeatures: FeatureName[] = [
     "assessmentSummary",
     "templateGeneration",
