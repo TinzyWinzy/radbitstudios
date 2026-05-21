@@ -47,6 +47,10 @@ const formSchema = z.object({
       'slogan_generator',
       'financial_projector',
       'competitor_analyzer',
+      'grant_matcher',
+      'marketing_copy',
+      'compliance_check',
+      'pitch_outline',
     ],
     {
       required_error: 'Please select a tool.',
@@ -64,7 +68,11 @@ const toolOptions = [
   { value: 'profile_generator', label: 'Business Profile Generator' },
   { value: 'slogan_generator', label: 'Slogan Generator' },
   { value: 'financial_projector', label: '12-Month Financial Projector' },
-  { value: 'competitor_analyzer', label: 'Simple Competitor Analysis' },
+  { value: 'competitor_analyzer', label: 'Competitor Analysis' },
+  { value: 'grant_matcher', label: 'Grant & Funding Finder' },
+  { value: 'marketing_copy', label: 'Marketing Copywriter' },
+  { value: 'compliance_check', label: 'Compliance Quick-Check' },
+  { value: 'pitch_outline', label: 'Pitch Deck Outline' },
 ];
 
 export default function AiToolkitPage() {

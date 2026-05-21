@@ -40,18 +40,18 @@ const TIER_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'];
 
 const MODEL_ROUTES: Record<TaskDifficulty, ModelRoute[]> = {
   simple: [
-    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
+    { model: 'gemini-2.5-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
     { model: 'gpt-4o-mini', provider: 'openai', costPer1kInput: 0.00015, costPer1kOutput: 0.0006, minTier: 1 },
     { model: 'claude-3-haiku', provider: 'anthropic', costPer1kInput: 0.00025, costPer1kOutput: 0.00125, minTier: 2 },
   ],
   complex: [
-    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
-    { model: 'gemini-1.5-pro', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 2 },
+    { model: 'gemini-2.5-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
+    { model: 'gemini-2.5-pro', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 2 },
     { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.0025, costPer1kOutput: 0.01, minTier: 2 },
     { model: 'claude-3.5-sonnet', provider: 'anthropic', costPer1kInput: 0.003, costPer1kOutput: 0.015, minTier: 3 },
   ],
   creative: [
-    { model: 'gemini-2.0-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
+    { model: 'gemini-2.5-flash', provider: 'gemini', costPer1kInput: 0, costPer1kOutput: 0, minTier: 0 },
     { model: 'gpt-4o', provider: 'openai', costPer1kInput: 0.005, costPer1kOutput: 0.015, minTier: 2 },
     { model: 'claude-3.5-sonnet', provider: 'anthropic', costPer1kInput: 0.003, costPer1kOutput: 0.015, minTier: 3 },
   ],

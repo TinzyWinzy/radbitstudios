@@ -24,7 +24,7 @@ describe('AIGateway.selectRoute', () => {
     const route = gateway.selectRoute('simple', 0, allKeys);
     expect(route).not.toBeNull();
     expect(route!.provider).toBe('gemini');
-    expect(route!.model).toBe('gemini-2.0-flash');
+    expect(route!.model).toBe('gemini-2.5-flash');
   });
 
   it('returns null when no keys available', () => {
@@ -45,8 +45,8 @@ describe('AIGateway.selectRoute', () => {
     const allKeys = { gemini: true, openai: true, anthropic: true };
     const route = gateway.selectRoute('complex', 0, allKeys);
     expect(route).not.toBeNull();
-    expect(route!.model).toBe('gemini-2.0-flash');
-    expect(route!.model).not.toBe('gemini-1.5-pro');
+    expect(route!.model).toBe('gemini-2.5-flash');
+    expect(route!.model).not.toBe('gemini-2.5-pro');
     expect(route!.model).not.toBe('gpt-4o');
   });
 

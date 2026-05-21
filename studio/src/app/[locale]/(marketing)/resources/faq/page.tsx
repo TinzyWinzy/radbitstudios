@@ -37,7 +37,7 @@ const faqItems: { category: string; questions: QnA_t[] }[] = [
     questions: [
       {
         q: "How does the AI Toolkit work?",
-        a: "The AI Toolkit uses Google Gemini 2.0 Flash for all content generation. You fill in your business details (industry, description, country), then choose a tool — business plan, slogan, competitor analysis, etc. The AI generates a tailored result in seconds. All results are saved to your generation history.",
+        a: "The AI Toolkit uses Google Gemini 2.5 Flash for all content generation. You fill in your business details (industry, description, country), then choose a tool — business plan, slogan, competitor analysis, etc. The AI generates a tailored result in seconds. All results are saved to your generation history.",
       },
       {
         q: "Can I use Radbit completely offline?",
