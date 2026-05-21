@@ -127,6 +127,13 @@ service cloud.firestore {
       }
     }
 
+    // ─── NOTIFICATIONS (IN-APP) ──────────────────────────────────────────────
+    match /notifications/{notificationId} {
+      allow read, update, delete: if request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid == request.resource.data.userId;
+      allow list: if request.auth != null;
+    }
+
     // ─── CONVERSATIONS (DIRECT MESSAGING) ────────────────────────────────────
     match /conversations/{conversationId} {
       allow get: if request.auth.uid in resource.data.participants;

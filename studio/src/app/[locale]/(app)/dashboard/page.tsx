@@ -41,6 +41,7 @@ import { db } from "@/lib/firebase/firebase";
 import { AuthContext } from "@/contexts/auth-context";
 import { withRetry } from "@/lib/retry";
 import { checkFeatureAccess, checkAndDecrementUsage } from "@/services/usage-service";
+import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { cacheDashboardData, getCachedDashboardData } from "@/services/offline";
@@ -192,6 +193,14 @@ export default function DashboardPage() {
           setDailyTips(result.dailyTips);
           setRecommendations(result.recommendations);
           setIsLoadingInsights(false);
+          createNotification({
+            userId: user.uid,
+            title: "New Dashboard Insights",
+            body: `Tip: ${result.dailyTips[0]?.slice(0, 80) || 'Check your personalized recommendations.'}`,
+            type: "insights",
+            read: false,
+            link: "/dashboard",
+          }).catch(() => {});
         }
 
         checkAndDecrementUsage(user.uid, 'dashboardInsights').then(decrementResult => {

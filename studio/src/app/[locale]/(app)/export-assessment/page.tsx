@@ -16,6 +16,7 @@ import { db } from "@/lib/firebase/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/auth-context";
 import { checkAndDecrementUsage } from "@/services/usage-service";
+import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import { saveAssessmentDraft, getAssessmentDraft, deleteAssessmentDraft, createAutoSave, watchNetworkStatus } from "@/services/offline";
@@ -242,6 +243,14 @@ export default function ExportAssessmentPage() {
             summary: result.summary,
             createdAt: serverTimestamp(),
         });
+        createNotification({
+          userId: user.uid,
+          title: "Export Assessment Complete",
+          body: "Your Export Readiness Assessment results are ready. Check your recommended markets and certifications.",
+          type: "assessment",
+          read: false,
+          link: "/dashboard",
+        }).catch(() => {});
         toast({
             title: "Assessment Saved!",
             description: "Your results have been saved to your profile.",

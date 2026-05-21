@@ -17,6 +17,7 @@ import { db } from "@/lib/firebase/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/auth-context";
 import { checkAndDecrementUsage } from "@/services/usage-service";
+import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import { saveAssessmentDraft, getAssessmentDraft, deleteAssessmentDraft, createAutoSave, watchNetworkStatus } from "@/services/offline";
@@ -298,6 +299,14 @@ export default function AssessmentPage() {
             summary: summary,
             createdAt: serverTimestamp(),
         });
+        createNotification({
+          userId: user.uid,
+          title: "Assessment Complete",
+          body: "Your Digital Readiness Assessment results are ready. View your personalized insights on the dashboard.",
+          type: "assessment",
+          read: false,
+          link: "/dashboard",
+        }).catch(() => {});
         toast({
             title: "Assessment Saved!",
             description: "Your results have been saved to your profile.",

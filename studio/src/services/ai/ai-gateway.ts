@@ -163,7 +163,7 @@ export class AIGateway {
 
   private validateApiKeys(): { gemini: boolean; openai: boolean; anthropic: boolean } {
     return {
-      gemini: !!process.env.GOOGLE_GENAI_API_KEY,
+      gemini: !!(process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY),
       openai: !!process.env.OPENAI_API_KEY,
       anthropic: !!process.env.ANTHROPIC_API_KEY,
     };
@@ -370,8 +370,8 @@ export class AIGateway {
   }
 
   private async callGemini(model: string, request: AIGatewayRequest): Promise<string> {
-    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
-    if (!apiKey) throw new Error('GOOGLE_GENAI_API_KEY not set');
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error('Gemini API key not set (set GOOGLE_GENAI_API_KEY or GEMINI_API_KEY)');
 
     const modelName = model.includes('/') ? model : `models/${model}`;
     const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;

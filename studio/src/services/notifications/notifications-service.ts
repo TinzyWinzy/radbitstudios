@@ -10,6 +10,7 @@ import {
   updateDoc,
   serverTimestamp,
   addDoc,
+  writeBatch,
   type Timestamp,
 } from 'firebase/firestore';
 
@@ -57,8 +58,10 @@ export async function markAllAsRead(userId: string): Promise<void> {
     where('read', '==', false),
   );
   const snap = await getDocs(q);
-  const batch = snap.docs.map(d => updateDoc(doc(db, 'notifications', d.id), { read: true }));
-  await Promise.all(batch);
+  if (snap.empty) return;
+  const batch = writeBatch(db);
+  snap.docs.forEach(d => batch.update(d.ref, { read: true }));
+  await batch.commit();
 }
 
 export async function createNotification(data: Omit<AppNotification, 'id' | 'createdAt'>): Promise<void> {

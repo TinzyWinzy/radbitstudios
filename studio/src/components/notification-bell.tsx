@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,9 +8,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Bell, Loader2, CheckCheck, ExternalLink } from "lucide-react";
-import { getNotifications, getUnreadCount, markAsRead, markAllAsRead, type AppNotification } from "@/services/notifications/notifications-service";
+import { markAsRead, markAllAsRead, type AppNotification } from "@/services/notifications/notifications-service";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
+import { collection, query, where, orderBy, limit, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase/firebase";
 
 interface Props {
   userId: string;
@@ -20,47 +22,38 @@ export function NotificationBell({ userId }: Props) {
   const [unread, setUnread] = useState(0);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const fetched = useRef(false);
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [count, items] = await Promise.all([
-        getUnreadCount(userId),
-        getNotifications(userId, 10),
-      ]);
-      setUnread(count);
-      setNotifications(items);
-    } catch { /* silent */ } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!fetched.current) {
-      fetched.current = true;
-      fetch();
-    }
-    const interval = setInterval(fetch, 60_000);
-    return () => clearInterval(interval);
-  }, [fetch]);
+    const q = query(
+      collection(db, 'notifications'),
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+      limit(10),
+    );
+    const unsub = onSnapshot(q, (snap) => {
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as AppNotification));
+      setNotifications(items);
+      setUnread(items.filter(n => !n.read).length);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, [userId]);
 
   const handleOpen = async () => {
     setOpen(true);
-    if (notifications.length === 0) await fetch();
   };
 
   const handleMarkRead = async (id: string) => {
-    await markAsRead(id);
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     setUnread(prev => Math.max(0, prev - 1));
+    await markAsRead(id).catch(() => {});
   };
 
   const handleMarkAllRead = async () => {
-    await markAllAsRead(userId);
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     setUnread(0);
+    await markAllAsRead(userId).catch(() => {});
   };
 
   return (
@@ -86,7 +79,7 @@ export function NotificationBell({ userId }: Props) {
           )}
         </div>
         <div className="max-h-80 overflow-y-auto">
-          {loading && notifications.length === 0 ? (
+          {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
