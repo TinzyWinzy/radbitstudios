@@ -1,4 +1,6 @@
+import { useRouter } from 'next/navigation';
 import { subscriptionPlans } from '@/lib/subscriptions';
+import type { AppUser } from '@/types/user';
 
 const FEATURE_LABELS: Record<string, { label: string; icon: string }> = {
   assessmentSummary: { label: 'Assessments', icon: '📊' },
@@ -9,7 +11,9 @@ const FEATURE_LABELS: Record<string, { label: string; icon: string }> = {
   logoGeneration: { label: 'Logo Designs', icon: '🎨' },
 };
 
-export function UsageSummary({ user }: { user: any }) {
+export function UsageSummary({ user }: { user: AppUser | null }) {
+  const router = useRouter();
+  if (!user) return null;
   const plan = user.plan || 'Free';
   const usage = user.usage || {};
   const planConfig = subscriptionPlans.find(p => p.name === plan);
@@ -59,7 +63,7 @@ export function UsageSummary({ user }: { user: any }) {
 
       {upgradePath && (
         <button
-          onClick={() => window.location.href = '/settings?tab=plan'}
+          onClick={() => router.push('/settings?tab=plan')}
           className="mt-4 w-full rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-sm font-medium py-2 px-3 transition-colors"
         >
           Upgrade to {upgradePath.name} — ${upgradePath.price}/mo

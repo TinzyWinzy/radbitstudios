@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, lazy, Suspense, useState } from "react";
-import { ChevronRight, BarChart, Lightbulb, TrendingUp, Users, Briefcase, Sparkles, ArrowRight, Star, Shield, Zap } from "lucide-react";
+import { ChevronRight, BarChart, Lightbulb, TrendingUp, Users, Briefcase, Sparkles, ArrowRight, Shield, Zap } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -362,36 +362,33 @@ function MetricsSection() {
   );
 }
 
-function UserStoriesSection() {
-  const stories = [
+function CuratedBriefsSection() {
+  const briefs = [
     {
-      name: "Tafadzwa M.",
-      business: "Fresh Foods, Harare",
-      role: "Founder",
-      quote: "Radbit showed me where to focus. The assessment alone was worth it — I went from overwhelmed to a clear roadmap in 15 minutes.",
-      metric: "2x revenue in 6 months",
-      tags: ["Assessment", "Roadmap"],
-      initials: "TM",
+      title: "Zimbabwe Budget 2026 Analysis",
+      summary: "Key takeaways for SMEs: tax relief on digital equipment, expanded MSME lending facilities, and new export incentives for agro-processors.",
+      category: "Policy",
+      action: "Review how the new digital equipment tax relief applies to your business.",
     },
     {
-      name: "Rudo D.",
-      business: "Zim-Artisans, Bulawayo",
-      role: "Creative Director",
-      quote: "Connected with a supplier through the community forum. We're now collaborating on exports to South Africa.",
-      metric: "4 new export partners",
-      tags: ["Community", "Network"],
-      initials: "RD",
+      title: "Tender Alert: Govt. IT Infrastructure",
+      summary: "POTRAZ is accepting proposals for rural connectivity infrastructure. Bids close 15 June. Estimated contract value: $2.5M.",
+      category: "Tender",
+      action: "Check if your business meets the procurement thresholds.",
     },
     {
-      name: "Chipo M.",
-      business: "Tech Innovations, Mutare",
-      role: "CEO",
-      quote: "The financial projections tool helped us close seed funding. Practical, tailored, and actually useful for the Zimbabwean market.",
-      metric: "$50K seed funding",
-      tags: ["AI Tools", "Funding"],
-      initials: "CM",
+      title: "Sector Insight: Agri-Tech Growth",
+      summary: "Zimbabwean agri-tech startups raised $4.2M in Q1 2026, up 40% YoY. Mobile-based supply chain solutions lead adoption.",
+      category: "Market Intelligence",
+      action: "Explore how digital tools can optimize your supply chain.",
     },
   ];
+
+  const categoryColors: Record<string, string> = {
+    Policy: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    Tender: "bg-green-500/20 text-green-300 border-green-500/30",
+    "Market Intelligence": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  };
 
   return (
     <section className="relative py-20 md:py-28">
@@ -402,12 +399,12 @@ function UserStoriesSection() {
           viewport={{ once: true, margin: "-60px" }}
           className="text-center space-y-3 mb-10"
         >
-          <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">User Stories</span>
+          <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Curated Briefs</span>
           <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
-            Real Results from <span className="text-gradient">Real Entrepreneurs</span>
+            Intelligence That <span className="text-gradient">Moves Your Business</span>
           </h2>
           <p className="text-white/60 max-w-lg mx-auto text-base">
-            See how Zimbabwean SMEs are using Radbit to grow, connect, and compete.
+            AI-curated news, tenders, and market insights tailored to your industry.
           </p>
         </motion.div>
 
@@ -416,36 +413,32 @@ function UserStoriesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto"
+          className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto"
         >
-          {stories.map((story) => (
+          {briefs.map((brief) => (
             <motion.div
-              key={story.name}
+              key={brief.title}
               variants={itemVariants}
               className="group relative"
             >
-              <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-b from-primary/30 to-secondary/30 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300" />
+              <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-b from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300" />
               <div className="relative rounded-xl border border-white/10 bg-white/[0.03] p-6 h-full flex flex-col group-hover:bg-white/[0.05] transition-colors duration-300">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                    <span className="text-xs font-bold text-black">{story.initials}</span>
-                  </div>
-                  <div className="flex items-center gap-0.5">
-                    {[1,2,3,4,5].map(n => (
-                      <Star key={n} className="h-3 w-3 fill-primary/80 text-primary/80" />
-                    ))}
-                  </div>
+                <div className="mb-3">
+                  <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-full border ${categoryColors[brief.category] || 'bg-white/10 text-white/60 border-white/20'}`}>
+                    {brief.category}
+                  </span>
                 </div>
-                <div className="flex-1 space-y-3">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-medium text-primary">
-                    <Sparkles className="h-3 w-3" />
-                    {story.metric}
-                  </div>
-                  <p className="text-sm text-white/60 leading-relaxed">&ldquo;{story.quote}&rdquo;</p>
-                </div>
-                <div className="mt-4 pt-4 border-t border-white/10 space-y-1">
-                  <p className="font-headline text-sm font-bold text-white/90">{story.name}</p>
-                  <p className="text-xs text-white/50">{story.business} &middot; {story.role}</p>
+                <h3 className="font-headline text-sm font-bold text-white/90 mb-2 leading-snug">
+                  {brief.title}
+                </h3>
+                <p className="text-sm text-white/50 leading-relaxed flex-1">
+                  {brief.summary}
+                </p>
+                <div className="mt-4 pt-3 border-t border-white/10">
+                  <p className="text-xs text-primary flex items-center gap-1.5">
+                    <Zap className="h-3 w-3 shrink-0" />
+                    {brief.action}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -459,10 +452,10 @@ function UserStoriesSection() {
           transition={{ delay: 0.3 }}
           className="text-center mt-8"
         >
-          <p className="text-sm text-white/50 mb-4">Join 5,000+ SMEs already on Radbit</p>
+          <p className="text-sm text-white/50 mb-4">Personalized briefs generated daily from live data sources.</p>
           <MagneticButton asChild size="default" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60">
             <Link href="/sign-up">
-              Create Your Free Account <ArrowRight className="ml-1 h-3 w-3" />
+              Get Your First Brief <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </MagneticButton>
         </motion.div>
@@ -556,11 +549,9 @@ function FooterSection() {
               ],
             },
             {
-              title: "Connect",
+              title: "Resources",
               links: [
-                { href: "#", label: "Facebook" },
-                { href: "#", label: "X / Twitter" },
-                { href: "#", label: "LinkedIn" },
+                { href: "/resources", label: "Guides & Tools" },
               ],
             },
           ].map(group => (
@@ -613,7 +604,7 @@ export default function LandingPage() {
         <HowItWorksSection />
         <FeaturesSection />
         <MetricsSection />
-        <UserStoriesSection />
+        <CuratedBriefsSection />
         <section className="container mx-auto py-8 max-w-4xl relative z-10">
           <AdUnit slot="landing-content" format="rectangle" className="min-h-[90px]" />
         </section>

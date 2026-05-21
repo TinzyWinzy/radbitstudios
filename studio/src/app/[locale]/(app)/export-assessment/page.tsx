@@ -334,7 +334,7 @@ export default function ExportAssessmentPage() {
   }
 
   const currentQuestion = exportQuestions[currentStep - 1];
-  const remainingGenerations = (user as any)?.usage?.exportAssessment?.remaining ?? 0;
+  const remainingGenerations = user?.usage?.exportAssessment?.remaining ?? 0;
 
   return (
     <div className="space-y-8">

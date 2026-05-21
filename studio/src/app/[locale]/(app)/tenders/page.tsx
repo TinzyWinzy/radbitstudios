@@ -169,7 +169,7 @@ export default function TendersPage() {
     await loadTenders(true);
   };
 
-  const userPlan = (user as any)?.plan || 'Free';
+  const userPlan = user?.plan || 'Free';
   const isRegional = regionTab === 'regional';
 
   const filteredTenders = tenders.filter(t => {
@@ -190,7 +190,7 @@ export default function TendersPage() {
 
   const openCount = tenders.filter(t => t.status === 'open').length;
   const closingCount = tenders.filter(t => t.status === 'closing_soon').length;
-  const hasProfile = !!(user as any)?.industry;
+  const hasProfile = !!user?.industry;
 
   return (
     <div className="space-y-6">

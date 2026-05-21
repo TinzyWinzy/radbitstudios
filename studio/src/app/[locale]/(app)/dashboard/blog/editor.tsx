@@ -148,9 +148,18 @@ function simpleMarkdown(md: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
+    .replace(/^#### (.+)/gm, '<h4 class="font-headline text-lg font-semibold mt-4 mb-1">$1</h4>')
     .replace(/^### (.+)/gm, '<h3 class="font-headline text-xl font-semibold mt-6 mb-2">$1</h3>')
     .replace(/^## (.+)/gm, '<h2 class="font-headline text-2xl font-bold mt-8 mb-3">$1</h2>')
+    .replace(/^> (.+)/gm, '<blockquote class="border-l-4 border-primary/30 pl-4 italic my-4 text-muted-foreground">$1</blockquote>')
     .replace(/^- (.+)/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, '<ul class="list-disc pl-6 mb-4 space-y-1">$&</ul>');
+    .replace(/^\d+\. (.+)/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, function(match: string) {
+      if (match.match(/^\d+\./)) {
+        return '<ol class="list-decimal pl-6 mb-4 space-y-1">' + match + '</ol>';
+      }
+      return '<ul class="list-disc pl-6 mb-4 space-y-1">' + match + '</ul>';
+    })
+    .replace(/---/g, '<hr class="my-8 border-border/50" />');
   return html;
 }

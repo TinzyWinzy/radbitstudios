@@ -2,7 +2,9 @@ import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, runTransaction } from 'firebase/firestore';
 import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
 
-export type PlanName = 'Free' | 'Growth' | 'Pro' | 'Enterprise';
+import type { PlanName } from '@/types/user';
+
+export type { PlanName };
 export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot';
 
 export function getTierLevel(plan: PlanName): number {

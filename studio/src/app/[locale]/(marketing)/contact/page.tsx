@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, MapPin, Phone, Loader2, Send } from 'lucide-react';
+import { Mail, Loader2, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ContactPage() {
@@ -55,27 +55,6 @@ export default function ContactPage() {
               <h3 className="font-semibold">Email</h3>
               <p className="text-sm text-muted-foreground">hello@radbitsmehub.co.zw</p>
               <p className="text-sm text-muted-foreground">support@radbitsmehub.co.zw</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-semibold">Zimbabwe Office</h3>
-              <p className="text-sm text-muted-foreground">
-                1st Floor, Union House<br />
-                60 Kwame Nkrumah Avenue<br />
-                Harare, Zimbabwe
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-semibold">Phone</h3>
-              <p className="text-sm text-muted-foreground">+263 78 123 4567</p>
-              <p className="text-sm text-muted-foreground">+27 10 123 4567</p>
             </div>
           </div>
         </div>

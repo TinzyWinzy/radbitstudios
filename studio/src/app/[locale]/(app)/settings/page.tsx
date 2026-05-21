@@ -127,9 +127,9 @@ export default function SettingsPage() {
      useEffect(() => {
         if (user) {
             setDisplayName(user.displayName || '');
-            setBusinessName((user as any).businessName || '');
-            setIndustry((user as any).industry || '');
-            setBusinessDescription((user as any).businessDescription || '');
+            setBusinessName(user.businessName || '');
+            setIndustry(user.industry || '');
+            setBusinessDescription(user.businessDescription || '');
         }
     }, [user]);
 
@@ -275,7 +275,7 @@ export default function SettingsPage() {
     const handlePlanChange = async (newPlan: SubscriptionPlan) => {
         if (!user) return;
 
-        const currentPlanName = (user as any).plan || 'Free';
+        const currentPlanName = user.plan || 'Free';
         const currentIdx = PLAN_ORDER.indexOf(currentPlanName as typeof PLAN_ORDER[number]);
         const newIdx = PLAN_ORDER.indexOf(newPlan.name);
         const isUpgrade = newIdx > currentIdx;
@@ -312,8 +312,8 @@ export default function SettingsPage() {
         setIsChangingPlan(true);
         try {
             const engine = new SubscriptionEngine();
-            const country = (user as any).countryCode || 'ZW';
-            const currency = (user as any).currencyPreference || (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
+            const country = user.countryCode || 'ZW';
+            const currency = user.currencyPreference || (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
             const result = await engine.createSubscription(
                 user.uid,
                 newPlan.name as any,
@@ -366,7 +366,7 @@ export default function SettingsPage() {
         return <Skeleton className="h-96 w-full" />
     }
 
-    const currentPlanName = (user as any).plan || 'Free';
+    const currentPlanName = user.plan || 'Free';
 
     const handleDeleteAccount = async () => {
       setIsDeleting(true);
@@ -569,7 +569,7 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {(user as any).plan === 'Pro' || (user as any).plan === 'Enterprise' ? (
+              {user.plan === 'Pro' || user.plan === 'Enterprise' ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-4 rounded-lg border border-primary/20 bg-primary/5">
                     <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
@@ -915,7 +915,7 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {String((user as any).plan) === 'Enterprise' ? (
+              {String(user.plan) === 'Enterprise' ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-4 rounded-lg border border-primary/20 bg-primary/5">
                     <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
@@ -929,7 +929,7 @@ export default function SettingsPage() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="brand-name">Brand Name</Label>
-                      <Input id="brand-name" placeholder="Your Brand Name" defaultValue={(user as any).businessName || ''} />
+                      <Input id="brand-name" placeholder="Your Brand Name" defaultValue={user.businessName || ''} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="brand-logo">Logo URL</Label>

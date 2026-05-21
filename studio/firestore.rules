@@ -29,14 +29,14 @@ service cloud.firestore {
     match /assessments/{assessmentId} {
       allow create: if request.auth.uid == request.resource.data.userId;
       allow get, delete: if request.auth.uid == resource.data.userId;
-      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+      allow list: if request.auth != null;
     }
 
     // ─── GENERATIONS (AI AGENT HISTORY) ───────────────────────────────────────
     match /generations/{generationId} {
       allow create: if request.auth.uid == request.resource.data.userId;
       allow read, delete: if request.auth.uid == resource.data.userId;
-      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+      allow list: if request.auth != null;
     }
 
     // ─── BUDGETS ──────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ service cloud.firestore {
     match /export_assessments/{assessmentId} {
       allow create: if request.auth.uid == request.resource.data.userId;
       allow get, delete: if request.auth.uid == resource.data.userId;
-      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+      allow list: if request.auth != null;
     }
 
     // ─── REFERRAL CODES ────────────────────────────────────────────────────
@@ -78,7 +78,7 @@ service cloud.firestore {
     match /invoices/{invoiceId} {
       allow get: if request.auth.uid == resource.data.userId;
       allow create: if request.auth.uid == request.resource.data.userId;
-      allow list: if request.auth != null && request.query.where.userId == request.auth.uid;
+      allow list: if request.auth != null;
     }
 
     // ─── BOOKMARKS ─────────────────────────────────────────────────────────────

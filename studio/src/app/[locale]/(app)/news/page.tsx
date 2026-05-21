@@ -117,9 +117,9 @@ export default function NewsPage() {
     try {
       const result = await generatePersonalizedBrief({
         userId: user.uid,
-        businessName: (user as any).businessName,
-        industry: (user as any).industry,
-        businessDescription: (user as any).businessDescription,
+        businessName: user?.businessName,
+        industry: user?.industry,
+        businessDescription: user?.businessDescription,
         focusArea: 'both',
       });
       setBrief(result);
@@ -145,7 +145,7 @@ export default function NewsPage() {
   });
 
   const categories = ['all', 'policy', 'finance', 'technology', 'business', 'regulatory'];
-  const hasProfile = !!(user as any)?.industry;
+  const hasProfile = !!user?.industry;
 
   return (
     <div className="space-y-6">

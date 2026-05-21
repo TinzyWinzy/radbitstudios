@@ -16,13 +16,7 @@ import { sendMessageAction, sendMessageWithNews } from './actions';
 import { checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import type { UpgradeInfo } from '@/services/feature-gate';
-import type { User } from 'firebase/auth';
-
-interface CustomUser extends User {
-  businessName?: string;
-  industry?: string;
-  businessDescription?: string;
-}
+import type { AppUser } from '@/types/user';
 
 interface Message {
   text: string;
@@ -35,7 +29,7 @@ interface Message {
 
 export default function MentorPage() {
   const { user: authUser } = useContext(AuthContext);
-  const user = authUser as CustomUser | null;
+  const user = authUser as AppUser | null;
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -46,7 +40,7 @@ export default function MentorPage() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const hasProfile = !!(user as any)?.industry;
+  const hasProfile = !!user?.industry;
 
   useEffect(() => {
     if (scrollAreaRef.current) {

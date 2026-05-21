@@ -193,8 +193,6 @@ export default function PrivacyPage() {
         <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
           <li>Email: privacy@radbitsmehub.co.zw</li>
           <li>Data Protection Officer: dpo@radbitsmehub.co.zw</li>
-          <li>Zimbabwe: 1st Floor, Union House, 60 Kwame Nkrumah Avenue, Harare</li>
-          <li>South Africa: Block B, The Pinnacle, 111 Rivonia Road, Sandton, 2196</li>
         </ul>
         <p className="text-sm text-muted-foreground mt-4">
           For POPIA enquiries, contact the Information Regulator (South Africa):

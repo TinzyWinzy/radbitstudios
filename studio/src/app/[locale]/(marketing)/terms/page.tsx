@@ -145,7 +145,6 @@ export default function TermsPage() {
         <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
           <li>Email: support@radbitsmehub.co.zw</li>
           <li>Legal: legal@radbitsmehub.co.zw</li>
-          <li>Zimbabwe: 1st Floor, Union House, 60 Kwame Nkrumah Avenue, Harare</li>
         </ul>
       </section>
     </div>

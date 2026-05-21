@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, memo } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -24,19 +25,28 @@ import {
   TrendingUp,
   ExternalLink,
   Sparkles,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts"
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton";
 import { OnboardingWizard } from "@/components/onboarding-wizard";
 import { UsageSummary } from "@/components/usage-summary";
+import { RecentActivity } from "@/components/recent-activity";
 import { generateDashboardInsights } from "@/ai/flows/generate-dashboard-insights";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
 import { AuthContext } from "@/contexts/auth-context";
 import { withRetry } from "@/lib/retry";
+import { checkFeatureAccess, checkAndDecrementUsage } from "@/services/usage-service";
+import { UpgradeModal } from "@/components/upgrade-modal";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { cacheDashboardData, getCachedDashboardData } from "@/services/offline";
+import type { UpgradeInfo } from "@/services/feature-gate";
+import type { AppUser } from "@/types/user";
 
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 const overviewCards = [
   {
@@ -65,10 +75,6 @@ const overviewCards = [
   },
 ];
 
-import { checkAndDecrementUsage } from "@/services/usage-service";
-import { UpgradeModal } from "@/components/upgrade-modal";
-import type { UpgradeInfo } from "@/services/feature-gate";
-
 const chartConfig = {
     score: {
       label: "Score",
@@ -84,118 +90,188 @@ interface AssessmentData {
     aiSummary: string;
 }
 
+const AssessmentRadarChart = memo(function AssessmentRadarChart({ data }: { data: AssessmentData }) {
+  return (
+    <>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center">
+          <BarChart className="mr-2 h-5 w-5 text-primary" />
+          Strengths & Gaps
+        </h3>
+        <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
+          <RadarChart data={data.chartData}>
+            <ChartTooltip content={<ChartTooltipContent />} />
+            <PolarAngleAxis dataKey="category" />
+            <PolarGrid />
+            <Radar
+              name="Score"
+              dataKey="score"
+              stroke="hsl(var(--primary))"
+              fill="hsl(var(--primary))"
+              fillOpacity={0.6}
+            />
+          </RadarChart>
+        </ChartContainer>
+      </div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center">
+          <Lightbulb className="mr-2 h-5 w-5 text-primary" />
+          AI Summary
+        </h3>
+        <div className="p-4 bg-muted rounded-lg flex-1">
+          <p className="text-sm whitespace-pre-line">{data.aiSummary}</p>
+        </div>
+      </div>
+    </>
+  );
+});
+
 export default function DashboardPage() {
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const [dailyTips, setDailyTips] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [isLoadingInsights, setIsLoadingInsights] = useState(true);
+  const [insightsError, setInsightsError] = useState(false);
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
+  const [assessmentHistory, setAssessmentHistory] = useState<{ date: string; score: number }[]>([]);
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
   const [creditsExhausted, setCreditsExhausted] = useState(false);
+  const [retryTrigger, setRetryTrigger] = useState(0);
   const upgradeShown = useRef(false);
 
-  const hasCompletedProfile = user && (user as any).businessName && (user as any).industry;
+  const hasCompletedProfile = user && user.businessName && user.industry;
 
   useEffect(() => {
     let mounted = true;
 
     const fetchDashboardInsights = async () => {
-      if (!user || !hasCompletedProfile) {
-        if (mounted) setIsLoadingInsights(false);
-        return;
-      };
+      if (!user || !hasCompletedProfile) return;
 
       if (mounted) setIsLoadingInsights(true);
+      setInsightsError(false);
+      setCreditsExhausted(false);
+
       try {
-        const usageResult = await checkAndDecrementUsage(user.uid, 'dashboardInsights');
-        if (!usageResult.success) {
-          if (usageResult.upgrade && !upgradeShown.current) {
+        const access = await checkFeatureAccess(user.uid, 'dashboardInsights');
+        if (!access.allowed) {
+          if (access.upgrade && !upgradeShown.current) {
             upgradeShown.current = true;
-            if (mounted) setUpgradeInfo(usageResult.upgrade);
-            if (mounted) setIsLoadingInsights(false);
-            return;
+            if (mounted) setUpgradeInfo(access.upgrade);
+          } else {
+            if (mounted) setCreditsExhausted(true);
           }
-          if (mounted) setCreditsExhausted(true);
           if (mounted) setIsLoadingInsights(false);
           return;
         }
+
+        const cached = await getCachedDashboardData(user.uid);
+        if (cached && Date.now() - cached.cachedAt < CACHE_TTL_MS) {
+          const data = cached.data as { dailyTips: string[]; recommendations: string[] };
+          if (data?.dailyTips?.length && data?.recommendations?.length) {
+            if (mounted) {
+              setDailyTips(data.dailyTips);
+              setRecommendations(data.recommendations);
+              setIsLoadingInsights(false);
+            }
+            return;
+          }
+        }
+
         const result = await generateDashboardInsights({
           userId: user.uid,
-          businessDescription: (user as any).businessDescription || '',
-          industry: (user as any).industry
+          businessDescription: user.businessDescription || '',
+          industry: user.industry,
         });
+
         if (mounted) {
           setDailyTips(result.dailyTips);
           setRecommendations(result.recommendations);
+          setIsLoadingInsights(false);
         }
+
+        checkAndDecrementUsage(user.uid, 'dashboardInsights').then(decrementResult => {
+          if (decrementResult.success) {
+            cacheDashboardData(user.uid, {
+              dailyTips: result.dailyTips,
+              recommendations: result.recommendations,
+            }).catch(() => {});
+          }
+        }).catch(() => {});
       } catch (error) {
         console.error("Error fetching dashboard insights:", error);
-        if (mounted) {
-          setDailyTips(["Error loading tips. Please refresh."]);
-          setRecommendations(["Error loading recommendations. Please refresh."]);
-        }
-      } finally {
+        if (mounted) setInsightsError(true);
         if (mounted) setIsLoadingInsights(false);
       }
     };
-    
+
     const fetchAssessmentData = async () => {
-        if (!user) {
-            if (mounted) setIsLoadingAssessment(false);
-            return;
-        }
-        if (mounted) setIsLoadingAssessment(true);
-        try {
-            const q = query(
-                collection(db, "assessments"),
-                where("userId", "==", user.uid)
-            );
-            const querySnapshot = await withRetry(() => getDocs(q));
-            const sorted = querySnapshot.docs.sort((a, b) => {
-                const aDate = a.data().createdAt?.toDate?.() ?? new Date(0);
-                const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);
-                return bDate.getTime() - aDate.getTime();
-            });
-            if (sorted.length > 0 && mounted) {
-                const doc = sorted[0];
-                const data = doc.data();
-
-                const categoryScores: { [key: string]: { totalScore: number; count: number } } = {};
-                data.responses.forEach((response: any) => {
-                    if (!categoryScores[response.category]) {
-                        categoryScores[response.category] = { totalScore: 0, count: 0 };
-                    }
-                    categoryScores[response.category].totalScore += response.score;
-                    categoryScores[response.category].count += 1;
-                });
-
-                const chartData = Object.entries(categoryScores).map(([category, scores]) => ({
-                    category,
-                    score: (scores.totalScore / (scores.count * 4)) * 100,
-                }));
-                
-                setAssessmentData({
-                    chartData,
-                    aiSummary: data.summary,
-                });
-            } else if (mounted) {
-                 setAssessmentData(null);
+      if (!user) return;
+      if (mounted) setIsLoadingAssessment(true);
+      try {
+        const q = query(
+          collection(db, "assessments"),
+          where("userId", "==", user.uid)
+        );
+        const querySnapshot = await withRetry(() => getDocs(q));
+        const sorted = querySnapshot.docs.sort((a, b) => {
+          const aDate = a.data().createdAt?.toDate?.() ?? new Date(0);
+          const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);
+          return bDate.getTime() - aDate.getTime();
+        });
+        if (sorted.length > 0 && mounted) {
+          const latest = sorted[0];
+          const latestData = latest.data();
+          const categoryScores: { [key: string]: { totalScore: number; count: number } } = {};
+          latestData.responses.forEach((response: any) => {
+            if (!categoryScores[response.category]) {
+              categoryScores[response.category] = { totalScore: 0, count: 0 };
             }
-        } catch (error) {
-             console.error("Error fetching assessment data:", error);
-             if (mounted) setAssessmentData(null);
-        } finally {
-            if (mounted) setIsLoadingAssessment(false);
+            categoryScores[response.category].totalScore += response.score;
+            categoryScores[response.category].count += 1;
+          });
+          const chartData = Object.entries(categoryScores).map(([category, scores]) => ({
+            category,
+            score: (scores.totalScore / (scores.count * 4)) * 100,
+          }));
+          if (mounted) setAssessmentData({ chartData, aiSummary: latestData.summary });
+
+          const history = sorted.map(doc => {
+            const d = doc.data();
+            const scores = d.responses as Array<{ score: number }>;
+            const total = scores.reduce((sum, r) => sum + r.score, 0);
+            const max = scores.length * 4;
+            const date = d.createdAt?.toDate?.() ?? new Date(0);
+            return {
+              date: date.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' }),
+              score: Math.round((total / max) * 100),
+            };
+          }).reverse();
+          if (mounted) setAssessmentHistory(history);
+        } else if (mounted) {
+          setAssessmentData(null);
+          setAssessmentHistory([]);
         }
+      } catch (error) {
+        console.error("Error fetching assessment data:", error);
+        if (mounted) setAssessmentData(null);
+      } finally {
+        if (mounted) setIsLoadingAssessment(false);
+      }
+    };
+
+    if (!user) {
+      if (mounted) setIsLoadingInsights(false);
+      if (mounted) setIsLoadingAssessment(false);
+      return;
     }
 
     fetchDashboardInsights();
     fetchAssessmentData();
 
     return () => { mounted = false; };
-  }, [user, hasCompletedProfile]);
-
+  }, [user, hasCompletedProfile, retryTrigger]);
 
   return (
     <div className="space-y-8">
@@ -239,110 +315,123 @@ export default function DashboardPage() {
         <Card className="lg:col-span-3">
           <CardHeader>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <div>
-                    <CardTitle>Your Digital Readiness</CardTitle>
-                    <CardDescription>
-                    A summary of your recent assessment.
-                    </CardDescription>
-                </div>
-                 <Button variant="outline" size="sm" asChild>
-                    <Link href="/assessment">
-                        <RefreshCw className="mr-2 h-4 w-4"/>
-                        Retake Assessment
-                    </Link>
-                 </Button>
+              <div>
+                <CardTitle>Your Digital Readiness</CardTitle>
+                <CardDescription>
+                  A summary of your recent assessment.
+                </CardDescription>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/assessment">
+                  <RefreshCw className="mr-2 h-4 w-4"/>
+                  Retake Assessment
+                </Link>
+              </Button>
             </div>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 min-h-[300px]">
-                {isLoadingAssessment ? (
-                     <div className="col-span-1 md:col-span-2 flex items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                     </div>
-                ) : assessmentData ? (
-                    <>
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center">
-                            <BarChart className="mr-2 h-5 w-5 text-primary" />
-                            Strengths & Gaps
-                        </h3>
-                        <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
-                            <ResponsiveContainer>
-                                <RadarChart data={assessmentData.chartData}>
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <PolarAngleAxis dataKey="category" />
-                                    <PolarGrid />
-                                    <Radar
-                                        name="Score"
-                                        dataKey="score"
-                                        stroke="hsl(var(--primary))"
-                                        fill="hsl(var(--primary))"
-                                        fillOpacity={0.6}
-                                    />
-                                </RadarChart>
-                            </ResponsiveContainer>
-                        </ChartContainer>
-                    </div>
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center">
-                            <Lightbulb className="mr-2 h-5 w-5 text-primary" />
-                            AI Summary
-                        </h3>
-                        <div className="p-4 bg-muted rounded-lg flex-1">
-                            <p className="text-sm whitespace-pre-line">{assessmentData.aiSummary}</p>
-                        </div>
-                    </div>
-                    </>
-                ) : (
-                    <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center text-center">
-                        <p className="text-muted-foreground">You haven&apos;t taken the assessment yet.</p>
-                        <Button asChild className="mt-4">
-                            <Link href="/assessment">Take Your First Assessment</Link>
-                        </Button>
-                    </div>
-                )}
-            </CardContent>
+          <CardContent className="space-y-6">
+            <ErrorBoundary>
+              {isLoadingAssessment ? (
+                <div className="flex items-center justify-center min-h-[200px]">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : assessmentData ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <AssessmentRadarChart data={assessmentData} />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-center min-h-[200px]">
+                  <p className="text-muted-foreground">You haven&apos;t taken the assessment yet.</p>
+                  <Button asChild className="mt-4">
+                    <Link href="/assessment">Take Your First Assessment</Link>
+                  </Button>
+                </div>
+              )}
+            </ErrorBoundary>
+            {assessmentHistory.length > 1 && (
+              <div className="border-t pt-6">
+                <h3 className="text-sm font-semibold flex items-center gap-1.5 mb-3">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  Score Trend
+                </h3>
+                <div className="h-32">
+                  <ChartContainer config={chartConfig} className="h-full w-full">
+                    <LineChart data={assessmentHistory}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))", r: 3 }} />
+                    </LineChart>
+                  </ChartContainer>
+                </div>
+              </div>
+            )}
+          </CardContent>
         </Card>
+
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>AI Insights</CardTitle>
-             <CardDescription>
+            <CardDescription>
               Personalized tips and recommendations to help you grow.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-             {isLoadingInsights ? (
-               <div className="space-y-4">
+            <ErrorBoundary>
+              {isLoadingInsights ? (
+                <div className="space-y-4">
                   <div className="space-y-2">
-                      <Skeleton className="h-4 w-1/3" />
-                      <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-3 w-full" />
                   </div>
-                   <div className="space-y-2">
-                      <Skeleton className="h-4 w-1/3" />
-                      <Skeleton className="h-3 w-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-3 w-full" />
                   </div>
-               </div>
+                </div>
+              ) : insightsError ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10">
+                    <AlertTriangle className="size-6 text-destructive" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-md">Failed to load insights</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Something went wrong. Please try again.
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => setRetryTrigger(c => c + 1)}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Retry
+                  </Button>
+                </div>
               ) : hasCompletedProfile && !creditsExhausted ? (
                 <>
-                <div>
-                  <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Daily Tips</h3>
-                  <div className="space-y-3">
-                    {dailyTips.map((tip, index) => (
-                      <div key={index} className="p-3 bg-muted/50 rounded-lg">
-                        <p className="text-xs text-muted-foreground">{tip}</p>
-                      </div>
-                    ))}
+                  <div>
+                    <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Daily Tips</h3>
+                    <div className="space-y-3">
+                      {dailyTips.length > 0 ? dailyTips.map((tip, index) => (
+                        <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                          <p className="text-xs text-muted-foreground">{tip}</p>
+                        </div>
+                      )) : (
+                        <p className="text-xs text-muted-foreground">No tips available right now.</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div>
-                   <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Recommendations</h3>
-                   <div className="space-y-3">
-                    {recommendations.map((rec, index) => (
-                      <div key={index} className="p-3 bg-muted/50 rounded-lg">
-                        <p className="text-xs text-muted-foreground">{rec}</p>
-                      </div>
-                    ))}
+                  <div>
+                    <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Recommendations</h3>
+                    <div className="space-y-3">
+                      {recommendations.length > 0 ? recommendations.map((rec, index) => (
+                        <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                          <p className="text-xs text-muted-foreground">{rec}</p>
+                        </div>
+                      )) : (
+                        <p className="text-xs text-muted-foreground">No recommendations right now.</p>
+                      )}
+                    </div>
                   </div>
-                </div>
                 </>
               ) : creditsExhausted && hasCompletedProfile ? (
                 <div className="text-center py-8 space-y-4">
@@ -355,7 +444,7 @@ export default function DashboardPage() {
                       You&apos;ve used all your dashboard insights credits for this billing period.
                     </p>
                   </div>
-                  <Button onClick={() => window.location.href = '/settings?tab=plan'}>
+                  <Button onClick={() => router.push('/settings?tab=plan')}>
                     Upgrade to Growth — $5/mo
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -365,31 +454,37 @@ export default function DashboardPage() {
                   <p>Complete your business profile to unlock personalized AI insights.</p>
                 </div>
               )}
+            </ErrorBoundary>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
         <UsageSummary user={user} />
+        {user && <RecentActivity userId={user.uid} />}
       </div>
 
       <div id="dashboard-news-insights" className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <NewsInsightsCard user={user} />
+        <ErrorBoundary>
+          <NewsInsightsCard user={user} />
+        </ErrorBoundary>
       </div>
 
-      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
+      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => router.push('/settings?tab=plan')} />
     </div>
   );
 }
 
-function NewsInsightsCard({ user }: { user: any }) {
+function NewsInsightsCard({ user }: { user: AppUser | null }) {
   const [brief, setBrief] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const handleGenerate = async () => {
     if (!user) return;
     setLoading(true);
+    setError(false);
     try {
       const { generatePersonalizedBrief } = await import('@/ai/flows/generate-personalized-brief');
       const result = await generatePersonalizedBrief({
@@ -400,8 +495,9 @@ function NewsInsightsCard({ user }: { user: any }) {
         focusArea: 'both',
       });
       setBrief(result);
-    } catch (error) {
-      console.error('Error generating brief:', error);
+    } catch (err) {
+      console.error('Error generating brief:', err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -434,7 +530,17 @@ function NewsInsightsCard({ user }: { user: any }) {
         {!brief ? (
           <div className="text-center py-6 text-muted-foreground">
             <Newspaper className="h-8 w-8 mx-auto mb-2 opacity-30" />
-            <p className="text-sm">Click &quot;Generate Brief&quot; to get AI-curated news and tender recommendations for your industry.</p>
+            {error ? (
+              <div className="space-y-3">
+                <p className="text-sm">Failed to generate brief. Try again.</p>
+                <Button size="sm" variant="outline" onClick={handleGenerate}>
+                  <RefreshCw className="mr-2 h-3 w-3" />
+                  Retry
+                </Button>
+              </div>
+            ) : (
+              <p className="text-sm">Click &quot;Generate Brief&quot; to get AI-curated news and tender recommendations for your industry.</p>
+            )}
           </div>
         ) : (
           <>

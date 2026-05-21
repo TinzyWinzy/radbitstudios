@@ -77,7 +77,7 @@ export default function AiToolkitPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      businessDescription: (user as any)?.businessDescription || '',
+      businessDescription: user?.businessDescription || '',
       insightType: undefined,
     },
   });
@@ -110,8 +110,8 @@ export default function AiToolkitPage() {
 
       const response = await generateBusinessInsight({
         ...data,
-        businessName: (user as any)?.businessName,
-        industry: (user as any)?.industry,
+        businessName: user?.businessName,
+        industry: user?.industry,
       });
 
       setGeneratedContent(response.insight);

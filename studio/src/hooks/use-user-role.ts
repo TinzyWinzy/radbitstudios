@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { UserRole } from '@/services/permissions';
+import type { AppUser } from '@/types/user';
 
 interface UseUserRoleResult {
   role: UserRole | null;
@@ -39,10 +40,10 @@ export function useUserRole(): UseUserRoleResult {
   return { role, loading, refetch: fetchRole };
 }
 
-export function useUserRoleFromContext(user: any): UserRole | null {
+export function useUserRoleFromContext(user: AppUser | null): UserRole | null {
   if (!user) return null;
-  if ((user as any).role && ['sme_owner', 'sme_staff', 'admin'].includes((user as any).role)) {
-    return (user as any).role as UserRole;
+  if (user.role && ['sme_owner', 'sme_staff', 'admin'].includes(user.role)) {
+    return user.role;
   }
   return 'sme_owner';
 }

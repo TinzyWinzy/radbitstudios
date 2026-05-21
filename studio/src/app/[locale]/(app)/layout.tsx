@@ -34,7 +34,6 @@ import {
   Briefcase,
   Users,
   Settings,
-  Bell,
   LifeBuoy,
   MessageCircle,
   Calculator,
@@ -48,8 +47,9 @@ import {
 import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { GyeNyame } from "@/components/adinkra-symbols";
+import { NotificationBell } from "@/components/notification-bell";
+import type { AppUser } from "@/types/user";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import { UserNav } from "@/components/user-nav";
 
@@ -71,7 +71,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       }
     }, [pathname]);
 
-    const userPlan = (user as any)?.plan || 'Free';
+    const userPlan = (user as AppUser)?.plan || 'Free';
     const TIER_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'] as const;
     const userTierIndex = TIER_ORDER.indexOf(userPlan as any);
 
@@ -159,9 +159,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="mr-4" />
             <div className="flex-1" />
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                <Bell className="h-5 w-5" />
-              </Button>
+              {user && <NotificationBell userId={user.uid} />}
               <ThemeToggle />
               <UserNav />
             </div>

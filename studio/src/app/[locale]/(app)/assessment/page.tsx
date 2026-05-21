@@ -395,7 +395,7 @@ export default function AssessmentPage() {
   }
 
   const currentQuestion = questions[currentStep - 1];
-  const remainingGenerations = (user as any)?.usage?.assessmentSummary?.remaining ?? 0;
+  const remainingGenerations = user?.usage?.assessmentSummary?.remaining ?? 0;
 
   return (
     <div className="space-y-8">

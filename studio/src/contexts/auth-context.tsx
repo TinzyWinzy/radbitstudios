@@ -16,10 +16,11 @@ import { auth, db } from '@/lib/firebase/firebase';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { subscriptionPlans } from '@/lib/subscriptions';
 import type { UserRole } from '@/services/permissions';
+import type { AppUser } from '@/types/user';
 import { withRetry } from '@/lib/retry';
 
 interface AuthContextType {
-  user: User | null;
+  user: AppUser | null;
   loading: boolean;
   role: UserRole | null;
   signUp: (email: string, pass: string) => Promise<any>;
@@ -85,7 +86,7 @@ const createUserDocument = async (user: User) => {
 
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<UserRole | null>(null);
   
@@ -95,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userDocRef = doc(db, 'users', authUser.uid);
     const userDoc = await withRetry(() => getDoc(userDocRef));
     if (userDoc.exists()) {
-      setUser({ ...authUser, ...userDoc.data() } as User);
+      setUser({ ...authUser, ...userDoc.data() } as AppUser);
       const docRole = userDoc.data().role as UserRole | undefined;
       if (docRole && ['sme_owner', 'sme_staff', 'admin'].includes(docRole)) {
         setRole(docRole);
@@ -104,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
       }
     } else {
-      setUser(authUser);
+      setUser(authUser as AppUser);
       const idTokenResult = await authUser.getIdTokenResult();
       setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
     }

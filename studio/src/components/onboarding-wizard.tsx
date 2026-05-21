@@ -1,12 +1,14 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/contexts/auth-context';
+import type { AppUser } from '@/types/user';
 import { db } from '@/lib/firebase/firebase';
 import { collection, query, where, getDocs, doc, updateDoc, limit } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, ArrowRight, BarChart, Building2, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle, Circle, ArrowRight, Sparkles } from 'lucide-react';
 
 const INDUSTRIES = [
   'Retail & Wholesale', 'Manufacturing', 'Agriculture', 'Technology',
@@ -16,16 +18,17 @@ const INDUSTRIES = [
 ];
 
 export function OnboardingWizard() {
+  const router = useRouter();
   const { user, refreshUserData } = useContext(AuthContext);
   const [hasAssessment, setHasAssessment] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [businessName, setBusinessName] = useState('');
   const [industry, setIndustry] = useState('');
   const [businessDescription, setBusinessDescription] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const profileComplete = !!(user as any)?.businessName && !!((user as any)?.industry);
-  const onboardingDone = dismissed || (profileComplete && hasAssessment);
+  const profileComplete = !!(user as AppUser)?.businessName && !!((user as AppUser)?.industry);
+  const allDone = profileComplete && hasAssessment;
 
   const checkAssessment = useCallback(async () => {
     if (!user) return;
@@ -41,11 +44,11 @@ export function OnboardingWizard() {
   }, [user]);
 
   useEffect(() => {
-    if (!user || dismissed) return;
+    if (!user) return;
     if (profileComplete) {
       checkAssessment();
     }
-  }, [user, dismissed, profileComplete, checkAssessment]);
+  }, [user, profileComplete, checkAssessment]);
 
   async function saveProfile() {
     if (!user || !businessName.trim() || !industry) return;
@@ -59,106 +62,103 @@ export function OnboardingWizard() {
     setSaving(false);
   }
 
-  async function dismiss() {
-    if (!user) return;
-    await updateDoc(doc(db, 'users', user.uid), { dismissedOnboarding: true }).catch(() => {});
-    setDismissed(true);
-  }
-
-  if (onboardingDone) return null;
-
   return (
     <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-background p-6 mb-8">
       <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+        <button onClick={() => setCollapsed(!collapsed)} className="flex items-center gap-3 flex-1 text-left">
+          <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
             <Sparkles className="size-5 text-primary" />
           </div>
-          <div>
-            <h3 className="font-headline font-semibold">Welcome to Radbit!</h3>
-            <p className="text-sm text-muted-foreground">Complete these steps to unlock your dashboard</p>
+          <div className="flex-1">
+            <h3 className="font-headline font-semibold">
+              {allDone ? 'Getting Started' : 'Welcome to Radbit!'}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {allDone
+                ? 'All steps complete. Explore your dashboard below.'
+                : `Step ${profileComplete ? '2' : '1'} of 2 — ${profileComplete ? 'Take your assessment' : 'Tell us about your business'}`}
+            </p>
           </div>
-        </div>
-        <button onClick={dismiss} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-          Skip for now
+          <div className="flex items-center gap-2 shrink-0">
+            {allDone && (
+              <span className="text-xs text-green-600 dark:text-green-400 font-medium">Done ✓</span>
+            )}
+            {collapsed ? <ChevronDown className="size-4 text-muted-foreground" /> : <ChevronUp className="size-4 text-muted-foreground" />}
+          </div>
         </button>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        <div className={`h-1.5 flex-1 rounded-full transition-colors ${profileComplete ? 'bg-primary' : 'bg-muted'}`} />
-        <div className={`h-1.5 flex-1 rounded-full transition-colors ${hasAssessment ? 'bg-primary' : 'bg-muted'}`} />
-      </div>
-
-      {!profileComplete && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sm font-medium">
-            <Building2 className="size-4 text-primary" />
-            Step 1: Tell us about your business
+      {!collapsed && (
+        <>
+          <div className="flex gap-2 mb-6">
+            <div className={`h-1.5 flex-1 rounded-full transition-colors ${profileComplete ? 'bg-primary' : 'bg-muted'}`} />
+            <div className={`h-1.5 flex-1 rounded-full transition-colors ${hasAssessment ? 'bg-primary' : 'bg-muted'}`} />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="ob-business-name">Business Name</Label>
-              <Input id="ob-business-name" placeholder="e.g. Tariro's General Dealer" value={businessName} onChange={e => setBusinessName(e.target.value)} />
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              {profileComplete ? (
+                <CheckCircle className="size-4 text-green-500 shrink-0" />
+              ) : (
+                <Circle className="size-4 text-muted-foreground shrink-0" />
+              )}
+              <span className={`text-sm font-medium ${profileComplete ? 'text-green-600 dark:text-green-400' : ''}`}>
+                Complete your business profile
+              </span>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ob-industry">Industry</Label>
-              <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger id="ob-industry"><SelectValue placeholder="Select industry" /></SelectTrigger>
-                <SelectContent>
-                  {INDUSTRIES.map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}
-                </SelectContent>
-              </Select>
+
+            {!profileComplete && (
+              <div className="pl-6 space-y-4 border-l-2 border-primary/20 ml-[7px]">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="ob-business-name">Business Name</Label>
+                    <Input id="ob-business-name" placeholder="e.g. Tariro's General Dealer" value={businessName} onChange={e => setBusinessName(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ob-industry">Industry</Label>
+                    <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger id="ob-industry"><SelectValue placeholder="Select industry" /></SelectTrigger>
+                      <SelectContent>
+                        {INDUSTRIES.map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="ob-description">Brief Business Description (optional)</Label>
+                  <Input id="ob-description" placeholder="What does your business do?" value={businessDescription} onChange={e => setBusinessDescription(e.target.value)} />
+                </div>
+                <Button onClick={saveProfile} disabled={!businessName.trim() || !industry || saving}>
+                  {saving ? 'Saving...' : 'Save & Continue'}
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2">
+              {hasAssessment ? (
+                <CheckCircle className="size-4 text-green-500 shrink-0" />
+              ) : (
+                <Circle className="size-4 text-muted-foreground shrink-0" />
+              )}
+              <span className={`text-sm font-medium ${hasAssessment ? 'text-green-600 dark:text-green-400' : ''}`}>
+                Take Digital Readiness Assessment
+              </span>
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="ob-description">Brief Business Description (optional)</Label>
-            <Input id="ob-description" placeholder="What does your business do?" value={businessDescription} onChange={e => setBusinessDescription(e.target.value)} />
-          </div>
-          <Button onClick={saveProfile} disabled={!businessName.trim() || !industry || saving}>
-            {saving ? 'Saving...' : 'Save & Continue'}
-            <ArrowRight className="ml-2 size-4" />
-          </Button>
-        </div>
-      )}
 
-      {profileComplete && !hasAssessment && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="size-4 text-green-500" />
-            <span className="text-sm font-medium text-green-600 dark:text-green-400">Profile Complete</span>
+            {profileComplete && !hasAssessment && (
+              <div className="pl-6 border-l-2 border-primary/20 ml-[7px] space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Find out how digitally ready your business is. Takes 5 minutes.
+                </p>
+                <Button size="sm" onClick={() => router.push('/assessment')}>
+                  Take Assessment
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2 text-sm font-medium">
-            <BarChart className="size-4 text-primary" />
-            Step 2: Take your Digital Readiness Assessment
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Find out how digitally ready your business is. Takes 5 minutes.
-          </p>
-          <Button onClick={() => window.location.href = '/assessment'}>
-            Take Assessment
-            <ArrowRight className="ml-2 size-4" />
-          </Button>
-        </div>
-      )}
-
-      {profileComplete && hasAssessment && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="size-4 text-green-500" />
-            <span className="text-sm font-medium text-green-600 dark:text-green-400">Assessment Complete</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            You&apos;re all set! View your assessment results and explore AI tools.
-          </p>
-          <div className="flex gap-3">
-            <Button onClick={() => window.location.href = '/assessment'}>
-              View Results
-            </Button>
-            <Button variant="outline" onClick={dismiss}>
-              Got it, let&apos;s go!
-            </Button>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
