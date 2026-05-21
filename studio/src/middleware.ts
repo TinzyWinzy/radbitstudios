@@ -46,11 +46,6 @@ async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolea
       audience: PROJECT_ID,
     });
 
-    const email = payload['email'] as string | undefined;
-    if (email === 'brandontinoz@gmail.com') {
-      return { authenticated: true, role: 'super_admin' };
-    }
-
     return {
       authenticated: true,
       role: (payload['role'] as string) || 'sme_owner',

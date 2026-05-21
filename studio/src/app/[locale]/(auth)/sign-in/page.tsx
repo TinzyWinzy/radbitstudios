@@ -9,6 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Loader2, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { auth } from '@/lib/firebase/firebase';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { Icons } from '@/components/icons';
 import { z } from 'zod';
 
@@ -22,6 +24,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const { user, signIn, signInWithGoogle } = useContext(AuthContext);
   const router = useRouter();
@@ -33,7 +36,21 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (user) {
-      router.push('/dashboard');
+      const params = new URLSearchParams(window.location.search);
+      const redirectTo = params.get('redirect') || '/dashboard';
+      const refreshCookie = async () => {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const token = await currentUser.getIdToken();
+          await fetch('/api/auth/refresh-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: token }),
+          });
+        }
+        router.push(redirectTo);
+      };
+      refreshCookie();
     }
   }, [user, router]);
 
@@ -59,6 +76,27 @@ export default function SignInPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!email) {
+      toast({ title: 'Enter your email first', description: 'Please enter your email address above, then click Forgot Password.', variant: 'default' });
+      return;
+    }
+    const emailCheck = z.string().email().safeParse(email);
+    if (!emailCheck.success) {
+      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      return;
+    }
+    setIsResetting(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({ title: 'Check your inbox', description: 'If an account exists with that email, a password reset link has been sent.', variant: 'default' });
+    } catch (error: any) {
+      toast({ title: 'Reset failed', description: error.message || 'Could not send reset email. Please try again.', variant: 'destructive' });
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -132,6 +170,16 @@ export default function SignInPage() {
             required
             className="h-11"
           />
+        </div>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleResetPassword}
+            disabled={isResetting || isLoading || isGoogleLoading}
+            className="text-sm text-primary hover:underline"
+          >
+            {isResetting ? 'Sending...' : 'Forgot password?'}
+          </button>
         </div>
         <Button type="submit" className="w-full h-11 font-headline tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60" disabled={isLoading || isGoogleLoading}>
           {isLoading ? (

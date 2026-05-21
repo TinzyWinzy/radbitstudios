@@ -91,34 +91,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole | null>(null);
   
   const fetchAndSetUser = useCallback(async (authUser: User) => {
-    await authUser.getIdToken(true);
     await createUserDocument(authUser);
     const userDocRef = doc(db, 'users', authUser.uid);
     const userDoc = await withRetry(() => getDoc(userDocRef));
     if (userDoc.exists()) {
       const mergedUser = { ...authUser, ...userDoc.data() } as AppUser;
       setUser(mergedUser);
-      if (authUser.email === 'brandontinoz@gmail.com') {
-        setRole('super_admin');
-        await setDoc(userDocRef, { role: 'super_admin', plan: 'Enterprise' }, { merge: true });
-      } else {
-        const docRole = userDoc.data().role as UserRole | undefined;
-        if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
-          setRole(docRole);
-        } else {
-          const idTokenResult = await authUser.getIdTokenResult();
-          setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
-        }
-      }
-    } else {
-      setUser(authUser as AppUser);
-      if (authUser.email === 'brandontinoz@gmail.com') {
-        setRole('super_admin');
-        await setDoc(userDocRef, { role: 'super_admin', plan: 'Enterprise' }, { merge: true });
+      const docRole = userDoc.data().role as UserRole | undefined;
+      if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
+        setRole(docRole);
       } else {
         const idTokenResult = await authUser.getIdTokenResult();
         setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
       }
+    } else {
+      setUser(authUser as AppUser);
+      const idTokenResult = await authUser.getIdTokenResult();
+      setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
     }
   }, []);
 
@@ -135,7 +124,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    const refreshInterval = setInterval(async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const token = await currentUser.getIdToken(false);
+        const res = await fetch('/api/auth/refresh-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken: token }),
+        });
+        if (!res.ok) {
+          const token = await currentUser.getIdToken(true);
+          document.cookie = `__session=${token}; path=/; max-age=3600; SameSite=Lax; ${location.protocol === 'https:' ? 'Secure;' : ''}`;
+        }
+      }
+    }, 30 * 60 * 1000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(refreshInterval);
+    };
   }, [fetchAndSetUser]);
   
   const refreshUserData = useCallback(async () => {
