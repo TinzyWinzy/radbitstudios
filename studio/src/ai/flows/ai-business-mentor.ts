@@ -37,5 +37,6 @@ export async function aiBusinessMentor(input: AiBusinessMentorInput): Promise<Ai
     maxTokens: 1024,
   });
 
+  if (result.error) throw new Error(result.error);
   return { answer: result.content };
 }

@@ -120,7 +120,6 @@ export default async function RootLayout({
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
           crossOrigin="anonymous"
-          integrity="sha384-swsj+bgE6awH1IWJOiQqiegXIrPIr6POc3pcjjvbG4A6LVSM/ZwrNYw2oe+7LUCv"
         />
         {children}
         <CookieBanner />
