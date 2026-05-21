@@ -1,3 +1,6 @@
 
 # Firebase
 firebase-debug.log
+
+service-account.json
+*.service-account.json
