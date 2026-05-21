@@ -7,6 +7,9 @@ import { notFound } from "next/navigation";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { InArticleAd } from "@/components/ads/in-article-ad";
 import { MatchedContent } from "@/components/ads/matched-content";
+import { articleSchema } from "@/lib/seo";
+
+const SITE_URL = (process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
 function splitContent(content: string): string[] {
   const parts = content.split(/(?=^#{2,3}\s)/m);
@@ -75,8 +78,21 @@ export default function BlogPostPage({
 
   const sections = splitContent(post.content);
 
+  const articleLd = articleSchema({
+    title: post.title,
+    description: post.excerpt,
+    url: `${SITE_URL}/blog/${slug}`,
+    image: post.imageUrl,
+    authorName: post.authorName || "Radbit SME Hub",
+    publishedTime: post.createdAt?.toDate()?.toISOString() || new Date().toISOString(),
+  });
+
   return (
     <article className="container max-w-3xl py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
       <Link
         href="/blog"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"

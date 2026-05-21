@@ -12,7 +12,7 @@ const syne = Syne({
   display: "swap",
 });
 
-const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
 export const metadata: Metadata = {
   title: {
@@ -64,9 +64,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // TODO: Replace with real values from respective admin consoles
-    // google: 'GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN',
-    // bing:   'BING_WEBMASTER_VERIFICATION_TOKEN',
+    google: 'GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN',
   },
   applicationName: "Radbit SME Hub",
   category: "business",
@@ -86,9 +84,16 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔵</text></svg>" />
+        <link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png" />
+        <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="alternate" type="application/rss+xml" title="Radbit SME Hub Blog RSS Feed" href="/blog/feed.xml" />
+        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="en" />
+        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="sn" />
+        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="nd" />
+        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="pt" />
+        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="x-default" />
         {/*
           FAQPage JSON-LD — homepage gets rich "People also ask" AI-overview box
           WebSite schema  — Google Site Search rich result

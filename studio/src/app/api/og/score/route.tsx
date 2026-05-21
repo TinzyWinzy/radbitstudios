@@ -136,7 +136,7 @@ export async function GET(request: Request) {
             color: colors.muted,
           }}
         >
-          <span>radbitsmehub.co.zw</span>
+          <span>radbitstudios.co.zw</span>
           <span style={{ color: colors.primary }}>→</span>
           <span>Assess your business</span>
         </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { howToSchema, breadcrumbSchema } from "@/lib/seo";
 
-const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
 const pageUrl = '/resources/guides/zim-business-planning';
 

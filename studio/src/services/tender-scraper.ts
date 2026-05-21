@@ -215,7 +215,7 @@ async function tryLiveTenders(): Promise<Tender[]> {
   try {
     const response = await axios.get('https://proc.gov.zw/api/tenders', {
       timeout: 5000,
-      headers: { 'User-Agent': 'RadbitSMEHub/1.0', 'Accept': 'application/json' },
+      headers: { 'User-Agent': 'RadbitStudios/1.0', 'Accept': 'application/json' },
     });
 
     const data = response.data as any;

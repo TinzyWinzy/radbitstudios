@@ -24,32 +24,32 @@ export default function MarketingLayout({
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "border-b border-border/10 bg-background/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
+    <div className="flex min-h-screen flex-col bg-black text-white dark:text-white">
+      <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "border-b border-white/5 bg-black/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
         <div className="container flex h-16 items-center">
           <Link href="/" className="flex items-center gap-3 mr-8 group">
-            <Icons.radbit className="size-8 shrink-0 transition-transform duration-300 group-hover:scale-110 text-foreground" />
-            <span className="font-headline text-xl font-bold tracking-wide text-foreground">
+            <Icons.radbit className="size-8 shrink-0 transition-transform duration-300 group-hover:scale-110 text-white" />
+            <span className="font-headline text-xl font-bold tracking-wide text-white">
               RADBIT
             </span>
           </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <Link href="/assessment" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/assessment" className="text-white/50 hover:text-white transition-colors">
                 Assessment
               </Link>
-              <Link href="/toolkit" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/toolkit" className="text-white/50 hover:text-white transition-colors">
                 AI Toolkit
               </Link>
-              <Link href="/resources" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/resources" className="text-white/50 hover:text-white transition-colors">
                 Resources
               </Link>
-              <Link href="/tenders" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/tenders" className="text-white/50 hover:text-white transition-colors">
                 Tenders
               </Link>
-              <Link href="/community" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/community" className="text-white/50 hover:text-white transition-colors">
                 Community
               </Link>
-              <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/blog" className="text-white/50 hover:text-white transition-colors">
                 Blog
               </Link>
             </nav>
@@ -57,17 +57,17 @@ export default function MarketingLayout({
             <ThemeToggle />
             {loading ? null : user ? (
               <>
-                <Button variant="ghost" asChild className="text-sm text-muted-foreground hover:text-foreground hover:bg-accent/10">
+                <Button variant="ghost" asChild className="text-sm text-white/60 hover:text-white hover:bg-white/5">
                   <Link href="/dashboard">Dashboard</Link>
                 </Button>
                 <UserNav />
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild className="text-sm text-muted-foreground hover:text-foreground hover:bg-accent/10">
+                <Button variant="ghost" asChild className="text-sm text-white/60 hover:text-white hover:bg-white/5">
                   <Link href="/sign-in">Sign In</Link>
                 </Button>
-                <MagneticButton asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <MagneticButton asChild className="bg-white text-black hover:bg-white/90">
                   <Link href="/sign-up">Get Started</Link>
                 </MagneticButton>
               </>

@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 export default function robots(): MetadataRoute.Robots {

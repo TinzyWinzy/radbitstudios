@@ -29,17 +29,20 @@ export default async function GlobalOgImage() {
             width: 48,
             height: 48,
             borderRadius: 12,
-            background: "#B8860B",
+            background: "linear-gradient(135deg, #33D6C2 0%, #1A8A7A 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 28,
+            fontSize: 24,
+            fontWeight: 800,
+            color: "#fff",
+            fontFamily: "Arial, sans-serif",
           }}
         >
-          🔵
+          R
         </div>
         <span style={{ color: "#888", fontSize: 18, fontWeight: 500 }}>
-          radbitsmehub.co.zw
+          radbitstudios.co.zw
         </span>
       </div>
 
@@ -72,7 +75,7 @@ export default async function GlobalOgImage() {
         <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 16, fontWeight: 500 }}>
           Build · Scale · Own Your Future
         </span>
-        <span style={{ color: "#B8860B", fontSize: 18, fontWeight: 700 }}>
+        <span style={{ color: "#33D6C2", fontSize: 18, fontWeight: 700 }}>
           radbitstudios.co.zw
         </span>
       </div>

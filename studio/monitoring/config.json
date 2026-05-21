@@ -2,7 +2,7 @@
   "monitors": [
     {
       "name": "Production Health Check",
-      "url": "https://radbitsmehub.co.zw/api/health",
+      "url": "https://radbitstudios.co.zw/api/health",
       "interval": "5m",
       "timeout": "10s",
       "expected_status": 200,
@@ -11,7 +11,7 @@
     },
     {
       "name": "Staging Health Check",
-      "url": "https://staging.radbitsmehub.co.zw/api/health",
+      "url": "https://staging.radbitstudios.co.zw/api/health",
       "interval": "10m",
       "timeout": "10s",
       "expected_status": 200,
@@ -19,7 +19,7 @@
     },
     {
       "name": "API Endpoint Check",
-      "url": "https://radbitsmehub.co.zw/api/payments",
+      "url": "https://radbitstudios.co.zw/api/payments",
       "method": "POST",
       "body": "{\"action\": \"ping\"}",
       "interval": "5m",

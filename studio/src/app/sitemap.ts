@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 const F =
-  (process.env.FRONTEND_URL || "https://radbitsmehub.co.zw").replace(/\/$/, "");
+  (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

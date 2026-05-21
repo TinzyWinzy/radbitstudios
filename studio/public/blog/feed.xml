@@ -3,19 +3,19 @@
   <channel>
     <title>Radbit SME Hub Blog — AI, Tenders &amp; SME Growth</title>
     <description>Insights on AI for business, tender opportunities, tax and compliance for Zimbabwean SMEs, SADC export, and digital sovereignty.</description>
-    <link>https://radbitsmehub.co.zw/blog</link>
-    <atom:link href="https://radbitsmehub.co.zw/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <link>https://radbitstudios.co.zw/blog</link>
+    <atom:link href="https://radbitstudios.co.zw/blog/feed.xml" rel="self" type="application/rss+xml" />
     <language>en</language>
     <lastBuildDate>Sun, 17 May 2026 00:00:00 GMT</lastBuildDate>
     <generator>Radbit SME Hub</generator>
-    <managingEditor>hello@radbitsmehub.co.zw (Radbit SME Hub)</managingEditor>
-    <webMaster>hello@radbitsmehub.co.zw (Radbit SME Hub)</webMaster>
+    <managingEditor>hello@radbitstudios.co.zw (Radbit SME Hub)</managingEditor>
+    <webMaster>hello@radbitstudios.co.zw (Radbit SME Hub)</webMaster>
     <ttl>1440</ttl>
     <item>
       <title>Welcome to the Radbit SME Hub Blog</title>
       <description>Insights and guides for Zimbabwean SMEs — AI tools, tender opportunities, tax compliance, and business growth strategies.</description>
-      <link>https://radbitsmehub.co.zw/blog</link>
-      <guid isPermaLink="true">https://radbitsmehub.co.zw/blog</guid>
+      <link>https://radbitstudios.co.zw/blog</link>
+      <guid isPermaLink="true">https://radbitstudios.co.zw/blog</guid>
       <pubDate>Sun, 17 May 2026 00:00:00 GMT</pubDate>
       <category>Announcements</category>
     </item>

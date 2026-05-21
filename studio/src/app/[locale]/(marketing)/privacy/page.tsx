@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <p>
           Radbit SME Hub (&quot;Radbit,&quot; &quot;we,&quot; &quot;us,&quot; &quot;our&quot;) respects your privacy and is committed to protecting your
           personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your
-          information when you use our platform at radbitsmehub.co.zw (the &quot;Service&quot;).
+          information when you use our platform at radbitstudios.co.zw (the &quot;Service&quot;).
         </p>
         <p>
           This policy complies with the Protection of Personal Information Act (POPIA) of South Africa,
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
           <li><strong>Right to withdraw consent:</strong> withdraw consent at any time</li>
         </ul>
         <p>
-          To exercise any of these rights, contact us at privacy@radbitsmehub.co.zw or use the
+          To exercise any of these rights, contact us at privacy@radbitstudios.co.zw or use the
           Settings &rarr; Account & Plan section of the platform.
         </p>
       </section>
@@ -191,8 +191,8 @@ export default function PrivacyPage() {
           For questions, concerns, or data protection requests, contact our Data Protection Officer:
         </p>
         <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
-          <li>Email: privacy@radbitsmehub.co.zw</li>
-          <li>Data Protection Officer: dpo@radbitsmehub.co.zw</li>
+          <li>Email: privacy@radbitstudios.co.zw</li>
+          <li>Data Protection Officer: dpo@radbitstudios.co.zw</li>
         </ul>
         <p className="text-sm text-muted-foreground mt-4">
           For POPIA enquiries, contact the Information Regulator (South Africa):

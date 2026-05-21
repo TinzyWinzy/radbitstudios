@@ -35,7 +35,7 @@ export default function LocaleOgImage() {
           🔵
         </div>
         <span style={{ color: "#888", fontSize: 18, fontWeight: 500 }}>
-          radbitsmehub.co.zw
+          radbitstudios.co.zw
         </span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

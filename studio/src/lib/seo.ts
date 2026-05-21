@@ -3,7 +3,7 @@
    across staging / production without hard-coded domains.
    ─────────────────────────────────────────────────────────────────── */
 
-const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
 /* ──────────────────────────── Organization ──────────────────────────── */
 export function organizationSchema() {
@@ -27,13 +27,14 @@ export function organizationSchema() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer support',
-      email: 'hello@radbitsmehub.co.zw',
+      email: 'hello@radbitstudios.co.zw',
     },
     sameAs: [
-      // TODO: fill in live URLs when profiles exist
-      // 'https://www.facebook.com/radbitsmehub',
-      // 'https://twitter.com/radbitsmehub',
-      // 'https://www.linkedin.com/company/radbitsmehub',
+      'https://www.facebook.com/people/Radbit-Studios/61573716592102/',
+      'https://x.com/radbitzw',
+      'https://www.linkedin.com/company/radbit-studios/',
+      'https://www.instagram.com/radbitstudios/',
+      'https://wa.me/263786344899',
     ],
   };
 }

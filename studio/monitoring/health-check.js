@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const https = require('https');
-const url = process.env.HEALTH_URL || 'https://radbitsmehub.co.zw/api/health';
+const url = process.env.HEALTH_URL || 'https://radbitstudios.co.zw/api/health';
 const timeout = parseInt(process.env.TIMEOUT || '10000', 10);
 
 function checkHealth() {

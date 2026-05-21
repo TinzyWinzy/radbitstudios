@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Calendar, Building2, FileCheck, Stamp, Wallet } from "lucide-react";
 import { FAQSchema } from "@/components/faq-schema";
+import { howToSchema, breadcrumbSchema } from "@/lib/seo";
 
 const F =
-  (process.env.FRONTEND_URL || "https://radbitsmehub.co.zw").replace(/\/$/, "");
+  (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
 
 const steps = [
   {
@@ -82,8 +83,30 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function RegisterBusinessZimbabwePage() {
+  const pageUrl = '/resources/guides/register-business-zimbabwe';
   return (
     <div className="container max-w-3xl py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(howToSchema({
+            name: "How to Register a Business in Zimbabwe",
+            description: "Step-by-step guide to registering your business with PACRA and ZIMRA in Zimbabwe.",
+            steps: steps.map(s => ({ name: s.title, text: s.body })),
+            url: pageUrl,
+          })),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Resources", url: "/resources" },
+            { name: "Register a Business in Zimbabwe", url: pageUrl },
+          ])),
+        }}
+      />
       <Link
         href="/resources"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"

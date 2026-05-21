@@ -1,6 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Globe, FileCheck, Truck, Calculator } from "lucide-react";
 import { FAQSchema } from "@/components/faq-schema";
+import { howToSchema, breadcrumbSchema } from "@/lib/seo";
+
+const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
+
+const pageUrl = '/resources/guides/sadc-export-guide';
+
+export const metadata: Metadata = {
+  title: "SADC Export Guide for Zimbabwean SMEs (2026) — Export to Botswana, SA & Beyond",
+  description:
+    "Step-by-step guide to exporting from Zimbabwe to SADC countries: trade protocols, customs processes, certifications, and Incoterms for cross-border trade.",
+  alternates: { canonical: pageUrl },
+  openGraph: {
+    title: "SADC Export Guide for Zimbabwean SMEs",
+    description: "How to tap into regional SADC export markets: trade protocols, customs processes, documentation, and cost structures.",
+    url: `${SITE_URL}${pageUrl}`,
+    type: "article",
+  },
+};
 
 const steps = [
   {
@@ -50,6 +69,27 @@ const faq = [
 export default function SadcExportGuidePage() {
   return (
     <div className="container max-w-3xl py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(howToSchema({
+            name: "SADC Export Guide for Zimbabwean SMEs",
+            description: "Step-by-step guide to exporting goods from Zimbabwe to SADC countries.",
+            steps: steps.map(s => ({ name: s.title, text: s.body })),
+            url: pageUrl,
+          })),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Resources", url: "/resources" },
+            { name: "SADC Export Guide", url: pageUrl },
+          ])),
+        }}
+      />
       <Link
         href="/resources"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"

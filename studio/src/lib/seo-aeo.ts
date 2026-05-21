@@ -15,7 +15,7 @@ export function qaPageSchema(params: {
   url: string;
   questions: { question: string; answer: string; authorName?: string; datePublished?: string }[];
 }) {
-  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
   return {
     '@context': 'https://schema.org',
     '@type': 'QAPage',
@@ -42,7 +42,7 @@ export function takeActionSchema(params: {
   url: string;
   steps: { name: string; text: string }[];
 }) {
-  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
   return {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
@@ -69,7 +69,7 @@ export function definedTermSchema(params: {
   definition: string;
   url: string;
 }) {
-  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
   return {
     '@context': 'https://schema.org',
     '@type': 'DefinedTerm',
@@ -98,7 +98,7 @@ export function aeoPageMetadata(params: {
       type: 'article',
       url: params.canonicalPath.startsWith('http')
         ? params.canonicalPath
-        : `${process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw'}${params.canonicalPath}`,
+        : `${process.env.FRONTEND_URL || 'https://radbitstudios.co.zw'}${params.canonicalPath}`,
     },
     robots: {
       index: true,
@@ -110,7 +110,7 @@ export function aeoPageMetadata(params: {
 
 /* ── Breadcrumb metadata helper ─────────────────────────────────────── */
 export function breadcrumbMetadata(items: { name: string; url: string }[]) {
-  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitsmehub.co.zw').replace(/\/$/, '');
+  const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
   return items.map((item) => ({
     type: 'website' as const,
     url: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}`,

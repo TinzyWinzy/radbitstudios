@@ -50,7 +50,7 @@ export function getStoredUtm(): UtmParams {
 }
 
 export function buildReferralUrl(baseUrl: string, code: string): string {
-  const url = new URL(baseUrl, typeof window !== "undefined" ? window.location.origin : "https://radbitsmehub.co.zw");
+  const url = new URL(baseUrl, typeof window !== "undefined" ? window.location.origin : "https://radbitstudios.co.zw");
   url.searchParams.set("ref", code);
   url.searchParams.set("utm_source", "referral");
   url.searchParams.set("utm_medium", "share");
