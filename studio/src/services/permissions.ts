@@ -1,4 +1,4 @@
-export type UserRole = 'sme_owner' | 'sme_staff' | 'admin';
+export type UserRole = 'sme_owner' | 'sme_staff' | 'admin' | 'super_admin';
 
 export interface RolePermissions {
   canManageBlog: boolean;
@@ -15,6 +15,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canAccessMessages: false,
   },
   admin: {
+    canManageBlog: true,
+    canAccessMessages: true,
+  },
+  super_admin: {
     canManageBlog: true,
     canAccessMessages: true,
   },

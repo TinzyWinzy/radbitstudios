@@ -34,6 +34,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OnboardingWizard } from "@/components/onboarding-wizard";
 import { UsageSummary } from "@/components/usage-summary";
 import { RecentActivity } from "@/components/recent-activity";
+import { MaturityOverview } from "@/components/maturity-overview";
 import { generateDashboardInsights } from "@/ai/flows/generate-dashboard-insights";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
@@ -136,12 +137,14 @@ export default function DashboardPage() {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [assessmentHistory, setAssessmentHistory] = useState<{ date: string; score: number }[]>([]);
+  const [allAssessments, setAllAssessments] = useState<any[]>([]);
+  const [benchmarkData, setBenchmarkData] = useState<Array<{ category: string; benchmarkScore: number }>>([]);
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
   const [creditsExhausted, setCreditsExhausted] = useState(false);
   const [retryTrigger, setRetryTrigger] = useState(0);
   const upgradeShown = useRef(false);
 
-  const hasCompletedProfile = user && user.businessName && user.industry;
+  const hasCompletedProfile = !!(user && user.businessName && user.industry);
 
   useEffect(() => {
     let mounted = true;
@@ -220,6 +223,7 @@ export default function DashboardPage() {
           const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);
           return bDate.getTime() - aDate.getTime();
         });
+        if (mounted) setAllAssessments(sorted.map(d => ({ ...d.data(), id: d.id })));
         if (sorted.length > 0 && mounted) {
           const latest = sorted[0];
           const latestData = latest.data();
@@ -252,7 +256,13 @@ export default function DashboardPage() {
         } else if (mounted) {
           setAssessmentData(null);
           setAssessmentHistory([]);
+          setAllAssessments([]);
         }
+        try {
+          const res = await fetch('/api/assessments/benchmark');
+          const json = await res.json();
+          if (mounted && json.benchmark) setBenchmarkData(json.benchmark);
+        } catch {}
       } catch (error) {
         console.error("Error fetching assessment data:", error);
         if (mounted) setAssessmentData(null);
@@ -287,6 +297,14 @@ export default function DashboardPage() {
       </div>
 
       <OnboardingWizard />
+
+      {user && hasCompletedProfile && allAssessments.length > 0 && (
+        <MaturityOverview
+          assessments={allAssessments}
+          hasProfile={hasCompletedProfile}
+          benchmarkData={benchmarkData}
+        />
+      )}
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {overviewCards.map((card) => (

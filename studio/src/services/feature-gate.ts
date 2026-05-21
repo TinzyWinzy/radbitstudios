@@ -3,6 +3,7 @@ import { doc, getDoc, runTransaction } from 'firebase/firestore';
 import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
 
 import type { PlanName } from '@/types/user';
+import type { UserRole } from '@/services/permissions';
 
 export type { PlanName };
 export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot';
@@ -69,6 +70,7 @@ export interface AccessResult {
 export interface UserPlanData {
   plan: PlanName;
   usage: Record<string, { remaining: number; total: number }>;
+  role: UserRole | null;
 }
 
 export async function getUserPlanData(userId: string): Promise<UserPlanData> {
@@ -78,6 +80,7 @@ export async function getUserPlanData(userId: string): Promise<UserPlanData> {
   return {
     plan: (data.plan as PlanName) || 'Free',
     usage: (data.usage as Record<string, { remaining: number; total: number }>) || {},
+    role: (data.role as UserRole) ?? null,
   };
 }
 
@@ -86,7 +89,12 @@ export function getUpgradePath(currentPlan: PlanName, feature: FeatureName): Upg
 }
 
 export async function checkFeatureAccess(userId: string, feature: FeatureName): Promise<AccessResult> {
-  const { plan, usage } = await getUserPlanData(userId);
+  const { plan, usage, role } = await getUserPlanData(userId);
+
+  if (role === 'super_admin') {
+    return { allowed: true, message: '' };
+  }
+
   const gate = FEATURE_GATES[feature];
 
   if (!gate) return { allowed: true, message: '' };
@@ -134,6 +142,10 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
       if (!userDoc.exists()) throw new Error('User not found.');
 
       const userData = userDoc.data();
+      if (userData.role === 'super_admin') {
+        return { success: true, message: 'Super admin — no usage deducted.' };
+      }
+
       const plan = (userData.plan as PlanName) || 'Free';
       const usage = userData.usage?.[gate.creditKey];
 

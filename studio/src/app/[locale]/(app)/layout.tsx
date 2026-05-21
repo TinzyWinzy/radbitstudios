@@ -76,7 +76,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const userTierIndex = TIER_ORDER.indexOf(userPlan as any);
 
     const canViewMessages = role !== 'sme_staff';
-    const canViewBlog = role === 'admin';
+    const canViewBlog = role === 'admin' || role === 'super_admin';
     const minTierForMessages = TIER_ORDER.indexOf('Growth');
     const showMessages = canViewMessages && userTierIndex >= minTierForMessages;
 

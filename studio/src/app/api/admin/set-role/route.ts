@@ -3,7 +3,7 @@ import { adminApp } from '@/lib/firebase/firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 
-const VALID_ROLES = ['sme_owner', 'sme_staff', 'admin'] as const;
+const VALID_ROLES = ['sme_owner', 'sme_staff', 'admin', 'super_admin'] as const;
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const callerDoc = await getFirestore(adminApp).collection('users').doc(callerUid).get();
     const callerData = callerDoc.data();
-    if (!callerData || callerData.role !== 'admin') {
+    if (!callerData || (callerData.role !== 'admin' && callerData.role !== 'super_admin')) {
       return NextResponse.json({ error: 'Forbidden: admin role required' }, { status: 403 });
     }
 

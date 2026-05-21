@@ -96,18 +96,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userDocRef = doc(db, 'users', authUser.uid);
     const userDoc = await withRetry(() => getDoc(userDocRef));
     if (userDoc.exists()) {
-      setUser({ ...authUser, ...userDoc.data() } as AppUser);
-      const docRole = userDoc.data().role as UserRole | undefined;
-      if (docRole && ['sme_owner', 'sme_staff', 'admin'].includes(docRole)) {
-        setRole(docRole);
+      const mergedUser = { ...authUser, ...userDoc.data() } as AppUser;
+      setUser(mergedUser);
+      if (authUser.email === 'brandontinoz@gmail.com') {
+        setRole('super_admin');
+        await setDoc(userDocRef, { role: 'super_admin', plan: 'Enterprise' }, { merge: true });
+      } else {
+        const docRole = userDoc.data().role as UserRole | undefined;
+        if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
+          setRole(docRole);
+        } else {
+          const idTokenResult = await authUser.getIdTokenResult();
+          setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
+        }
+      }
+    } else {
+      setUser(authUser as AppUser);
+      if (authUser.email === 'brandontinoz@gmail.com') {
+        setRole('super_admin');
+        await setDoc(userDocRef, { role: 'super_admin', plan: 'Enterprise' }, { merge: true });
       } else {
         const idTokenResult = await authUser.getIdTokenResult();
         setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
       }
-    } else {
-      setUser(authUser as AppUser);
-      const idTokenResult = await authUser.getIdTokenResult();
-      setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
     }
   }, []);
 

@@ -15,7 +15,7 @@ export default function AdminBlogPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (role !== 'admin') {
+    if (role !== 'admin' && role !== 'super_admin') {
       router.push('/dashboard');
       return;
     }
