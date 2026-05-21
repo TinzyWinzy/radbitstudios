@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, BadgeDollarSign, Receipt, FileText, Calculator, BookOpen } from "lucide-react";
+import { AdBanner } from "@/components/ads/ad-banner";
+import { InArticleAd } from "@/components/ads/in-article-ad";
+import { MatchedContent } from "@/components/ads/matched-content";
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure";
 
 const F =
   (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
@@ -61,6 +65,8 @@ export async function generateMetadata(): Promise<Metadata> {
   } as Metadata;
 }
 
+export const revalidate = 3600;
+
 export default function ZimraTaxGuidePage() {
   return (
     <div className="container max-w-3xl py-16">
@@ -87,6 +93,8 @@ export default function ZimraTaxGuidePage() {
         </header>
 
         {/* Key stats */}
+        <AdBanner slot="guide-banner" className="mb-12" />
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {tableRows.map((row, i) => (
             <div key={i} className="rounded-lg border border-border/50 p-4 text-center bg-card/50">
@@ -122,6 +130,8 @@ export default function ZimraTaxGuidePage() {
           </div>
         </section>
 
+        <InArticleAd slot="guide-in-article" />
+
         <section className="mb-16">
           <h2 className="font-headline text-2xl font-bold mb-6">Avoid These 5 Common Mistakes</h2>
           <ul className="space-y-3">
@@ -139,6 +149,8 @@ export default function ZimraTaxGuidePage() {
           </ul>
         </section>
 
+        <MatchedContent slot="guide-matched" />
+
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
           <h3 className="font-headline text-xl font-bold mb-2">Stay on top of tax deadlines</h3>
           <p className="text-muted-foreground mb-4">
@@ -148,6 +160,7 @@ export default function ZimraTaxGuidePage() {
             Get Reminders Free <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+        <AffiliateDisclosure />
       </article>
     </div>
   );

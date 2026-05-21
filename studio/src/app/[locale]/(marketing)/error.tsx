@@ -27,7 +27,7 @@ export default function MarketingError({
         </div>
       </header>
       <main className="flex-1 flex items-center justify-center p-4">
-        <div className="flex flex-col items-center gap-4 text-center max-w-md">
+        <div role="alert" className="flex flex-col items-center gap-4 text-center max-w-md">
           <h1 className="text-2xl font-bold">Something went wrong</h1>
           <p className="text-muted-foreground">
             An unexpected error occurred. Please try again.

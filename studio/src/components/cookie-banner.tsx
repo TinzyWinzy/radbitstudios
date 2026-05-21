@@ -22,7 +22,12 @@ export function CookieBanner() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 p-4"
+      role="dialog"
+      aria-modal={showCustomize ? "true" : "false"}
+      aria-label="Cookie consent settings"
+    >
       <Card className="max-w-2xl mx-auto shadow-lg border-primary/20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <CardContent className={showCustomize ? 'pb-2 pt-4' : 'py-4'}>
           {!showCustomize ? (
@@ -88,7 +93,7 @@ export function CookieBanner() {
           {!showCustomize ? (
             <>
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowDetails(!showDetails)}>
+                <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowDetails(!showDetails)} aria-expanded={showDetails}>
                   {showDetails ? <ChevronUp className="h-3 w-3 mr-1" /> : <ChevronDown className="h-3 w-3 mr-1" />}
                   Customize
                 </Button>

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Wallet } from "lucide-react";
 import { FAQSchema } from "@/components/faq-schema";
+import { AdBanner } from "@/components/ads/ad-banner";
+import { InArticleAd } from "@/components/ads/in-article-ad";
+import { MatchedContent } from "@/components/ads/matched-content";
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure";
 
 export const metadata: Metadata = {
   title: "EcoCash Business vs Personal: Which Should You Use for Payments? (2026)",
@@ -10,6 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/resources/guides/ecocash-business-vs-personal" },
   openGraph: { title: "EcoCash Business vs Personal Wallet", description: "A practical comparison for Zimbabwean SMEs on when to use each EcoCash wallet type.", type: "article" },
 };
+
+export const revalidate = 3600;
 
 const comparison = [
   { label: "Limit per transaction", personal: "~$500 ZWL-equiv / day", business: "~$2,000–50,000+ / day" },
@@ -47,6 +53,8 @@ export default function EcoCashBusinessVsPersonalPage() {
           <p className="text-lg text-muted-foreground leading-relaxed">Which EcoCash wallet should your business use? A practical breakdown of limits, fees, and when each wallet type makes sense.</p>
         </header>
 
+        <AdBanner slot="guide-banner" className="mb-12" />
+
         <section className="mb-16">
           <div className="rounded-xl overflow-hidden border border-border/70">
             <table className="w-full text-sm">
@@ -69,6 +77,8 @@ export default function EcoCashBusinessVsPersonalPage() {
             </table>
           </div>
         </section>
+
+        <InArticleAd slot="guide-in-article" />
 
         <section className="mb-16">
           <h2 className="font-headline text-2xl font-bold mb-6">Two Questions to Ask</h2>
@@ -95,11 +105,14 @@ export default function EcoCashBusinessVsPersonalPage() {
           <FAQSchema questions={faq.map(({ q, a }) => ({ question: q, answer: a }))} />
         </section>
 
+        <MatchedContent slot="guide-matched" />
+
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8">
           <h3 className="font-headline text-xl font-bold mb-2">Accept all payment channels from one dashboard</h3>
           <p className="text-muted-foreground mb-4">Radbit Payment Orchestrator routes EcoCash, OneMoney, PayNow, and Stripe automatically — no need to manually chase each payment method separately.</p>
           <Link href="/sign-up" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"><ArrowRight className="h-4 w-4" /> Sign up free</Link>
         </div>
+        <AffiliateDisclosure />
       </article>
     </div>
   );

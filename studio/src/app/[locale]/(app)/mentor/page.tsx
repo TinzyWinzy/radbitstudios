@@ -232,7 +232,7 @@ export default function MentorPage() {
                   </div>
                   {message.sender === 'user' && (
                     <Avatar className="h-8 w-8 shrink-0">
-                      <AvatarImage src={user?.photoURL || undefined} alt="@user" />
+                      <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || 'Your avatar'} />
                       <AvatarFallback>{user?.displayName?.charAt(0) || 'U'}</AvatarFallback>
                     </Avatar>
                   )}

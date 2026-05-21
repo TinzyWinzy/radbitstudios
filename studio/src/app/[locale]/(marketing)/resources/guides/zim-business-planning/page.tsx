@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { howToSchema, breadcrumbSchema } from "@/lib/seo";
+import { AdBanner } from "@/components/ads/ad-banner";
+import { InArticleAd } from "@/components/ads/in-article-ad";
+import { MatchedContent } from "@/components/ads/matched-content";
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure";
 
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
@@ -18,6 +22,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
+
+export const revalidate = 3600;
 
 const steps = [
   {
@@ -82,6 +88,8 @@ export default function BusinessPlanningGuide() {
         A practical guide to building a business plan that works in Zimbabwe&apos;s unique economy.
       </p>
 
+      <AdBanner slot="guide-banner" className="mb-12" />
+
       <div className="prose prose-zinc dark:prose-invert max-w-none space-y-8">
         <section>
           <h2 className="font-headline text-2xl font-bold mt-10 mb-4">Why a Written Business Plan Matters in Zimbabwe</h2>
@@ -113,6 +121,8 @@ export default function BusinessPlanningGuide() {
             </div>
           ))}
         </section>
+
+        <InArticleAd slot="guide-in-article" />
 
         <section>
           <h2 className="font-headline text-2xl font-bold mt-10 mb-4">Funding Options for Zimbabwean SMEs</h2>
@@ -148,6 +158,8 @@ export default function BusinessPlanningGuide() {
           </ul>
         </section>
 
+        <MatchedContent slot="guide-matched" />
+
         <section>
           <h2 className="font-headline text-2xl font-bold mt-10 mb-4">Need Help?</h2>
           <p className="text-muted-foreground mb-4">
@@ -162,6 +174,7 @@ export default function BusinessPlanningGuide() {
           </Link>
         </section>
       </div>
+      <AffiliateDisclosure />
     </div>
   );
 }

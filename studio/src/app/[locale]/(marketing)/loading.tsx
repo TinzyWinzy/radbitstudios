@@ -10,7 +10,9 @@ export default function MarketingLoading() {
         </div>
       </header>
       <main className="flex-1 flex items-center justify-center">
-        <Icons.logo className="size-10 animate-pulse shrink-0" />
+        <div role="status" aria-label="Loading page content">
+          <Icons.logo className="size-10 animate-pulse shrink-0" />
+        </div>
       </main>
     </div>
   );

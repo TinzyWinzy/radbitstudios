@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { AdBanner } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
   title: 'About — Radbit SME Hub',
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
     type: 'website',
   },
 };
+
+export const revalidate = 3600;
 
 export default function AboutPage() {
   return (
@@ -33,6 +36,8 @@ export default function AboutPage() {
           entrepreneurs — all in one place.
         </p>
       </section>
+
+      <AdBanner slot="content-banner" className="mb-12" />
 
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">What We Do</h2>

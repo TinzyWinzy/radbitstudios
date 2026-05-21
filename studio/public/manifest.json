@@ -19,6 +19,9 @@
     }
   ],
   "categories": ["business", "productivity", "finance", "education"],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false,
   "shortcuts": [
     {
       "name": "Assessment",
@@ -40,28 +43,6 @@
       "description": "Browse business tenders",
       "url": "/tenders",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" }]
-    }
-  ]
-}
-  ],
-  "screenshots": [],
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "shortcuts": [
-    {
-      "name": "Assessment",
-      "url": "/assessment",
-      "description": "Continue your Digital Readiness Assessment"
-    },
-    {
-      "name": "AI Toolkit",
-      "url": "/toolkit",
-      "description": "Open the AI Business Toolkit"
-    },
-    {
-      "name": "Tenders",
-      "url": "/tenders",
-      "description": "View matched tenders"
     }
   ]
 }

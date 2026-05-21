@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, FileText } from "lucide-react";
+import { AdBanner } from "@/components/ads/ad-banner";
+
+export const revalidate = 3600;
 
 const guides = [
   {
@@ -71,6 +74,8 @@ export default function ResourcesPage() {
           No jargon, no fluff — just what you need to move forward.
         </p>
       </div>
+
+      <AdBanner slot="content-banner" className="mb-12" />
 
       {/* Pillar Guides */}
       <section className="mb-20">

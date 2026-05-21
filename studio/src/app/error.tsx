@@ -13,7 +13,7 @@ export default function RootError({
   reset: () => void;
 }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div role="alert" className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center gap-4 text-center max-w-md">
         <Icons.logo className="size-12 shrink-0" />
         <h1 className="text-2xl font-bold">Something went wrong</h1>

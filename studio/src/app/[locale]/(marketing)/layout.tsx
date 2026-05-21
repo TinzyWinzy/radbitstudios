@@ -75,7 +75,7 @@ export default function MarketingLayout({
           </div>
         </div>
       </header>
-      <main className="relative flex-1">{children}</main>
+      <main id="main-content" className="relative flex-1">{children}</main>
     </div>
   );
 }

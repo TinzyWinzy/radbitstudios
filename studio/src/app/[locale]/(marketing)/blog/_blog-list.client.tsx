@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { blogService, type BlogPost } from "@/services/blog.service";
 import Link from "next/link";
+import Image from "next/image";
 
 export function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -49,10 +50,11 @@ export function BlogList() {
         >
           {post.imageUrl && (
             <div className="aspect-[16/9] overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={post.imageUrl}
                 alt={post.title}
+                width={800}
+                height={450}
                 className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>

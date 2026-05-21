@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Sun, Zap, Battery, Home, Leaf } from "lucide-react";
+import { AdBanner } from "@/components/ads/ad-banner";
+import { InArticleAd } from "@/components/ads/in-article-ad";
+import { MatchedContent } from "@/components/ads/matched-content";
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure";
 
 export const metadata: Metadata = {
   title: "Load-Shedding Solutions That Work for Zimbabwean SMEs (2026)",
@@ -9,6 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/resources/guides/load-shedding-solutions-smes" },
   openGraph: { title: "Load-Shedding Solutions for Zimbabwean SMEs", description: "Solar, inverters, generators — a cost-benefit breakdown tailored for Zimbabwean businesses.", type: "article" },
 };
+
+export const revalidate = 3600;
 
 const solutions = [
   {
@@ -79,6 +85,8 @@ export default function LoadSheddingSolutionsPage() {
           <p className="text-lg text-muted-foreground leading-relaxed">Solar, inverters, generators — a current-day cost-benefit breakdown so you can make the right call for your budget and business type.</p>
         </header>
 
+        <AdBanner slot="guide-banner" className="mb-12" />
+
         <section className="mb-12">
           <div className="rounded-xl bg-primary/5 border border-primary/20 p-6 text-center">
             <p className="font-headline text-lg mb-2">📌 Quick Before Buying</p>
@@ -113,6 +121,8 @@ export default function LoadSheddingSolutionsPage() {
           </div>
         </section>
 
+        <InArticleAd slot="guide-in-article" />
+
         <section className="mb-16">
           <h2 className="font-headline text-2xl font-bold mb-6">5 Things to Check Before Buying</h2>
           <ul className="space-y-3">
@@ -122,6 +132,8 @@ export default function LoadSheddingSolutionsPage() {
           </ul>
         </section>
 
+        <MatchedContent slot="guide-matched" />
+
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
           <h3 className="font-headline text-xl font-bold mb-2">Calculate your backup power ROI</h3>
           <p className="text-muted-foreground mb-4">Radbit saves you from stock spoilage, data loss, and lost customers during loadshedding — our digital tools and notifications keep your business running when the grid doesn&apos;t.</p>
@@ -129,6 +141,7 @@ export default function LoadSheddingSolutionsPage() {
             Get Started Free <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+        <AffiliateDisclosure />
       </article>
     </div>
   );

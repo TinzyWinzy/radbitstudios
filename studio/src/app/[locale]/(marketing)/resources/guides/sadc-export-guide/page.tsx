@@ -3,6 +3,10 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight, Globe, FileCheck, Truck, Calculator } from "lucide-react";
 import { FAQSchema } from "@/components/faq-schema";
 import { howToSchema, breadcrumbSchema } from "@/lib/seo";
+import { AdBanner } from "@/components/ads/ad-banner";
+import { InArticleAd } from "@/components/ads/in-article-ad";
+import { MatchedContent } from "@/components/ads/matched-content";
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure";
 
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
@@ -20,6 +24,8 @@ export const metadata: Metadata = {
     type: "article",
   },
 };
+
+export const revalidate = 3600;
 
 const steps = [
   {
@@ -111,6 +117,8 @@ export default function SadcExportGuidePage() {
           </p>
         </header>
 
+        <AdBanner slot="guide-banner" className="mb-12" />
+
         {/* Products available for export */}
         <section className="mb-16">
           <h2 className="font-headline text-2xl font-bold mb-6">What You Can Export Today</h2>
@@ -146,6 +154,8 @@ export default function SadcExportGuidePage() {
           </div>
         </section>
 
+        <InArticleAd slot="guide-in-article" />
+
         <hr className="my-12 border-border/50" />
 
         {/* FAQ */}
@@ -162,6 +172,8 @@ export default function SadcExportGuidePage() {
           <FAQSchema questions={faq.map(({ q, a }) => ({ question: q, answer: a }))} />
         </section>
 
+        <MatchedContent slot="guide-matched" />
+
         {/* CTA */}
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
           <h3 className="font-headline text-xl font-bold mb-2">Match your business with export opportunities</h3>
@@ -172,6 +184,7 @@ export default function SadcExportGuidePage() {
             Find Tenders <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+        <AffiliateDisclosure />
       </article>
     </div>
   );

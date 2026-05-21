@@ -134,6 +134,12 @@ service cloud.firestore {
       allow list: if request.auth != null;
     }
 
+    // ─── AFFILIATE CLICK LOGS ────────────────────────────────────────────────
+    // Written server-side via Admin SDK (redirect route). No client access.
+    match /affiliate_clicks/{clickId} {
+      allow read, write: if false;
+    }
+
     // ─── CONVERSATIONS (DIRECT MESSAGING) ────────────────────────────────────
     match /conversations/{conversationId} {
       allow get: if request.auth.uid in resource.data.participants;

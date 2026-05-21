@@ -67,8 +67,34 @@ jobs:
         working-directory: studio
       - run: npm run build
         working-directory: studio
+      - name: Bundle analysis (on demand)
+        if: github.ref == 'refs/heads/main' && vars.ANALYZE_BUNDLE == 'true'
+        run: npm run analyze
+        working-directory: studio
       - name: Upload Sentry source maps
         if: github.ref == 'refs/heads/main'
         run: |
           npx @sentry/wizard@latest -i nextjs -t ${{ secrets.SENTRY_AUTH_TOKEN }}
         working-directory: studio
+
+  lighthouse:
+    name: Lighthouse
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: studio/package-lock.json
+      - run: npm ci
+        working-directory: studio
+      - name: Build for audit
+        run: npm run build
+        working-directory: studio
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=.lighthouserc.json
+        working-directory: studio
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

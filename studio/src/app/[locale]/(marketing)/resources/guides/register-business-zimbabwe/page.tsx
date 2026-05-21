@@ -3,6 +3,10 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight, Calendar, Building2, FileCheck, Stamp, Wallet } from "lucide-react";
 import { FAQSchema } from "@/components/faq-schema";
 import { howToSchema, breadcrumbSchema } from "@/lib/seo";
+import { AdBanner } from "@/components/ads/ad-banner";
+import { InArticleAd } from "@/components/ads/in-article-ad";
+import { MatchedContent } from "@/components/ads/matched-content";
+import { AffiliateDisclosure } from "@/components/affiliate-disclosure";
 
 const F =
   (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
@@ -82,6 +86,8 @@ export async function generateMetadata(): Promise<Metadata> {
   } as Metadata;
 }
 
+export const revalidate = 3600;
+
 export default function RegisterBusinessZimbabwePage() {
   const pageUrl = '/resources/guides/register-business-zimbabwe';
   return (
@@ -131,6 +137,8 @@ export default function RegisterBusinessZimbabwePage() {
         </header>
 
         {/* Step-by-step guide */}
+        <AdBanner slot="guide-banner" className="mb-12" />
+
         <section className="mb-16">
           <h2 className="font-headline text-2xl font-bold mb-6">5-Step Registration Process</h2>
           <div className="flex flex-col gap-8">
@@ -153,6 +161,8 @@ export default function RegisterBusinessZimbabwePage() {
         </section>
 
         {/* Quick tips */}
+        <InArticleAd slot="guide-in-article" />
+
         <section className="mb-16">
           <h2 className="font-headline text-2xl font-bold mb-6">5 Things to Keep in Mind</h2>
           <ul className="space-y-3">
@@ -182,6 +192,8 @@ export default function RegisterBusinessZimbabwePage() {
         </section>
 
         {/* CTA */}
+        <MatchedContent slot="guide-matched" />
+
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
           <h3 className="font-headline text-xl font-bold mb-2">Need more help with compliance?</h3>
           <p className="text-muted-foreground mb-4">
@@ -194,6 +206,7 @@ export default function RegisterBusinessZimbabwePage() {
             Get Started Free <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+        <AffiliateDisclosure />
       </article>
     </div>
   );

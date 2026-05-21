@@ -1,0 +1,33 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run start",
+      "startServerReadyPattern": "started server on",
+      "url": [
+        "http://localhost:9002/",
+        "http://localhost:9002/pricing",
+        "http://localhost:9002/resources/guides/register-business-zimbabwe",
+        "http://localhost:9002/blog"
+      ],
+      "numberOfRuns": 2,
+      "settings": {
+        "preset": "desktop",
+        "throttlingMethod": "simulate"
+      }
+    },
+    "assert": {
+      "preset": "lighthouse:no-pwa",
+      "assertions": {
+        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+        "interactive": ["warn", { "maxNumericValue": 5000 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 4000 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["warn", { "maxNumericValue": 300 }],
+        "speed-index": ["warn", { "maxNumericValue": 4000 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

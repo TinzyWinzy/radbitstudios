@@ -31,7 +31,7 @@ function renderMarkdown(md: string): string {
 
   let html = md
     .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(img, '<img src="$2" alt="$1" class="rounded-xl w-full my-6" />')
+    .replace(img, '<img src="$2" alt="$1" loading="lazy" class="rounded-xl w-full my-6" />')
     .replace(link, '<a href="$2" class="text-primary underline underline-offset-2">$1</a>')
     .replace(bold, '<strong>$1</strong>')
     .replace(italic, '<em>$1</em>')

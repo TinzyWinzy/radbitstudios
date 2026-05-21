@@ -64,13 +64,15 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'GOOGLE_SEARCH_CONSOLE_VERIFICATION_TOKEN',
+    google: 'XuoZg3JKm--RR2ak1v3OosORY7Gz0f_xJxxPAViBNfE',
   },
   applicationName: "Radbit SME Hub",
   category: "business",
 };
 
 export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: '#B8860B',
 };
 
@@ -89,6 +91,15 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="alternate" type="application/rss+xml" title="Radbit SME Hub Blog RSS Feed" href="/blog/feed.xml" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://firestore.googleapis.com" />
+        <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
+        <link rel="preconnect" href="https://securetoken.googleapis.com" />
+        <link rel="preconnect" href="https://apis.google.com" />
+        <link rel="preconnect" href="https://generativelanguage.googleapis.com" />
+        <link rel="preconnect" href="https://js.stripe.com" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
         {/*
           FAQPage JSON-LD — homepage gets rich "People also ask" AI-overview box
           WebSite schema  — Google Site Search rich result
@@ -102,10 +113,14 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
       </head>
       <body className={`${inter.variable} ${syne.variable} font-body antialiased`}>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring">
+          Skip to main content
+        </a>
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
           crossOrigin="anonymous"
+          integrity="sha384-swsj+bgE6awH1IWJOiQqiegXIrPIr6POc3pcjjvbG4A6LVSM/ZwrNYw2oe+7LUCv"
         />
         {children}
         <CookieBanner />

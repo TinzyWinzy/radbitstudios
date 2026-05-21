@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HelpCircle, ChevronDown, ArrowRight } from "lucide-react";
 import { faqPageSchema } from "@/lib/seo";
+import { AdBanner } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
   title: "FAQ — Radbit SME Hub",
   description: "Frequently asked questions about Radbit SME Hub — pricing, features, compliance, and using the platform.",
   alternates: { canonical: "/resources/faq" },
 };
+
+export const revalidate = 3600;
 
 type QnA_t = { q: string; a: string; link?: string; linkText?: string };
 
@@ -94,6 +97,8 @@ export default function FAQPage() {
         <h1 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">Frequently Asked Questions</h1>
         <p className="text-lg text-muted-foreground">Everything you need to know about Radbit SME Hub, your account, and pricing.</p>
       </header>
+
+      <AdBanner slot="content-banner" className="mb-12" />
 
       <div className="flex flex-col gap-10">
         {faqItems.map((cat, ci) => (

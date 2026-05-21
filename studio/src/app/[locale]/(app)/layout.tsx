@@ -166,6 +166,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <motion.main 
+            id="main-content"
             key={pathname}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
