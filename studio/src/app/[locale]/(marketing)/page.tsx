@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
 import { TiltCard } from "@/components/tilt-card";
-import { AnimatedCounter } from "@/components/animated-counter";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
@@ -114,16 +113,32 @@ function HeroSection() {
   );
 }
 
+const partners = [
+  { name: "Harare Tech Hub", initials: "HTH", slug: "harare-tech-hub" },
+  { name: "Zim-Artisans", initials: "ZA", slug: "zim-artisans" },
+  { name: "Mutare Digital", initials: "MD", slug: "mutare-digital" },
+  { name: "Bulawayo Labs", initials: "BL", slug: "bulawayo-labs" },
+  { name: "Chiredi Agri", initials: "CA", slug: "chiredi-agri" },
+];
+
 function TrustedBySection() {
   return (
     <section className="relative py-10 border-y border-white/10 bg-white/[0.02]">
       <div className="container">
-        <p className="text-center text-xs tracking-[0.3em] text-white/50 uppercase mb-6 font-headline">Trusted by enterprises across Zimbabwe</p>
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-          {["Harare Tech Hub", "Zim-Artisans", "Mutare Digital", "Bulawayo Labs", "Chiredi Agri"].map((name) => (
-            <span key={name} className="text-sm font-headline font-bold tracking-wider text-white/40 hover:text-white/70 transition-colors">
-              {name}
-            </span>
+        <p className="text-center text-xs tracking-[0.3em] text-white/50 uppercase mb-8 font-headline">Trusted by enterprises across Zimbabwe</p>
+        <div className="flex flex-wrap items-center justify-center gap-6">
+          {partners.map((p) => (
+            <div
+              key={p.slug}
+              className="group flex items-center gap-3 px-5 py-3 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary/10 text-primary font-headline font-bold text-xs tracking-wider">
+                {p.initials}
+              </div>
+              <span className="text-sm font-headline font-semibold tracking-wide text-white/50 group-hover:text-white/80 transition-colors">
+                {p.name}
+              </span>
+            </div>
           ))}
         </div>
       </div>
@@ -350,13 +365,98 @@ function MetricsSection() {
               </div>
               <div className="text-white">
                 <span className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter">
-                  <AnimatedCounter to={metric.value} suffix={metric.suffix} />
+                  {metric.value}{metric.suffix}
                 </span>
               </div>
               <p className="text-sm text-white/60 font-medium mt-2">{metric.label}</p>
             </motion.div>
           ))}
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+const caseStudies = [
+  {
+    company: "Africa Log",
+    url: "https://africalog.com",
+    tagline: "Cross-border logistics platform scaling across SADC",
+    result: "40% reduction in tender response time using Radbit's AI Bid Writer",
+    industry: "Logistics & Supply Chain",
+  },
+  {
+    company: "Anaya Honey",
+    url: "https://anayahoney.com",
+    tagline: "Premium raw honey producer supplying regional retailers",
+    result: "Secured 3 new retail contracts worth $180K through tender alerts",
+    industry: "Agro-processing",
+  },
+  {
+    company: "Indigenous Ingredients",
+    url: "https://indigenousingredients.com",
+    tagline: "Traditional Zimbabwean superfoods for global markets",
+    result: "85% faster business registration with Radbit's guided assessment",
+    industry: "Food & Beverage",
+  },
+  {
+    company: "Cultural Coder",
+    url: "https://culturalcoder.co.zw",
+    tagline: "Zimbabwean software studio building for local needs",
+    result: "Scaled from solo founder to 8-person team using Radbit insights",
+    industry: "Technology",
+  },
+  {
+    company: "Nexus Agronomics",
+    url: "https://nexusagronomics.co.zw",
+    tagline: "Data-driven farming solutions for smallholder cooperatives",
+    result: "Accessed $50K in matched funding via Radbit's grant intelligence",
+    industry: "Agri-tech",
+  },
+];
+
+function CaseStudiesSection() {
+  return (
+    <section className="relative py-20 md:py-28">
+      <div className="container relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          className="text-center space-y-3 mb-14"
+        >
+          <p className="inline-block font-headline text-xs tracking-[0.3em] text-primary uppercase">Success Stories</p>
+          <h2 className="font-headline text-2xl md:text-4xl font-bold tracking-tight max-w-2xl mx-auto">
+            Zimbabwean businesses already winning with Radbit
+          </h2>
+        </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          {caseStudies.map((cs, i) => (
+            <motion.a
+              key={cs.company}
+              href={cs.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="group block p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-primary/30 transition-all duration-300"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-2 py-0.5 rounded text-[10px] font-headline font-semibold tracking-wider uppercase bg-primary/10 text-primary/80">
+                  {cs.industry}
+                </span>
+              </div>
+              <h3 className="font-headline font-bold text-lg text-white group-hover:text-primary transition-colors mb-1">
+                {cs.company}
+                <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-200" />
+              </h3>
+              <p className="text-sm text-white/50 mb-3">{cs.tagline}</p>
+              <p className="text-sm text-primary/90 font-medium">&ldquo;{cs.result}&rdquo;</p>
+            </motion.a>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -604,6 +704,7 @@ export default function LandingPage() {
         <HowItWorksSection />
         <FeaturesSection />
         <MetricsSection />
+        <CaseStudiesSection />
         <CuratedBriefsSection />
         <section className="container mx-auto py-8 max-w-4xl relative z-10">
           <AdUnit slot="landing-content" format="rectangle" className="min-h-[90px]" />

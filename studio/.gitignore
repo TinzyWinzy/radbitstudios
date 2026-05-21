@@ -50,3 +50,9 @@ apphosting.yaml
 
 # SQLite database
 /data/
+firebase-debug.log
+
+firebase-debug.log
+
+# Firebase
+firebase-debug.log
