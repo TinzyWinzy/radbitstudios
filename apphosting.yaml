@@ -43,8 +43,3 @@ env:
     value: "87fb4b90-d1b1-460b-a487-ac98129644bb"
     availability:
       - RUNTIME
-  - variable: GEMINI_API_KEY
-    value: AIzaSyC9Y0tkjZPEepTHNBiCSLHrTF26M86sPSI
-    availability:
-      - BUILD
-      - RUNTIME
