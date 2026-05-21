@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, lazy, Suspense, useState } from "react";
-import { ChevronRight, BarChart, Lightbulb, TrendingUp, Users, Briefcase, Sparkles, ArrowRight, Shield, Zap } from "lucide-react";
+import { ChevronRight, BarChart, Lightbulb, TrendingUp, Users, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -116,33 +116,25 @@ function HeroSection() {
   );
 }
 
-const partners = [
-  { name: "Harare Tech Hub", initials: "HTH", slug: "harare-tech-hub" },
-  { name: "Zim-Artisans", initials: "ZA", slug: "zim-artisans" },
-  { name: "Mutare Digital", initials: "MD", slug: "mutare-digital" },
-  { name: "Bulawayo Labs", initials: "BL", slug: "bulawayo-labs" },
-  { name: "Chiredi Agri", initials: "CA", slug: "chiredi-agri" },
-];
-
-function TrustedBySection() {
+function DemoSection() {
   return (
-    <section className="relative py-10 border-y border-white/10 bg-white/[0.02]">
-      <div className="container">
-        <p className="text-center text-xs tracking-[0.3em] text-white/50 uppercase mb-8 font-headline">Trusted by enterprises across Zimbabwe</p>
-        <div className="flex flex-wrap items-center justify-center gap-6">
-          {partners.map((p) => (
-            <div
-              key={p.slug}
-              className="group flex items-center gap-3 px-5 py-3 rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 transition-all duration-300"
-            >
-              <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary/10 text-primary font-headline font-bold text-xs tracking-wider">
-                {p.initials}
-              </div>
-              <span className="text-sm font-headline font-semibold tracking-wide text-white/50 group-hover:text-white/80 transition-colors">
-                {p.name}
-              </span>
-            </div>
-          ))}
+    <section className="relative py-16 border-y border-white/10 bg-white/[0.02]">
+      <div className="container max-w-3xl mx-auto text-center space-y-6">
+        <p className="text-xs tracking-[0.3em] text-primary uppercase font-headline">See Radbit in Action</p>
+        <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-white">
+          Book a free demo
+        </h2>
+        <p className="text-white/60 text-sm max-w-lg mx-auto leading-relaxed">
+          See how Radbit helps Zimbabwean SMEs find tenders, access AI insights, and grow with confidence. We&apos;ll walk you through the platform tailored to your industry.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <a
+            href="mailto:radbit@culturalcoder.co.zw?subject=Demo%20Request&body=Hi%2C%20I'd%20like%20to%20book%20a%20Radbit%20demo."
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-headline font-semibold text-sm hover:bg-primary/90 transition-colors"
+          >
+            <Calendar className="h-4 w-4" />
+            Request a Demo
+          </a>
         </div>
       </div>
     </section>
@@ -691,7 +683,7 @@ export default function LandingPage() {
 
       <div className="relative z-10">
         <HeroSection />
-        <TrustedBySection />
+        <DemoSection />
         <HowItWorksSection />
         <FeaturesSection />
         <MetricsSection />

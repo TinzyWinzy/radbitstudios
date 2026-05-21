@@ -15,3 +15,4 @@ import '@/ai/flows/generate-swot-analysis.ts';
 import '@/ai/flows/generate-hr-policy.ts';
 import '@/ai/flows/generate-supplier-negotiator.ts';
 import '@/ai/flows/generate-export-coach.ts';
+import '@/ai/flows/generate-personalized-brief.ts';

@@ -55,6 +55,7 @@ const DEFAULT_LIMITS: Record<string, RateLimitConfig> = {
   rss: { maxRequests: 5, windowMs: 60_000 },
   api: { maxRequests: 30, windowMs: 60_000 },
   tender: { maxRequests: 3, windowMs: 60_000 },
+  newsScrape: { maxRequests: 1, windowMs: 4 * 60 * 60 * 1000 },
 };
 
 export function checkRateLimit(key: string, limitType = 'default'): {

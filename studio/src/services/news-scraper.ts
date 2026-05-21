@@ -165,9 +165,8 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
 }
 
 export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: number }> {
-  const cacheKey = 'news:scrape:started';
-  if (!checkRateLimit('newsScrape', 'default').allowed) {
-    console.log('[NewsScraper] Rate limited — skipping scrape');
+  if (!checkRateLimit('newsScrape', 'newsScrape').allowed) {
+    console.log('[NewsScraper] Rate limited — skipping scrape (4h window)');
     return { scraped: 0, errors: 0 };
   }
 
@@ -264,7 +263,6 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     logToFile('No articles to save');
   }
 
-  setCached(cacheKey, results, 15 * 60 * 1000);
   return results;
 }
 
