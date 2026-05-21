@@ -26,6 +26,7 @@ export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
@@ -72,7 +73,7 @@ export default function SignUpPage() {
     }
 
     try {
-      await signUp(email, password);
+      await signUp(email, password, { phone: phone?.trim() || '' });
     } catch (error: any) {
       toast({
         title: 'Sign Up Failed',
@@ -142,6 +143,19 @@ export default function SignUpPage() {
             required
             className="h-11"
           />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone (optional)</Label>
+          <Input
+            id="phone"
+            type="tel"
+            placeholder="+263 77 123 4567"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            disabled={isLoading || isGoogleLoading}
+            className="h-11"
+          />
+          <p className="text-xs text-muted-foreground">Used for WhatsApp alerts on tenders and deadlines</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>

@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { sendMessageAction, sendMessageWithNews } from './actions';
 import { checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
+import { MarkdownRenderer } from '@/components/markdown-renderer';
 import type { UpgradeInfo } from '@/services/feature-gate';
 import type { AppUser } from '@/types/user';
 
@@ -223,10 +224,12 @@ export default function MentorPage() {
                         </Badge>
                       </div>
                     )}
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm whitespace-pre-line">{message.text}</p>
+                    <div className="flex items-start gap-2">
+                      <div className="text-sm min-w-0 [&_.prose]:text-sm">
+                        <MarkdownRenderer content={message.text} />
+                      </div>
                       {message.sender === 'user' && message.status === 'error' && (
-                        <RefreshCw className="h-4 w-4 shrink-0 opacity-70" aria-label="Failed" />
+                        <RefreshCw className="h-4 w-4 shrink-0 mt-1 opacity-70" aria-label="Failed" />
                       )}
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-const EMBEDDING_MODEL = 'text-embedding-004';
+const EMBEDDING_MODEL = 'text-embedding-005';
 const EMBEDDING_BATCH_SIZE = 100;
 
 function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {

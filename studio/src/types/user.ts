@@ -15,4 +15,6 @@ export interface AppUser extends User {
   dismissedOnboarding?: boolean;
   aiBudget?: { used: number; limit: number };
   subscriptionId?: string;
+  phone?: string;
+  whatsappOptIn?: boolean;
 }

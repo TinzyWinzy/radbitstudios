@@ -23,7 +23,7 @@ interface AuthContextType {
   user: AppUser | null;
   loading: boolean;
   role: UserRole | null;
-  signUp: (email: string, pass: string) => Promise<any>;
+  signUp: (email: string, pass: string, extraData?: Record<string, unknown>) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
   signInWithGoogle: () => Promise<any>;
   logout: () => Promise<any>;
@@ -35,7 +35,7 @@ export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   role: null,
-  signUp: async () => {},
+  signUp: async (_email: string, _pass: string, _extraData?: Record<string, unknown>) => {},
   signIn: async () => {},
   signInWithGoogle: async () => {},
   logout: async () => {},
@@ -43,7 +43,7 @@ export const AuthContext = createContext<AuthContextType>({
   deleteAccount: async () => ({ success: false, error: 'Not initialized' }),
 });
 
-const createUserDocument = async (user: User) => {
+const createUserDocument = async (user: User, extraData?: Record<string, unknown>) => {
     const userDocRef = doc(db, 'users', user.uid);
     const userDocSnap = await withRetry(() => getDoc(userDocRef));
 
@@ -70,7 +70,10 @@ const createUserDocument = async (user: User) => {
                 industry: '',
                 businessDescription: '',
                 plan: freePlan.name,
-                usage: freePlan.credits
+                usage: freePlan.credits,
+                phone: '',
+                whatsappOptIn: false,
+                ...extraData,
             });
 
              // If the auth user's display name is null, update it
@@ -90,8 +93,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<UserRole | null>(null);
   
-  const fetchAndSetUser = useCallback(async (authUser: User) => {
-    await createUserDocument(authUser);
+  const fetchAndSetUser = useCallback(async (authUser: User, extraData?: Record<string, unknown>) => {
+    await createUserDocument(authUser, extraData);
     const userDocRef = doc(db, 'users', authUser.uid);
     const userDoc = await withRetry(() => getDoc(userDocRef));
     if (userDoc.exists()) {
@@ -155,12 +158,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   },[fetchAndSetUser]);
 
-  const signUp = async (email: string, pass: string) => {
+  const signUp = async (email: string, pass: string, extraData?: Record<string, unknown>) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const newDisplayName = email.split('@')[0] || 'SME User';
     await updateProfile(userCredential.user, { displayName: newDisplayName });
     // Explicitly wait for the full user profile to be ready before proceeding
-    await fetchAndSetUser(userCredential.user);
+    await fetchAndSetUser(userCredential.user, extraData);
     return userCredential;
   };
 

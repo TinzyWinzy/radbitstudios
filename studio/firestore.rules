@@ -99,6 +99,11 @@ service cloud.firestore {
       allow read, write: if false; // internal only
     }
 
+    // ─── WHATSAPP SESSIONS (server-side only via Admin SDK) ─────────────────
+    match /whatsapp_sessions/{sessionId} {
+      allow read, write: if false; // server-side only via Admin SDK
+    }
+
     // ─── BLOG POSTS ──────────────────────────────────────────────────────────
     // Public read for published posts. Admin dashboard uses adminDb for writes.
     // Client-side blog listing reads published posts with userId filter.

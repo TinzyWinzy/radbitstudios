@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap, Shield, Download } from "lucide-react";
 import {
@@ -98,6 +99,8 @@ export default function SettingsPage() {
     const [businessName, setBusinessName] = useState('');
     const [industry, setIndustry] = useState('');
     const [businessDescription, setBusinessDescription] = useState('');
+    const [phone, setPhone] = useState('');
+    const [whatsappOptIn, setWhatsappOptIn] = useState(false);
     
     const [assessmentHistory, setAssessmentHistory] = useState<AssessmentHistory[]>([]);
     const [generationHistory, setGenerationHistory] = useState<GenerationHistory[]>([]);
@@ -130,11 +133,13 @@ export default function SettingsPage() {
             setBusinessName(user.businessName || '');
             setIndustry(user.industry || '');
             setBusinessDescription(user.businessDescription || '');
+            setPhone(user.phone || '');
+            setWhatsappOptIn(user.whatsappOptIn || false);
         }
     }, [user]);
 
 
-    const profileSchema = z.object({ displayName: z.string().min(1, 'Name is required').max(100, 'Name is too long') });
+    const profileSchema = z.object({ displayName: z.string().min(1, 'Name is required').max(100, 'Name is too long'), phone: z.string().max(20).optional(), whatsappOptIn: z.boolean().optional() });
     const businessSchema = z.object({
       businessName: z.string().min(1, 'Business name is required').max(200, 'Name is too long'),
       industry: z.string().min(1, 'Industry is required').max(100, 'Industry is too long'),
@@ -143,7 +148,7 @@ export default function SettingsPage() {
 
     const handleProfileSave = async () => {
         if (!user || !auth.currentUser) return;
-        const validation = profileSchema.safeParse({ displayName });
+        const validation = profileSchema.safeParse({ displayName, phone, whatsappOptIn });
         if (!validation.success) {
           const firstError = validation.error.errors[0];
           toast({ title: 'Validation Error', description: firstError.message, variant: 'destructive' });
@@ -155,7 +160,7 @@ export default function SettingsPage() {
               await updateProfile(auth.currentUser, { displayName });
             }
             const userDocRef = doc(db, 'users', user.uid);
-            await updateDoc(userDocRef, { displayName });
+            await updateDoc(userDocRef, { displayName, phone, whatsappOptIn });
             await refreshUserData();
             toast({ title: 'Profile saved successfully!' });
         } catch (error) {
@@ -457,6 +462,15 @@ export default function SettingsPage() {
                  <div className="space-y-2">
                     <Label htmlFor="displayName">Display Name</Label>
                     <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input id="phone" type="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <p className="text-xs text-muted-foreground">Used for WhatsApp alerts on tenders and deadlines</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Checkbox id="whatsapp-opt-in" checked={whatsappOptIn} onCheckedChange={(checked) => setWhatsappOptIn(checked === true)} />
+                    <Label htmlFor="whatsapp-opt-in" className="text-sm font-normal leading-relaxed">Receive notifications and alerts via WhatsApp</Label>
                 </div>
                 <div className="space-y-2">
                     <h3 className="text-lg font-semibold">Your Badges</h3>
