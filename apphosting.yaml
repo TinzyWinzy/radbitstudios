@@ -35,3 +35,11 @@ env:
     availability:
       - BUILD
       - RUNTIME
+  - variable: PAYNOW_INTEGRATION_ID
+    value: "21546"
+    availability:
+      - RUNTIME
+  - variable: PAYNOW_INTEGRATION_KEY
+    value: "87fb4b90-d1b1-460b-a487-ac98129644bb"
+    availability:
+      - RUNTIME

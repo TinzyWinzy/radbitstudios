@@ -26,10 +26,14 @@ export class PayNowProvider implements PaymentProvider {
       amount: amount.toFixed(2),
       additionalinfo: description,
       returnurl: returnUrl || `${process.env.FRONTEND_URL}/settings`,
-      resulturl: notifyUrl || `${process.env.API_URL}/api/webhooks/paynow`,
-      authemail: this.authEmail,
-      status: 'Message',
+      resulturl: notifyUrl || `${process.env.FRONTEND_URL}/api/webhooks/paynow`,
+      ...(this.authEmail ? { authemail: this.authEmail } : {}),
     });
+
+    // PAYNOW_TEST_MODE=Message sends test transactions (skips real payment)
+    if (process.env.PAYNOW_TEST_MODE) {
+      payload.set('status', 'Message');
+    }
 
     try {
       const response = await fetch('https://www.paynow.co.zw/interface/create', {
