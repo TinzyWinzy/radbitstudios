@@ -11,3 +11,7 @@ import '@/ai/flows/generate-business-insight.ts';
 import '@/ai/flows/tax-copilot.ts';
 import '@/ai/flows/generate-export-assessment.ts';
 import '@/ai/flows/generate-tender-proposal.ts';
+import '@/ai/flows/generate-swot-analysis.ts';
+import '@/ai/flows/generate-hr-policy.ts';
+import '@/ai/flows/generate-supplier-negotiator.ts';
+import '@/ai/flows/generate-export-coach.ts';

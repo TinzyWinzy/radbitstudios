@@ -31,7 +31,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Loader2, Sparkles, Wand2, Download, Share2 } from 'lucide-react';
+import { Loader2, Sparkles, Wand2, Download, Share2, FileText, FileDown } from 'lucide-react';
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { generateBusinessInsight } from '@/ai/flows/generate-business-insight';
@@ -39,6 +39,13 @@ import { checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import { MarkdownRenderer } from '@/components/markdown-renderer';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { exportContent } from '@/services/export-service';
 
 const formSchema = z.object({
   insightType: z.enum(
@@ -51,6 +58,10 @@ const formSchema = z.object({
       'marketing_copy',
       'compliance_check',
       'pitch_outline',
+      'swot_analysis',
+      'hr_policy',
+      'supplier_negotiator',
+      'export_coach',
     ],
     {
       required_error: 'Please select a tool.',
@@ -73,6 +84,10 @@ const toolOptions = [
   { value: 'marketing_copy', label: 'Marketing Copywriter' },
   { value: 'compliance_check', label: 'Compliance Quick-Check' },
   { value: 'pitch_outline', label: 'Pitch Deck Outline' },
+  { value: 'swot_analysis', label: 'SWOT Analysis' },
+  { value: 'hr_policy', label: 'HR Policy Generator' },
+  { value: 'supplier_negotiator', label: 'Supplier Negotiator' },
+  { value: 'export_coach', label: 'Export Coach' },
 ];
 
 export default function AiToolkitPage() {
@@ -135,19 +150,11 @@ export default function AiToolkitPage() {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async (format: 'pdf' | 'docx' | 'md') => {
     if (!generatedContent) return;
-    const blob = new Blob([generatedContent], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
     const selectedTool = toolOptions.find(t => t.value === form.getValues('insightType'));
-    const fileName = selectedTool ? `${selectedTool.label.replace(/ /g, '_')}_output.md` : 'ai_toolkit_output.md';
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const title = selectedTool?.label || 'AI Toolkit Output';
+    await exportContent({ title, content: generatedContent, format });
   };
 
   const handleShare = () => {
@@ -259,10 +266,28 @@ export default function AiToolkitPage() {
                         <Share2 className="h-4 w-4"/>
                         <span className="sr-only">Share</span>
                     </Button>
-                    <Button variant="outline" size="icon" onClick={handleDownload} disabled={!generatedContent}>
-                        <Download className="h-4 w-4"/>
-                        <span className="sr-only">Download</span>
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="icon" disabled={!generatedContent}>
+                                <Download className="h-4 w-4"/>
+                                <span className="sr-only">Download</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleDownload('pdf')}>
+                                <FileText className="h-4 w-4 mr-2" />
+                                PDF
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDownload('docx')}>
+                                <FileDown className="h-4 w-4 mr-2" />
+                                DOCX
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDownload('md')}>
+                                <FileText className="h-4 w-4 mr-2" />
+                                Markdown
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
           </CardHeader>

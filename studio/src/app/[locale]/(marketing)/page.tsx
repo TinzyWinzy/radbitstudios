@@ -383,32 +383,18 @@ function MetricsSection() {
 
 const caseStudies = [
   {
-    company: "Africa Log",
-    url: "https://africalog.com",
-    tagline: "Cross-border logistics platform scaling across SADC",
-    result: "40% reduction in tender response time using Radbit's AI Bid Writer",
-    industry: "Logistics & Supply Chain",
-  },
-  {
-    company: "Anaya Honey",
-    url: "https://anayahoney.com",
-    tagline: "Premium raw honey producer supplying regional retailers",
-    result: "Secured 3 new retail contracts worth $180K through tender alerts",
-    industry: "Agro-processing",
-  },
-  {
-    company: "Indigenous Ingredients",
-    url: "https://indigenousingredients.com",
-    tagline: "Traditional Zimbabwean superfoods for global markets",
-    result: "85% faster business registration with Radbit's guided assessment",
-    industry: "Food & Beverage",
-  },
-  {
     company: "Cultural Coder",
     url: "https://culturalcoder.co.zw",
     tagline: "Zimbabwean software studio building for local needs",
     result: "Scaled from solo founder to 8-person team using Radbit insights",
     industry: "Technology",
+  },
+  {
+    company: "Unikvilla",
+    url: "https://unikvilla.co.zw",
+    tagline: "Boutique lodging and accommodation in Zimbabwe",
+    result: "Doubled direct bookings through Radbit's digital marketing insights",
+    industry: "Hospitality & Tourism",
   },
   {
     company: "Nexus Agronomics",

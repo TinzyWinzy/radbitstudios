@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import {
   Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter,
 } from '@/components/ui/card';
@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Send, Sparkles, Loader2, RefreshCw, Newspaper, Briefcase, Zap } from 'lucide-react';
+import { Send, Sparkles, Loader2, RefreshCw, Newspaper, Briefcase, Zap, Square } from 'lucide-react';
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
-import { sendMessageAction, sendMessageWithNews } from './actions';
+import { getMentorContext } from './actions';
+import { useStreamingAI } from '@/hooks/use-streaming-ai';
 import { checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
@@ -23,9 +24,9 @@ interface Message {
   text: string;
   sender: 'user' | 'ai';
   id: number;
-  status: 'pending' | 'sent' | 'error';
-  hasNewsContext?: boolean;
-  hasTenderContext?: boolean;
+  status: 'pending' | 'sent' | 'error' | 'streaming';
+  newsCount?: number;
+  tenderCount?: number;
 }
 
 export default function MentorPage() {
@@ -38,19 +39,59 @@ export default function MentorPage() {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [includeContext, setIncludeContext] = useState(true);
   const [contextStats, setContextStats] = useState({ news: 0, tenders: 0 });
+  const [systemPromptCache, setSystemPromptCache] = useState<string>('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const aiMsgIdRef = useRef<number>(0);
   const { toast } = useToast();
+  const { content, isStreaming: aiStreaming, error: aiError, stream, cancel } = useStreamingAI();
 
   const hasProfile = !!user?.industry;
 
+  const scrollToBottom = useCallback(() => {
+    setTimeout(() => {
+      const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) viewport.scrollTop = viewport.scrollHeight;
+    }, 50);
+  }, []);
+
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      setTimeout(() => {
-        const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-        if (viewport) viewport.scrollTop = viewport.scrollHeight;
-      }, 100);
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  useEffect(() => {
+    if (!hasProfile) return;
+    getMentorContext({
+      userId: user!.uid,
+      industry: user!.industry,
+      businessName: user!.businessName,
+      businessDescription: user!.businessDescription,
+    }).then(res => {
+      setSystemPromptCache(res.systemPrompt);
+    }).catch(() => {});
+  }, [hasProfile, user]);
+
+  useEffect(() => {
+    if (!aiMsgIdRef.current) return;
+
+    if (aiStreaming && content) {
+      setMessages(prev => prev.map(m =>
+        m.id === aiMsgIdRef.current ? { ...m, text: content } : m
+      ));
+    } else if (!aiStreaming && content && !aiError) {
+      setMessages(prev => prev.map(m =>
+        m.id === aiMsgIdRef.current ? { ...m, text: content, status: 'sent' } : m
+      ));
+      setIsSubmitting(false);
+      aiMsgIdRef.current = 0;
+    } else if (!aiStreaming && aiError) {
+      setMessages(prev => prev.map(m =>
+        m.id === aiMsgIdRef.current ? { ...m, status: 'error', text: m.text || content } : m
+      ));
+      setIsSubmitting(false);
+      aiMsgIdRef.current = 0;
+      toast({ title: 'Error', description: aiError, variant: 'destructive' });
     }
-  }, [messages]);
+  }, [content, aiStreaming, aiError, toast]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,60 +108,68 @@ export default function MentorPage() {
     }
 
     setIsSubmitting(true);
+    const userMsgId = Date.now();
     const userMessage: Message = {
       text: input,
       sender: 'user',
-      id: Date.now(),
-      status: 'pending',
-      hasNewsContext: includeContext && hasProfile,
-      hasTenderContext: includeContext && hasProfile,
+      id: userMsgId,
+      status: 'sent',
     };
-
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
-    try {
-      let response: { answer: string; newsCount?: number; tenderCount?: number };
-      if (includeContext && hasProfile) {
-        response = await sendMessageWithNews({
+    let currentContext = systemPromptCache;
+    let newsCount = 0;
+    let tenderCount = 0;
+
+    if (includeContext && hasProfile) {
+      if (!systemPromptCache) {
+        const ctx = await getMentorContext({
           userId: user.uid,
-          query: input,
-          businessName: user.businessName,
           industry: user.industry,
+          businessName: user.businessName,
           businessDescription: user.businessDescription,
         });
-        setContextStats({ news: response.newsCount || 0, tenders: response.tenderCount || 0 });
+        currentContext = ctx.systemPrompt;
+        newsCount = ctx.newsCount;
+        tenderCount = ctx.tenderCount;
+        setSystemPromptCache(currentContext);
+        setContextStats({ news: newsCount, tenders: tenderCount });
       } else {
-        const simple = await sendMessageAction({
-          query: input,
-          businessName: user.businessName,
-          industry: user.industry,
-          businessDescription: user.businessDescription,
-        });
-        response = { answer: simple.answer };
+        newsCount = contextStats.news;
+        tenderCount = contextStats.tenders;
       }
-
-      setMessages((prev) =>
-        prev.map((msg) => (msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg))
-      );
-
-      const aiMessage: Message = {
-        text: response.answer,
-        sender: 'ai',
-        id: Date.now() + 1,
-        status: 'sent',
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-
-    } catch (error: any) {
-      const errMsg = error.message || 'Sorry, I encountered an error. Please try again.';
-      toast({ title: 'Error', description: errMsg, variant: 'destructive' });
-      setMessages((prev) =>
-        prev.map((msg) => msg.id === userMessage.id ? { ...msg, status: 'error' } : msg)
-      );
-    } finally {
-      setIsSubmitting(false);
     }
+
+    const aiMsgId = Date.now() + 1;
+    aiMsgIdRef.current = aiMsgId;
+
+    const aiMessage: Message = {
+      text: '',
+      sender: 'ai',
+      id: aiMsgId,
+      status: 'streaming',
+      newsCount,
+      tenderCount,
+    };
+    setMessages((prev) => [...prev, aiMessage]);
+
+    stream({
+      prompt: input,
+      systemPrompt: includeContext && hasProfile ? currentContext : undefined,
+      userId: user.uid,
+    });
+  };
+
+  const handleCancel = () => {
+    cancel();
+    if (aiMsgIdRef.current) {
+      setMessages(prev => prev.map(m =>
+        m.id === aiMsgIdRef.current ? { ...m, status: 'sent', text: m.text || '(Cancelled)' } : m
+      ));
+    }
+    aiMsgIdRef.current = 0;
+    setIsSubmitting(false);
   };
 
   return (
@@ -216,17 +265,28 @@ export default function MentorPage() {
                         : 'bg-muted'
                     }`}
                   >
-                    {message.sender === 'ai' && (message.hasNewsContext || message.hasTenderContext) && (
+                    {message.sender === 'ai' && (message.newsCount || message.tenderCount) && message.status !== 'streaming' && (
                       <div className="flex items-center gap-2 mb-2 -mt-1">
                         <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary gap-1">
                           <Zap className="h-3 w-3" />
-                          Based on {contextStats.news} articles + {contextStats.tenders} tenders
+                          Based on {message.newsCount} articles + {message.tenderCount} tenders
                         </Badge>
                       </div>
                     )}
                     <div className="flex items-start gap-2">
                       <div className="text-sm min-w-0 [&_.prose]:text-sm">
-                        <MarkdownRenderer content={message.text} />
+                        {message.text ? (
+                          <MarkdownRenderer content={message.text} />
+                        ) : message.status === 'streaming' ? (
+                          <span className="inline-flex items-center gap-1">
+                            <span className="h-3 w-1 bg-primary animate-pulse" />
+                          </span>
+                        ) : null}
+                        {message.status === 'streaming' && aiStreaming && (
+                          <span className="inline-flex items-center gap-1 ml-0.5">
+                            <span className="h-3 w-0.5 bg-primary animate-pulse" />
+                          </span>
+                        )}
                       </div>
                       {message.sender === 'user' && message.status === 'error' && (
                         <RefreshCw className="h-4 w-4 shrink-0 mt-1 opacity-70" aria-label="Failed" />
@@ -242,7 +302,7 @@ export default function MentorPage() {
                 </div>
               ))}
 
-              {isSubmitting && messages[messages.length - 1]?.sender === 'user' && (
+              {isSubmitting && !messages.find(m => m.status === 'streaming') && (
                 <div className="flex items-start gap-3">
                   <Avatar className="h-8 w-8 shrink-0">
                     <AvatarFallback className="bg-primary/10 text-primary text-xs">AI</AvatarFallback>
@@ -269,10 +329,17 @@ export default function MentorPage() {
               onChange={(e) => setInput(e.target.value)}
               disabled={isSubmitting}
             />
-            <Button type="submit" size="icon" disabled={isSubmitting || !input.trim()}>
-              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              <span className="sr-only">Send</span>
-            </Button>
+            {aiStreaming ? (
+              <Button type="button" size="icon" variant="outline" onClick={handleCancel}>
+                <Square className="h-4 w-4" />
+                <span className="sr-only">Stop</span>
+              </Button>
+            ) : (
+              <Button type="submit" size="icon" disabled={isSubmitting || !input.trim()}>
+                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                <span className="sr-only">Send</span>
+              </Button>
+            )}
           </form>
         </CardFooter>
       </Card>

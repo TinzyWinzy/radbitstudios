@@ -48,3 +48,20 @@ env:
     availability:
       - BUILD
       - RUNTIME
+
+  - variable: WHATSAPP_ACCESS_TOKEN
+    secret: WHATSAPP_ACCESS_TOKEN
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_PHONE_NUMBER_ID
+    value: "1170866979434634"
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_VERIFY_TOKEN
+    value: "radbit_whatsapp_verify_001"
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_APP_SECRET
+    secret: WHATSAPP_APP_SECRET
+    availability:
+      - RUNTIME
