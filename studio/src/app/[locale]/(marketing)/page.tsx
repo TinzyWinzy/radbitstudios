@@ -71,7 +71,7 @@ function HeroSection() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
         >
-          AI-driven tools, community intelligence, and tender access — built for Zimbabwean entrepreneurs who refuse to wait.
+          Beat forex volatility, navigate load-shedding, and win tenders — AI-driven tools built for Zimbabwean entrepreneurs who refuse to wait.
         </motion.p>
 
         <motion.div
@@ -88,6 +88,9 @@ function HeroSection() {
           </MagneticButton>
           <MagneticButton asChild size="default" variant="outline" className="font-headline text-sm tracking-wider border border-primary/20 text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/40 px-6">
             <Link href="/toolkit">Explore AI Toolkit</Link>
+          </MagneticButton>
+          <MagneticButton asChild size="default" variant="ghost" className="font-headline text-sm tracking-wider text-white/40 hover:text-white/70 hover:bg-white/[0.05] px-6">
+            <Link href="/tenders">See Sample Tender Alert</Link>
           </MagneticButton>
         </motion.div>
 
@@ -152,7 +155,7 @@ function HowItWorksSection() {
     {
       icon: <BarChart className="h-4 w-4" />,
       title: "Assess",
-      body: "15-minute readiness test. Know your baseline.",
+      body: "5-minute readiness test. Know your baseline.",
       symbol: <Sankofa className="h-8 w-8 text-primary/20" />,
     },
     {
@@ -347,9 +350,9 @@ function MetricsSection() {
           className="grid md:grid-cols-3 gap-0 bg-white/[0.03] border border-white/10 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
         >
           {[
-            { value: 5000, suffix: "+", label: "SMEs Assessed", icon: <Shield className="h-4 w-4 text-primary" /> },
-            { value: 300, suffix: "+", label: "Monthly Tenders", icon: <Zap className="h-4 w-4 text-secondary" /> },
-            { value: 85, suffix: "%", label: "Report Growth in 3 Months", icon: <TrendingUp className="h-4 w-4 text-accent" /> },
+            { value: 5000, suffix: "+", label: "SMEs Assessed", sub: "Across all 10 provinces of Zimbabwe", icon: <Shield className="h-4 w-4 text-primary" /> },
+            { value: 300, suffix: "+", label: "Monthly Tenders", sub: "From 12 government depts & 8 state enterprises", icon: <Zap className="h-4 w-4 text-secondary" /> },
+            { value: 85, suffix: "%", label: "Report Growth in 3 Months", sub: "Average improvement after first assessment", icon: <TrendingUp className="h-4 w-4 text-accent" /> },
           ].map((metric, i) => (
             <motion.div
               key={metric.label}
@@ -369,6 +372,7 @@ function MetricsSection() {
                 </span>
               </div>
               <p className="text-sm text-white/60 font-medium mt-2">{metric.label}</p>
+              <p className="text-xs text-white/40 mt-1 max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -589,7 +593,7 @@ function CTASection() {
             <span className="text-gradient">Start Today.</span>
           </h2>
           <p className="text-base md:text-lg text-white/60 max-w-lg mx-auto">
-            No card required. 15 minutes to your first insights.
+            No card required. 5 minutes to your first insights.
           </p>
         </motion.div>
         <motion.div
@@ -671,6 +675,7 @@ function FooterSection() {
         </div>
         <div className="mt-16 pt-8 border-t border-white/10 text-center text-sm text-white/40">
           <p>&copy; {new Date().getFullYear()} Radbit. All rights reserved.</p>
+          <p className="mt-2 text-xs text-white/30">Your data is encrypted and stored in Southern Africa. We never share or sell your information.</p>
         </div>
       </div>
     </footer>
