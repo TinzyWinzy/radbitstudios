@@ -1,25 +1,38 @@
 import { MetadataRoute } from "next";
 
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
-const IS_PROD = process.env.NODE_ENV === 'production';
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/_next/', '/dashboard/blog', '/app/'],
+        disallow: [
+          '/api/',
+          '/_next/',
+          '/dashboard',
+          '/settings',
+          '/messages',
+          '/export-assessment',
+          '/budget-calculator',
+        ],
       },
-      // Separate rule block for Googlebot — avoids key collision
-      ...(IS_PROD
-        ? [{
-            userAgent: 'Googlebot',
-            allow: ['/', '/blog', '/resources', '/assessment', '/toolkit', '/tenders', '/community', '/mentor'],
-          }]
-        : []),
+      {
+        userAgent: 'Googlebot',
+        allow: [
+          '/',
+          '/blog',
+          '/resources',
+          '/assessment',
+          '/toolkit',
+          '/tenders',
+          '/community',
+          '/mentor',
+          '/sign-in',
+          '/sign-up',
+        ],
+      },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
-    host: SITE_URL,
   };
 }

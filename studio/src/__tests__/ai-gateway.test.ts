@@ -1,6 +1,17 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AIGateway } from '@/services/ai/ai-gateway';
 
+vi.mock('@/services/ai/rag', () => ({
+  searchRelevantContext: vi.fn().mockResolvedValue([]),
+  buildRAGContext: vi.fn().mockReturnValue(''),
+}));
+
+vi.mock('@/services/ai/embeddings', () => ({
+  generateEmbedding: vi.fn().mockResolvedValue([0.1, 0.2, 0.3]),
+  cosineSimilarity: vi.fn().mockReturnValue(0.5),
+  generateEmbeddingsBatch: vi.fn().mockResolvedValue([[0.1, 0.2, 0.3]]),
+}));
+
 describe('AIGateway.selectRoute', () => {
   let gateway: AIGateway;
 
@@ -59,6 +70,8 @@ describe('AIGateway.generate', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
+    vi.mocked(fetch).mockRejectedValue(new Error('API unreachable'));
     gateway = new AIGateway();
   });
 
@@ -72,20 +85,22 @@ describe('AIGateway.generate', () => {
     expect(result.model).toBe('fallback-no-key');
     expect(result.content).toContain('unavailable');
     expect(result.error).toBe('AI service not configured (missing API key).');
-
-    vi.unstubAllEnvs();
   });
 
   it('validates gemini key via GEMINI_API_KEY fallback', async () => {
     vi.stubEnv('GOOGLE_GENAI_API_KEY', '');
-    vi.stubEnv('GEMINI_API_KEY', 'fake-key');
+    vi.stubEnv('GEMINI_API_KEY', 'test-key');
     vi.stubEnv('OPENAI_API_KEY', '');
     vi.stubEnv('ANTHROPIC_API_KEY', '');
 
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ candidates: [{ content: { parts: [{ text: 'hello' }] } }] }),
+    } as Response);
+
     const result = await gateway.generate({ prompt: 'test' });
     expect(result.model).not.toBe('fallback-no-key');
-
-    vi.unstubAllEnvs();
+    expect(result.content).toBe('hello');
   });
 
   it('returns fallback response when primary model fails', async () => {
@@ -96,8 +111,6 @@ describe('AIGateway.generate', () => {
     const result = await gateway.generate({ prompt: 'trigger-failure', difficulty: 'simple' });
     expect(result.model).toBe('fallback');
     expect(result.error).toBeTruthy();
-
-    vi.unstubAllEnvs();
   });
 
   it('respects difficulty-based fallback messages', async () => {
@@ -107,8 +120,6 @@ describe('AIGateway.generate', () => {
 
     const result = await gateway.generate({ prompt: 'x', difficulty: 'complex' });
     expect(result.content).toContain('unavailable');
-
-    vi.unstubAllEnvs();
   });
 
   it('passes rate limit check before processing', async () => {

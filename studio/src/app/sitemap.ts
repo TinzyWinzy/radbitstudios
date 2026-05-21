@@ -12,16 +12,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${F}/sign-in`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
     { url: `${F}/sign-up`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.5  },
 
-    // ── Core app ───────────────────────────────────────────────────────
-    { url: `${F}/dashboard`,                 lastModified: new Date(), changeFrequency: "weekly",  priority: 0.4  },
-    { url: `${F}/assessment`,                lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7  },
-    { url: `${F}/ai-toolkit`,                lastModified: new Date(), changeFrequency: "weekly",  priority: 0.6  },
-    { url: `${F}/budget-calculator`,         lastModified: new Date(), changeFrequency: "weekly",  priority: 0.5  },
-    { url: `${F}/tenders`,                   lastModified: new Date(), changeFrequency: "daily",   priority: 0.7  },
-    { url: `${F}/community`,                 lastModified: new Date(), changeFrequency: "daily",   priority: 0.6  },
-    { url: `${F}/mentor`,                    lastModified: new Date(), changeFrequency: "weekly",  priority: 0.5  },
-    { url: `${F}/settings`,                  lastModified: new Date(), changeFrequency: "monthly", priority: 0.3  },
-    { url: `${F}/messages`,                  lastModified: new Date(), changeFrequency: "daily",   priority: 0.3  },
+    // ── Core app (lower priority — auth-gated, crawlers see login wall) ──
+    { url: `${F}/dashboard`,                 lastModified: new Date(), changeFrequency: "weekly",  priority: 0.2  },
+    { url: `${F}/assessment`,                lastModified: new Date(), changeFrequency: "weekly",  priority: 0.5  },
+    { url: `${F}/ai-toolkit`,                lastModified: new Date(), changeFrequency: "weekly",  priority: 0.4  },
+    { url: `${F}/tenders`,                   lastModified: new Date(), changeFrequency: "daily",   priority: 0.5  },
+    { url: `${F}/community`,                 lastModified: new Date(), changeFrequency: "daily",   priority: 0.4  },
+    { url: `${F}/mentor`,                    lastModified: new Date(), changeFrequency: "weekly",  priority: 0.4  },
 
     // ── Content hub (public, ad-revenue pages) ─────────────────────────
     { url: `${F}/blog`,                      lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7  },

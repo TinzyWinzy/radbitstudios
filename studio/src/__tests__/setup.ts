@@ -28,3 +28,5 @@ vi.mock(import('@/services/rate-limiter'), async (importOriginal) => {
     checkRateLimit: vi.fn().mockResolvedValue({ allowed: true, remaining: 29, limit: 30 }),
   };
 });
+
+vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Fetch not mocked in this test — use vi.mocked(fetch).mockResolvedValue')));

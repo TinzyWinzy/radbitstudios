@@ -89,11 +89,6 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="alternate" type="application/rss+xml" title="Radbit SME Hub Blog RSS Feed" href="/blog/feed.xml" />
-        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="en" />
-        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="sn" />
-        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="nd" />
-        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="pt" />
-        <link rel="alternate" href="https://radbitstudios.co.zw" hrefLang="x-default" />
         {/*
           FAQPage JSON-LD — homepage gets rich "People also ask" AI-overview box
           WebSite schema  — Google Site Search rich result
