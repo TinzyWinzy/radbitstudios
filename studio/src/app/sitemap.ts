@@ -1,9 +1,38 @@
 import { MetadataRoute } from "next";
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
 const F =
   (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
 
-export default function sitemap(): MetadataRoute.Sitemap {
+async function getPublishedBlogSlugs(): Promise<string[]> {
+  try {
+    if (!getApps().length) {
+      const key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+      if (key) initializeApp({ credential: cert(JSON.parse(key)) });
+      else initializeApp();
+    }
+    const db = getFirestore();
+    const snap = await db
+      .collection("blog_posts")
+      .where("published", "==", true)
+      .get();
+    return snap.docs.map((d) => d.data().slug).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const slugs = await getPublishedBlogSlugs();
+
+  const blogEntries: MetadataRoute.Sitemap = slugs.map((slug) => ({
+    url: `${F}/blog/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
   return [
     // ── Home ───────────────────────────────────────────────────────────
     { url: `${F}/`,                          lastModified: new Date(), changeFrequency: "daily",   priority: 1    },
@@ -23,6 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // ── Content hub (public, ad-revenue pages) ─────────────────────────
     { url: `${F}/blog`,                      lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7  },
     { url: `${F}/blog/feed.xml`,             lastModified: new Date(), changeFrequency: "weekly",  priority: 0.3  },
+    ...blogEntries,
 
     // ── Resources ───────────────────────────────────────────────────────
     { url: `${F}/resources`,                 lastModified: new Date(), changeFrequency: "weekly",  priority: 0.8  },

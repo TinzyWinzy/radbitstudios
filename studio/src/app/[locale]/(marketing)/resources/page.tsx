@@ -6,6 +6,13 @@ export const revalidate = 3600;
 
 const guides = [
   {
+    slug: "register-business-zimbabwe",
+    title: "Registering a Business in Zimbabwe",
+    excerpt: "A complete walkthrough of the company registration process — Deeds Office, PRAZ, ZIMRA, and local council licenses with actual costs and timelines.",
+    icon: <FileText className="h-6 w-6" />,
+    readTime: "15 min read",
+  },
+  {
     slug: "zimra-tax-guide-smes",
     title: "Tax in Zimbabwe for SMEs",
     excerpt: "Everything you need to know about ZIMRA — taxes, filing deadlines, and common pitfalls every Zimbabwean SME owner should know.",
@@ -25,6 +32,13 @@ const guides = [
     excerpt: "A practical walkthrough of exporting goods from Zimbabwe to SADC countries — documentation, duties, transport corridors, and common mistakes.",
     icon: <FileText className="h-6 w-6" />,
     readTime: "20 min read",
+  },
+  {
+    slug: "load-shedding-solutions-smes",
+    title: "Load-Shedding Solutions for SMEs",
+    excerpt: "Practical ways to keep your business running during power outages — from basic inverter setups to solar options without breaking the bank.",
+    icon: <FileText className="h-6 w-6" />,
+    readTime: "12 min read",
   },
   {
     slug: "zim-business-planning",
