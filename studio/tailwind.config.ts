@@ -129,8 +129,8 @@ export default {
           "100%": { transform: "translateX(-8%) translateY(-4%)" },
         },
         'stone-glow': {
-          "0%, 100%": { opacity: "0.035" },
-          "50%": { opacity: "0.08" },
+          "0%, 100%": { opacity: "0.08" },
+          "50%": { opacity: "0.22" },
         },
         'ember-drift': {
           "0%": { transform: "translateY(100vh) translateX(0) scale(1)", opacity: "0" },

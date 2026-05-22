@@ -25,66 +25,101 @@ export function HeroBackground({ className }: HeroBackgroundProps) {
       />
 
       <div className="absolute inset-0 hidden md:block">
+        {/* Connecting wall — runs between tower and enclosure */}
+        <div
+          className="absolute bottom-[18%] left-[16%] w-[60vw] h-[18vh]"
+          style={{
+            background: 'linear-gradient(90deg, hsl(40 50% 45% / 0.03), hsl(40 50% 45% / 0.05) 50%, hsl(40 50% 45% / 0.03))',
+            borderTop: '1px solid hsl(40 95% 65% / 0.12)',
+            borderBottom: '1px solid hsl(40 95% 65% / 0.08)',
+            boxShadow: '0 -4px 12px hsl(40 95% 65% / 0.04)',
+          }}
+        />
+        {/* Wall niche windows */}
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+          <div
+            key={`niche-${i}`}
+            className="absolute"
+            style={{
+              bottom: `${24 + (i % 3) * 4}%`,
+              left: `${22 + i * 9}%`,
+              width: '1.2vw',
+              height: '2.5vh',
+              border: '1px solid hsl(40 95% 65% / 0.08)',
+              borderRadius: '1px',
+              opacity: 0.4 + (i % 2) * 0.3,
+            }}
+          />
+        ))}
+
+        {/* Conical tower — left side */}
         <div
           className="absolute bottom-[15%] left-[12%] w-[12vw] h-[35vh] animate-ruins-float"
           style={{
             clipPath: 'polygon(50% 0%, 72% 100%, 28% 100%)',
-            background: 'linear-gradient(180deg, hsl(40 50% 45% / 0.08), hsl(40 30% 30% / 0.04))',
-            borderLeft: '1px solid hsl(40 50% 45% / 0.08)',
-            borderRight: '1px solid hsl(40 50% 45% / 0.08)',
-            filter: 'blur(0.5px)',
+            background: 'linear-gradient(180deg, hsl(40 50% 45% / 0.02), hsl(40 30% 30% / 0.06))',
+            borderLeft: '1px solid hsl(40 95% 65% / 0.25)',
+            borderRight: '1px solid hsl(40 95% 65% / 0.25)',
+            boxShadow: '0 0 8px hsl(40 95% 65% / 0.06), inset 0 0 20px hsl(40 50% 45% / 0.02)',
           }}
         />
         <div
-          className="absolute bottom-[15%] left-[12%] w-[12vw] h-[35vh] opacity-[0.03]"
+          className="absolute bottom-[15%] left-[12%] w-[12vw] h-[35vh]"
           style={{
             clipPath: 'polygon(50% 0%, 72% 100%, 28% 100%)',
-            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, hsl(40 50% 50% / 0.5) 2px, transparent 3px)',
+            background: 'repeating-linear-gradient(0deg, transparent, transparent 3px, hsl(40 95% 65% / 0.06) 3px, transparent 4px)',
+            opacity: 0.5,
           }}
         />
 
+        {/* Great Enclosure arc — right side */}
         <div
           className="absolute bottom-[10%] right-[8%] w-[18vw] h-[40vh] animate-ruins-float-slow"
           style={{
             borderRadius: '50% / 80%',
-            border: '1px solid hsl(40 50% 45% / 0.07)',
-            background: 'radial-gradient(ellipse 60% 40% at 50% 100%, hsl(40 50% 40% / 0.04), transparent)',
+            border: '1px solid hsl(40 95% 65% / 0.2)',
+            background: 'radial-gradient(ellipse 60% 40% at 50% 100%, hsl(40 95% 65% / 0.04), transparent)',
             transform: 'rotate(5deg)',
+            boxShadow: '0 0 8px hsl(40 95% 65% / 0.04)',
           }}
         />
         <div
           className="absolute bottom-[16%] right-[13%] w-[10vw] h-[24vh] animate-ruins-float-slow"
           style={{
             borderRadius: '50% / 70%',
-            border: '1px solid hsl(40 50% 45% / 0.05)',
+            border: '1px solid hsl(40 95% 65% / 0.15)',
             transform: 'rotate(-2deg)',
+            boxShadow: '0 0 6px hsl(40 95% 65% / 0.03)',
           }}
         />
 
+        {/* Zimbabwe Bird abstraction — center-left */}
         <div
           className="absolute bottom-[28%] left-[38%] w-[8vw] h-[20vh] animate-ruins-float-fast animate-stone-glow"
           style={{
             clipPath: 'polygon(50% 0%, 55% 15%, 70% 10%, 75% 25%, 60% 30%, 65% 50%, 80% 55%, 78% 70%, 55% 65%, 50% 100%, 45% 65%, 22% 70%, 20% 55%, 35% 50%, 40% 30%, 25% 25%, 30% 10%, 45% 15%)',
-            background: 'linear-gradient(180deg, hsl(40 60% 50% / 0.10), hsl(40 40% 40% / 0.04))',
-            border: '1px solid hsl(40 50% 45% / 0.06)',
+            background: 'linear-gradient(180deg, hsl(40 95% 65% / 0.06), transparent)',
+            border: '1px solid hsl(40 95% 65% / 0.18)',
+            boxShadow: '0 0 6px hsl(40 95% 65% / 0.04)',
           }}
         />
 
-        {[0, 1, 2, 3, 4, 5].map((i) => (
+        {/* Stone block cascade — scattered along the wall base */}
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
           <div
             key={`stone-${i}`}
             className="absolute animate-stone-glow-slow"
             style={{
-              bottom: `${8 + i * 5}%`,
-              left: `${20 + i * 10}%`,
-              width: `${2 + (i % 3) * 1.5}vw`,
-              height: `${1.5 + (i % 2) * 1}vh`,
-              background: 'hsl(40 50% 45% / 0.04)',
-              border: '1px solid hsl(40 50% 45% / 0.05)',
+              bottom: `${10 + (i % 4) * 6}%`,
+              left: `${8 + i * 11}%`,
+              width: `${1.5 + (i % 4) * 1.2}vw`,
+              height: `${1 + (i % 3) * 0.8}vh`,
+              background: 'hsl(40 95% 65% / 0.04)',
+              border: '1px solid hsl(40 95% 65% / 0.1)',
               borderRadius: '1px',
-              animationDelay: `${i * 1.5}s`,
-              opacity: 0.04 + i * 0.005,
-              transform: `rotate(${i * 3 - 5}deg)`,
+              animationDelay: `${i * 1.2}s`,
+              opacity: 0.08 + i * 0.015,
+              transform: `rotate(${i * 4 - 8}deg)`,
             }}
           />
         ))}
