@@ -31,6 +31,7 @@ const protectedPaths = [
   '/mentor',
   '/settings',
   '/praz-compliance',
+  '/investor-portal',
 ];
 
 const adminOnlyPaths = [
