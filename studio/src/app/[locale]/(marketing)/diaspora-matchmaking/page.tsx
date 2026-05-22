@@ -1,17 +1,8 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Globe, Shield, Search, Handshake, Sprout, Building2, Cpu, Factory, Stethoscope, Plane } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: "Diaspora Matchmaking — Radbit",
-  description:
-    "Bridge diaspora capital with verified Zimbabwean SMEs. Discover PRAZ-compliant businesses with transparent operational metrics and get matched with investment opportunities.",
-  openGraph: {
-    title: "Diaspora Capital Matchmaking — Radbit",
-    description:
-      "Discover PRAZ-verified Zimbabwean SMEs and invest with confidence. Transparent metrics, sector-aligned matching for diaspora investors.",
-  },
-};
 
 const sectors = [
   { icon: <Sprout className="h-4 w-4" />, label: "Agri" },
@@ -23,6 +14,10 @@ const sectors = [
 ];
 
 export default function DiasporaMatchmakingPage() {
+  useEffect(() => {
+    document.title = "Diaspora Matchmaking — Radbit";
+  }, []);
+
   return (
     <div className="flex flex-col w-full min-h-full bg-background">
       {/* Hero */}

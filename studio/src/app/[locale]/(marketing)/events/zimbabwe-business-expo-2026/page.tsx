@@ -18,11 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-export const metadata = {
-  title: "Zimbabwe Business Expo 2026 — December 18 | Golden Conifer Conference Centre, Harare",
-  description:
-    "Zimbabwe's premier B2B expo. Register for the Zimbabwe Business Expo 2026 — B2B Attendees, Diaspora Investors, and Exhibitors. Partner code EXPO2026 for discounts.",
-};
 
 const EXPO_DATE = new Date("2026-12-18T00:00:00").getTime();
 

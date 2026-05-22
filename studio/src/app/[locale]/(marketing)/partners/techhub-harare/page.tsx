@@ -20,11 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-export const metadata = {
-  title: "Tech Hub Harare × Radbit SME Hub — AI Tools for Zimbabwe's Founders",
-  description:
-    "Exclusive partnership: Startup Cloud Access Program, AI Agent Workforce, and Tender Intelligence for Tech Hub Harare members. Join the AI in Business Workshop.",
-};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },

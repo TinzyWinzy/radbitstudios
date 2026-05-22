@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Truck, Package, AlertTriangle, ClipboardList, Shield,
@@ -11,16 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export const metadata = {
-  title: "Logistics & Pharmacy Automation — AI Agent Workforce | Radbit",
-  description: "Automate logistics and pharmacy operations with AI: EDI exception handling, fleet scheduling, real-time dashboards, and inventory management for Zimbabwean distributors and pharmacies.",
-  alternates: { canonical: "/solutions/logistics-pharmacies" },
-  openGraph: {
-    title: "Banish Spreadsheet Hell — Automate Logistics & Pharmacy Operations | Radbit",
-    description: "AI Agent Workforce that cleans data feeds, live dashboards, automated alerts for logistics and pharmacy operations.",
-    type: "website",
-  },
-};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -109,6 +99,10 @@ const features = [
 ];
 
 export default function LogisticsPharmaciesPage() {
+  useEffect(() => {
+    document.title = "Logistics & Pharmacy Automation — AI Agent Workforce | Radbit";
+  }, []);
+
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,

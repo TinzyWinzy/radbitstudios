@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Hotel, Music, CreditCard, Shield, BarChart,
@@ -11,16 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export const metadata = {
-  title: "Hospitality & Studios — Direct Booking AI Agents | Radbit",
-  description: "Maximize direct bookings and cut OTA commissions with AI-powered reservation agents, automated marketing, and cybersecurity compliance for hotels, lodges, and studios.",
-  alternates: { canonical: "/solutions/hospitality-studios" },
-  openGraph: {
-    title: "Maximize Direct Bookings — Cut OTA Commissions with AI | Radbit",
-    description: "AI agents for direct reservations, automated marketing, and cybersecurity compliance for hospitality and creative studios.",
-    type: "website",
-  },
-};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -109,6 +99,10 @@ const features = [
 ];
 
 export default function HospitalityStudiosPage() {
+  useEffect(() => {
+    document.title = "Hospitality & Studios — Direct Booking AI Agents | Radbit";
+  }, []);
+
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,

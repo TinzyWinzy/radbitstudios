@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { classifyPrazTier, getPrazFee, formatPrazSavings, PRAZ_FEES, CONSULTANT_COST_USD } from '@/lib/praz-constants';
+import { classifyPrazTier, getPrazFee, formatPrazSavings, PRAZ_FEES } from '@/lib/praz-constants';
 import { REQUIRED_DOCUMENTS } from '@/services/praz-compliance';
 import { PROCURING_ENTITIES, getEntitiesByType, getEntityById } from '@/data/procuring-entities';
 import { checkUpstashRateLimit } from '@/lib/upstash-ratelimit';

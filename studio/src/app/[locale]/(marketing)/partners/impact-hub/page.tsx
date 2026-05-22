@@ -16,11 +16,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata = {
-  title: "Impact Hub Harare × Radbit SME Hub — Sustainable Innovation Powered by AI",
-  description:
-    "Green energy, sustainability grants, and climate action tender tracking for Impact Hub Harare members. AI-powered tools for Zimbabwe's changemakers.",
-};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },

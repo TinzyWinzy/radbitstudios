@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Sprout, Factory, FileSearch, Shield, BarChart,
@@ -11,16 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export const metadata = {
-  title: "Agri-Tech & Manufacturing — Tender Intelligence | Radbit",
-  description: "Win national contracts with AI-powered tender intelligence for agriculture and manufacturing. Track Ministry of Agriculture procurement, PRAZ compliance, and NGO grant opportunities.",
-  alternates: { canonical: "/solutions/agri-tech-manufacturing" },
-  openGraph: {
-    title: "Win National Contracts — Supply Chain Intelligence for Agriculture & Manufacturing | Radbit",
-    description: "Daily personalized briefs tracking government procurement, automated tender matching, and PRAZ compliance for agri-tech and manufacturing.",
-    type: "website",
-  },
-};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -109,6 +99,10 @@ const features = [
 ];
 
 export default function AgriTechManufacturingPage() {
+  useEffect(() => {
+    document.title = "Agri-Tech & Manufacturing — Tender Intelligence | Radbit";
+  }, []);
+
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,

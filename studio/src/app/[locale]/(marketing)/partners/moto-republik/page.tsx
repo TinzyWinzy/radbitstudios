@@ -17,11 +17,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata = {
-  title: "Moto Republik × Radbit SME Hub — Creative Entrepreneurship Meets AI",
-  description:
-    "AI agents for graphic design, content creation, and automated marketing — built for Moto Republik's creative community in Zimbabwe.",
-};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
