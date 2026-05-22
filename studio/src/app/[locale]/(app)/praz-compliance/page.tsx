@@ -16,8 +16,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { format, addYears } from 'date-fns';
 import { Upload, CheckCircle2, AlertTriangle, XCircle, FileText, Shield, Clock, ArrowRight, CalendarIcon } from 'lucide-react';
 import type { AppUser } from '@/types/user';
-import { REQUIRED_DOCUMENTS, getPrazProfile, savePrazDocument, deletePrazDocument } from '@/services/praz-compliance';
-import type { DocumentId } from '@/services/praz-compliance';
+import { REQUIRED_DOCUMENTS } from '@/services/praz-types';
+import type { DocumentId } from '@/services/praz-types';
 import { PRAZ_FEES, CONSULTANT_COST_RANGE, CONSULTANT_COST_USD, classifyPrazTier, formatPrazSavings } from '@/lib/praz-constants';
 import { cn } from '@/lib/utils';
 
@@ -61,9 +61,12 @@ export default function PrazCompliancePage() {
   async function loadProfile() {
     if (!user) return;
     try {
-      const profile = await getPrazProfile(user.uid);
-      setDocuments(profile.documents);
-      setReadinessScore(profile.readinessScore);
+      const res = await fetch(`/api/praz/profile?userId=${user.uid}`);
+      if (res.ok) {
+        const profile = await res.json();
+        setDocuments(profile.documents);
+        setReadinessScore(profile.readinessScore);
+      }
     } catch { /* no profile yet */ }
     setLoading(false);
   }
@@ -91,7 +94,11 @@ export default function PrazCompliancePage() {
 
       const expiresAtStr = noExpiry || !selectedDate ? null : selectedDate.toISOString();
 
-      await savePrazDocument(user.uid, docType, file.name, downloadUrl, expiresAtStr);
+      await fetch('/api/praz/document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.uid, docType, fileName: file.name, fileUrl: downloadUrl, expiresAt: expiresAtStr }),
+      });
 
       setDocuments(prev => ({
         ...prev,
@@ -111,7 +118,7 @@ export default function PrazCompliancePage() {
   async function handleDelete(docType: DocumentId) {
     if (!user) return;
     try {
-      await deletePrazDocument(user.uid, docType);
+      await fetch(`/api/praz/document?userId=${user.uid}&docType=${docType}`, { method: 'DELETE' });
       setDocuments(prev => ({ ...prev, [docType]: null }));
       loadProfile();
       toast({ title: 'Document removed', description: 'File has been deleted.' });

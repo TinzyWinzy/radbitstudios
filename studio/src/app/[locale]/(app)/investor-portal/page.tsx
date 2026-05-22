@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Globe, DollarSign, Sprout, Building2, Cpu, Factory, Stethoscope, Plane,
+  Globe, Sprout, Building2, Cpu, Factory, Stethoscope, Plane,
   Search, Handshake, Loader2, Check, ShieldCheck,
 } from "lucide-react";
 import { AuthContext } from "@/contexts/auth-context";
