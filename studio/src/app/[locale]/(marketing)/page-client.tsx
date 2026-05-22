@@ -9,6 +9,7 @@ import { TiltCard } from "@/components/tilt-card";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
+import { HeroBackground } from "@/components/hero-background";
 
 const WaveField = lazy(() => import("@/components/wave-field").then(m => ({ default: m.WaveField })));
 
@@ -655,10 +656,9 @@ function FooterSection() {
 }
 
 export default function LandingPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
   return (
-    <div ref={containerRef} className="flex flex-col w-full min-h-full bg-background overflow-x-hidden">
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-primary/5 via-background to-background" />
+    <div className="flex flex-col w-full min-h-full bg-background overflow-x-hidden">
+      <HeroBackground />
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/30 via-background/60 to-background pointer-events-none" />
 
       <div className="relative z-10">
