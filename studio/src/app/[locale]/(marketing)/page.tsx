@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 
 const baseUrl = process.env.FRONTEND_URL || "https://radbitstudios.co.zw";
 
-const PageClient = dynamic(() => import("./page-client"), { ssr: true });
+import PageClient from "./page-client";
 
 export const metadata: Metadata = {
   title: "Radbit — Digital Sovereignty for Zimbabwean Enterprises",
