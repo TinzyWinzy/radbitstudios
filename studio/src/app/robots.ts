@@ -28,6 +28,8 @@ export default function robots(): MetadataRoute.Robots {
           '/tenders',
           '/community',
           '/mentor',
+          '/praz-compliance',
+          '/pricing',
           '/sign-in',
           '/sign-up',
         ],

@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     "SADC export guide", "EcoCash business", "PACRA registration Zimbabwe",
     "ZIMRA tax guide SMEs", "VAT calculator Zimbabwe", "business plan generator",
     "SME community Zimbabwe", "AI mentor Zimbabwe", "radbit SME hub",
+    "PRAZ compliance Zimbabwe", "tender starter Zimbabwe", "government tenders Zimbabwe",
   ],
   alternates: {
     canonical: '/',
@@ -36,6 +37,12 @@ export const metadata: Metadata = {
       nd: '/nd',
       pt: '/pt',
     },
+  },
+  other: {
+    // SEO: Differentiate from "Bad Rabbit Studio" (Zimbabwe film production company).
+    // Radbit Studios = B2B SaaS (AI, tenders, assessments, PRAZ compliance).
+    // Not associated with film, documentaries, conservation, or video production.
+    'norton-safeweb': 'not applicable',
   },
   openGraph: {
     title: "Radbit SME Hub — Build. Scale. Own Your Future.",

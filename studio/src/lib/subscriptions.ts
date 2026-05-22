@@ -1,5 +1,5 @@
 
-export const PLAN_ORDER = ['Free', 'Growth', 'Pro', 'Enterprise'] as const;
+export const PLAN_ORDER = ['Free', 'Growth', 'Tender Starter', 'Pro', 'Enterprise'] as const;
 export type PlanTier = typeof PLAN_ORDER[number];
 
 export interface SubscriptionPlan {
@@ -64,6 +64,31 @@ export interface SubscriptionPlan {
         dashboardInsights: { remaining: 999, total: 999 },
         tendersCuration: { remaining: 999, total: 999 },
         tenderProposal: { remaining: 20, total: 20 },
+        taxCopilot: { remaining: 50, total: 50 },
+      },
+    },
+    {
+      name: 'Tender Starter',
+      price: 10,
+      description: 'Win more government contracts with premium tender intelligence.',
+      features: [
+        'Unlimited Tenders Curation',
+        '25 Assessment Summaries',
+        '100 AI Mentor Messages',
+        '50 Template Generations',
+        '10 Tender Proposals (Bid Writer)',
+        'PRAZ Compliance Tools',
+        'Daily Personalized Briefs',
+      ],
+      credits: {
+        assessmentSummary: { remaining: 25, total: 25 },
+        exportAssessment: { remaining: 5, total: 5 },
+        templateGeneration: { remaining: 50, total: 50 },
+        mentorChat: { remaining: 100, total: 100 },
+        logoGeneration: { remaining: 10, total: 10 },
+        dashboardInsights: { remaining: 999, total: 999 },
+        tendersCuration: { remaining: 9999, total: 9999 },
+        tenderProposal: { remaining: 10, total: 10 },
         taxCopilot: { remaining: 50, total: 50 },
       },
     },

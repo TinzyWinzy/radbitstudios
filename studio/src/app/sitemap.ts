@@ -45,5 +45,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // ── Free tools ───────────────────────────────────────────────────────
     { url: `${F}/resources/tools/vat-calculator`,                 lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${F}/resources/tools/business-name-generator`,        lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
+
+    // ── Pricing & Compliance ───────────────────────────────────────────────
+    { url: `${F}/pricing`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.6  },
+    { url: `${F}/praz-compliance`,           lastModified: new Date(), changeFrequency: "weekly",  priority: 0.5  },
   ];
 }

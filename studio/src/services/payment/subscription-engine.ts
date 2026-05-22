@@ -3,7 +3,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { PaymentOrchestrator } from './payment-orchestrator';
 import { InvoiceService } from './invoice.service';
 
-export type SubscriptionPlanId = 'free' | 'growth' | 'pro' | 'enterprise';
+export type SubscriptionPlanId = 'free' | 'growth' | 'tender_starter' | 'pro' | 'enterprise';
 export type BillingPeriod = 'monthly' | 'quarterly' | 'annual';
 export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled' | 'expired';
 
@@ -23,10 +23,11 @@ export interface ActiveSubscription {
 }
 
 export const SUBSCRIPTION_PRICES: Record<SubscriptionPlanId, Record<BillingPeriod, number>> = {
-  free:       { monthly: 0, quarterly: 0, annual: 0 },
-  growth:    { monthly: 5, quarterly: 13.50, annual: 45 },
-  pro:       { monthly: 15, quarterly: 40.50, annual: 135 },
-  enterprise: { monthly: 0, quarterly: 0, annual: 0 },
+  free:           { monthly: 0, quarterly: 0, annual: 0 },
+  growth:        { monthly: 5, quarterly: 13.50, annual: 45 },
+  tender_starter: { monthly: 10, quarterly: 27, annual: 90 },
+  pro:           { monthly: 15, quarterly: 40.50, annual: 135 },
+  enterprise:    { monthly: 0, quarterly: 0, annual: 0 },
 };
 
 const SUBSCRIPTION_DISCOUNTS: Partial<Record<BillingPeriod, number>> = { quarterly: 0.10, annual: 0.25 };

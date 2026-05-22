@@ -6,18 +6,18 @@ import { AdBanner } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
   title: "Pricing — Radbit SME Hub",
-  description: "Free, Growth ($5/mo), and Pro ($15/mo) plans for Zimbabwean SMEs. AI tools, assessments, tender matching, and community. No credit card required.",
+  description: "Free, Growth ($5/mo), Tender Starter ($10/mo), and Pro ($15/mo) plans for Zimbabwean SMEs. AI tools, assessments, tender matching, and PRAZ compliance. No credit card required.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "Pricing — Radbit SME Hub",
-    description: "Start free. Grow with $5/mo. Go Pro at $15/mo. AI tools designed for Zimbabwean SMEs.",
+    description: "Start free. Grow with $5/mo. Get unlimited tenders at $10/mo. AI tools built for Zimbabwean SMEs.",
     type: "website",
   },
 };
 
 export const revalidate = 3600;
 
-const PLAN_ICONS = [null, <Zap key="growth" className="h-5 w-5" />, <Sparkles key="pro" className="h-5 w-5" />, <Building2 key="enterprise" className="h-5 w-5" />] as const;
+const PLAN_ICONS = [null, <Zap key="growth" className="h-5 w-5" />, <Building2 key="tender-starter" className="h-5 w-5" />, <Sparkles key="pro" className="h-5 w-5" />, <Building2 key="enterprise" className="h-5 w-5" />] as const;
 
 const highlightFeatures = [
   "Assessment Summaries",
@@ -30,6 +30,7 @@ const highlightFeatures = [
   "Tender Proposals (Bid Writer)",
   "Tax Co-Pilot",
   "Direct Messaging",
+  "PRAZ Compliance Tools",
   "Community Post Analytics",
 ];
 
@@ -51,6 +52,7 @@ function getFeatureAvailability(planIndex: number, feature: string): string {
   if (!credit) {
     if (feature === 'Direct Messaging') return planIndex >= 1 ? '✓' : '—';
     if (feature === 'Community Post Analytics') return planIndex >= 2 ? '✓' : '—';
+    if (feature === 'PRAZ Compliance Tools') return planIndex >= 2 ? '✓' : '—';
     return '—';
   }
   if (credit.remaining >= 999) return 'Unlimited';
@@ -84,9 +86,9 @@ export default function PricingPage() {
                 : 'border-border/50 bg-card/30'
             }`}
           >
-            {plan.name === 'Growth' && (
+            {(plan.name === 'Tender Starter') && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
-                Most Popular
+                Best for Tenders
               </span>
             )}
             <div className="flex items-center gap-2 mb-4">
@@ -113,7 +115,7 @@ export default function PricingPage() {
               ))}
             </ul>
             <Link
-              href={plan.price === 0 ? '/sign-up' : '/sign-up?plan=' + plan.name.toLowerCase()}
+              href={plan.price === 0 ? '/sign-up' : '/sign-up?plan=' + plan.name.toLowerCase().replace(/\s+/g, '_')}
               className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 plan.price === 0
                   ? 'border border-border/50 hover:bg-muted/50'

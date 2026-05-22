@@ -1,7 +1,14 @@
 /* ── SEO structured data generators ──────────────────────────────────
    All schemas use process.env.FRONTEND_URL so they stay correct
    across staging / production without hard-coded domains.
-   ─────────────────────────────────────────────────────────────────── */
+   ───────────────────────────────────────────────────────────────────
+
+   BRAND NOTE: Radbit Studios is a B2B SaaS platform for Zimbabwean SMEs
+   (AI tools, tender intelligence, assessments, PRAZ compliance).
+   This is NOT related to "Bad Rabbit Studio" — an award-winning Zimbabwean
+   film production company (documentaries, conservation storytelling, video).
+   For AdWords / SEM: add negative keywords → documentary, film, video
+   production, conservation, storytelling, wildlife, YouTube series. */
 
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 

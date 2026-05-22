@@ -6,7 +6,7 @@ import type { PlanName } from '@/types/user';
 import type { UserRole } from '@/services/permissions';
 
 export type { PlanName };
-export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot';
+export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot' | 'prazCompliance';
 
 export function getTierLevel(plan: PlanName): number {
   return PLAN_ORDER.indexOf(plan);
@@ -40,6 +40,7 @@ const FEATURE_GATES: Record<string, FeatureGate> = {
   tenderProposal:        { type: 'credit', creditKey: 'tenderProposal' },
   tendersRegional:       { type: 'tier', minTier: 'Growth' },
   directMessages:        { type: 'tier', minTier: 'Growth' },
+  prazCompliance:        { type: 'tier', minTier: 'Tender Starter' },
   communityPostAnalytics: { type: 'tier', minTier: 'Pro' },
   prioritySupport:       { type: 'tier', minTier: 'Pro' },
   whiteLabelAppearance:  { type: 'tier', minTier: 'Enterprise' },
@@ -53,10 +54,11 @@ export interface UpgradeInfo {
 }
 
 const UPGRADE_PATHS: Record<PlanName, Omit<UpgradeInfo, 'feature'>> = {
-  Free:      { upgradeTo: 'Growth', price: 5, message: 'Unlock 10x more credits for $5/mo.' },
-  Growth:    { upgradeTo: 'Pro', price: 15, message: 'Go unlimited with priority support for $15/mo.' },
-  Pro:       { upgradeTo: 'Enterprise', price: 0, message: 'Contact us for custom enterprise pricing.' },
-  Enterprise: { upgradeTo: null, price: 0, message: '' },
+  Free:           { upgradeTo: 'Growth', price: 5, message: 'Unlock more tools for $5/mo.' },
+  Growth:         { upgradeTo: 'Tender Starter', price: 10, message: 'Get unlimited tenders + PRAZ tools for $10/mo.' },
+  'Tender Starter': { upgradeTo: 'Pro', price: 15, message: 'Go unlimited on everything for $15/mo.' },
+  Pro:            { upgradeTo: 'Enterprise', price: 0, message: 'Contact us for custom enterprise pricing.' },
+  Enterprise:     { upgradeTo: null, price: 0, message: '' },
 };
 
 export interface AccessResult {

@@ -30,6 +30,7 @@ const protectedPaths = [
   '/messages',
   '/mentor',
   '/settings',
+  '/praz-compliance',
 ];
 
 const adminOnlyPaths = [

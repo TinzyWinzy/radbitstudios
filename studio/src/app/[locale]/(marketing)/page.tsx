@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, lazy, Suspense, useState } from "react";
-import { ChevronRight, BarChart, Lightbulb, TrendingUp, Users, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
+import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -51,7 +51,7 @@ function HeroSection() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/[0.07] text-sm font-medium text-white/80 mb-8"
         >
           <Sparkles className="h-3.5 w-3.5 text-primary" />
-          Digital sovereignty for Zimbabwean enterprises
+          Digital sovereignty. Built for resilience in Zimbabwe.
         </motion.div>
 
         <motion.h1
@@ -71,7 +71,7 @@ function HeroSection() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
         >
-          Beat forex volatility, navigate load-shedding, and win tenders — AI-driven tools built for Zimbabwean entrepreneurs who refuse to wait.
+          Beat forex volatility, navigate load-shedding, and win government contracts — AI-driven tools built for Zimbabwean entrepreneurs who refuse to wait. Own your data, own your growth, own your future.
         </motion.p>
 
         <motion.div
@@ -231,31 +231,31 @@ function FeaturesSection() {
   const features = [
     {
       icon: <BarChart className="h-4 w-4" />,
-      title: "Readiness Assessment",
-      body: "Radar-chart analysis of your digital maturity. Know exactly where to focus.",
-      tags: ["Strengths", "Gaps", "Score"],
+      title: "Digital Readiness Assessment",
+      body: "5-minute radar-chart analysis of your digital maturity. Know your baseline, find your gaps, get a personalized roadmap.",
+      tags: ["Baseline", "Gaps", "Roadmap"],
       href: "/assessment",
+    },
+    {
+      icon: <Briefcase className="h-4 w-4" />,
+      title: "Tender Intelligence & PRAZ Compliance",
+      body: "AI-curated opportunities from 12+ government departments. Track deadlines, manage PRAZ documents, and submit with confidence.",
+      tags: ["Tenders", "PRAZ", "Alerts"],
+      href: "/tenders",
     },
     {
       icon: <Sparkles className="h-4 w-4" />,
       title: "AI Agent Workforce",
-      body: "Deploy agents for logo design, content, projections — from your dashboard.",
-      tags: ["Design", "Content", "Automation"],
+      body: "Deploy autonomous agents for logo design, content creation, financial projections, and customer comms — even during load-shedding.",
+      tags: ["Automation", "AI", "24/7"],
       href: "/toolkit",
     },
     {
-      icon: <Briefcase className="h-4 w-4" />,
-      title: "Tender Intelligence",
-      body: "AI-curated opportunities relevant to your industry. Never miss a bid.",
-      tags: ["Opportunities", "Alerts", "Bids"],
-      href: "/tenders",
-    },
-    {
-      icon: <Users className="h-4 w-4" />,
-      title: "SME Network",
-      body: "Connect, share, collaborate. Your next partner is one post away.",
-      tags: ["Network", "Collaborate", "Support"],
-      href: "/community",
+      icon: <Shield className="h-4 w-4" />,
+      title: "Compliance & Regulatory Tools",
+      body: "ZIMRA tax copilot, PRAZ document manager, HR policy generator, and export coach — all Zimbabwe-specific.",
+      tags: ["ZIMRA", "PRAZ", "Labour Act"],
+      href: "/toolkit",
     },
   ];
 

@@ -1,4 +1,3 @@
-// Referral program
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
@@ -6,6 +5,16 @@ export interface ReferralCode {
   code: string;
   userId: string;
   usageCount: number;
+  createdAt: Date;
+}
+
+export interface PartnerCode {
+  code: string;
+  partnerName: string;
+  partnerType: 'smeaz' | 'zncc' | 'czi' | 'tech_hub' | 'other';
+  discountPercent: number;
+  usageCount: number;
+  maxUses: number;
   createdAt: Date;
 }
 
@@ -39,7 +48,36 @@ export class ReferralService {
     return code;
   }
 
-  async applyReferral(referralCode: string, newUserId: string): Promise<{ success: boolean; message: string }> {
+  async applyReferral(referralCode: string, newUserId: string): Promise<{ success: boolean; message: string; discountPercent?: number }> {
+    // Check partner codes first
+    const partnerDoc = await adminDb.doc(`partner_codes/${referralCode}`).get();
+    if (partnerDoc.exists) {
+      const partner = partnerDoc.data() as PartnerCode;
+      if (partner.usageCount >= partner.maxUses) {
+        return { success: false, message: 'This partner code has reached its usage limit.' };
+      }
+
+      await adminDb.runTransaction(async (transaction) => {
+        transaction.update(adminDb.doc(`partner_codes/${referralCode}`), {
+          usageCount: FieldValue.increment(1),
+        });
+
+        // Mark user as referred by partner (discount applied at checkout)
+        transaction.set(adminDb.doc(`users/${newUserId}`), {
+          partnerCode: referralCode,
+          partnerName: partner.partnerName,
+          partnerDiscount: partner.discountPercent,
+        }, { merge: true });
+      });
+
+      return {
+        success: true,
+        message: `Welcome! You're part of the ${partner.partnerName} community. You get ${partner.discountPercent}% off any plan.`,
+        discountPercent: partner.discountPercent,
+      };
+    }
+
+    // Fall back to regular referral code
     const codeRef = adminDb.doc(`referral_codes/${referralCode}`);
     const codeDoc = await codeRef.get();
     if (!codeDoc.exists) return { success: false, message: 'Invalid referral code' };
@@ -54,14 +92,12 @@ export class ReferralService {
 
         transaction.update(codeRef, { usageCount: FieldValue.increment(1) });
 
-        // Award 100 AI credits to referrer
         const referrerRef = adminDb.doc(`users/${data.userId}`);
         transaction.update(referrerRef, {
           [`usage.templateGeneration.remaining`]: FieldValue.increment(100),
           [`usage.templateGeneration.total`]: FieldValue.increment(100),
         });
 
-        // Award 50 AI credits to new user
         const newUserRef = adminDb.doc(`users/${newUserId}`);
         transaction.set(newUserRef, {
           [`usage.templateGeneration.remaining`]: FieldValue.increment(50),
@@ -73,5 +109,24 @@ export class ReferralService {
     } catch (error: any) {
       return { success: false, message: error.message || 'Failed to apply referral' };
     }
+  }
+
+  async getPartnerCode(partnerName: string): Promise<PartnerCode | null> {
+    const snap = await adminDb
+      .collection('partner_codes')
+      .where('partnerName', '==', partnerName)
+      .where('partnerType', 'in', ['smeaz', 'zncc', 'czi'])
+      .limit(1)
+      .get();
+    if (snap.empty) return null;
+    return { id: snap.docs[0].id, ...snap.docs[0].data() } as any;
+  }
+
+  async validatePartnerCode(code: string): Promise<{ valid: boolean; partner?: PartnerCode }> {
+    const doc = await adminDb.doc(`partner_codes/${code}`).get();
+    if (!doc.exists) return { valid: false };
+    const partner = doc.data() as PartnerCode;
+    if (partner.usageCount >= partner.maxUses) return { valid: false, partner };
+    return { valid: true, partner };
   }
 }

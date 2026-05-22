@@ -1,7 +1,7 @@
 import type { User } from "firebase/auth";
 import type { UserRole } from "@/services/permissions";
 
-export type PlanName = "Free" | "Growth" | "Pro" | "Enterprise";
+export type PlanName = "Free" | "Growth" | "Tender Starter" | "Pro" | "Enterprise";
 
 export interface AppUser extends User {
   businessName: string;
