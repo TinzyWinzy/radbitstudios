@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, lazy, Suspense } from "react";
+import { useRef } from "react";
 import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
 import { TiltCard } from "@/components/tilt-card";
@@ -11,7 +12,7 @@ import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
 import { HeroBackground } from "@/components/hero-background";
 
-const WaveField = lazy(() => import("@/components/wave-field").then(m => ({ default: m.WaveField })));
+const WaveField = dynamic(() => import("@/components/wave-field").then(m => ({ default: m.WaveField })), { ssr: false });
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -544,15 +545,13 @@ function CuratedBriefsSection() {
 function CTASection() {
   return (
     <section className="relative py-20 md:py-28 overflow-hidden border-t border-white/10">
-      <Suspense fallback={null}>
-        <WaveField
-          className="absolute inset-0 z-0 opacity-10"
-          waveCount={1}
-          speed={0.1}
-          amplitude={15}
-          mouseReactivity={0.1}
-        />
-      </Suspense>
+      <WaveField
+        className="absolute inset-0 z-0 opacity-10"
+        waveCount={1}
+        speed={0.1}
+        amplitude={15}
+        mouseReactivity={0.1}
+      />
       <div className="container relative z-10 text-center space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
