@@ -54,6 +54,18 @@ export function WaveField({
       yOffset: (i / waveCount) * canvas.height + canvas.height * 0.15,
     }));
 
+    const particleCount = 60;
+    const particles = Array.from({ length: particleCount }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: 1 + Math.random() * 2,
+      speedX: -0.15 + Math.random() * 0.3,
+      speedY: -0.2 - Math.random() * 0.3,
+      opacity: 0.15 + Math.random() * 0.4,
+      hue: 35 + Math.random() * 20,
+      saturation: 70 + Math.random() * 25,
+    }));
+
     const animate = () => {
       timeRef.current += 1;
       const t = timeRef.current;
@@ -87,6 +99,22 @@ export function WaveField({
         gradient.addColorStop(midStop, `hsla(${wave.hue}, ${wave.alpha})`);
         gradient.addColorStop(1, `hsla(${wave.hue}, 0)`);
         ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+
+      for (const p of particles) {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.y < -5) {
+          p.y = canvas.height + 5;
+          p.x = Math.random() * canvas.width;
+        }
+        if (p.x < -5) p.x = canvas.width + 5;
+        if (p.x > canvas.width + 5) p.x = -5;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, ${p.saturation}%, 60%, ${p.opacity})`;
         ctx.fill();
       }
 

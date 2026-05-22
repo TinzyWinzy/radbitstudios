@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
 import { TiltCard } from "@/components/tilt-card";
@@ -11,8 +10,7 @@ import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
 import { HeroBackground } from "@/components/hero-background";
-
-const WaveField = dynamic(() => import("@/components/wave-field").then(m => ({ default: m.WaveField })), { ssr: false });
+import { WaveField } from "@/components/wave-field";
 
 const containerVariants = {
   hidden: { opacity: 0 },
