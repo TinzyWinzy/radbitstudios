@@ -214,7 +214,7 @@ function enrichTender(raw: Omit<Tender, 'id' | 'sourceName' | 'publishedAt' | 's
 }
 
 async function tryLiveTenders(): Promise<Tender[]> {
-  const { allowed } = checkRateLimit('tender:live', 'tender');
+  const { allowed } = await checkRateLimit('tender:live', 'tender');
   if (!allowed) return [];
 
   try {

@@ -15,12 +15,16 @@ describe("getTierLevel", () => {
     expect(getTierLevel("Growth")).toBe(1);
   });
 
-  it("returns 2 for Pro", () => {
-    expect(getTierLevel("Pro")).toBe(2);
+  it("returns 2 for Tender Starter", () => {
+    expect(getTierLevel("Tender Starter")).toBe(2);
   });
 
-  it("returns 3 for Enterprise", () => {
-    expect(getTierLevel("Enterprise")).toBe(3);
+  it("returns 3 for Pro", () => {
+    expect(getTierLevel("Pro")).toBe(3);
+  });
+
+  it("returns 4 for Enterprise", () => {
+    expect(getTierLevel("Enterprise")).toBe(4);
   });
 });
 
@@ -62,10 +66,10 @@ describe("getUpgradePath", () => {
     expect(path.feature).toContain("Dashboard");
   });
 
-  it("Growth upgrades to Pro for $15/mo", () => {
+  it("Growth upgrades to Tender Starter for $10/mo", () => {
     const path = getUpgradePath("Growth", "taxCopilot");
-    expect(path.upgradeTo).toBe("Pro");
-    expect(path.price).toBe(15);
+    expect(path.upgradeTo).toBe("Tender Starter");
+    expect(path.price).toBe(10);
     expect(path.feature).toContain("Tax");
   });
 
@@ -125,7 +129,7 @@ describe("upgrade path pricing", () => {
     }
   });
 
-  it("Growth user gets Pro upgrade path for all features", () => {
+  it("Growth user gets Tender Starter upgrade path for all features", () => {
     const allFeatures: FeatureName[] = [
       "dashboardInsights",
       "taxCopilot",
@@ -136,8 +140,8 @@ describe("upgrade path pricing", () => {
     ];
     for (const feature of allFeatures) {
       const path = getUpgradePath("Growth", feature);
-      expect(path.upgradeTo).toBe("Pro");
-      expect(path.price).toBe(15);
+      expect(path.upgradeTo).toBe("Tender Starter");
+      expect(path.price).toBe(10);
     }
   });
 });

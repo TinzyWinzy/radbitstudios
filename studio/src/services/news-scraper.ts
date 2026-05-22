@@ -119,7 +119,7 @@ function generateId(url: string): string {
 
 async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   const rateKey = `rss:${feed.sourceName}`;
-  const { allowed } = checkRateLimit(rateKey, 'rss');
+  const { allowed } = await checkRateLimit(rateKey, 'rss');
   if (!allowed) {
     console.warn(`[NewsScraper] Rate limited for ${feed.sourceName}, skipping.`);
     return [];
@@ -165,7 +165,8 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
 }
 
 export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: number }> {
-  if (!checkRateLimit('newsScrape', 'newsScrape').allowed) {
+  const rl = await checkRateLimit('newsScrape', 'newsScrape');
+  if (!rl.allowed) {
     console.log('[NewsScraper] Rate limited — skipping scrape (4h window)');
     return { scraped: 0, errors: 0 };
   }

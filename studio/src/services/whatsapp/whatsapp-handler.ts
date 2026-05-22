@@ -35,6 +35,49 @@ async function sendWhatsAppMessage(to: string, text: string): Promise<boolean> {
   }
 }
 
+export async function sendWhatsAppTemplate(
+  to: string,
+  templateName: string,
+  params: Record<string, string>,
+): Promise<boolean> {
+  const token = process.env.WHATSAPP_ACCESS_TOKEN;
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  if (!token || !phoneNumberId) return false;
+
+  const bodyParams = Object.entries(params).map(([_, value]) => ({
+    type: 'text',
+    text: value,
+  }));
+
+  try {
+    const res = await fetch(`${BASE_URL}/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to,
+        type: 'template',
+        template: {
+          name: templateName,
+          language: { code: 'en' },
+          components: bodyParams.length > 0 ? [{ type: 'body', parameters: bodyParams }] : undefined,
+        },
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('[WhatsApp] Template send failed:', errText);
+    }
+    return res.ok;
+  } catch (error) {
+    console.error('[WhatsApp] Template send error:', error);
+    return false;
+  }
+}
+
 function extractEmail(text: string): string | null {
   const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
   return match ? match[0] : null;

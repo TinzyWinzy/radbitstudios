@@ -49,5 +49,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // ── Pricing & Compliance ───────────────────────────────────────────────
     { url: `${F}/pricing`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.6  },
     { url: `${F}/praz-compliance`,           lastModified: new Date(), changeFrequency: "weekly",  priority: 0.5  },
+
+    // ── Vertical solution pages ──────────────────────────────────────────
+    { url: `${F}/solutions/logistics-pharmacies`,     lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${F}/solutions/agri-tech-manufacturing`,  lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${F}/solutions/hospitality-studios`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+
+    // ── Partner pages ────────────────────────────────────────────────────
+    { url: `${F}/partners/techhub-harare`,            lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${F}/partners/impact-hub`,                lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${F}/partners/moto-republik`,             lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+
+    // ── Events ───────────────────────────────────────────────────────────
+    { url: `${F}/events/zimbabwe-business-expo-2026`, lastModified: new Date(), changeFrequency: "weekly",  priority: 0.8 },
+
+    // ── Diaspora matchmaking ─────────────────────────────────────────────
+    { url: `${F}/diaspora-matchmaking`,               lastModified: new Date(), changeFrequency: "weekly",  priority: 0.6 },
   ];
 }

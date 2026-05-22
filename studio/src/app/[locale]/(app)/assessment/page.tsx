@@ -263,6 +263,16 @@ export default function AssessmentPage() {
         await refreshUserData();
         if (user) await deleteAssessmentDraft(user.uid);
 
+        // Fire-and-forget: schedule WhatsApp digest if user has phone linked
+        try {
+          const idToken = await user.getIdToken();
+          fetch('/api/whatsapp/schedule-assessment-digest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.uid, idToken }),
+          }).catch(() => {});
+        } catch {} // non-blocking
+
     } catch (error) {
       console.error("Error generating or saving assessment:", error);
       setAiSummary("We couldn't generate your AI summary at the moment. Please try again later.");

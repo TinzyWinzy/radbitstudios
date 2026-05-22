@@ -1,10 +1,9 @@
 /**
- * Rate Limiter — Tiered strategy with Redis-primary / Firestore-fallback
+ * Rate Limiter — Tiered strategy with Upstash Redis primary / Firestore fallback
  *
  * Architecture:
- *   Tier 1 (fast path):   In-memory sliding window — hits same instance
- *   Tier 2 (persistent):  Firestore counter doc — survives cold starts
- *   Future (Redis):       Swap via constructor injection when Redis is available
+ *   Tier 1 (fast path):   Upstash Redis (HTTP-based, serverless-safe)
+ *   Tier 2 (fallback):    Firestore counter doc — survives cold starts
  *
  * Limits are per-IP, per-user, or per-key depending on context.
  * All counters are scoped to a configurable time window.
@@ -15,7 +14,7 @@
 export interface RateLimitConfig {
   maxRequests: number;      // max allowed in window
   windowMs: number;          // time window in ms
-  keyPrefix?: string;        // e.g. 'ratelimit:otp' — helps Firestore namespace
+  keyPrefix?: string;        // e.g. 'ratelimit:otp' — helps namespace
 }
 
 export interface RateLimitResult {
@@ -25,32 +24,31 @@ export interface RateLimitResult {
   limit: number;
 }
 
-// ─── In-Memory Tier (fast path) ─────────────────────────────────────────────
+// ─── Upstash Redis Tier (primary) ────────────────────────────────────────────
 
-const memoryWindows = new Map<string, number[]>();
+import { checkUpstashRateLimit } from '@/lib/upstash-ratelimit';
 
-function memoryCheck(key: string, config: RateLimitConfig): RateLimitResult {
-  const now = Date.now();
-  const timestamps: number[] = memoryWindows.get(key) ?? [];
-  const valid = timestamps.filter(t => now - t < config.windowMs);
+function windowToUpstash(windowMs: number): string {
+  if (windowMs >= 3600000) return `${Math.floor(windowMs / 3600000)} h`;
+  if (windowMs >= 60000) return `${Math.floor(windowMs / 60000)} m`;
+  return `${Math.floor(windowMs / 1000)} s`;
+}
 
-  if (valid.length >= config.maxRequests) {
-    const oldest = valid[0];
+async function upstashCheck(key: string, config: RateLimitConfig): Promise<RateLimitResult | null> {
+  try {
+    const result = await checkUpstashRateLimit(
+      `${config.keyPrefix || 'ratelimit'}:${key}`,
+      config.maxRequests,
+      windowToUpstash(config.windowMs),
+    );
     return {
-      allowed: false,
-      remaining: 0,
-      retryAfterSeconds: Math.ceil((oldest + config.windowMs - now) / 1000),
+      allowed: result.allowed,
+      remaining: result.remaining,
       limit: config.maxRequests,
     };
+  } catch {
+    return null; // fall through to Firestore
   }
-
-  valid.push(now);
-  memoryWindows.set(key, valid);
-  return {
-    allowed: true,
-    remaining: config.maxRequests - valid.length,
-    limit: config.maxRequests,
-  };
 }
 
 // ─── Firestore Fallback Tier ─────────────────────────────────────────────────
@@ -118,20 +116,15 @@ async function firestoreCheck(key: string, config: RateLimitConfig): Promise<Rat
  * Check a rate limit by key.
  *
  * Strategy (two-tier):
- *   1. In-memory check first — O(1), zero I/O
- *   2. Firestore fallback — serialised transaction, only for cold-start / missed in-memory keys
- *
- * In production (with Redis), extend this with:
- *   const redisClient = getRedisClient();
- *   const count = await redis.incr(redisKey);
- *   if (count === 1) await redis.expire(redisKey, config.windowMs / 1000);
+ *   1. Upstash Redis (HTTP-based, no in-memory — works across serverless instances)
+ *   2. Firestore fallback — serialised transaction
  */
 export async function checkRateLimit(key: string, config: RateLimitConfig): Promise<RateLimitResult> {
-  // Tier 1 — fast path
-  const memResult = memoryCheck(key, config);
-  if (memResult.allowed) return memResult;
+  // Tier 1 — Upstash Redis (fast path, works across instances)
+  const upstashResult = await upstashCheck(key, config);
+  if (upstashResult) return upstashResult;
 
-  // Tier 2 — persistent fallback for cold starts or burst protection
+  // Tier 2 — Firestore fallback for when Upstash is unavailable
   const fsResult = await firestoreCheck(key, config);
   return fsResult;
 }
