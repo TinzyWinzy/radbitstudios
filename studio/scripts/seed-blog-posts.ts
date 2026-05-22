@@ -21,7 +21,7 @@ const posts = [
       "A honest breakdown of what it actually costs and how long it takes to register a business in Zimbabwe — from the Deeds Office to PRAZ to ZIMRA. No sugar-coating.",
     tags: ["registration", "PRAZ", "ZIMRA", "costs", "SME"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/register-business.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `If you are starting a business in Zimbabwe, the first thing everyone tells you is "you need to register." But nobody tells you what that actually involves until you are knee-deep in forms and wondering if you should have just stayed informal.
 
 I registered my first company in 2022. It took me six weeks and cost more than I expected. Here is the real breakdown so you know what you are getting into.
@@ -71,7 +71,7 @@ That is the real picture. It is not as hard as people make it sound, but it is n
       "After two years of running a small retail shop through Zimbabwe's load-shedding schedule, here is what I learned about keeping the lights on and the business running.",
     tags: ["load-shedding", "energy", "operations", "retail"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/load-shedding.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `The first time the power went out during a customer transaction, I panicked. The EcoCash payment went through on my phone but the receipt printer was dead and the customer was staring at me like I had broken something. That was two years ago. Now I plan my entire week around the load-shedding schedule.
 
 If you run a business in Zimbabwe, you already know this story. Here is what I learned.
@@ -111,7 +111,7 @@ I lost about 15 percent of my revenue in the first three months of serious load-
       "A practical comparison of EcoCash Business and traditional bank accounts for Zimbabwean SMEs — fees, limits, tax implications, and when each makes sense.",
     tags: ["EcoCash", "banking", "payments", "finance", "SME"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/ecocash-bank.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `Every SME owner in Zimbabwe has asked themselves this question: should I put this money through EcoCash or the bank? The answer depends on what you are doing, how much money is involved, and whether you want ZIMRA to see it.
 
 Here is how I think about it after three years of running a business.
@@ -153,7 +153,7 @@ If you are a formal business registered with ZIMRA, your customers who need rece
       "A personal story about applying for a government tender as a small business — the paperwork, the waiting, the result, and what I would do differently next time.",
     tags: ["tenders", "bidding", "government", "PRAZ", "experience"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/tender-bidding.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `A friend told me about a tender from the Ministry of Education for school supplies. Fifty rural schools needed exercise books, stationery, and basic science equipment. The tender value was $45,000. I had never bid for anything in my life, but I decided to try.
 
 Here is what happened.
@@ -197,7 +197,7 @@ I will bid again. And I will probably lose again. But eventually, I will win one
       "The ZIMRA tax calendar broken down month by month — QPD dates, annual returns, VAT deadlines, and what happens if you miss them. Print this and stick it on your wall.",
     tags: ["ZIMRA", "tax", "deadlines", "compliance", "SME"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/tax-deadlines.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `Missing a ZIMRA deadline is expensive. The penalties add up fast and they do not care that you were busy running your business. Here is the calendar I follow. Print it, pin it, live by it.
 
 **Quarterly Payment Dates (QPDs)**
@@ -253,7 +253,7 @@ If you are struggling to pay, talk to ZIMRA before the deadline. They offer paym
       "After three years of running my books on Excel, I switched to accounting software. Here is what it cost, how long it took to learn, and whether it was worth it.",
     tags: ["accounting", "software", "finance", "tools", "experience"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/accounting-software.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `For three years, my business ran on Excel spreadsheets. I had one for sales, one for expenses, one for stock, and one for tax calculations. Every month I spent about eight hours reconciling everything. Every quarter I spent a full weekend preparing for QPD.
 
 Last year, I switched to proper accounting software. Here is how it went.
@@ -297,7 +297,7 @@ If you are still using Excel, I get it. It feels fine until something goes wrong
       "A step-by-step account of getting registered with the Procurement Regulatory Authority of Zimbabwe — the documents you need, the process, and the total cost.",
     tags: ["PRAZ", "compliance", "registration", "tenders", "SME"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/praz-compliance.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `If you want to bid for government tenders in Zimbabwe, you need to be PRAZ compliant. I heard this for two years before I actually did it. When I finally went through the process, it was not as bad as I expected. Here is exactly what I did.
 
 **Week 1: Getting My Documents Ready**
@@ -355,7 +355,7 @@ Get PRAZ compliant even if you are not planning to bid immediately. The registra
       "How Zimbabwean SMEs can use WhatsApp for more than just sending bulk messages — order management, customer support, payment collection, and building real relationships.",
     tags: ["WhatsApp", "customer service", "sales", "tools"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/whatsapp-business.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `Every business in Zimbabwe uses WhatsApp. But most use it the same way: broadcast lists and group chats. There is so much more you can do with it.
 
 I run a small agro-processing business and WhatsApp is my main sales channel. Here is how I use it beyond the basics.
@@ -403,7 +403,7 @@ If you have not set up WhatsApp Business yet, do it today. It takes an hour and 
       "The real story of a small Zimbabwean manufacturer who started exporting to Zambia — the paperwork, the logistics, the payments, and the lessons learned along the way.",
     tags: ["export", "SADC", "trade", "logistics", "manufacturing"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/export-sadc.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `I make packaging materials for food products. For three years, I only sold in Zimbabwe. Then a contact in Lusaka asked if I could supply them. I said yes without knowing what I was getting into. Here is what happened.
 
 **The Paperwork**
@@ -460,7 +460,7 @@ I am now looking at Botswana and Mozambique. The system is the same. The paperwo
       "An honest look at when a website matters for a Zimbabwean SME, when it does not, and the cheapest way to get online without wasting money.",
     tags: ["website", "online presence", "marketing", "digital"],
     authorName: "Radbit Editorial",
-    imageUrl: "/blog/business-website.jpg",
+    imageUrl: "/blog/placeholder.svg",
     content: `I hear this all the time: "But I already have WhatsApp. Why do I need a website?"
 
 It is a fair question. WhatsApp reaches your existing customers. But a website reaches people who do not know you exist.
