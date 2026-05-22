@@ -738,9 +738,9 @@ async function scrapeSAeTenders(): Promise<Tender[]> {
   return results;
 }
 
-export async function scrapeAllTenders(): Promise<{ scraped: number; errors: number }> {
+export async function scrapeAllTenders(): Promise<{ scraped: number; errors: number; tenders: any[] }> {
   const cacheKey = 'tenders:scrape:all_run';
-  const cached = getCached<{ scraped: number; errors: number }>(cacheKey);
+  const cached = getCached<{ scraped: number; errors: number; tenders: any[] }>(cacheKey);
   if (cached) return cached;
 
   const results = { scraped: 0, errors: 0 };
@@ -822,8 +822,24 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.al
     }
   }
 
-  setCached(cacheKey, results, 30 * 60 * 1000);
-  return results;
+  const result = { ...results, tenders: uniqueTenders.slice(0, 20).map(t => ({
+    id: t.id,
+    title: t.title,
+    description: t.description,
+    organization: t.organization,
+    sourceUrl: t.sourceUrl,
+    sourceName: t.sourceName,
+    publishedAt: t.publishedAt,
+    closingDate: t.closingDate,
+    value: t.value,
+    category: t.category,
+    sector: t.sector,
+    region: t.region,
+    requirements: t.requirements,
+    status: t.status,
+  })) };
+  setCached(cacheKey, result, 30 * 60 * 1000);
+  return result;
 }
 
 export async function getLatestTenders(options: {

@@ -35,7 +35,13 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const results = await scrapeAllFeeds();
-    return NextResponse.json({ ok: true, ...results });
+    return NextResponse.json({
+      success: true,
+      scraped: results.scraped,
+      errors: results.errors,
+      timestamp: new Date().toISOString(),
+      articles: results.articles,
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

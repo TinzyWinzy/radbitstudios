@@ -33,7 +33,13 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const results = await scrapeAllTenders();
-    return NextResponse.json({ ok: true, ...results });
+    return NextResponse.json({
+      success: true,
+      scraped: results.scraped,
+      errors: results.errors,
+      timestamp: new Date().toISOString(),
+      tenders: results.tenders,
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -182,11 +182,11 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   }
 }
 
-export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: number }> {
+export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: number; articles: any[] }> {
   const rl = await checkRateLimit('newsScrape', 'newsScrape');
   if (!rl.allowed) {
     console.log('[NewsScraper] Rate limited — skipping scrape (4h window)');
-    return { scraped: 0, errors: 0 };
+    return { scraped: 0, errors: 0, articles: [] };
   }
 
   const results = { scraped: 0, errors: 0 };
@@ -282,7 +282,17 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     logToFile('No articles to save');
   }
 
-  return results;
+  return { ...results, articles: allArticles.slice(0, 20).map(a => ({
+    id: a.id,
+    title: a.title,
+    summary: a.summary,
+    sourceUrl: a.sourceUrl,
+    sourceName: a.sourceName,
+    publishedAt: a.publishedAt,
+    category: a.category,
+    industryTags: a.industryTags,
+    region: a.region,
+  })) };
 }
 
 export async function getLatestNews(options: {

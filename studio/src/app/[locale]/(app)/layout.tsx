@@ -48,6 +48,7 @@ import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { GyeNyame } from "@/components/adinkra-symbols";
 import { NotificationBell } from "@/components/notification-bell";
+import { PushNotificationManager } from "@/components/push-notification-manager";
 import type { AppUser } from "@/types/user";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { motion } from 'framer-motion';
@@ -160,6 +161,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="flex-1" />
             <div className="flex items-center space-x-2">
               {user && <NotificationBell userId={user.uid} />}
+              <PushNotificationManager />
               <ThemeToggle />
               <UserNav />
             </div>

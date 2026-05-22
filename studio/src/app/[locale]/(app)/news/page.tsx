@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import {
   Newspaper, Clock, ExternalLink, Search, Bookmark,
-  TrendingUp, AlertTriangle, Loader2, Zap
+  TrendingUp, AlertTriangle, Loader2, Zap, Code
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
@@ -108,6 +108,8 @@ export default function NewsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [briefLoading, setBriefLoading] = useState(false);
   const [brief, setBrief] = useState<Awaited<ReturnType<typeof generatePersonalizedBrief>> | null>(null);
+  const [showRawData, setShowRawData] = useState(false);
+  const [rawData, setRawData] = useState<any>(null);
 
   const loadNews = useCallback(async () => {
     setIsLoading(true);
@@ -277,9 +279,13 @@ export default function NewsPage() {
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Button variant="outline" size="sm" onClick={async () => { await fetch('/api/scraper/news', { method: 'POST' }); loadNews(); }}>
+              <Button variant="outline" size="sm" onClick={async () => { const r = await fetch('/api/scraper/news'); const d = await r.json(); setRawData(d); if (rawData === null) setShowRawData(true); loadNews(); }}>
                 <Loader2 className="h-3 w-3 mr-1" />
                 Refresh
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowRawData(v => !v)}>
+                <Code className="h-3 w-3 mr-1" />
+                Raw
               </Button>
               {!hasProfile && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -341,11 +347,13 @@ export default function NewsPage() {
                     variant="outline"
                     className="mt-4"
                     onClick={async () => {
-                      await fetch('/api/scraper/news', { method: 'POST' });
-                      window.location.reload();
+                      const r = await fetch('/api/scraper/news');
+                      const d = await r.json();
+                      setRawData(d);
+                      loadNews();
                     }}
                   >
-                    Trigger News Refresh
+                    Refresh
                   </Button>
                 </div>
               )}
@@ -353,6 +361,22 @@ export default function NewsPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      {showRawData && rawData && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-mono">Raw Scraper Output</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setShowRawData(false)}>Close</Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-auto max-h-96 whitespace-pre-wrap">
+              {JSON.stringify(rawData, null, 2)}
+            </pre>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

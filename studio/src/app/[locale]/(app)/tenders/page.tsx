@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useContext } from 'react';
 import {
-  Card, CardContent, CardHeader,
+  Card, CardContent, CardHeader, CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Briefcase, Search, ExternalLink, Calendar, DollarSign, Building2,
   Clock, AlertCircle, CheckCircle, Loader2, RefreshCw,
-  Bookmark, Zap, Globe, Lock
+  Bookmark, Zap, Globe, Lock, Code
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
@@ -157,6 +157,8 @@ export default function TendersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
+  const [showRawData, setShowRawData] = useState(false);
+  const [rawData, setRawData] = useState<any>(null);
 
   const sectorMap: Record<string, string> = {
     'Agriculture': 'Agriculture & Agribusiness',
@@ -223,7 +225,9 @@ export default function TendersPage() {
 
   const handleRefresh = async () => {
     try {
-      await fetch('/api/scraper/tenders', { method: 'POST' });
+      const r = await fetch('/api/scraper/tenders');
+      const d = await r.json();
+      setRawData(d);
     } catch { /* fire and forget */ }
     await loadTenders(true);
   };
@@ -277,6 +281,14 @@ export default function TendersPage() {
         >
           {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
           {isRefreshing ? 'Refreshing...' : 'Refresh Tenders'}
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => setShowRawData(v => !v)}
+          className="gap-2"
+        >
+          <Code className="h-4 w-4" />
+          Raw
         </Button>
       </div>
 
@@ -442,6 +454,22 @@ export default function TendersPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      {showRawData && rawData && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-mono">Raw Scraper Output</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setShowRawData(false)}>Close</Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-auto max-h-96 whitespace-pre-wrap">
+              {JSON.stringify(rawData, null, 2)}
+            </pre>
+          </CardContent>
+        </Card>
+      )}
 
       <UpgradeModal
         open={!!upgradeInfo}
