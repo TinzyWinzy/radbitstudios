@@ -65,3 +65,22 @@ env:
     secret: WHATSAPP_APP_SECRET
     availability:
       - RUNTIME
+
+  # ── Upstash Redis (distributed rate limiting) ────────────────────────
+  # Uncomment and set secrets in Secret Manager when Upstash is provisioned:
+  # - variable: UPSTASH_REDIS_REST_URL
+  #   secret: UPSTASH_REDIS_REST_URL
+  #   availability:
+  #     - BUILD
+  #     - RUNTIME
+  # - variable: UPSTASH_REDIS_REST_TOKEN
+  #   secret: UPSTASH_REDIS_REST_TOKEN
+  #   availability:
+  #     - BUILD
+  #     - RUNTIME
+
+  # ── Cron job security ───────────────────────────────────────────────
+  # - variable: CRON_SECRET
+  #   secret: CRON_SECRET
+  #   availability:
+  #     - RUNTIME
