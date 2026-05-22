@@ -72,14 +72,22 @@ export default function TaxCopilotPage() {
     setInput('');
 
     try {
-      const ragResults = await searchRelevantContext(input, 5, 0.5);
+      const searchQuery = user?.industry ? `${input} ${user.industry} tax compliance` : input;
+      const ragResults = await searchRelevantContext(searchQuery, 5, 0.5);
       const context = ragResults.map(r => ({
         content: r.content,
         source: r.metadata.source || 'ZIMRA Guidelines',
         score: r.score,
       }));
 
-      const response = await generateTaxAnswer({ query: input, context });
+      const appUser = user as any;
+      const response = await generateTaxAnswer({
+        query: input,
+        context,
+        industry: appUser?.industry || undefined,
+        businessName: appUser?.businessName || undefined,
+        businessDescription: appUser?.businessDescription || undefined,
+      });
 
       setMessages((prev) =>
         prev.map((msg) => (msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg))

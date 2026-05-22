@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +27,14 @@ export default function BidWriterPage() {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const { user } = useContext(AuthContext);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      const appUser = user as any;
+      if (appUser.businessName) setBusinessName(appUser.businessName);
+      if (appUser.businessDescription) setBusinessDescription(appUser.businessDescription);
+    }
+  }, [user?.uid]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();

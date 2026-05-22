@@ -12,6 +12,9 @@ const ExportAssessmentResponseSchema = z.object({
 
 const GenerateExportAssessmentInputSchema = z.object({
   responses: z.array(ExportAssessmentResponseSchema),
+  industry: z.string().optional(),
+  businessName: z.string().optional(),
+  businessDescription: z.string().optional(),
 });
 export type GenerateExportAssessmentInput = z.infer<typeof GenerateExportAssessmentInputSchema>;
 
@@ -28,13 +31,19 @@ export type GenerateExportAssessmentOutput = z.infer<typeof GenerateExportAssess
 const gateway = new AIGateway();
 
 export async function generateExportAssessment(input: GenerateExportAssessmentInput): Promise<GenerateExportAssessmentOutput> {
+  const businessContext = [
+    input.industry && `Industry: ${input.industry}`,
+    input.businessName && `Business: ${input.businessName}`,
+    input.businessDescription && `Profile: ${input.businessDescription}`,
+  ].filter(Boolean).join('\n');
+
   const assessmentData = input.responses.map(r =>
     `- Category: ${r.category}\n  Question: ${r.question}\n  Answer: "${r.answer}" (Score: ${r.score})`
   ).join('\n');
 
-  const prompt = `Assessment Data:\n${assessmentData}`;
+  const prompt = `Business Context:\n${businessContext || 'N/A'}\n\nAssessment Data:\n${assessmentData}`;
 
-  const systemPrompt = `You are an export readiness consultant for Zimbabwean SMEs seeking to trade across SADC and under AfCFTA. Analyze the business's responses and provide practical, actionable export readiness guidance.
+  const systemPrompt = `You are an export readiness consultant for Zimbabwean SMEs seeking to trade across SADC and under AfCFTA. Analyze the business's responses and industry context to provide practical, actionable export readiness guidance.
 
 Generate the following as a JSON object with these exact keys:
 {
@@ -47,10 +56,10 @@ Generate the following as a JSON object with these exact keys:
 }
 
 1. readinessScore: Overall export readiness from 0 (not ready) to 100 (fully ready).
-2. strengths: 2-3 areas where the business shows export readiness strength.
-3. gaps: 2-3 critical gaps that need addressing for successful cross-border trade.
-4. recommendedMarkets: 2-3 SADC member states the business is best positioned to export to.
-5. requiredCertifications: 2-3 certifications or compliance requirements relevant to their export journey.
+2. strengths: 2-3 areas where the business shows export readiness strength (tailored to their industry).
+3. gaps: 2-3 critical gaps that need addressing for successful cross-border trade (industry-specific).
+4. recommendedMarkets: 2-3 SADC member states the business is best positioned to export to based on their industry and profile.
+5. requiredCertifications: 2-3 certifications or compliance requirements relevant to their industry and export journey.
 6. summary: Under 100 words. Be encouraging and direct.
 
 Return ONLY valid JSON.`;

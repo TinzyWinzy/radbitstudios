@@ -17,6 +17,9 @@ const AssessmentResponseSchema = z.object({
 
 const GenerateAssessmentSummaryInputSchema = z.object({
   responses: z.array(AssessmentResponseSchema),
+  industry: z.string().optional(),
+  businessName: z.string().optional(),
+  businessDescription: z.string().optional(),
 });
 export type GenerateAssessmentSummaryInput = z.infer<typeof GenerateAssessmentSummaryInputSchema>;
 
@@ -27,29 +30,35 @@ export type GenerateAssessmentSummaryOutput = z.infer<typeof GenerateAssessmentS
 
 const gateway = new AIGateway();
 
-function buildPrompt(responses: GenerateAssessmentSummaryInput['responses']): { prompt: string; systemPrompt: string } {
-  const assessmentData = responses.map(r =>
+function buildPrompt(input: GenerateAssessmentSummaryInput): { prompt: string; systemPrompt: string } {
+  const assessmentData = input.responses.map(r =>
     `- Category: ${r.category}\n  Question: ${r.question}\n  Answer: "${r.answer}" (Score: ${r.score})`
   ).join('\n');
 
+  const businessContext = [
+    input.industry && `Industry: ${input.industry}`,
+    input.businessName && `Business: ${input.businessName}`,
+    input.businessDescription && `Profile: ${input.businessDescription}`,
+  ].filter(Boolean).join('\n');
+
   return {
-    prompt: `Assessment Data:\n${assessmentData}`,
+    prompt: `Business Context:\n${businessContext || 'N/A'}\n\nAssessment Data:\n${assessmentData}`,
     systemPrompt: `You are an expert business consultant for Zimbabwean SMEs. Analyze the digital readiness assessment responses.
 
 Each answer has a score from 1 (digitally basic) to 4 (digitally advanced).
 
-Based on the data, provide a concise, insightful summary:
+Based on the data and the business's industry context, provide a concise, insightful summary:
 1. Identify the single strongest area (highest average score).
 2. Identify the single weakest area (lowest average score).
-3. Provide 2-3 actionable recommendations tailored to Zimbabwean context.
+3. Provide 2-3 actionable recommendations tailored to the business's specific industry and Zimbabwean context.
 4. Keep under 100 words. Be encouraging and direct.
 
-Write at least 3-4 full sentences. Be specific — mention actual categories, scores, and concrete next steps.`,
+Write at least 3-4 full sentences. Be specific — mention actual categories, scores, industry, and concrete next steps.`,
   };
 }
 
 export async function generateAssessmentSummary(input: GenerateAssessmentSummaryInput): Promise<GenerateAssessmentSummaryOutput> {
-  const { prompt, systemPrompt } = buildPrompt(input.responses);
+  const { prompt, systemPrompt } = buildPrompt(input);
 
   const result = await gateway.generate({
     prompt,

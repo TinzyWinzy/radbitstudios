@@ -254,7 +254,10 @@ export default function AssessmentPage() {
                 answer: a.answer,
                 score: a.score,
                 category: questions[index].category,
-            }))
+            })),
+            industry: (user as any)?.industry || undefined,
+            businessName: (user as any)?.businessName || undefined,
+            businessDescription: (user as any)?.businessDescription || undefined,
         };
 
         const result = await generateAssessmentSummary(assessmentData);

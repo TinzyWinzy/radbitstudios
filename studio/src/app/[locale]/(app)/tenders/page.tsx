@@ -192,7 +192,7 @@ export default function TendersPage() {
 
   useEffect(() => {
     loadTenders();
-  }, [mySectorOnly]);
+  }, [mySectorOnly, user?.uid]);
 
   const handleRefresh = async () => {
     try {
