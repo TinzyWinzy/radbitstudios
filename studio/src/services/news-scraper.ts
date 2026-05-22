@@ -224,7 +224,7 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     const articles = await scrapeFeed(feed);
     if (articles.length === 0) {
       results.errors++;
-      if (feed._id) recordSourceFetch(feed._id, false).catch(() => {});
+      if (feed._id) recordSourceFetch(feed._id, false).catch(e => logToFile(`recordSourceFetch failed: ${e}`));
       continue;
     }
 
@@ -240,7 +240,7 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
       region: a.region,
     })));
     results.scraped += articles.length;
-    if (feed._id) recordSourceFetch(feed._id, true).catch(() => {});
+    if (feed._id) recordSourceFetch(feed._id, true).catch(e => logToFile(`recordSourceFetch failed: ${e}`));
   }
 
   if (allArticles.length > 0) {

@@ -273,8 +273,8 @@ export default function AssessmentPage() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId: user.uid, idToken }),
-          }).catch(() => {});
-        } catch {} // non-blocking
+          }).catch(e => console.error('[Assessment] schedule digest failed:', e));
+        } catch (e) { console.warn('[Assessment] non-blocking error:', e); }
 
     } catch (error) {
       console.error("Error generating or saving assessment:", error);
@@ -319,7 +319,7 @@ export default function AssessmentPage() {
           type: "assessment",
           read: false,
           link: "/dashboard",
-        }).catch(() => {});
+        }).catch(e => console.error('[Assessment] createNotification failed:', e));
         toast({
             title: "Assessment Saved!",
             description: "Your results have been saved to your profile.",

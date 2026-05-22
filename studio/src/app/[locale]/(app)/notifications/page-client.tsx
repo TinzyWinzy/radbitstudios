@@ -88,7 +88,7 @@ export default function NotificationsClientPage() {
       where("userId", "==", user.uid),
       where("read", "==", false),
     );
-    getCountFromServer(q).then((snap) => setTotalUnread(snap.data().count)).catch(() => {});
+    getCountFromServer(q).then((snap) => setTotalUnread(snap.data().count)).catch(e => console.error('[Notifications] getCount failed:', e));
   }, [user, allItems]);
 
   const loadMore = useCallback(async () => {
@@ -114,14 +114,14 @@ export default function NotificationsClientPage() {
 
   const handleMarkRead = async (id: string) => {
     setAllItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-    await markAsRead(id).catch(() => {});
+    await markAsRead(id).catch(e => console.error('[Notifications] markAsRead failed:', e));
   };
 
   const handleMarkAllRead = async () => {
     if (!user) return;
     setAllItems((prev) => prev.map((n) => ({ ...n, read: true })));
     setTotalUnread(0);
-    await markAllAsRead(user.uid).catch(() => {});
+    await markAllAsRead(user.uid).catch(e => console.error('[Notifications] markAllAsRead failed:', e));
     toast({ title: "All notifications marked as read" });
   };
 

@@ -32,9 +32,9 @@ export function ReferralSection() {
         const data = await res.json();
         if (data.success && data.code) {
           setCode(data.code);
-          try { sessionStorage.setItem("radbit_referral_code", data.code); } catch {}
+          try { sessionStorage.setItem("radbit_referral_code", data.code); } catch { console.debug('[ReferralSection] sessionStorage write failed'); }
         }
-      } catch {} finally {
+      } catch (e) { console.error('[ReferralSection] fetch referral code failed:', e); } finally {
         setFetching(false);
       }
     })();
@@ -55,7 +55,7 @@ export function ReferralSection() {
       setCode(data.code);
       try {
         sessionStorage.setItem("radbit_referral_code", data.code);
-      } catch {}
+      } catch { console.debug('[ReferralSection] sessionStorage write failed'); }
       toast({ title: "Referral code created!", description: `Your code is ${data.code}` });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });

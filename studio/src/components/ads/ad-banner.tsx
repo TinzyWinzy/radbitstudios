@@ -21,7 +21,7 @@ export function AdBanner({ slot = "blog-banner", className = "" }: AdBannerProps
             loaded.current = true;
             try {
               ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-            } catch {}
+            } catch { console.debug('[Ad] adsbygoogle push failed'); }
             observer.disconnect();
           }
         });

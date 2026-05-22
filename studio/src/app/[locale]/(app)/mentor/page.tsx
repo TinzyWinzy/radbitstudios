@@ -67,7 +67,7 @@ export default function MentorPage() {
       businessDescription: user!.businessDescription,
     }).then(res => {
       setSystemPromptCache(res.systemPrompt);
-    }).catch(() => {});
+    }).catch(e => console.error('[Mentor] getMentorContext failed:', e));
   }, [hasProfile, user]);
 
   useEffect(() => {

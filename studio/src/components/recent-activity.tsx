@@ -26,7 +26,7 @@ export function RecentActivity({ userId }: Props) {
   useEffect(() => {
     getNotifications(userId, 5)
       .then(setActivities)
-      .catch(() => {})
+      .catch(e => console.error('[RecentActivity] getNotifications failed:', e))
       .finally(() => setLoading(false));
   }, [userId]);
 

@@ -21,7 +21,7 @@ export function AdUnit({ slot, format = 'auto', className }: AdUnitProps) {
             loaded.current = true;
             try {
               ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-            } catch {}
+            } catch { console.debug('[AdUnit] adsbygoogle push failed'); }
             observer.disconnect();
           }
         });

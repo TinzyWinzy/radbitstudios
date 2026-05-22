@@ -34,7 +34,7 @@ export function useUtm() {
       try {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(utm));
         saved.current = true;
-      } catch {}
+      } catch { console.debug('[useUtm] sessionStorage write failed'); }
     }
   }, []);
 }

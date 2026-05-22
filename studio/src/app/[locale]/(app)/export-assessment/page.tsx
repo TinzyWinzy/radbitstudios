@@ -253,7 +253,7 @@ export default function ExportAssessmentPage() {
           type: "assessment",
           read: false,
           link: "/dashboard",
-        }).catch(() => {});
+        }).catch(e => console.error('[ExportAssessment] createNotification failed:', e));
         toast({
             title: "Assessment Saved!",
             description: "Your results have been saved to your profile.",

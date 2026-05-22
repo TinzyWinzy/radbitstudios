@@ -20,7 +20,7 @@ export function InArticleAd({ slot = "blog-in-article" }: InArticleAdProps) {
             loaded.current = true;
             try {
               ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-            } catch {}
+            } catch { console.debug('[Ad] adsbygoogle push failed'); }
             observer.disconnect();
           }
         });

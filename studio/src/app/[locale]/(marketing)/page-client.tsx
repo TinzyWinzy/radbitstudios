@@ -1,22 +1,16 @@
 "use client";
 
-import { useRef, useEffect, lazy, Suspense, useState } from "react";
+import { useRef, lazy, Suspense } from "react";
 import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
 import { TiltCard } from "@/components/tilt-card";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
-import { registerVisibilityHandler } from "@/lib/device";
 
 const WaveField = lazy(() => import("@/components/wave-field").then(m => ({ default: m.WaveField })));
-const GreatZimbabweScene = dynamic(
-  () => import("@/components/three/great-zimbabwe-scene").then(m => ({ default: m.GreatZimbabweScene })),
-  { ssr: false }
-);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -662,22 +656,9 @@ function FooterSection() {
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  const scrollProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const [scrollValue, setScrollValue] = useState(0);
-
-  useEffect(() => {
-    registerVisibilityHandler(() => {}, () => {});
-
-    const unsubscribe = scrollProgress.on("change", (v) => setScrollValue(v));
-    return () => unsubscribe();
-  }, [scrollProgress]);
-
   return (
     <div ref={containerRef} className="flex flex-col w-full min-h-full bg-background overflow-x-hidden">
-      <div className="fixed inset-0 z-0">
-        <GreatZimbabweScene className="w-full h-full" scrollProgress={scrollValue} />
-      </div>
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-primary/5 via-background to-background" />
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/30 via-background/60 to-background pointer-events-none" />
 
       <div className="relative z-10">

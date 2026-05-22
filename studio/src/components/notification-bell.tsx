@@ -48,13 +48,13 @@ export function NotificationBell({ userId }: Props) {
   const handleMarkRead = async (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
     setUnread(prev => Math.max(0, prev - 1));
-    await markAsRead(id).catch(() => {});
+    await markAsRead(id).catch(e => console.error('[NotificationBell] markAsRead failed:', e));
   };
 
   const handleMarkAllRead = async () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     setUnread(0);
-    await markAllAsRead(userId).catch(() => {});
+    await markAllAsRead(userId).catch(e => console.error('[NotificationBell] markAllAsRead failed:', e));
   };
 
   return (

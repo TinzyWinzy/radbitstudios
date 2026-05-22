@@ -200,7 +200,7 @@ export default function DashboardPage() {
             type: "insights",
             read: false,
             link: "/dashboard",
-          }).catch(() => {});
+          }).catch(e => console.error('[Dashboard] createNotification failed:', e));
         }
 
         checkAndDecrementUsage(user.uid, 'dashboardInsights').then(decrementResult => {
@@ -208,9 +208,9 @@ export default function DashboardPage() {
             cacheDashboardData(user.uid, {
               dailyTips: result.dailyTips,
               recommendations: result.recommendations,
-            }).catch(() => {});
+            }).catch(e => console.error('[Dashboard] cacheDashboardData failed:', e));
           }
-        }).catch(() => {});
+        }).catch(e => console.error('[Dashboard] checkAndDecrementUsage failed:', e));
       } catch (error) {
         console.error("Error fetching dashboard insights:", error);
         if (mounted) setInsightsError(true);
@@ -271,7 +271,7 @@ export default function DashboardPage() {
           const res = await fetch('/api/assessments/benchmark');
           const json = await res.json();
           if (mounted && json.benchmark) setBenchmarkData(json.benchmark);
-        } catch {}
+        } catch (e) { console.warn('[Dashboard] benchmark fetch failed:', e); }
       } catch (error) {
         console.error("Error fetching assessment data:", error);
         if (mounted) setAssessmentData(null);
