@@ -5,6 +5,7 @@ import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { saveTenders, loadTenders, safeTenderFromDb, saveLog } from '@/lib/scraper-storage';
 import { scoreBatch } from '@/services/scoring/content-scorer';
 import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 
 export interface Tender {
   id: string;
@@ -845,6 +846,42 @@ export async function getLatestTenders(options: {
   });
 
   let tenders: Tender[] = records.map(safeTenderFromDb);
+
+  // Merge entity-scraped tenders from Firestore
+  try {
+    const entitySnap = await adminDb.collection('scraped_items')
+      .orderBy('publishedAt', 'desc')
+      .limit(50)
+      .get();
+
+    const seenIds = new Set(tenders.map(t => t.id));
+    for (const d of entitySnap.docs) {
+      const data = d.data();
+      const id = crypto.createHash('sha256').update(data.title + data.sourceUrl).digest('hex').slice(0, 32);
+      if (seenIds.has(id)) continue;
+      seenIds.add(id);
+      tenders.push({
+        id,
+        title: data.title || 'Untitled',
+        description: data.description || '',
+        organization: data.sourceEntityName || '',
+        sourceUrl: data.sourceUrl || '',
+        sourceName: data.sourceEntityName || 'Entity Scraper',
+        publishedAt: data.publishedAt?.toDate() || new Date(),
+        closingDate: data.deadline ? new Date(data.deadline) : null,
+        value: null,
+        category: data.category || 'General',
+        sector: data.sector || 'General Services',
+        region: data.region || 'Zimbabwe',
+        requirements: [],
+        status: data.deadline ? determineStatus(new Date(data.deadline)) : 'open',
+        processedAt: new Date(),
+        scrapedAt: data.fetchedAt?.toDate() || new Date(),
+      });
+    }
+  } catch {
+    // Entity scraper data not available — skip merge
+  }
 
   // Enrich with scores
   const scores = await loadScores(tenders.map(t => t.id));

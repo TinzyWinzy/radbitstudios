@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from '@/components/ui/card';
@@ -108,20 +108,23 @@ export default function NewsPage() {
   const [briefLoading, setBriefLoading] = useState(false);
   const [brief, setBrief] = useState<Awaited<ReturnType<typeof generatePersonalizedBrief>> | null>(null);
 
+  const loadNews = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const news = await getLatestNews({ limit: 100, industry: user?.industry || undefined });
+      setAllNews(news);
+    } catch (error) {
+      console.error('Error loading news:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.industry]);
+
   useEffect(() => {
-    const load = async () => {
-      setIsLoading(true);
-      try {
-        const news = await getLatestNews({ limit: 100 });
-        setAllNews(news);
-      } catch (error) {
-        console.error('Error loading news:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    load();
-  }, []);
+    loadNews();
+    const interval = setInterval(loadNews, 120000);
+    return () => clearInterval(interval);
+  }, [loadNews]);
 
   const handleGenerateBrief = async () => {
     if (!user) return;
@@ -234,7 +237,7 @@ export default function NewsPage() {
         </Card>
       )}
 
-      <Card>
+          <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <div className="relative flex-1 w-full">
@@ -246,12 +249,18 @@ export default function NewsPage() {
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
-            {!hasProfile && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
-                <AlertTriangle className="h-4 w-4" />
-                <span>Complete your business profile in Settings to get personalized news</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              <Button variant="outline" size="sm" onClick={async () => { await fetch('/api/scraper/news', { method: 'POST' }); loadNews(); }}>
+                <Loader2 className="h-3 w-3 mr-1" />
+                Refresh
+              </Button>
+              {!hasProfile && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <AlertTriangle className="h-4 w-4" />
+                  <span>Complete your business profile in Settings to get personalized news</span>
+                </div>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -304,8 +313,8 @@ export default function NewsPage() {
                   <Button
                     variant="outline"
                     className="mt-4"
-                    onClick={() => {
-                      fetch('/api/scraper/news', { method: 'POST' });
+                    onClick={async () => {
+                      await fetch('/api/scraper/news', { method: 'POST' });
                       window.location.reload();
                     }}
                   >

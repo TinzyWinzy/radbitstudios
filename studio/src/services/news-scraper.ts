@@ -97,6 +97,24 @@ const SECTORS = [
   'Creative', 'Media', 'Professional Services', 'Mining', 'Energy', 'Telecommunications',
 ];
 
+const INDUSTRY_TO_SECTOR: Record<string, string[]> = {
+  'Retail & Wholesale': ['Retail'],
+  'Hospitality & Tourism': ['Hospitality', 'Tourism'],
+  'Transport & Logistics': ['Transport'],
+  'Creative & Media': ['Creative', 'Media'],
+  'Agriculture': ['Agriculture'],
+  'Manufacturing': ['Manufacturing'],
+  'Technology': ['Technology'],
+  'Financial Services': ['Financial Services'],
+  'Healthcare': ['Healthcare'],
+  'Education': ['Education'],
+  'Construction': ['Construction'],
+  'Professional Services': ['Professional Services'],
+  'Mining': ['Mining'],
+  'Energy': ['Energy'],
+  'Telecommunications': ['Telecommunications'],
+};
+
 function classifyCategory(title: string, content: string, mapping: Record<string, string[]>): NewsArticle['category'] {
   const text = `${title} ${content}`.toLowerCase();
   for (const [category, keywords] of Object.entries(mapping)) {
@@ -298,9 +316,12 @@ export async function getLatestNews(options: {
     }
   }
 
-  if (industry) articles = articles.filter(a =>
-    a.industryTags.some(t => t.toLowerCase().includes(industry.toLowerCase()))
-  );
+  if (industry) {
+    const sectorTags = INDUSTRY_TO_SECTOR[industry] || [industry];
+    articles = articles.filter(a =>
+      a.industryTags.some(t => sectorTags.some(s => s.toLowerCase() === t.toLowerCase()))
+    );
+  }
 
   const result = articles.slice(0, n);
   setCached(cacheKey, result, 5 * 60 * 1000);

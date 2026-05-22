@@ -2,6 +2,9 @@ import { adminDb } from '@/lib/firebase/firebase-admin';
 import { REQUIRED_DOCUMENTS } from './praz-types';
 import type { DocumentId } from './praz-types';
 
+export { REQUIRED_DOCUMENTS };
+export type { DocumentId };
+
 export interface PrazDocument {
   id: string;
   userId: string;

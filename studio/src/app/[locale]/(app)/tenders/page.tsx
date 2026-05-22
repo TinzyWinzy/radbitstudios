@@ -157,11 +157,30 @@ export default function TendersPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
 
+  const sectorMap: Record<string, string> = {
+    'Agriculture': 'Agriculture & Agribusiness',
+    'Manufacturing': 'Manufacturing',
+    'Technology': 'Information Technology',
+    'Financial Services': 'Financial Services',
+    'Healthcare': 'Healthcare',
+    'Education': 'Education & Training',
+    'Transport & Logistics': 'Transportation & Logistics',
+    'Construction': 'Construction & Engineering',
+    'Retail & Wholesale': 'Retail & Wholesale',
+    'Professional Services': 'Professional Services',
+  };
+
+  const [mySectorOnly, setMySectorOnly] = useState(false);
+
   const loadTenders = async (showRefresh = false) => {
     if (showRefresh) setIsRefreshing(true);
     setIsLoading(true);
     try {
-      const data = await getLatestTenders({ limit: 100 });
+      const opts: { limit: number; sector?: string } = { limit: 100 };
+      if (mySectorOnly && user?.industry) {
+        opts.sector = sectorMap[user.industry];
+      }
+      const data = await getLatestTenders(opts);
       setTenders(data);
     } catch (error) {
       console.error('Error loading tenders:', error);
@@ -173,7 +192,7 @@ export default function TendersPage() {
 
   useEffect(() => {
     loadTenders();
-  }, []);
+  }, [mySectorOnly]);
 
   const handleRefresh = async () => {
     try {
@@ -304,6 +323,20 @@ export default function TendersPage() {
                   {status === 'all' ? 'All' : STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label || status}
                 </Button>
               ))}
+              {hasProfile && (
+                <>
+                  <div className="h-4 w-px bg-border mx-1" />
+                  <Button
+                    variant={mySectorOnly ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setMySectorOnly(v => !v)}
+                    className="text-xs"
+                  >
+                    <Building2 className="h-3 w-3 mr-1" />
+                    {mySectorOnly ? 'My Sector' : 'All Sectors'}
+                  </Button>
+                </>
+              )}
               <div className="h-4 w-px bg-border mx-1" />
               <Button
                 variant={regionTab === 'zimbabwe' ? 'default' : 'outline'}
