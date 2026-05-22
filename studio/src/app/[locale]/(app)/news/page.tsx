@@ -20,6 +20,7 @@ import { getLatestNewsAction as getLatestNews } from '@/app/actions';
 import { generatePersonalizedBrief } from '@/ai/flows/generate-personalized-brief';
 import { formatDistanceToNow } from 'date-fns';
 import type { NewsArticle } from '@/types/news';
+import { createNotification } from "@/services/notifications/notifications-service";
 
 const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   policy: { label: 'Policy', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' },
@@ -113,12 +114,38 @@ export default function NewsPage() {
     try {
       const news = await getLatestNews({ limit: 100, industry: user?.industry || undefined });
       setAllNews(news);
+      if (user?.uid) {
+        const lastVisit = localStorage.getItem('lastNewsVisit');
+        const now = Date.now();
+        if (lastVisit) {
+          const cutoff = Number(lastVisit);
+          const newArticles = news.filter((a: NewsArticle) => {
+            const d = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+            return d > cutoff;
+          });
+          if (newArticles.length > 0) {
+            try {
+              createNotification({
+                userId: user.uid,
+                title: 'New News Available',
+                body: `${newArticles.length} new article${newArticles.length > 1 ? 's' : ''} matching your industry`,
+                type: 'news',
+                read: false,
+                link: '/news',
+              });
+            } catch (e) {
+              console.error('Failed to create news notification:', e);
+            }
+          }
+        }
+        localStorage.setItem('lastNewsVisit', String(now));
+      }
     } catch (error) {
       console.error('Error loading news:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [user?.industry]);
+  }, [user?.industry, user?.uid]);
 
   useEffect(() => {
     loadNews();

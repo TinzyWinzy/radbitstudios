@@ -1,5 +1,6 @@
 // Notification Orchestrator — channel routing by priority
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import webpush from 'web-push';
 
 export type NotificationChannel = 'whatsapp' | 'sms' | 'push' | 'email';
 export type NotificationPriority = 'critical' | 'high' | 'normal' | 'low';
@@ -104,10 +105,33 @@ class WhatsAppProvider implements ChannelProvider {
 
 // Push notification provider (Web Push via VAPID)
 class PushProvider implements ChannelProvider {
-  async send(userId: string, template: string, data: Record<string, unknown>): Promise<boolean> {
-    // In production: look up user's push subscription from DB, send via web-push library
-    console.log(`[Push] Would send ${template} to ${userId}`, data);
-    return false;
+  async send(userId: string, _template: string, data: Record<string, unknown>): Promise<boolean> {
+    try {
+      const userSnap = await adminDb.doc(`users/${userId}`).get();
+      const subscription = userSnap.data()?.pushSubscription;
+      if (!subscription || !subscription.endpoint) return false;
+
+      const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+      const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
+      if (!vapidPrivateKey || !vapidPublicKey) return false;
+
+      webpush.setVapidDetails(
+        'mailto:radbit@culturalcoder.co.zw',
+        vapidPublicKey,
+        vapidPrivateKey,
+      );
+
+      const payload = JSON.stringify({
+        title: (data.title as string) || 'Radbit Notification',
+        body: (data.body as string) || '',
+        url: (data.url as string) || '/',
+      });
+
+      await webpush.sendNotification(subscription, payload);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 

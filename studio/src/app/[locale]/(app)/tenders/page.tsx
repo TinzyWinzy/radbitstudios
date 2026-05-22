@@ -21,6 +21,7 @@ import { format, differenceInDays } from 'date-fns';
 import { checkFeatureAccess } from '@/services/feature-gate';
 import type { UpgradeInfo } from '@/services/feature-gate';
 import { UpgradeModal } from '@/components/upgrade-modal';
+import { createNotification } from "@/services/notifications/notifications-service";
 
 type Tender = {
   id: string;
@@ -182,6 +183,32 @@ export default function TendersPage() {
       }
       const data = await getLatestTenders(opts);
       setTenders(data);
+      if (user?.uid) {
+        const lastVisit = localStorage.getItem('lastTenderVisit');
+        const now = Date.now();
+        if (lastVisit) {
+          const cutoff = Number(lastVisit);
+          const newTenders = data.filter((t: Tender) => {
+            const d = t.publishedAt ? new Date(t.publishedAt).getTime() : 0;
+            return d > cutoff;
+          });
+          if (newTenders.length > 0) {
+            try {
+              createNotification({
+                userId: user.uid,
+                title: 'New Tenders Available',
+                body: `${newTenders.length} new tender${newTenders.length > 1 ? 's' : ''} matching your industry`,
+                type: 'tender',
+                read: false,
+                link: '/tenders',
+              });
+            } catch (e) {
+              console.error('Failed to create tender notification:', e);
+            }
+          }
+        }
+        localStorage.setItem('lastTenderVisit', String(now));
+      }
     } catch (error) {
       console.error('Error loading tenders:', error);
     } finally {

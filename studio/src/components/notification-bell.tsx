@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -110,6 +111,12 @@ export function NotificationBell({ userId }: Props) {
               </button>
             ))
           )}
+        </div>
+        <div className="border-t p-2">
+          <Link href="/notifications" className="flex items-center justify-center gap-1.5 text-xs text-primary hover:underline py-1" onClick={() => setOpen(false)}>
+            <ExternalLink className="h-3 w-3" />
+            See all notifications
+          </Link>
         </div>
       </PopoverContent>
     </Popover>

@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap, Shield, Download } from "lucide-react";
+import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap, Shield, Download, Bell, Smartphone } from "lucide-react";
 import {
   collection,
   query,
@@ -101,6 +101,13 @@ export default function SettingsPage() {
     const [businessDescription, setBusinessDescription] = useState('');
     const [phone, setPhone] = useState('');
     const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+    const [notifyPrefs, setNotifyPrefs] = useState<Record<string, boolean>>({
+      notifyAssessment: true,
+      notifyInsights: true,
+      notifyTender: true,
+      notifyNews: true,
+      notifySystem: true,
+    });
     
     const [assessmentHistory, setAssessmentHistory] = useState<AssessmentHistory[]>([]);
     const [generationHistory, setGenerationHistory] = useState<GenerationHistory[]>([]);
@@ -135,6 +142,13 @@ export default function SettingsPage() {
             setBusinessDescription(user.businessDescription || '');
             setPhone(user.phone || '');
             setWhatsappOptIn(user.whatsappOptIn || false);
+            setNotifyPrefs({
+              notifyAssessment: (user as any).notifyAssessment ?? true,
+              notifyInsights: (user as any).notifyInsights ?? true,
+              notifyTender: (user as any).notifyTender ?? true,
+              notifyNews: (user as any).notifyNews ?? true,
+              notifySystem: (user as any).notifySystem ?? true,
+            });
         }
     }, [user]);
 
@@ -169,6 +183,23 @@ export default function SettingsPage() {
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const handleNotificationPrefsSave = async () => {
+      if (!user) return;
+      setIsSaving(true);
+      try {
+        await updateDoc(doc(db, 'users', user.uid), {
+          ...notifyPrefs,
+          whatsappOptIn,
+        });
+        await refreshUserData();
+        toast({ title: 'Notification preferences saved' });
+      } catch (error) {
+        toast({ title: 'Error saving preferences', variant: 'destructive' });
+      } finally {
+        setIsSaving(false);
+      }
     };
     
     const handleBusinessSave = async () => {
@@ -429,7 +460,7 @@ export default function SettingsPage() {
         </p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="business">Business</TabsTrigger>
           <TabsTrigger value="account">Account & Plan</TabsTrigger>
@@ -437,6 +468,7 @@ export default function SettingsPage() {
           <TabsTrigger value="assessment-history">Assessment History</TabsTrigger>
           <TabsTrigger value="generation-history">Generation History</TabsTrigger>
           <TabsTrigger value="referral">Referral</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="branding">Branding</TabsTrigger>
           <TabsTrigger value="privacy">Privacy & Data</TabsTrigger>
         </TabsList>
@@ -467,10 +499,6 @@ export default function SettingsPage() {
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input id="phone" type="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     <p className="text-xs text-muted-foreground">Used for WhatsApp alerts on tenders and deadlines</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Checkbox id="whatsapp-opt-in" checked={whatsappOptIn} onCheckedChange={(checked) => setWhatsappOptIn(checked === true)} />
-                    <Label htmlFor="whatsapp-opt-in" className="text-sm font-normal leading-relaxed">Receive notifications and alerts via WhatsApp</Label>
                 </div>
                 <div className="space-y-2">
                     <h3 className="text-lg font-semibold">Your Badges</h3>
@@ -918,6 +946,77 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <ReferralSection />
             </CardContent>
+          </Card>
+         </TabsContent>
+         <TabsContent value="notifications">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notification Preferences</CardTitle>
+              <CardDescription>
+                Choose which notifications you receive and how they are delivered.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <h3 className="font-semibold text-sm flex items-center gap-2">
+                <Bell className="h-4 w-4 text-primary" />
+                In-App Notifications
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { key: 'notifyAssessment', label: 'Assessment Results', desc: 'When your digital readiness or export assessment is ready.' },
+                  { key: 'notifyInsights', label: 'Dashboard Insights', desc: 'When new AI-generated insights and recommendations are available.' },
+                  { key: 'notifyTender', label: 'Tender Alerts', desc: 'When new tenders matching your industry are published.' },
+                  { key: 'notifyNews', label: 'News Updates', desc: 'When new industry-specific news articles are found.' },
+                  { key: 'notifySystem', label: 'System Updates', desc: 'Platform announcements, feature updates, and maintenance notices.' },
+                ].map((item) => (
+                  <div key={item.key} className="flex items-start gap-3 p-3 rounded-lg border">
+                    <Checkbox
+                      id={item.key}
+                      checked={(notifyPrefs as any)[item.key] ?? true}
+                      onCheckedChange={(checked) => setNotifyPrefs((prev: any) => ({ ...prev, [item.key]: checked === true }))}
+                    />
+                    <div>
+                      <Label htmlFor={item.key} className="text-sm font-medium">{item.label}</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t pt-6 space-y-4">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Smartphone className="h-4 w-4 text-primary" />
+                  Delivery Channels
+                </h3>
+                <p className="text-xs text-muted-foreground">Configure how notifications are delivered to you.</p>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 rounded-lg border">
+                    <Checkbox
+                      id="whatsapp-opt-in"
+                      checked={whatsappOptIn}
+                      onCheckedChange={(checked) => setWhatsappOptIn(checked === true)}
+                    />
+                    <div>
+                      <Label htmlFor="whatsapp-opt-in" className="text-sm font-medium">WhatsApp</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">Receive critical alerts via WhatsApp on {phone || 'your saved number'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 rounded-lg border opacity-60">
+                    <Checkbox id="push-opt-in" checked={false} disabled />
+                    <div>
+                      <Label htmlFor="push-opt-in" className="text-sm font-medium">Push Notifications</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">Browser push notifications — coming soon</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button onClick={handleNotificationPrefsSave} disabled={isSaving}>
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Save Notification Preferences
+              </Button>
+            </CardFooter>
           </Card>
          </TabsContent>
          <TabsContent value="branding">

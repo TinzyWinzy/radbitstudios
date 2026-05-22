@@ -17,4 +17,9 @@ export interface AppUser extends User {
   subscriptionId?: string;
   phone?: string;
   whatsappOptIn?: boolean;
+  notifyAssessment?: boolean;
+  notifyInsights?: boolean;
+  notifyTender?: boolean;
+  notifyNews?: boolean;
+  notifySystem?: boolean;
 }
