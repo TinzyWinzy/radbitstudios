@@ -173,14 +173,21 @@ export const RateLimits = {
  * Priority: authenticated user UID → guest session token → IP.
  */
 export function getRateLimitKey(
-  req: { headers: Record<string, string | string[] | undefined> },
+  req: { headers: Headers | Record<string, string | string[] | undefined> },
   userId?: string,
 ): string {
   if (userId) return userId;
 
-  const forwarded = req.headers['x-forwarded-for'];
+  const h = req.headers;
+  let forwarded: string | undefined;
+  if (typeof h.get === 'function') {
+    forwarded = h.get('x-forwarded-for') || undefined;
+  } else {
+    forwarded = (h as Record<string, string | string[] | undefined>)['x-forwarded-for'] as string | undefined;
+  }
+
   const ip = typeof forwarded === 'string'
     ? forwarded.split(',')[0]?.trim()
-    : Array.isArray(forwarded) ? forwarded[0] : forwarded;
+    : undefined;
   return ip || 'anonymous';
 }

@@ -62,7 +62,7 @@ export function withIpRateLimit(
 ): (req: NextRequest) => Promise<NextResponse> {
   return withRateLimit(
     config,
-    (req) => getRateLimitKey(req.headers as any),
+    (req) => getRateLimitKey(req),
     handler,
   );
 }
@@ -77,7 +77,7 @@ export function withUserRateLimit(
 ): (req: NextRequest) => Promise<NextResponse> {
   return async (req: NextRequest): Promise<NextResponse> => {
     const userId = req.cookies.get('__session')?.value || '';
-    const rawKey = userId ? `user:${userId}` : `ip:${getRateLimitKey(req.headers as any)}`;
+    const rawKey = userId ? `user:${userId}` : `ip:${getRateLimitKey(req)}`;
     const key = `${config.keyPrefix || 'rl'}:${rawKey}`;
     const result = await checkRateLimit(key, config);
 
