@@ -4,9 +4,9 @@ import { affiliateLinks, getAffiliateUrl } from '@/lib/affiliate-links';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ slug: string[] }> },
+  { params }: { params: { slug: string[] } },
 ) {
-  const { slug: slugParts } = await params;
+  const { slug: slugParts } = params;
   const slug = slugParts?.join('/');
 
   if (!slug || !(slug in affiliateLinks)) {

@@ -1,34 +1,36 @@
-import initSqlJs, { Database, SqlJsStatic } from 'sql.js';
-import path from 'path';
-import fs from 'fs';
+import { Pool, PoolClient } from 'pg';
 
-const DB_PATH = path.join(process.cwd(), 'data', 'radbit.db');
-
-let SQL: SqlJsStatic | null = null;
-let db: Database | null = null;
-
-async function initDb(): Promise<Database> {
-  if (db) return db;
-
-  if (!SQL) {
-    SQL = await initSqlJs({
-      locateFile: (file) => path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', file),
-    });
+function getPool(): Pool {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      'DATABASE_URL is not set. Add it to your .env to connect to Supabase PostgreSQL.',
+    );
   }
 
-  const dir = path.dirname(DB_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  // Reuse the same pool across hot-reloads in dev
+  const g = globalThis as unknown as { __radbitPgPool?: Pool };
+  if (g.__radbitPgPool) return g.__radbitPgPool;
 
-  if (fs.existsSync(DB_PATH)) {
-    const buffer = fs.readFileSync(DB_PATH);
-    db = new SQL(buffer);
-  } else {
-    db = new SQL();
-  }
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl:
+      process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : undefined,
+  });
 
-  db.run(`
+  pool.on('error', (err) => {
+    console.error('[PostgreSQL] Unexpected pool error:', err);
+  });
+
+  g.__radbitPgPool = pool;
+  return pool;
+}
+
+async function ensureSchema(): Promise<void> {
+  const pool = getPool();
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS tenders (
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
@@ -45,8 +47,8 @@ async function initDb(): Promise<Database> {
       requirements TEXT,
       status TEXT DEFAULT 'open',
       synced INTEGER DEFAULT 0,
-      createdAt TEXT DEFAULT (datetime('now')),
-      updatedAt TEXT DEFAULT (datetime('now'))
+      createdAt TEXT DEFAULT (NOW()::TEXT),
+      updatedAt TEXT DEFAULT (NOW()::TEXT)
     );
 
     CREATE INDEX IF NOT EXISTS idx_tenders_status ON tenders(status);
@@ -65,8 +67,8 @@ async function initDb(): Promise<Database> {
       industryTags TEXT,
       region TEXT,
       synced INTEGER DEFAULT 0,
-      createdAt TEXT DEFAULT (datetime('now')),
-      updatedAt TEXT DEFAULT (datetime('now'))
+      createdAt TEXT DEFAULT (NOW()::TEXT),
+      updatedAt TEXT DEFAULT (NOW()::TEXT)
     );
 
     CREATE INDEX IF NOT EXISTS idx_news_category ON news(category);
@@ -74,26 +76,36 @@ async function initDb(): Promise<Database> {
     CREATE INDEX IF NOT EXISTS idx_news_publishedAt ON news(publishedAt DESC);
 
     CREATE TABLE IF NOT EXISTS sync_log (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       table_name TEXT NOT NULL,
       records_synced INTEGER,
       status TEXT,
       error TEXT,
-      createdAt TEXT DEFAULT (datetime('now'))
+      createdAt TEXT DEFAULT (NOW()::TEXT)
     );
   `);
-
-  saveDb();
-  return db;
 }
 
-function saveDb(): void {
-  if (db) {
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(DB_PATH, buffer);
+/* ── ensure schema on first import ───────────────────────────────────────── */
+let schemaPromise: Promise<void> | null = null;
+function initSchema(): Promise<void> {
+  if (!schemaPromise) schemaPromise = ensureSchema();
+  return schemaPromise;
+}
+
+/* ── helper: run queries inside a transaction ───────────────────────────── */
+async function withClient<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+  const pool = getPool();
+  await initSchema();
+  const client = await pool.connect();
+  try {
+    return await fn(client);
+  } finally {
+    client.release();
   }
 }
+
+/* ── interfaces (kept identical to original sqlite.ts) ────────────────── */
 
 export interface TenderRecord {
   id: string;
@@ -130,284 +142,304 @@ export interface NewsRecord {
   updatedAt: string;
 }
 
-// ─── Tender Operations ──────────────────────────────────────────────────────
+/* ─── Tender Operations ──────────────────────────────────────────────────── */
 
-export async function upsertTenders(tenders: Array<{
-  id: string;
-  title: string;
-  description?: string;
-  organization?: string;
-  sourceUrl?: string;
-  sourceName?: string;
-  publishedAt?: Date;
-  closingDate?: Date | null;
-  value?: string | null;
-  category?: string;
-  sector?: string;
-  region?: string;
-  requirements?: string[];
-  status?: string;
-}>): Promise<number> {
-  const database = await initDb();
+export async function upsertTenders(
+  tenders: Array<{
+    id: string;
+    title: string;
+    description?: string;
+    organization?: string;
+    sourceUrl?: string;
+    sourceName?: string;
+    publishedAt?: Date;
+    closingDate?: Date | null;
+    value?: string | null;
+    category?: string;
+    sector?: string;
+    region?: string;
+    requirements?: string[];
+    status?: string;
+  }>,
+): Promise<number> {
+  return withClient(async (client) => {
+    const text = `
+      INSERT INTO tenders (id, title, description, organization, sourceUrl, sourceName,
+        publishedAt, closingDate, value, category, sector, region, requirements, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      ON CONFLICT (id) DO UPDATE SET
+        title = EXCLUDED.title,
+        description = EXCLUDED.description,
+        organization = EXCLUDED.organization,
+        sourceUrl = EXCLUDED.sourceUrl,
+        sourceName = EXCLUDED.sourceName,
+        publishedAt = EXCLUDED.publishedAt,
+        closingDate = EXCLUDED.closingDate,
+        value = EXCLUDED.value,
+        category = EXCLUDED.category,
+        sector = EXCLUDED.sector,
+        region = EXCLUDED.region,
+        requirements = EXCLUDED.requirements,
+        status = EXCLUDED.status,
+        updatedAt = NOW()::TEXT
+    `;
 
-  const stmt = database.prepare(`
-    INSERT INTO tenders (id, title, description, organization, sourceUrl, sourceName,
-      publishedAt, closingDate, value, category, sector, region, requirements, status)
-    VALUES ($id, $title, $description, $organization, $sourceUrl, $sourceName,
-      $publishedAt, $closingDate, $value, $category, $sector, $region, $requirements, $status)
-    ON CONFLICT(id) DO UPDATE SET
-      title = excluded.title,
-      description = excluded.description,
-      organization = excluded.organization,
-      sourceUrl = excluded.sourceUrl,
-      sourceName = excluded.sourceName,
-      publishedAt = excluded.publishedAt,
-      closingDate = excluded.closingDate,
-      value = excluded.value,
-      category = excluded.category,
-      sector = excluded.sector,
-      region = excluded.region,
-      requirements = excluded.requirements,
-      status = excluded.status,
-      updatedAt = datetime('now')
-  `);
-
-  let count = 0;
-  for (const tender of tenders) {
-    stmt.run({
-      $id: tender.id,
-      $title: tender.title,
-      $description: tender.description || null,
-      $organization: tender.organization || null,
-      $sourceUrl: tender.sourceUrl || null,
-      $sourceName: tender.sourceName || null,
-      $publishedAt: tender.publishedAt?.toISOString() || null,
-      $closingDate: tender.closingDate?.toISOString() || null,
-      $value: tender.value || null,
-      $category: tender.category || null,
-      $sector: tender.sector || null,
-      $region: tender.region || null,
-      $requirements: tender.requirements ? JSON.stringify(tender.requirements) : null,
-      $status: tender.status || 'open',
-    });
-    count++;
-  }
-  stmt.free();
-  saveDb();
-  return count;
+    let count = 0;
+    await client.query('BEGIN');
+    try {
+      for (const tender of tenders) {
+        await client.query(text, [
+          tender.id,
+          tender.title,
+          tender.description ?? null,
+          tender.organization ?? null,
+          tender.sourceUrl ?? null,
+          tender.sourceName ?? null,
+          tender.publishedAt?.toISOString() ?? null,
+          tender.closingDate?.toISOString() ?? null,
+          tender.value ?? null,
+          tender.category ?? null,
+          tender.sector ?? null,
+          tender.region ?? null,
+          tender.requirements ? JSON.stringify(tender.requirements) : null,
+          tender.status ?? 'open',
+        ]);
+        count++;
+      }
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    }
+    return count;
+  });
 }
 
-export async function getTenders(options: {
-  limit?: number;
-  offset?: number;
-  status?: string;
-  sector?: string;
-  region?: string;
-} = {}): Promise<TenderRecord[]> {
-  const database = await initDb();
-  const { limit = 50, offset = 0, status, sector, region } = options;
+export async function getTenders(
+  options: {
+    limit?: number;
+    offset?: number;
+    status?: string;
+    sector?: string;
+    region?: string;
+  } = {},
+): Promise<TenderRecord[]> {
+  return withClient(async (client) => {
+    const { limit = 50, offset = 0, status, sector, region } = options;
 
-  let sql = 'SELECT * FROM tenders WHERE 1=1';
-  const params: any[] = [];
+    let sql = 'SELECT * FROM tenders WHERE 1=1';
+    const params: (string | number)[] = [];
+    let p = 1;
 
-  if (status) {
-    sql += ' AND status = ?';
-    params.push(status);
-  }
-  if (sector) {
-    sql += ' AND (sector LIKE ? OR title LIKE ?)';
-    params.push(`%${sector}%`, `%${sector}%`);
-  }
-  if (region && region !== 'Africa') {
-    sql += ' AND region = ?';
-    params.push(region);
-  }
+    if (status) {
+      sql += ` AND status = $${p++}`;
+      params.push(status);
+    }
+    if (sector) {
+      sql += ` AND (sector ILIKE $${p++} OR title ILIKE $${p++})`;
+      params.push(`%${sector}%`, `%${sector}%`);
+    }
+    if (region && region !== 'Africa') {
+      sql += ` AND region = $${p++}`;
+      params.push(region);
+    }
 
-  sql += ' ORDER BY publishedAt DESC LIMIT ? OFFSET ?';
-  params.push(limit, offset);
+    sql += ` ORDER BY publishedAt DESC LIMIT $${p++} OFFSET $${p++}`;
+    params.push(limit, offset);
 
-  const stmt = database.prepare(sql);
-  const rows: TenderRecord[] = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject() as TenderRecord);
-  }
-  stmt.free();
-  return rows;
+    const { rows } = await client.query(sql, params);
+    return rows as TenderRecord[];
+  });
 }
 
-export async function getTenderCount(options: {
-  status?: string;
-} = {}): Promise<number> {
-  const database = await initDb();
-  const { status } = options;
+export async function getTenderCount(
+  options: { status?: string } = {},
+): Promise<number> {
+  return withClient(async (client) => {
+    const { status } = options;
+    let sql = 'SELECT COUNT(*)::int AS count FROM tenders WHERE 1=1';
+    const params: string[] = [];
 
-  let sql = 'SELECT COUNT(*) as count FROM tenders WHERE 1=1';
-  const params: any[] = [];
+    if (status) {
+      sql += ' AND status = $1';
+      params.push(status);
+    }
 
-  if (status) {
-    sql += ' AND status = ?';
-    params.push(status);
-  }
-
-  const stmt = database.prepare(sql);
-  stmt.bind(params);
-  const row = stmt.step() ? stmt.getAsObject() as { count: number } : { count: 0 };
-  stmt.free();
-  return row.count;
+    const { rows } = await client.query(sql, params);
+    return (rows[0]?.count as number) ?? 0;
+  });
 }
 
 export async function getUnsyncedTenders(): Promise<TenderRecord[]> {
-  const database = await initDb();
-  const stmt = database.prepare('SELECT * FROM tenders WHERE synced = 0 ORDER BY createdAt ASC');
-  const rows: TenderRecord[] = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject() as TenderRecord);
-  }
-  stmt.free();
-  return rows;
+  return withClient(async (client) => {
+    const { rows } = await client.query(
+      'SELECT * FROM tenders WHERE synced = 0 ORDER BY createdAt ASC',
+    );
+    return rows as TenderRecord[];
+  });
 }
 
 export async function markTendersSynced(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const database = await initDb();
-  const stmt = database.prepare('UPDATE tenders SET synced = 1, updatedAt = datetime(\'now\') WHERE id = ?');
-  for (const id of ids) {
-    stmt.run([id]);
-  }
-  stmt.free();
-  saveDb();
-}
-
-// ─── News Operations ────────────────────────────────────────────────────────
-
-export async function upsertNewsBatch(articles: Array<{
-  id: string;
-  title: string;
-  summary?: string;
-  sourceUrl?: string;
-  sourceName?: string;
-  publishedAt?: Date;
-  category?: string;
-  industryTags?: string[];
-  region?: string;
-}>): Promise<number> {
-  const database = await initDb();
-
-  const stmt = database.prepare(`
-    INSERT INTO news (id, title, summary, sourceUrl, sourceName, publishedAt,
-      category, industryTags, region)
-    VALUES ($id, $title, $summary, $sourceUrl, $sourceName, $publishedAt,
-      $category, $industryTags, $region)
-    ON CONFLICT(id) DO UPDATE SET
-      title = excluded.title,
-      summary = excluded.summary,
-      sourceUrl = excluded.sourceUrl,
-      sourceName = excluded.sourceName,
-      publishedAt = excluded.publishedAt,
-      category = excluded.category,
-      industryTags = excluded.industryTags,
-      region = excluded.region,
-      updatedAt = datetime('now')
-  `);
-
-  let count = 0;
-  for (const article of articles) {
+  return withClient(async (client) => {
+    await client.query('BEGIN');
     try {
-      stmt.run({
-        $id: article.id,
-        $title: article.title,
-        $summary: article.summary || null,
-        $sourceUrl: article.sourceUrl || null,
-        $sourceName: article.sourceName || null,
-        $publishedAt: article.publishedAt?.toISOString() || null,
-        $category: article.category || 'general',
-        $industryTags: article.industryTags ? JSON.stringify(article.industryTags) : null,
-        $region: article.region || null,
-      });
-      count++;
-    } catch (err: any) {
-      console.error(`[SQLite] Failed to insert news ${article.id}:`, err.message);
+      for (const id of ids) {
+        await client.query(
+          "UPDATE tenders SET synced = 1, updatedAt = NOW()::TEXT WHERE id = $1",
+          [id],
+        );
+      }
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
     }
-  }
-  stmt.free();
-  saveDb();
-  return count;
+  });
 }
 
-export async function getNews(options: {
-  limit?: number;
-  offset?: number;
-  category?: string;
-  region?: string;
-} = {}): Promise<NewsRecord[]> {
-  const database = await initDb();
-  const { limit = 50, offset = 0, category, region } = options;
+/* ─── News Operations ────────────────────────────────────────────────────── */
 
-  let sql = 'SELECT * FROM news WHERE 1=1';
-  const params: any[] = [];
+export async function upsertNewsBatch(
+  articles: Array<{
+    id: string;
+    title: string;
+    summary?: string;
+    sourceUrl?: string;
+    sourceName?: string;
+    publishedAt?: Date;
+    category?: string;
+    industryTags?: string[];
+    region?: string;
+  }>,
+): Promise<number> {
+  return withClient(async (client) => {
+    const text = `
+      INSERT INTO news (id, title, summary, sourceUrl, sourceName, publishedAt,
+        category, industryTags, region)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      ON CONFLICT (id) DO UPDATE SET
+        title = EXCLUDED.title,
+        summary = EXCLUDED.summary,
+        sourceUrl = EXCLUDED.sourceUrl,
+        sourceName = EXCLUDED.sourceName,
+        publishedAt = EXCLUDED.publishedAt,
+        category = EXCLUDED.category,
+        industryTags = EXCLUDED.industryTags,
+        region = EXCLUDED.region,
+        updatedAt = NOW()::TEXT
+    `;
 
-  if (category && category !== 'all') {
-    sql += ' AND category = ?';
-    params.push(category);
-  }
-  if (region && region !== 'Africa') {
-    sql += ' AND region = ?';
-    params.push(region);
-  }
+    let count = 0;
+    await client.query('BEGIN');
+    try {
+      for (const article of articles) {
+        await client.query(text, [
+          article.id,
+          article.title,
+          article.summary ?? null,
+          article.sourceUrl ?? null,
+          article.sourceName ?? null,
+          article.publishedAt?.toISOString() ?? null,
+          article.category ?? 'general',
+          article.industryTags ? JSON.stringify(article.industryTags) : null,
+          article.region ?? null,
+        ]);
+        count++;
+      }
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    }
+    return count;
+  });
+}
 
-  sql += ' ORDER BY publishedAt DESC LIMIT ? OFFSET ?';
-  params.push(limit, offset);
+export async function getNews(
+  options: {
+    limit?: number;
+    offset?: number;
+    category?: string;
+    region?: string;
+  } = {},
+): Promise<NewsRecord[]> {
+  return withClient(async (client) => {
+    const { limit = 50, offset = 0, category, region } = options;
 
-  const stmt = database.prepare(sql);
-  const rows: NewsRecord[] = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject() as NewsRecord);
-  }
-  stmt.free();
-  return rows;
+    let sql = 'SELECT * FROM news WHERE 1=1';
+    const params: (string | number)[] = [];
+    let p = 1;
+
+    if (category && category !== 'all') {
+      sql += ` AND category = $${p++}`;
+      params.push(category);
+    }
+    if (region && region !== 'Africa') {
+      sql += ` AND region = $${p++}`;
+      params.push(region);
+    }
+
+    sql += ` ORDER BY publishedAt DESC LIMIT $${p++} OFFSET $${p++}`;
+    params.push(limit, offset);
+
+    const { rows } = await client.query(sql, params);
+    return rows as NewsRecord[];
+  });
 }
 
 export async function getNewsCount(): Promise<number> {
-  const database = await initDb();
-  const stmt = database.prepare('SELECT COUNT(*) as count FROM news');
-  const row = stmt.step() ? stmt.getAsObject() as { count: number } : { count: 0 };
-  stmt.free();
-  return row.count;
+  return withClient(async (client) => {
+    const { rows } = await client.query('SELECT COUNT(*)::int AS count FROM news');
+    return (rows[0]?.count as number) ?? 0;
+  });
 }
 
 export async function getUnsyncedNews(): Promise<NewsRecord[]> {
-  const database = await initDb();
-  const stmt = database.prepare('SELECT * FROM news WHERE synced = 0 ORDER BY createdAt ASC');
-  const rows: NewsRecord[] = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject() as NewsRecord);
-  }
-  stmt.free();
-  return rows;
+  return withClient(async (client) => {
+    const { rows } = await client.query(
+      'SELECT * FROM news WHERE synced = 0 ORDER BY createdAt ASC',
+    );
+    return rows as NewsRecord[];
+  });
 }
 
 export async function markNewsSynced(ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const database = await initDb();
-  const stmt = database.prepare('UPDATE news SET synced = 1, updatedAt = datetime(\'now\') WHERE id = ?');
-  for (const id of ids) {
-    stmt.run([id]);
-  }
-  stmt.free();
-  saveDb();
+  return withClient(async (client) => {
+    await client.query('BEGIN');
+    try {
+      for (const id of ids) {
+        await client.query(
+          "UPDATE news SET synced = 1, updatedAt = NOW()::TEXT WHERE id = $1",
+          [id],
+        );
+      }
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    }
+  });
 }
 
-// ─── Sync Log ───────────────────────────────────────────────────────────────
+/* ─── Sync Log ───────────────────────────────────────────────────────────── */
 
-export async function logSync(tableName: string, recordsSynced: number, status: string, error?: string): Promise<void> {
-  const database = await initDb();
-  database.run('INSERT INTO sync_log (table_name, records_synced, status, error) VALUES (?, ?, ?, ?)', [
-    tableName, recordsSynced, status, error || null,
-  ]);
-  saveDb();
+export async function logSync(
+  tableName: string,
+  recordsSynced: number,
+  status: string,
+  error?: string,
+): Promise<void> {
+  return withClient(async (client) => {
+    await client.query(
+      'INSERT INTO sync_log (table_name, records_synced, status, error) VALUES ($1, $2, $3, $4)',
+      [tableName, recordsSynced, status, error ?? null],
+    );
+  });
 }
 
-// ─── Stats ──────────────────────────────────────────────────────────────────
+/* ─── Stats ────────────────────────────────────────────────────────────── */
 
 export async function getDbStats(): Promise<{
   tenders: number;
@@ -416,45 +448,26 @@ export async function getDbStats(): Promise<{
   unsyncedNews: number;
   dbSize: string;
 }> {
-  const database = await initDb();
+  return withClient(async (client) => {
+    const tRows = (await client.query('SELECT COUNT(*)::int AS count FROM tenders')).rows;
+    const nRows = (await client.query('SELECT COUNT(*)::int AS count FROM news')).rows;
+    const utRows = (await client.query('SELECT COUNT(*)::int AS count FROM tenders WHERE synced = 0')).rows;
+    const unRows = (await client.query('SELECT COUNT(*)::int AS count FROM news WHERE synced = 0')).rows;
+    const sizeRows = (await client.query(
+      "SELECT pg_size_pretty(pg_database_size(current_database())) AS size"
+    )).rows;
 
-  const getTenderCount = database.prepare('SELECT COUNT(*) as count FROM tenders');
-  const tenderCount = getTenderCount.step() ? (getTenderCount.getAsObject() as { count: number }).count : 0;
-  getTenderCount.free();
-
-  const getNewsCount = database.prepare('SELECT COUNT(*) as count FROM news');
-  const newsCount = getNewsCount.step() ? (getNewsCount.getAsObject() as { count: number }).count : 0;
-  getNewsCount.free();
-
-  const getUnsyncedTenders = database.prepare('SELECT COUNT(*) as count FROM tenders WHERE synced = 0');
-  const unsyncedTenders = getUnsyncedTenders.step() ? (getUnsyncedTenders.getAsObject() as { count: number }).count : 0;
-  getUnsyncedTenders.free();
-
-  const getUnsyncedNews = database.prepare('SELECT COUNT(*) as count FROM news WHERE synced = 0');
-  const unsyncedNews = getUnsyncedNews.step() ? (getUnsyncedNews.getAsObject() as { count: number }).count : 0;
-  getUnsyncedNews.free();
-
-  let dbSize = '0 KB';
-  try {
-    const stats = fs.statSync(DB_PATH);
-    const bytes = stats.size;
-    if (bytes < 1024) dbSize = `${bytes} B`;
-    else if (bytes < 1024 * 1024) dbSize = `${(bytes / 1024).toFixed(1)} KB`;
-    else dbSize = `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  } catch {
-    dbSize = 'N/A';
-  }
-
-  return {
-    tenders: tenderCount,
-    news: newsCount,
-    unsyncedTenders,
-    unsyncedNews,
-    dbSize,
-  };
+    return {
+      tenders: (tRows[0]?.count as number) ?? 0,
+      news: (nRows[0]?.count as number) ?? 0,
+      unsyncedTenders: (utRows[0]?.count as number) ?? 0,
+      unsyncedNews: (unRows[0]?.count as number) ?? 0,
+      dbSize: (sizeRows[0]?.size as string) ?? 'N/A',
+    };
+  });
 }
 
-// ─── Utility ────────────────────────────────────────────────────────────────
+/* ─── Utility ────────────────────────────────────────────────────────────── */
 
 export function tenderFromDb(record: TenderRecord): any {
   return {
@@ -462,7 +475,7 @@ export function tenderFromDb(record: TenderRecord): any {
     requirements: record.requirements ? JSON.parse(record.requirements) : [],
     publishedAt: record.publishedAt ? new Date(record.publishedAt) : new Date(),
     closingDate: record.closingDate ? new Date(record.closingDate) : null,
-    processedAt: new Date(record.updatedAt),
+    processedAt: new Date(record.updatedAt || record.createdAt),
     scrapedAt: new Date(record.createdAt),
   };
 }
@@ -472,15 +485,15 @@ export function newsFromDb(record: NewsRecord): any {
     ...record,
     industryTags: record.industryTags ? JSON.parse(record.industryTags) : [],
     publishedAt: record.publishedAt ? new Date(record.publishedAt) : new Date(),
-    processedAt: new Date(record.updatedAt),
+    processedAt: new Date(record.updatedAt || record.createdAt),
     scrapedAt: new Date(record.createdAt),
   };
 }
 
 export async function closeDb(): Promise<void> {
-  if (db) {
-    saveDb();
-    db.close();
-    db = null;
+  const g = globalThis as unknown as { __radbitPgPool?: Pool };
+  if (g.__radbitPgPool) {
+    await g.__radbitPgPool.end();
+    g.__radbitPgPool = undefined;
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { blogService, type BlogPost } from "@/services/blog.service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -60,21 +60,27 @@ function renderMarkdown(md: string): string {
 export default function BlogPostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = use(params);
+  const { slug } = params;
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    blogService.getBySlug(slug).then(p => {
-      setPost(p);
-      setLoading(false);
-    });
+    blogService.getBySlug(slug)
+      .then(p => {
+        setPost(p);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
   }, [slug]);
 
   if (loading) return null;
-  if (!post) notFound();
+  if (error || !post) notFound();
 
   const sections = splitContent(post.content);
 

@@ -8,12 +8,18 @@ import Image from "next/image";
 export function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    blogService.listPublished().then((p) => {
-      setPosts(p);
-      setLoading(false);
-    });
+    blogService.listPublished()
+      .then((p) => {
+        setPosts(p);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
@@ -31,6 +37,12 @@ export function BlogList() {
           </div>
         ))}
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="text-muted-foreground">Unable to load posts. Please try again later.</p>
     );
   }
 

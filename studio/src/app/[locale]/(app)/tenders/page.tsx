@@ -226,9 +226,15 @@ export default function TendersPage() {
   const handleRefresh = async () => {
     try {
       const r = await fetch('/api/scraper/tenders');
-      const d = await r.json();
-      setRawData(d);
-    } catch { /* fire and forget */ }
+      if (!r.ok) {
+        console.error('Tender scrape API error:', r.status);
+      } else {
+        const d = await r.json();
+        setRawData(d);
+      }
+    } catch (e) {
+      console.error('Failed to refresh tenders:', e);
+    }
     await loadTenders(true);
   };
 

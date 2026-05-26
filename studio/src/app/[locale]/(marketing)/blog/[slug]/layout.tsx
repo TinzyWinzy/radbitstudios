@@ -6,9 +6,9 @@ const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').rep
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
 
   try {
     const snap = await adminDb

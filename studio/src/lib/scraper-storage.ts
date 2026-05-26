@@ -19,7 +19,7 @@ async function checkFirestore(): Promise<boolean> {
     await adminDb.collection('scraper_sync_log').limit(1).get();
     firestoreAvailable = true;
   } catch {
-    console.warn('[ScraperStorage] Firestore Admin not available, using SQLite only');
+    console.warn('[ScraperStorage] Firestore Admin not available, using database only');
     firestoreAvailable = false;
   }
   return firestoreAvailable;
@@ -162,12 +162,12 @@ export async function saveTenders(
   try {
     const count = await sqliteUpsertTenders(tenders);
     return count;
-  } catch (sqliteErr: any) {
-    console.warn('[ScraperStorage] SQLite tenders write failed, falling back to Firestore:', sqliteErr.message);
+  } catch (dbErr: any) {
+    console.warn('[ScraperStorage] Database tenders write failed, falling back to Firestore:', dbErr.message);
     if (await checkFirestore()) {
       return firestoreUpsertTenders(tenders);
     }
-    throw sqliteErr;
+    throw dbErr;
   }
 }
 
@@ -181,12 +181,12 @@ export async function saveNews(
   try {
     const count = await sqliteUpsertNews(articles);
     return count;
-  } catch (sqliteErr: any) {
-    console.warn('[ScraperStorage] SQLite news write failed, falling back to Firestore:', sqliteErr.message);
+  } catch (dbErr: any) {
+    console.warn('[ScraperStorage] Database news write failed, falling back to Firestore:', dbErr.message);
     if (await checkFirestore()) {
       return firestoreUpsertNews(articles);
     }
-    throw sqliteErr;
+    throw dbErr;
   }
 }
 

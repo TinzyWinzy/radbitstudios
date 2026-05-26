@@ -279,7 +279,23 @@ export default function NewsPage() {
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Button variant="outline" size="sm" onClick={async () => { const r = await fetch('/api/scraper/news'); const d = await r.json(); setRawData(d); if (rawData === null) setShowRawData(true); loadNews(); }}>
+              <Button variant="outline" size="sm" onClick={async () => {
+                try {
+                  const r = await fetch('/api/scraper/news');
+                  if (!r.ok) {
+                    console.error('News scrape API error:', r.status);
+                    loadNews();
+                    return;
+                  }
+                  const d = await r.json();
+                  setRawData(d);
+                  setShowRawData(true);
+                  loadNews();
+                } catch (e) {
+                  console.error('Failed to refresh news:', e);
+                  loadNews();
+                }
+              }}>
                 <Loader2 className="h-3 w-3 mr-1" />
                 Refresh
               </Button>
@@ -347,10 +363,20 @@ export default function NewsPage() {
                     variant="outline"
                     className="mt-4"
                     onClick={async () => {
-                      const r = await fetch('/api/scraper/news');
-                      const d = await r.json();
-                      setRawData(d);
-                      loadNews();
+                      try {
+                        const r = await fetch('/api/scraper/news');
+                        if (!r.ok) {
+                          console.error('News scrape API error:', r.status);
+                          loadNews();
+                          return;
+                        }
+                        const d = await r.json();
+                        setRawData(d);
+                        loadNews();
+                      } catch (e) {
+                        console.error('Failed to refresh news:', e);
+                        loadNews();
+                      }
                     }}
                   >
                     Refresh
