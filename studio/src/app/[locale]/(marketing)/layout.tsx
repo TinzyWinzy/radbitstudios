@@ -52,6 +52,9 @@ export default function MarketingLayout({
               <Link href="/blog" className="text-white/50 hover:text-white transition-colors">
                 Blog
               </Link>
+              <Link href="/consultancy" className="text-white/50 hover:text-white transition-colors text-primary">
+                Consultancy
+              </Link>
             </nav>
           <div className="flex flex-1 items-center justify-end space-x-3">
             <ThemeToggle />
