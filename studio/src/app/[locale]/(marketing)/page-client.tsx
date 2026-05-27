@@ -10,7 +10,9 @@ import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
 import { HeroBackground } from "@/components/hero-background";
-import { WaveField } from "@/components/wave-field";
+import dynamic from "next/dynamic";
+
+const WaveField = dynamic(() => import("@/components/wave-field").then(m => m.WaveField), { ssr: false });
 
 const containerVariants = {
   hidden: { opacity: 0 },

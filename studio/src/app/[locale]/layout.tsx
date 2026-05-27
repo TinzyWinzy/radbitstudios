@@ -1,5 +1,4 @@
 
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/contexts/auth-context";
 import { NextIntlClientProvider } from 'next-intl';
@@ -15,19 +14,12 @@ export default async function LocaleLayout({
 
   return (
     <AuthProvider>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="dark"
-        enableSystem={false}
-        disableTransitionOnChange
-      >
-        <NextIntlClientProvider messages={messages}>
-          <AnalyticsTracker>
-            {children}
-          </AnalyticsTracker>
-        </NextIntlClientProvider>
-        <Toaster />
-      </ThemeProvider>
+      <NextIntlClientProvider messages={messages}>
+        <AnalyticsTracker>
+          {children}
+        </AnalyticsTracker>
+      </NextIntlClientProvider>
+      <Toaster />
     </AuthProvider>
   );
 }
