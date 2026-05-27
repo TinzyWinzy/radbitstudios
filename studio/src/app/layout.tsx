@@ -4,6 +4,7 @@ import "./globals.css";
 import { getLocale } from 'next-intl/server';
 import { organizationSchema, websiteSchema, faqPageSchema, FAQ_DATA } from "@/lib/seo";
 import { CookieBanner } from "@/components/cookie-banner";
+import { GA4Script } from "@/components/analytics/ga4";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
 const syne = Syne({
@@ -99,6 +100,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+        <GA4Script />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema(FAQ_DATA)) }} />
         <script type="application/ld+json" suppressHydrationWarning
