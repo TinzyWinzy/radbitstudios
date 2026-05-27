@@ -1,4 +1,6 @@
 import parser from 'rss-parser';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { saveNews, loadNews, safeNewsFromDb, saveLog } from '@/lib/scraper-storage';
@@ -28,6 +30,7 @@ interface FeedConfig {
   sourceName: string;
   region: string;
   industryMapping: Record<string, string[]>;
+  type: 'rss' | 'html';
   _id?: string;
 }
 
@@ -36,6 +39,7 @@ const FEEDS: FeedConfig[] = [
     url: 'https://www.herald.co.zw/feed/',
     sourceName: 'The Herald Zimbabwe',
     region: 'Zimbabwe',
+    type: 'rss',
     industryMapping: {
       finance: ['Reserve Bank', 'bond', 'inflation', 'rtgs', 'usd', 'forex', 'deposit', 'loan', 'bank', 'zig'],
       technology: ['ICT', 'EcoCash', 'TelOne', 'NetOne', 'data', 'internet', 'digital'],
@@ -48,6 +52,7 @@ const FEEDS: FeedConfig[] = [
     url: 'https://www.businessweekly.co.zw/feed/',
     sourceName: 'Business Weekly Zimbabwe',
     region: 'Zimbabwe',
+    type: 'rss',
     industryMapping: {
       finance: ['banking', 'fintech', 'insurance', 'invest', 'stock', 'market', 'JSE'],
       business: ['SME', 'startup', 'enterprise', 'company', 'corporate', 'revenue'],
@@ -58,6 +63,7 @@ const FEEDS: FeedConfig[] = [
     url: 'https://www.praz.org.zw/feed/',
     sourceName: 'PRAZ Zimbabwe',
     region: 'Zimbabwe',
+    type: 'rss',
     industryMapping: {
       business: ['SME', 'business', 'company', 'enterprise', 'procurement', 'tender', 'bid'],
       policy: ['government', 'public', 'parliament', 'regulation', 'policy'],
@@ -68,28 +74,74 @@ const FEEDS: FeedConfig[] = [
     url: 'https://bulawayo24.com/',
     sourceName: 'Bulawayo24 News',
     region: 'Zimbabwe',
+    type: 'html',
     industryMapping: {
       business: ['SME', 'business', 'company', 'economy', 'enterprise'],
       policy: ['government', 'minister', 'parliament', 'zimbabwe', 'politics'],
-      finance: ['bank', 'inflation', 'currency', ' ZiG', 'forex', 'bond', 'RTGS'],
+      finance: ['bank', 'inflation', 'currency', 'ZiG', 'forex', 'bond', 'RTGS'],
       technology: ['tech', 'digital', 'AI', 'mobile', 'telecom'],
       regulatory: ['court', 'law', 'regulation', 'licence', 'ZERA', 'PRAZ'],
     },
   },
   {
-    url: 'https://www.newsday.co.zw/category/4/business',
-    sourceName: 'NewsDay Zimbabwe Business',
+    url: 'https://www.newsday.co.zw/',
+    sourceName: 'NewsDay Zimbabwe',
     region: 'Zimbabwe',
+    type: 'html',
     industryMapping: {
       business: ['SME', 'business', 'company', 'economy', 'enterprise', 'market'],
-      finance: ['bank', 'inflation', 'currency', ' ZiG', 'forex', 'investment'],
+      finance: ['bank', 'inflation', 'currency', 'ZiG', 'forex', 'investment'],
       technology: ['tech', 'digital', 'startup', 'software'],
       policy: ['government', 'minister', 'budget', 'policy'],
     },
   },
+  {
+    url: 'https://www.sundaymail.co.zw/feed/',
+    sourceName: 'The Sunday Mail',
+    region: 'Zimbabwe',
+    type: 'rss',
+    industryMapping: {
+      finance: ['Reserve Bank', 'bond', 'inflation', 'rtgs', 'usd', 'forex', 'deposit', 'loan', 'bank'],
+      technology: ['ICT', 'EcoCash', 'TelOne', 'NetOne', 'data', 'internet', 'digital'],
+      policy: ['government', 'minister', 'zimra', 'budget', 'policy', 'parliament'],
+      business: ['SME', 'business', 'company', 'startup', 'enterprise'],
+    },
+  },
+  {
+    url: 'https://www.chronicle.co.zw/feed/',
+    sourceName: 'The Chronicle',
+    region: 'Zimbabwe',
+    type: 'rss',
+    industryMapping: {
+      business: ['SME', 'business', 'company', 'economy', 'enterprise'],
+      finance: ['bank', 'inflation', 'currency', 'ZiG', 'forex', 'bond'],
+      policy: ['government', 'minister', 'parliament', 'policy'],
+    },
+  },
+  {
+    url: 'https://www.thestandard.co.zw/feed/',
+    sourceName: 'The Standard',
+    region: 'Zimbabwe',
+    type: 'rss',
+    industryMapping: {
+      finance: ['bank', 'inflation', 'currency', 'ZiG', 'forex', 'investment'],
+      policy: ['government', 'minister', 'parliament', 'policy'],
+      business: ['SME', 'business', 'company', 'economy'],
+      technology: ['tech', 'digital', 'software'],
+    },
+  },
 ];
 
-const rssParser = new parser({ timeout: 8000 });
+// ── rss-parser with custom request headers to avoid 403 ────────────────────
+const rssParser = new parser({
+  timeout: 15000,
+  requestOptions: {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+    },
+  },
+});
 
 const SECTORS = [
   'Agriculture', 'Retail', 'Manufacturing', 'Technology', 'Financial Services',
@@ -135,7 +187,8 @@ function generateId(url: string): string {
   return crypto.createHash('md5').update(url).digest('hex');
 }
 
-async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
+// ── RSS scraping ────────────────────────────────────────────────────────────
+async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   const rateKey = `rss:${feed.sourceName}`;
   const { allowed } = await checkRateLimit(rateKey, 'rss');
   if (!allowed) {
@@ -158,8 +211,6 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
       const category = classifyCategory(item.title, content, feed.industryMapping);
       const industryTags = extractIndustryTags(item.title, content);
 
-      logToFile(`[scrapeFeed] Item: link=${item.link}, title=${item.title?.slice(0, 50)}`);
-
       articles.push({
         id: generateId(item.link),
         title: item.title,
@@ -176,10 +227,95 @@ async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
     }
 
     return articles;
-  } catch (error) {
-    console.error(`[NewsScraper] Failed ${feed.sourceName}:`, error);
+  } catch (error: any) {
+    console.error(`[NewsScraper] RSS failed ${feed.sourceName}:`, error.message?.slice(0, 100) || error);
     return [];
   }
+}
+
+// ── HTML scraping (for sites without proper RSS) ──────────────────────────
+async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
+  const rateKey = `html:${feed.sourceName}`;
+  const { allowed } = await checkRateLimit(rateKey, 'rss');
+  if (!allowed) {
+    console.warn(`[NewsScraper] Rate limited for ${feed.sourceName}, skipping.`);
+    return [];
+  }
+
+  try {
+    const response = await axios.get(feed.url, {
+      timeout: 15000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+      maxRedirects: 5,
+    });
+
+    const html = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
+    const $ = cheerio.load(html);
+    const articles: NewsArticle[] = [];
+    const seen = new Set<string>();
+
+    // Try multiple common selectors for article links
+    const selectors = [
+      'article a[href]',
+      '.post a[href]',
+      '.entry a[href]',
+      '.news-item a[href]',
+      '.story a[href]',
+      'h2 a[href]',
+      'h3 a[href]',
+      '.headline a[href]',
+      '.title a[href]',
+      'a[href*="/202"]',
+    ];
+
+    for (const selector of selectors) {
+      $(selector).each((_, el) => {
+        const href = $(el).attr('href') || '';
+        const title = $(el).text().trim().replace(/\s+/g, ' ');
+        if (!href || !title || title.length < 10 || title.length > 200) return;
+        if (seen.has(href)) return;
+        seen.add(href);
+
+        const cleanHref = href.startsWith('http') ? href : new URL(href, feed.url).href;
+        const category = classifyCategory(title, '', feed.industryMapping);
+        const industryTags = extractIndustryTags(title, '');
+
+        articles.push({
+          id: generateId(cleanHref),
+          title,
+          summary: '',
+          sourceUrl: cleanHref,
+          sourceName: feed.sourceName,
+          publishedAt: new Date(),
+          category,
+          industryTags,
+          region: feed.region,
+          processedAt: new Date(),
+          scrapedAt: new Date(),
+        });
+      });
+
+      if (articles.length >= 10) break; // enough articles found
+    }
+
+    if (articles.length > 0) {
+      console.log(`[NewsScraper] HTML scraped ${articles.length} from ${feed.sourceName}`);
+    }
+    return articles.slice(0, 15);
+  } catch (error: any) {
+    console.error(`[NewsScraper] HTML failed ${feed.sourceName}:`, error.message?.slice(0, 100) || error);
+    return [];
+  }
+}
+
+async function scrapeFeed(feed: FeedConfig): Promise<NewsArticle[]> {
+  if (feed.type === 'html') {
+    return scrapeHtmlFeed(feed);
+  }
+  return scrapeRssFeed(feed);
 }
 
 export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: number; articles: any[] }> {
@@ -212,6 +348,7 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
         sourceName: a.name,
         region: a.region || 'Zimbabwe',
         industryMapping: a.industryMapping || {},
+        type: (a.type as 'rss' | 'html') || 'rss',
         _id: a.id,
       }));
     }
@@ -244,9 +381,8 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
   }
 
   if (allArticles.length > 0) {
-    logToFile(`Attempting to save ${allArticles.length} articles to SQLite`);
+    logToFile(`Attempting to save ${allArticles.length} articles to database`);
     logToFile(`First article: ${JSON.stringify({ id: allArticles[0].id, title: allArticles[0].title?.slice(0, 50) })}`);
-    logToFile(`All IDs: ${allArticles.map(a => a.id).join(', ')}`);
     try {
       await saveNews(allArticles);
       logToFile(`Saved ${results.scraped} articles`);
