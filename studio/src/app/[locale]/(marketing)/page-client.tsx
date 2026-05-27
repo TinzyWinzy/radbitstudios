@@ -42,7 +42,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/[0.07] text-sm font-medium text-white/80 mb-8"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/20 bg-foreground/[0.07] text-sm font-medium text-foreground/80 mb-8"
         >
           <Sparkles className="h-3.5 w-3.5 text-primary" />
           Digital sovereignty. Built for resilience in Zimbabwe.
@@ -52,18 +52,18 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white"
+          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           <span className="text-gradient">Build. Scale.</span>
           <br />
-          <span className="text-white/90">Own Your Future.</span>
+          <span className="text-foreground/90">Own Your Future.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
         >
           Beat forex volatility, navigate load-shedding, and win government contracts — AI-driven tools built for Zimbabwean entrepreneurs who refuse to wait. Own your data, own your growth, own your future.
         </motion.p>
@@ -83,7 +83,7 @@ function HeroSection() {
           <MagneticButton asChild size="default" variant="outline" className="font-headline text-sm tracking-wider border border-primary/20 text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/40 px-6">
             <Link href="/toolkit">Explore AI Toolkit</Link>
           </MagneticButton>
-          <MagneticButton asChild size="default" variant="ghost" className="font-headline text-sm tracking-wider text-white/40 hover:text-white/70 hover:bg-white/[0.05] px-6">
+          <MagneticButton asChild size="default" variant="ghost" className="font-headline text-sm tracking-wider text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.05] px-6">
             <Link href="/tenders">See Sample Tender Alert</Link>
           </MagneticButton>
         </motion.div>
@@ -92,7 +92,7 @@ function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-8 flex items-center justify-center gap-6 text-sm text-white/50"
+          className="mt-8 flex items-center justify-center gap-6 text-sm text-foreground/50"
         >
           <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-primary" />No credit card</span>
           <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-secondary" />Free tier available</span>
@@ -112,13 +112,13 @@ function HeroSection() {
 
 function DemoSection() {
   return (
-    <section className="relative py-16 border-y border-white/10 bg-white/[0.02]">
+    <section className="relative py-16 border-y border-foreground/10 bg-foreground/[0.02]">
       <div className="container max-w-3xl mx-auto text-center space-y-6">
         <p className="text-xs tracking-[0.3em] text-primary uppercase font-headline">See Radbit in Action</p>
-        <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-white">
+        <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground">
           Book a free demo
         </h2>
-        <p className="text-white/60 text-sm max-w-lg mx-auto leading-relaxed">
+        <p className="text-foreground/60 text-sm max-w-lg mx-auto leading-relaxed">
           See how Radbit helps Zimbabwean SMEs find tenders, access AI insights, and grow with confidence. We&apos;ll walk you through the platform tailored to your industry.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -168,7 +168,7 @@ function HowItWorksSection() {
           className="text-center space-y-3 mb-12"
         >
           <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">How it works</span>
-          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
             3 Steps to <span className="text-gradient">Sovereignty</span>
           </h2>
         </motion.div>
@@ -178,13 +178,13 @@ function HowItWorksSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="grid md:grid-cols-3 gap-0 bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
+          className="grid md:grid-cols-3 gap-0 bg-foreground/[0.03] border border-foreground/10 rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
         >
           {steps.map((step, i) => (
             <motion.div
               key={step.title}
               variants={itemVariants}
-              className="relative group p-8 md:p-10 hover:bg-white/[0.02] transition-colors duration-300"
+              className="relative group p-8 md:p-10 hover:bg-foreground/[0.02] transition-colors duration-300"
             >
               <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-30 transition-opacity duration-300">
                 {step.symbol}
@@ -196,8 +196,8 @@ function HowItWorksSection() {
                   </div>
                   <span className="font-headline text-xs tracking-[0.2em] text-primary/70">0{i + 1}</span>
                 </div>
-                <h3 className="font-headline text-xl font-bold text-white">{step.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{step.body}</p>
+                <h3 className="font-headline text-xl font-bold text-foreground">{step.title}</h3>
+                <p className="text-foreground/60 text-sm leading-relaxed">{step.body}</p>
               </div>
             </motion.div>
           ))}
@@ -263,7 +263,7 @@ function FeaturesSection() {
           className="text-center space-y-3 mb-12"
         >
           <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">What you get</span>
-          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
             Tools That <span className="text-gradient">Multiply</span> You
           </h2>
         </motion.div>
@@ -279,16 +279,16 @@ function FeaturesSection() {
             <motion.div key={feature.title} variants={itemVariants}>
               <TiltCard>
                 <Link href={feature.href}>
-                  <div className="group relative rounded-xl border border-white/10 bg-white/[0.03] p-8 hover:border-primary/30 transition-all duration-300 hover:bg-white/[0.05] h-full">
+                  <div className="group relative rounded-xl border border-foreground/10 bg-foreground/[0.03] p-8 hover:border-primary/30 transition-all duration-300 hover:bg-foreground/[0.05] h-full">
                     <div className="relative z-10 space-y-5">
                       <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary">
                         {feature.icon}
                       </div>
-                      <h3 className="font-headline text-xl font-bold text-white">{feature.title}</h3>
-                      <p className="text-white/60 text-sm leading-relaxed">{feature.body}</p>
+                      <h3 className="font-headline text-xl font-bold text-foreground">{feature.title}</h3>
+                      <p className="text-foreground/60 text-sm leading-relaxed">{feature.body}</p>
                       <div className="flex flex-wrap gap-2 mt-3">
                         {feature.tags.map(tag => (
-                          <span key={tag} className="px-2.5 py-1 text-xs font-medium rounded-full bg-white/[0.06] border border-white/10 text-white/50">
+                          <span key={tag} className="px-2.5 py-1 text-xs font-medium rounded-full bg-foreground/[0.06] border border-foreground/10 text-foreground/50">
                             {tag}
                           </span>
                         ))}
@@ -333,7 +333,7 @@ function MetricsSection() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          className="grid md:grid-cols-3 gap-0 bg-white/[0.03] border border-white/10 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
+          className="grid md:grid-cols-3 gap-0 bg-foreground/[0.03] border border-foreground/10 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
         >
           {[
             { value: 5000, suffix: "+", label: "SMEs Assessed", sub: "Across all 10 provinces of Zimbabwe", icon: <Shield className="h-4 w-4 text-primary" /> },
@@ -346,19 +346,19 @@ function MetricsSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="p-8 md:p-10 text-center group hover:bg-white/[0.02] transition-colors duration-300"
+              className="p-8 md:p-10 text-center group hover:bg-foreground/[0.02] transition-colors duration-300"
             >
               <div className="flex items-center justify-center gap-2 mb-3">
                 {metric.icon}
-                <span className="font-headline text-xs tracking-[0.2em] text-white/50 uppercase">Impact</span>
+                <span className="font-headline text-xs tracking-[0.2em] text-foreground/50 uppercase">Impact</span>
               </div>
-              <div className="text-white">
+              <div className="text-foreground">
                 <span className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter">
                   {metric.value}{metric.suffix}
                 </span>
               </div>
-              <p className="text-sm text-white/60 font-medium mt-2">{metric.label}</p>
-              <p className="text-xs text-white/40 mt-1 max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
+              <p className="text-sm text-foreground/60 font-medium mt-2">{metric.label}</p>
+              <p className="text-xs text-foreground/40 mt-1 max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -417,18 +417,18 @@ function CaseStudiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="group block p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-primary/30 transition-all duration-300"
+              className="group block p-6 rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:bg-foreground/[0.06] hover:border-primary/30 transition-all duration-300"
             >
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-2 py-0.5 rounded text-[10px] font-headline font-semibold tracking-wider uppercase bg-primary/10 text-primary/80">
                   {cs.industry}
                 </span>
               </div>
-              <h3 className="font-headline font-bold text-lg text-white group-hover:text-primary transition-colors mb-1">
+              <h3 className="font-headline font-bold text-lg text-foreground group-hover:text-primary transition-colors mb-1">
                 {cs.company}
                 <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-200" />
               </h3>
-              <p className="text-sm text-white/50 mb-3">{cs.tagline}</p>
+              <p className="text-sm text-foreground/50 mb-3">{cs.tagline}</p>
               <p className="text-sm text-primary/90 font-medium">&ldquo;{cs.result}&rdquo;</p>
             </motion.a>
           ))}
@@ -476,10 +476,10 @@ function CuratedBriefsSection() {
           className="text-center space-y-3 mb-10"
         >
           <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Curated Briefs</span>
-          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
             Intelligence That <span className="text-gradient">Moves Your Business</span>
           </h2>
-          <p className="text-white/60 max-w-lg mx-auto text-base">
+          <p className="text-foreground/60 max-w-lg mx-auto text-base">
             AI-curated news, tenders, and market insights tailored to your industry.
           </p>
         </motion.div>
@@ -498,19 +498,19 @@ function CuratedBriefsSection() {
               className="group relative"
             >
               <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-b from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300" />
-              <div className="relative rounded-xl border border-white/10 bg-white/[0.03] p-6 h-full flex flex-col group-hover:bg-white/[0.05] transition-colors duration-300">
+              <div className="relative rounded-xl border border-foreground/10 bg-foreground/[0.03] p-6 h-full flex flex-col group-hover:bg-foreground/[0.05] transition-colors duration-300">
                 <div className="mb-3">
-                  <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-full border ${categoryColors[brief.category] || 'bg-white/10 text-white/60 border-white/20'}`}>
+                  <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-full border ${categoryColors[brief.category] || 'bg-foreground/10 text-foreground/60 border-foreground/20'}`}>
                     {brief.category}
                   </span>
                 </div>
-                <h3 className="font-headline text-sm font-bold text-white/90 mb-2 leading-snug">
+                <h3 className="font-headline text-sm font-bold text-foreground/90 mb-2 leading-snug">
                   {brief.title}
                 </h3>
-                <p className="text-sm text-white/50 leading-relaxed flex-1">
+                <p className="text-sm text-foreground/50 leading-relaxed flex-1">
                   {brief.summary}
                 </p>
-                <div className="mt-4 pt-3 border-t border-white/10">
+                <div className="mt-4 pt-3 border-t border-foreground/10">
                   <p className="text-xs text-primary flex items-center gap-1.5">
                     <Zap className="h-3 w-3 shrink-0" />
                     {brief.action}
@@ -528,7 +528,7 @@ function CuratedBriefsSection() {
           transition={{ delay: 0.3 }}
           className="text-center mt-8"
         >
-          <p className="text-sm text-white/50 mb-4">Personalized briefs generated daily from live data sources.</p>
+          <p className="text-sm text-foreground/50 mb-4">Personalized briefs generated daily from live data sources.</p>
           <MagneticButton asChild size="default" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60">
             <Link href="/sign-up">
               Get Your First Brief <ArrowRight className="ml-1 h-3 w-3" />
@@ -542,7 +542,7 @@ function CuratedBriefsSection() {
 
 function CTASection() {
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden border-t border-white/10">
+    <section className="relative py-20 md:py-28 overflow-hidden border-t border-foreground/10">
       <WaveField
         className="absolute inset-0 z-0 opacity-10"
         waveCount={1}
@@ -557,12 +557,12 @@ function CTASection() {
           viewport={{ once: true }}
           className="space-y-4"
         >
-          <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white">
+          <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-foreground">
             Your Next Move.
             <br />
             <span className="text-gradient">Start Today.</span>
           </h2>
-          <p className="text-base md:text-lg text-white/60 max-w-lg mx-auto">
+          <p className="text-base md:text-lg text-foreground/60 max-w-lg mx-auto">
             No card required. 5 minutes to your first insights.
           </p>
         </motion.div>
@@ -586,15 +586,15 @@ function CTASection() {
 
 function FooterSection() {
   return (
-    <footer className="relative border-t border-white/10 bg-black/60">
+    <footer className="relative border-t border-foreground/10 bg-background/60">
       <ChevronPattern variant="divider" direction="down" className="absolute -top-16 opacity-30" />
       <div className="container pt-20 pb-12">
         <div className="grid md:grid-cols-4 gap-12">
           <div className="md:col-span-1 space-y-6">
             <Link href="/" className="flex items-center gap-3 group">
-              <span className="font-headline text-xl font-bold tracking-wide text-white">RADBIT</span>
+              <span className="font-headline text-xl font-bold tracking-wide text-foreground">RADBIT</span>
             </Link>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-sm text-foreground/50 leading-relaxed">
               Digital sovereignty for Zimbabwean enterprises.
             </p>
             <div className="flex gap-3">
@@ -630,11 +630,11 @@ function FooterSection() {
             },
           ].map(group => (
             <div key={group.title}>
-              <h3 className="font-headline text-sm font-bold tracking-wider mb-5 text-white/80">{group.title}</h3>
+              <h3 className="font-headline text-sm font-bold tracking-wider mb-5 text-foreground/80">{group.title}</h3>
               <ul className="space-y-3">
                 {group.links.map(link => (
                   <li key={link.label}>
-                    <Link href={link.href} className="text-sm text-white/50 hover:text-white/90 transition-colors">
+                    <Link href={link.href} className="text-sm text-foreground/50 hover:text-foreground/90 transition-colors">
                       {link.label}
                     </Link>
                   </li>
@@ -643,9 +643,9 @@ function FooterSection() {
             </div>
           ))}
         </div>
-        <div className="mt-16 pt-8 border-t border-white/10 text-center text-sm text-white/40">
+        <div className="mt-16 pt-8 border-t border-foreground/10 text-center text-sm text-foreground/40">
           <p>&copy; {new Date().getFullYear()} Radbit. All rights reserved.</p>
-          <p className="mt-2 text-xs text-white/30">Your data is encrypted and stored in Southern Africa. We never share or sell your information.</p>
+          <p className="mt-2 text-xs text-foreground/30">Your data is encrypted and stored in Southern Africa. We never share or sell your information.</p>
         </div>
       </div>
     </footer>

@@ -85,7 +85,7 @@ function HeroSection() {
         </motion.div>
         <motion.h1
           variants={fadeUp}
-          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white"
+          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           Zimbabwe Business
           <br />
@@ -93,7 +93,7 @@ function HeroSection() {
         </motion.h1>
         <motion.p
           variants={fadeUp}
-          className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
         >
           Zimbabwe&apos;s premier B2B networking and business development event. Connect with
           industry leaders, diaspora investors, and government stakeholders — all under one roof.
@@ -111,12 +111,12 @@ function HeroSection() {
           ].map((item) => (
             <div
               key={item.label}
-              className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-center"
+              className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-3 text-center"
             >
-              <div className="font-headline text-2xl sm:text-3xl font-bold text-white tabular-nums">
+              <div className="font-headline text-2xl sm:text-3xl font-bold text-foreground tabular-nums">
                 {String(item.value).padStart(2, "0")}
               </div>
-              <div className="text-[10px] text-white/40 uppercase tracking-wider mt-1">
+              <div className="text-[10px] text-foreground/40 uppercase tracking-wider mt-1">
                 {item.label}
               </div>
             </div>
@@ -124,7 +124,7 @@ function HeroSection() {
         </motion.div>
 
         <motion.div variants={fadeUp} className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild size="lg" className="font-headline text-sm tracking-wider gap-2 bg-amber-600 hover:bg-amber-500 text-white">
+          <Button asChild size="lg" className="font-headline text-sm tracking-wider gap-2 bg-amber-600 hover:bg-amber-500 text-foreground">
             <Link href="#register">
               <Ticket className="h-4 w-4" /> Register Now
             </Link>
@@ -142,7 +142,7 @@ function HeroSection() {
 
 function EventDetailsSection() {
   return (
-    <section className="relative py-16 md:py-20 border-t border-white/10 bg-white/[0.02]">
+    <section className="relative py-16 md:py-20 border-t border-foreground/10 bg-foreground/[0.02]">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -169,15 +169,15 @@ function EventDetailsSection() {
             },
           ].map((item) => (
             <motion.div key={item.title} variants={fadeUp}>
-              <Card className="h-full bg-white/[0.03] border-white/10">
+              <Card className="h-full bg-foreground/[0.03] border-foreground/10">
                 <CardHeader>
                   <div className="w-10 h-10 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-400 mb-2">
                     {item.icon}
                   </div>
-                  <CardTitle className="font-headline text-lg text-white">{item.title}</CardTitle>
+                  <CardTitle className="font-headline text-lg text-foreground">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-white/60 text-sm whitespace-pre-line leading-relaxed">
+                  <CardDescription className="text-foreground/60 text-sm whitespace-pre-line leading-relaxed">
                     {item.body}
                   </CardDescription>
                 </CardContent>
@@ -222,19 +222,19 @@ function RegistrationSection() {
             <span className="font-headline text-xs tracking-[0.3em] text-amber-400 uppercase">
               Registration
             </span>
-            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground">
               Secure Your <span className="text-gradient">Spot</span>
             </h2>
-            <p className="text-white/60 max-w-lg mx-auto text-base">
+            <p className="text-foreground/60 max-w-lg mx-auto text-base">
               Choose your attendee type and register for Zimbabwe&apos;s biggest B2B expo of 2026.
             </p>
           </motion.div>
 
           <motion.div variants={fadeUp}>
-            <Card className="bg-white/[0.03] border-white/10 max-w-lg mx-auto">
+            <Card className="bg-foreground/[0.03] border-foreground/10 max-w-lg mx-auto">
               <CardHeader>
-                <CardTitle className="font-headline text-lg text-white">Register for Expo 2026</CardTitle>
-                <CardDescription className="text-white/50 text-sm">
+                <CardTitle className="font-headline text-lg text-foreground">Register for Expo 2026</CardTitle>
+                <CardDescription className="text-foreground/50 text-sm">
                   Fill in your details to reserve your pass.
                 </CardDescription>
               </CardHeader>
@@ -242,8 +242,8 @@ function RegistrationSection() {
                 {submitted ? (
                   <div className="text-center py-8 space-y-3">
                     <Sparkles className="h-10 w-10 text-amber-400 mx-auto" />
-                    <p className="text-white font-headline font-bold text-lg">Registration Confirmed!</p>
-                    <p className="text-sm text-white/50">
+                    <p className="text-foreground font-headline font-bold text-lg">Registration Confirmed!</p>
+                    <p className="text-sm text-foreground/50">
                       We&apos;ll send your ticket and event details to{" "}
                       <span className="text-amber-400">{formData.email}</span>.
                     </p>
@@ -251,7 +251,7 @@ function RegistrationSection() {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                      <label htmlFor="expo-name" className="text-sm text-white/70 mb-1.5 block">
+                      <label htmlFor="expo-name" className="text-sm text-foreground/70 mb-1.5 block">
                         Full Name
                       </label>
                       <Input
@@ -261,11 +261,11 @@ function RegistrationSection() {
                         value={formData.name}
                         onChange={(e) => handleChange("name", e.target.value)}
                         required
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <div>
-                      <label htmlFor="expo-email" className="text-sm text-white/70 mb-1.5 block">
+                      <label htmlFor="expo-email" className="text-sm text-foreground/70 mb-1.5 block">
                         Email Address
                       </label>
                       <Input
@@ -275,11 +275,11 @@ function RegistrationSection() {
                         value={formData.email}
                         onChange={(e) => handleChange("email", e.target.value)}
                         required
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <div>
-                      <label htmlFor="expo-company" className="text-sm text-white/70 mb-1.5 block">
+                      <label htmlFor="expo-company" className="text-sm text-foreground/70 mb-1.5 block">
                         Company / Organisation
                       </label>
                       <Input
@@ -289,18 +289,18 @@ function RegistrationSection() {
                         value={formData.company}
                         onChange={(e) => handleChange("company", e.target.value)}
                         required
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <div>
-                      <label htmlFor="expo-interest" className="text-sm text-white/70 mb-1.5 block">
+                      <label htmlFor="expo-interest" className="text-sm text-foreground/70 mb-1.5 block">
                         Interest Type
                       </label>
                       <select
                         id="expo-interest"
                         value={formData.interest}
                         onChange={(e) => handleChange("interest", e.target.value)}
-                        className="flex h-10 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="flex h-10 w-full rounded-md border border-foreground/10 bg-foreground/5 px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <option value="B2B Attendee" className="bg-background">
                           B2B Attendee
@@ -315,7 +315,7 @@ function RegistrationSection() {
                     </div>
                     <Button
                       type="submit"
-                      className="w-full font-headline gap-2 bg-amber-600 hover:bg-amber-500 text-white"
+                      className="w-full font-headline gap-2 bg-amber-600 hover:bg-amber-500 text-foreground"
                     >
                       <Ticket className="h-4 w-4" /> Register Now
                     </Button>
@@ -332,7 +332,7 @@ function RegistrationSection() {
 
 function LiveDemoSection() {
   return (
-    <section id="demo" className="relative py-20 md:py-28 border-t border-white/10 bg-white/[0.02]">
+    <section id="demo" className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02]">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -350,13 +350,13 @@ function LiveDemoSection() {
             </motion.span>
             <motion.h2
               variants={fadeUp}
-              className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white"
+              className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground"
             >
               Book a <span className="text-gradient">Live Demo</span>
             </motion.h2>
             <motion.p
               variants={fadeUp}
-              className="text-white/60 text-base leading-relaxed"
+              className="text-foreground/60 text-base leading-relaxed"
             >
               Visit the Radbit booth at the Zimbabwe Business Expo 2026 for a personalised demo.
               See how AI agents, tender intelligence, and digital readiness assessments can
@@ -372,7 +372,7 @@ function LiveDemoSection() {
                 <motion.li
                   key={item}
                   variants={fadeUp}
-                  className="flex items-center gap-2 text-sm text-white/70"
+                  className="flex items-center gap-2 text-sm text-foreground/70"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-amber-400 shrink-0" />
                   <span>{item}</span>
@@ -407,7 +407,7 @@ function LiveDemoSection() {
 
 function OfferSection() {
   return (
-    <section className="relative py-16 md:py-20 border-t border-white/10">
+    <section className="relative py-16 md:py-20 border-t border-foreground/10">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -425,27 +425,27 @@ function OfferSection() {
           </motion.div>
           <motion.h2
             variants={fadeUp}
-            className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-white"
+            className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground"
           >
             Register with EXPO2026
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-white/60 text-base leading-relaxed"
+            className="text-foreground/60 text-base leading-relaxed"
           >
             Use partner code{" "}
             <span className="inline-block px-3 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono text-sm font-bold">
               EXPO2026
             </span>{" "}
             when registering to receive{" "}
-            <strong className="text-white">15% off your first Radbit subscription</strong> and a
+            <strong className="text-foreground">15% off your first Radbit subscription</strong> and a
             free Digital Readiness Assessment report.
           </motion.p>
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               asChild
               size="lg"
-              className="font-headline text-sm tracking-wider gap-2 bg-amber-600 hover:bg-amber-500 text-white"
+              className="font-headline text-sm tracking-wider gap-2 bg-amber-600 hover:bg-amber-500 text-foreground"
             >
               <Link href="/assessment?ref=expo2026">
                 Start Free Assessment <ChevronRight className="h-4 w-4" />
@@ -471,7 +471,7 @@ export default function ZimbabweBusinessExpoPage() {
       <RegistrationSection />
       <LiveDemoSection />
       <OfferSection />
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-white/40">
+      <footer className="border-t border-foreground/10 py-8 text-center text-sm text-foreground/40">
         <div className="container">
           <p>
             © {new Date().getFullYear()} Radbit. Official Technology Partner of Zimbabwe Business Expo 2026.

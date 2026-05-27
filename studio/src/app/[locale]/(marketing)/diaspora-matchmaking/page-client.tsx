@@ -18,15 +18,15 @@ export default function DiasporaMatchmakingPage() {
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.08),transparent_70%)]" />
         <div className="container relative z-10 text-center space-y-6 max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/[0.07] text-sm font-medium text-white/80 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/20 bg-foreground/[0.07] text-sm font-medium text-foreground/80 mb-4">
             <Globe className="h-3.5 w-3.5 text-primary" />
             Diaspora Capital Matchmaking
           </div>
-          <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white">
+          <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground">
             Bridge Diaspora Capital with{" "}
             <span className="text-gradient">Verified Zimbabwean SMEs</span>
           </h1>
-          <p className="text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed">
             Discover compliant, PRAZ-verified SMEs with transparent operational metrics.
             Invest from anywhere in the world with confidence.
           </p>
@@ -40,7 +40,7 @@ export default function DiasporaMatchmakingPage() {
             </Link>
             <Link
               href="/sign-in"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-colors font-headline text-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-foreground/20 text-foreground/70 hover:text-foreground hover:border-foreground/40 transition-colors font-headline text-sm"
             >
               Sign In
             </Link>
@@ -48,13 +48,13 @@ export default function DiasporaMatchmakingPage() {
         </div>
       </section>
 
-      <section className="relative py-20 border-t border-white/10">
+      <section className="relative py-20 border-t border-foreground/10">
         <div className="container max-w-5xl mx-auto px-4">
           <div className="text-center space-y-3 mb-12">
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">
               Why Diaspora Matchmaking
             </span>
-            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
               Invest in Zimbabwe with{" "}
               <span className="text-gradient">Full Transparency</span>
             </h2>
@@ -79,29 +79,29 @@ export default function DiasporaMatchmakingPage() {
             ].map((item) => (
               <div
                 key={item.title}
-                className="group relative rounded-xl border border-white/10 bg-white/[0.03] p-8 hover:border-primary/30 hover:bg-white/[0.05] transition-all duration-300"
+                className="group relative rounded-xl border border-foreground/10 bg-foreground/[0.03] p-8 hover:border-primary/30 hover:bg-foreground/[0.05] transition-all duration-300"
               >
                 <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center mb-4">
                   {item.icon}
                 </div>
-                <h3 className="font-headline text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{item.body}</p>
+                <h3 className="font-headline text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-foreground/60 text-sm leading-relaxed">{item.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative py-20 border-t border-white/10">
+      <section className="relative py-20 border-t border-foreground/10">
         <div className="container max-5xl mx-auto px-4">
           <div className="text-center space-y-3 mb-12">
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">How It Works</span>
-            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
               3 Steps to{" "}
               <span className="text-gradient">Your First Match</span>
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-0 bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-0 bg-foreground/[0.03] border border-foreground/10 rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10 max-w-4xl mx-auto">
             {[
               {
                 step: "01",
@@ -119,11 +119,11 @@ export default function DiasporaMatchmakingPage() {
                 body: "Signal interest in SMEs you like. When mutual interest is confirmed, unlock contact details and take the next step.",
               },
             ].map((step) => (
-              <div key={step.step} className="relative group p-8 md:p-10 hover:bg-white/[0.02] transition-colors duration-300">
+              <div key={step.step} className="relative group p-8 md:p-10 hover:bg-foreground/[0.02] transition-colors duration-300">
                 <div className="space-y-4">
                   <span className="font-headline text-xs tracking-[0.2em] text-primary/70">{step.step}</span>
-                  <h3 className="font-headline text-xl font-bold text-white">{step.title}</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">{step.body}</p>
+                  <h3 className="font-headline text-xl font-bold text-foreground">{step.title}</h3>
+                  <p className="text-foreground/60 text-sm leading-relaxed">{step.body}</p>
                 </div>
               </div>
             ))}
@@ -131,11 +131,11 @@ export default function DiasporaMatchmakingPage() {
         </div>
       </section>
 
-      <section className="relative py-20 border-t border-white/10">
+      <section className="relative py-20 border-t border-foreground/10">
         <div className="container max-w-5xl mx-auto px-4">
           <div className="text-center space-y-3 mb-12">
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Sectors</span>
-            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
               Invest Across{" "}
               <span className="text-gradient">High-Growth Sectors</span>
             </h2>
@@ -144,24 +144,24 @@ export default function DiasporaMatchmakingPage() {
             {sectors.map((sector) => (
               <div
                 key={sector.label}
-                className="flex flex-col items-center gap-3 p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:border-primary/30 hover:bg-white/[0.05] transition-all duration-300"
+                className="flex flex-col items-center gap-3 p-6 rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:border-primary/30 hover:bg-foreground/[0.05] transition-all duration-300"
               >
                 <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary">
                   {sector.icon}
                 </div>
-                <span className="font-headline text-sm font-semibold text-white">{sector.label}</span>
+                <span className="font-headline text-sm font-semibold text-foreground">{sector.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative py-20 border-t border-white/10">
+      <section className="relative py-20 border-t border-foreground/10">
         <div className="container text-center space-y-6 max-w-2xl mx-auto px-4">
-          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground">
             Ready to Bridge Capital & Opportunity?
           </h2>
-          <p className="text-base text-white/60 max-w-lg mx-auto">
+          <p className="text-base text-foreground/60 max-w-lg mx-auto">
             Join diaspora investors already discovering verified Zimbabwean SMEs.
           </p>
           <Link

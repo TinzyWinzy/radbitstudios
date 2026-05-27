@@ -55,18 +55,18 @@ function HeroSection() {
         </motion.div>
         <motion.h1
           variants={fadeUp}
-          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white"
+          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           Tech Hub Harare <span className="text-muted-foreground/50">×</span>{" "}
           <span className="text-gradient">Radbit SME Hub</span>
           <br />
-          <span className="text-2xl sm:text-3xl md:text-4xl text-white/80">
+          <span className="text-2xl sm:text-3xl md:text-4xl text-foreground/80">
             AI Tools for Zimbabwe&apos;s Founders
           </span>
         </motion.h1>
         <motion.p
           variants={fadeUp}
-          className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
         >
           Zimbabwe&apos;s leading tech community meets the AI platform built for local SMEs.
           Access startup-grade cloud credits, deploy AI agents, and win government tenders — all
@@ -126,11 +126,11 @@ function ValuePropsSection() {
           </motion.span>
           <motion.h2
             variants={fadeUp}
-            className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white"
+            className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground"
           >
             Everything You Need to <span className="text-gradient">Launch & Scale</span>
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-white/60 max-w-lg mx-auto text-base">
+          <motion.p variants={fadeUp} className="text-foreground/60 max-w-lg mx-auto text-base">
             Three pillars. One platform. Built for Zimbabwean tech founders.
           </motion.p>
         </motion.div>
@@ -143,15 +143,15 @@ function ValuePropsSection() {
         >
           {props.map((p) => (
             <motion.div key={p.title} variants={fadeUp}>
-              <Card className="h-full bg-white/[0.03] border-white/10 hover:border-primary/30 transition-all duration-300">
+              <Card className="h-full bg-foreground/[0.03] border-foreground/10 hover:border-primary/30 transition-all duration-300">
                 <CardHeader>
                   <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary mb-2">
                     {p.icon}
                   </div>
-                  <CardTitle className="font-headline text-lg text-white">{p.title}</CardTitle>
+                  <CardTitle className="font-headline text-lg text-foreground">{p.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-white/60 text-sm leading-relaxed">
+                  <CardDescription className="text-foreground/60 text-sm leading-relaxed">
                     {p.body}
                   </CardDescription>
                 </CardContent>
@@ -174,7 +174,7 @@ function WorkshopSection() {
   };
 
   return (
-    <section id="workshop" className="relative py-20 md:py-28 border-t border-white/10">
+    <section id="workshop" className="relative py-20 md:py-28 border-t border-foreground/10">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -187,10 +187,10 @@ function WorkshopSection() {
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">
               Workshop
             </span>
-            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground">
               AI in Business Workshop
             </h2>
-            <p className="text-white/60 max-w-xl mx-auto text-base">
+            <p className="text-foreground/60 max-w-xl mx-auto text-base">
               A hands-on session for Tech Hub Harare members. Learn how to deploy AI agents,
               automate tenders, and access cloud credits — in one afternoon.
             </p>
@@ -204,7 +204,7 @@ function WorkshopSection() {
                 { icon: <FileSearch className="h-4 w-4" />, label: "See real tender matches for your startup" },
                 { icon: <Users className="h-4 w-4" />, label: "Network with fellow Tech Hub founders" },
               ].map((item) => (
-                <div key={item.label} className="flex items-center gap-3 text-sm text-white/70">
+                <div key={item.label} className="flex items-center gap-3 text-sm text-foreground/70">
                   <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary shrink-0">
                     {item.icon}
                   </div>
@@ -212,16 +212,16 @@ function WorkshopSection() {
                 </div>
               ))}
               <div className="pt-4">
-                <p className="text-sm text-white/50 italic">
+                <p className="text-sm text-foreground/50 italic">
                   Limited seats. Tech Hub members get priority booking.
                 </p>
               </div>
             </div>
 
-            <Card className="bg-white/[0.03] border-white/10">
+            <Card className="bg-foreground/[0.03] border-foreground/10">
               <CardHeader>
-                <CardTitle className="font-headline text-lg text-white">Register Your Interest</CardTitle>
-                <CardDescription className="text-white/50 text-sm">
+                <CardTitle className="font-headline text-lg text-foreground">Register Your Interest</CardTitle>
+                <CardDescription className="text-foreground/50 text-sm">
                   We&apos;ll email you the next workshop date.
                 </CardDescription>
               </CardHeader>
@@ -229,15 +229,15 @@ function WorkshopSection() {
                 {submitted ? (
                   <div className="text-center py-6 space-y-2">
                     <Sparkles className="h-8 w-8 text-primary mx-auto" />
-                    <p className="text-white font-medium">You&apos;re registered!</p>
-                    <p className="text-sm text-white/50">
+                    <p className="text-foreground font-medium">You&apos;re registered!</p>
+                    <p className="text-sm text-foreground/50">
                       Check your inbox for workshop details.
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                      <label htmlFor="workshop-name" className="text-sm text-white/70 mb-1.5 block">
+                      <label htmlFor="workshop-name" className="text-sm text-foreground/70 mb-1.5 block">
                         Full Name
                       </label>
                       <Input
@@ -245,11 +245,11 @@ function WorkshopSection() {
                         type="text"
                         placeholder="Tendai Mukanya"
                         required
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <div>
-                      <label htmlFor="workshop-email" className="text-sm text-white/70 mb-1.5 block">
+                      <label htmlFor="workshop-email" className="text-sm text-foreground/70 mb-1.5 block">
                         Email Address
                       </label>
                       <Input
@@ -259,7 +259,7 @@ function WorkshopSection() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-foreground/30"
                       />
                     </div>
                     <Button type="submit" className="w-full font-headline gap-2">
@@ -278,7 +278,7 @@ function WorkshopSection() {
 
 function OfferSection() {
   return (
-    <section className="relative py-16 md:py-20 border-t border-white/10 bg-white/[0.02]">
+    <section className="relative py-16 md:py-20 border-t border-foreground/10 bg-foreground/[0.02]">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -291,11 +291,11 @@ function OfferSection() {
             <Gift className="h-3.5 w-3.5" />
             Exclusive Tech Hub Offer
           </motion.div>
-          <motion.h2 variants={fadeUp} className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-white">
+          <motion.h2 variants={fadeUp} className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground">
             Your Partner Discount Awaits
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-white/60 text-base leading-relaxed">
-            Tech Hub Harare members get <strong className="text-white">30% off</strong> the first 3 months of any
+          <motion.p variants={fadeUp} className="text-foreground/60 text-base leading-relaxed">
+            Tech Hub Harare members get <strong className="text-foreground">30% off</strong> the first 3 months of any
             Radbit paid plan. Use code <span className="inline-block px-3 py-1 rounded-md bg-primary/15 border border-primary/30 text-primary font-mono text-sm font-bold">TECHHUB30</span> at checkout.
           </motion.p>
           <motion.div variants={fadeUp}>
@@ -318,7 +318,7 @@ export default function TechHubHararePage() {
       <ValuePropsSection />
       <WorkshopSection />
       <OfferSection />
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-white/40">
+      <footer className="border-t border-foreground/10 py-8 text-center text-sm text-foreground/40">
         <div className="container">
           <p>© {new Date().getFullYear()} Radbit. Built in partnership with Tech Hub Harare.</p>
         </div>

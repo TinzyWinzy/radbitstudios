@@ -14,7 +14,7 @@ interface WaveFieldProps {
 export function WaveField({
   className,
   waveCount = 5,
-  colors = ["40, 95%, 50%", "185, 80%, 40%", "8, 70%, 45%"],
+  colors = ["18, 85%, 55%", "25, 75%, 45%", "5, 80%, 50%"],
   speed = 0.3,
   amplitude = 40,
   mouseReactivity = 0.5,

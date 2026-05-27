@@ -80,7 +80,7 @@ export function MaturityOverview({ assessments, hasProfile, benchmarkData }: Mat
       <CardContent className="space-y-6">
         <div className="flex items-center gap-4">
           <div
-            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full text-2xl font-bold text-white"
+            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full text-2xl font-bold text-foreground"
             style={{ backgroundColor: getLevelColor(maturity.overallScore) }}
           >
             {maturity.overallScore}

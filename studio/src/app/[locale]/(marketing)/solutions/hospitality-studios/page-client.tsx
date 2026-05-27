@@ -126,7 +126,7 @@ export default function HospitalityStudiosPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white"
+            className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
           >
             Maximize Direct Bookings
             <br />
@@ -137,7 +137,7 @@ export default function HospitalityStudiosPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
+            className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
           >
             Stop paying 15-25% to OTAs. Deploy AI-powered reservation agents, automated marketing, and cybersecurity compliance tools — built for Zimbabwean hospitality and creative studios.
           </motion.p>
@@ -154,7 +154,7 @@ export default function HospitalityStudiosPage() {
                 <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="font-headline text-sm tracking-wider border border-white/20 text-white/60 hover:bg-white/5 hover:text-white">
+            <Button asChild variant="outline" size="lg" className="font-headline text-sm tracking-wider border border-foreground/20 text-foreground/60 hover:bg-foreground/5 hover:text-foreground">
               <Link href="/assessment">Start Free Assessment</Link>
             </Button>
           </motion.div>
@@ -170,10 +170,10 @@ export default function HospitalityStudiosPage() {
             className="text-center space-y-3 mb-12"
           >
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">The Problem</span>
-            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
               OTAs Are <span className="text-gradient">Eating Your Margins</span>
             </h2>
-            <p className="text-white/60 max-w-lg mx-auto text-base">
+            <p className="text-foreground/60 max-w-lg mx-auto text-base">
               Every booking through an OTA costs you 15-25%. Meanwhile, managing direct inquiries manually means lost revenue and overwhelmed staff.
             </p>
           </motion.div>
@@ -187,15 +187,15 @@ export default function HospitalityStudiosPage() {
           >
             {problems.map((problem) => (
               <motion.div key={problem.title} variants={itemVariants}>
-                <Card className="border border-white/10 bg-white/[0.03] h-full">
+                <Card className="border border-foreground/10 bg-foreground/[0.03] h-full">
                   <CardHeader>
                     <div className="w-10 h-10 rounded-lg bg-red-500/15 flex items-center justify-center text-red-400 mb-2">
                       {problem.icon}
                     </div>
-                    <CardTitle className="font-headline text-lg text-white">{problem.title}</CardTitle>
+                    <CardTitle className="font-headline text-lg text-foreground">{problem.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-white/60 text-sm leading-relaxed">{problem.body}</CardDescription>
+                    <CardDescription className="text-foreground/60 text-sm leading-relaxed">{problem.body}</CardDescription>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -204,7 +204,7 @@ export default function HospitalityStudiosPage() {
         </div>
       </section>
 
-      <section className="relative py-20 md:py-28 border-t border-white/10">
+      <section className="relative py-20 md:py-28 border-t border-foreground/10">
         <div className="container relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -213,7 +213,7 @@ export default function HospitalityStudiosPage() {
             className="text-center space-y-3 mb-12"
           >
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">The Solution</span>
-            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
               AI Agents for <span className="text-gradient">Hospitality & Studios</span>
             </h2>
           </motion.div>
@@ -227,18 +227,18 @@ export default function HospitalityStudiosPage() {
           >
             {solutions.map((solution) => (
               <motion.div key={solution.title} variants={itemVariants}>
-                <Card className="border border-white/10 bg-white/[0.03] h-full group hover:border-primary/30 transition-all duration-300">
+                <Card className="border border-foreground/10 bg-foreground/[0.03] h-full group hover:border-primary/30 transition-all duration-300">
                   <CardHeader>
                     <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary mb-2">
                       {solution.icon}
                     </div>
-                    <CardTitle className="font-headline text-lg text-white">{solution.title}</CardTitle>
+                    <CardTitle className="font-headline text-lg text-foreground">{solution.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <CardDescription className="text-white/60 text-sm leading-relaxed">{solution.body}</CardDescription>
+                    <CardDescription className="text-foreground/60 text-sm leading-relaxed">{solution.body}</CardDescription>
                     <div className="flex flex-wrap gap-2">
                       {solution.tags.map(tag => (
-                        <Badge key={tag} variant="outline" className="text-xs border-white/10 text-white/50">
+                        <Badge key={tag} variant="outline" className="text-xs border-foreground/10 text-foreground/50">
                           {tag}
                         </Badge>
                       ))}
@@ -260,7 +260,7 @@ export default function HospitalityStudiosPage() {
             className="text-center space-y-3 mb-12"
           >
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Key Features</span>
-            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
               Reclaim Your Revenue with <span className="text-gradient">AI Automation</span>
             </h2>
           </motion.div>
@@ -274,12 +274,12 @@ export default function HospitalityStudiosPage() {
           >
             {features.map((feature) => (
               <motion.div key={feature.title} variants={itemVariants}>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 h-full hover:bg-white/[0.06] transition-colors duration-300">
+                <div className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-6 h-full hover:bg-foreground/[0.06] transition-colors duration-300">
                   <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center text-primary mb-4">
                     {feature.icon}
                   </div>
-                  <h3 className="font-headline text-sm font-bold text-white mb-2">{feature.title}</h3>
-                  <p className="text-white/60 text-xs leading-relaxed">{feature.body}</p>
+                  <h3 className="font-headline text-sm font-bold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-foreground/60 text-xs leading-relaxed">{feature.body}</p>
                 </div>
               </motion.div>
             ))}
@@ -287,7 +287,7 @@ export default function HospitalityStudiosPage() {
         </div>
       </section>
 
-      <section className="relative py-20 md:py-28 border-t border-white/10 overflow-hidden">
+      <section className="relative py-20 md:py-28 border-t border-foreground/10 overflow-hidden">
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-amber-500/10 via-transparent to-primary/10" />
         <div className="container relative z-10 text-center space-y-6">
           <motion.div
@@ -296,12 +296,12 @@ export default function HospitalityStudiosPage() {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-foreground">
               Ready to Cut Commissions?
               <br />
               <span className="text-gradient">Deploy Your AI Agent Today.</span>
             </h2>
-            <p className="text-base md:text-lg text-white/60 max-w-lg mx-auto">
+            <p className="text-base md:text-lg text-foreground/60 max-w-lg mx-auto">
               Start capturing direct bookings in minutes. No credit card required.
             </p>
           </motion.div>

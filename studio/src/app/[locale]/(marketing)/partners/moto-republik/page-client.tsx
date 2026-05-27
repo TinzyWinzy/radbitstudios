@@ -51,18 +51,18 @@ function HeroSection() {
         </motion.div>
         <motion.h1
           variants={fadeUp}
-          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white"
+          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           Moto Republik <span className="text-muted-foreground/50">×</span>{" "}
           <span className="text-gradient">Radbit SME Hub</span>
           <br />
-          <span className="text-2xl sm:text-3xl md:text-4xl text-white/80">
+          <span className="text-2xl sm:text-3xl md:text-4xl text-foreground/80">
             Creative Entrepreneurship Meets AI
           </span>
         </motion.h1>
         <motion.p
           variants={fadeUp}
-          className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
         >
           Zimbabwe&apos;s creative hub meets the AI platform that supercharges your craft.
           Generate logos, write copy, automate marketing, and focus on what you do best —
@@ -141,13 +141,13 @@ function CreativeAIAgentsSection() {
           </motion.span>
           <motion.h2
             variants={fadeUp}
-            className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white"
+            className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground"
           >
             Your Creative <span className="text-gradient">AI Team</span>
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-white/60 max-w-lg mx-auto text-base"
+            className="text-foreground/60 max-w-lg mx-auto text-base"
           >
             Six specialized AI agents. One platform. Unlimited creativity.
           </motion.p>
@@ -161,15 +161,15 @@ function CreativeAIAgentsSection() {
         >
           {agents.map((a) => (
             <motion.div key={a.title} variants={fadeUp}>
-              <Card className="h-full bg-white/[0.03] border-white/10 hover:border-purple-500/30 transition-all duration-300">
+              <Card className="h-full bg-foreground/[0.03] border-foreground/10 hover:border-purple-500/30 transition-all duration-300">
                 <CardHeader>
                   <div className="w-10 h-10 rounded-lg bg-purple-500/15 flex items-center justify-center text-purple-400 mb-2">
                     {a.icon}
                   </div>
-                  <CardTitle className="font-headline text-sm text-white">{a.title}</CardTitle>
+                  <CardTitle className="font-headline text-sm text-foreground">{a.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-white/60 text-sm leading-relaxed mb-3">
+                  <CardDescription className="text-foreground/60 text-sm leading-relaxed mb-3">
                     {a.body}
                   </CardDescription>
                   <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-purple-500/10 border border-purple-500/20 text-purple-400">
@@ -187,7 +187,7 @@ function CreativeAIAgentsSection() {
 
 function CreativeProcessSection() {
   return (
-    <section className="relative py-20 md:py-28 border-t border-white/10 bg-white/[0.02]">
+    <section className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02]">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -200,10 +200,10 @@ function CreativeProcessSection() {
             <span className="font-headline text-xs tracking-[0.3em] text-purple-400 uppercase">
               For Creatives, By Creatives
             </span>
-            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground">
               From Idea to <span className="text-gradient">Impact</span>
             </h2>
-            <p className="text-white/60 max-w-lg mx-auto text-base">
+            <p className="text-foreground/60 max-w-lg mx-auto text-base">
               Whether you&apos;re a graphic designer, content creator, or agency owner —
               Radbit gives you the tools to deliver faster and charge more.
             </p>
@@ -230,14 +230,14 @@ function CreativeProcessSection() {
               <motion.div
                 key={item.step}
                 variants={fadeUp}
-                className="flex gap-5 p-5 rounded-xl border border-white/10 bg-white/[0.03]"
+                className="flex gap-5 p-5 rounded-xl border border-foreground/10 bg-foreground/[0.03]"
               >
                 <span className="font-headline text-2xl font-bold text-purple-400 shrink-0 leading-none">
                   {item.step}
                 </span>
                 <div>
-                  <h3 className="font-headline text-base font-bold text-white mb-1">{item.title}</h3>
-                  <p className="text-sm text-white/60 leading-relaxed">{item.body}</p>
+                  <h3 className="font-headline text-base font-bold text-foreground mb-1">{item.title}</h3>
+                  <p className="text-sm text-foreground/60 leading-relaxed">{item.body}</p>
                 </div>
               </motion.div>
             ))}
@@ -250,7 +250,7 @@ function CreativeProcessSection() {
 
 function OfferSection() {
   return (
-    <section className="relative py-16 md:py-20 border-t border-white/10">
+    <section className="relative py-16 md:py-20 border-t border-foreground/10">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -268,18 +268,18 @@ function OfferSection() {
           </motion.div>
           <motion.h2
             variants={fadeUp}
-            className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-white"
+            className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground"
           >
             Special Rate for Creatives
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-white/60 text-base leading-relaxed"
+            className="text-foreground/60 text-base leading-relaxed"
           >
             Moto Republik members get{" "}
-            <strong className="text-white">free access to the AI Graphic Design Agent</strong> on
+            <strong className="text-foreground">free access to the AI Graphic Design Agent</strong> on
             the Growth plan, plus{" "}
-            <strong className="text-white">20% off annual subscriptions</strong>. Use code{" "}
+            <strong className="text-foreground">20% off annual subscriptions</strong>. Use code{" "}
             <span className="inline-block px-3 py-1 rounded-md bg-purple-500/15 border border-purple-500/30 text-purple-400 font-mono text-sm font-bold">
               MOTO20
             </span>{" "}
@@ -309,7 +309,7 @@ export default function MotoRepublikPage() {
       <CreativeAIAgentsSection />
       <CreativeProcessSection />
       <OfferSection />
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-white/40">
+      <footer className="border-t border-foreground/10 py-8 text-center text-sm text-foreground/40">
         <div className="container">
           <p>
             © {new Date().getFullYear()} Radbit. Built in partnership with Moto Republik.

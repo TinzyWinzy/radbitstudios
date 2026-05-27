@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useContext } from "react";
 import { Icons } from "@/components/icons";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { MagneticButton } from "@/components/magnetic-button";
 import { UserNav } from "@/components/user-nav";
 import { AuthContext } from "@/contexts/auth-context";
+import { RollingShapes } from "@/components/rolling-shapes";
 import Link from "next/link";
 
 export default function MarketingLayout({
@@ -25,6 +25,7 @@ export default function MarketingLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <RollingShapes />
       <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "border-b border-border/50 bg-background/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
         <div className="container flex h-16 items-center">
           <Link href="/" className="flex items-center gap-3 mr-8 group">
@@ -57,7 +58,6 @@ export default function MarketingLayout({
               </Link>
             </nav>
           <div className="flex flex-1 items-center justify-end space-x-3">
-            <ThemeToggle />
             {loading ? null : user ? (
               <>
                 <Button variant="ghost" asChild className="text-sm text-muted-foreground hover:text-foreground hover:bg-accent">

@@ -50,18 +50,18 @@ function HeroSection() {
         </motion.div>
         <motion.h1
           variants={fadeUp}
-          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-white"
+          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           Impact Hub Harare <span className="text-muted-foreground/50">×</span>{" "}
           <span className="text-gradient">Radbit SME Hub</span>
           <br />
-          <span className="text-2xl sm:text-3xl md:text-4xl text-white/80">
+          <span className="text-2xl sm:text-3xl md:text-4xl text-foreground/80">
             Sustainable Innovation Powered by AI
           </span>
         </motion.h1>
         <motion.p
           variants={fadeUp}
-          className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
         >
           Zimbabwe&apos;s home for sustainable innovation meets AI-driven intelligence.
           Track green energy tenders, access sustainability grants, and scale your
@@ -122,11 +122,11 @@ function FocusSection() {
           </motion.span>
           <motion.h2
             variants={fadeUp}
-            className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white"
+            className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground"
           >
             AI That Drives <span className="text-gradient">Climate Impact</span>
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-white/60 max-w-lg mx-auto text-base">
+          <motion.p variants={fadeUp} className="text-foreground/60 max-w-lg mx-auto text-base">
             Purpose-built tools for Zimbabwe&apos;s green economy pioneers.
           </motion.p>
         </motion.div>
@@ -139,15 +139,15 @@ function FocusSection() {
         >
           {focuses.map((f) => (
             <motion.div key={f.title} variants={fadeUp}>
-              <Card className="h-full bg-white/[0.03] border-white/10 hover:border-green-500/30 transition-all duration-300">
+              <Card className="h-full bg-foreground/[0.03] border-foreground/10 hover:border-green-500/30 transition-all duration-300">
                 <CardHeader>
                   <div className="w-10 h-10 rounded-lg bg-green-500/15 flex items-center justify-center text-green-400 mb-2">
                     {f.icon}
                   </div>
-                  <CardTitle className="font-headline text-lg text-white">{f.title}</CardTitle>
+                  <CardTitle className="font-headline text-lg text-foreground">{f.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-white/60 text-sm leading-relaxed mb-4">
+                  <CardDescription className="text-foreground/60 text-sm leading-relaxed mb-4">
                     {f.body}
                   </CardDescription>
                   <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-green-500/10 border border-green-500/20 text-green-400">
@@ -165,7 +165,7 @@ function FocusSection() {
 
 function TenderTrackingSection() {
   return (
-    <section className="relative py-20 md:py-28 border-t border-white/10 bg-white/[0.02]">
+    <section className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02]">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -183,11 +183,11 @@ function TenderTrackingSection() {
             </motion.span>
             <motion.h2
               variants={fadeUp}
-              className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-white"
+              className="font-headline text-3xl md:text-4xl font-bold tracking-tighter text-foreground"
             >
               Tenders Aligned with <span className="text-gradient">Your Mission</span>
             </motion.h2>
-            <motion.p variants={fadeUp} className="text-white/60 text-base leading-relaxed">
+            <motion.p variants={fadeUp} className="text-foreground/60 text-base leading-relaxed">
               Radbit&apos;s AI engine scans every published tender from government, NGOs, and
               development partners — and surfaces opportunities that match your green energy
               or sustainability focus. No more scrolling through irrelevant listings.
@@ -203,7 +203,7 @@ function TenderTrackingSection() {
                 <motion.li
                   key={item}
                   variants={fadeUp}
-                  className="flex items-center gap-2 text-sm text-white/70"
+                  className="flex items-center gap-2 text-sm text-foreground/70"
                 >
                   <Leaf className="h-3.5 w-3.5 text-green-400 shrink-0" />
                   <span>{item}</span>
@@ -238,7 +238,7 @@ function TenderTrackingSection() {
 
 function OfferSection() {
   return (
-    <section className="relative py-16 md:py-20 border-t border-white/10">
+    <section className="relative py-16 md:py-20 border-t border-foreground/10">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -256,16 +256,16 @@ function OfferSection() {
           </motion.div>
           <motion.h2
             variants={fadeUp}
-            className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-white"
+            className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground"
           >
             Partner Discount for Changemakers
           </motion.h2>
           <motion.p
             variants={fadeUp}
-            className="text-white/60 text-base leading-relaxed"
+            className="text-foreground/60 text-base leading-relaxed"
           >
             Impact Hub Harare members receive{" "}
-            <strong className="text-white">25% off their first 6 months</strong> of any Radbit
+            <strong className="text-foreground">25% off their first 6 months</strong> of any Radbit
             plan. Use code{" "}
             <span className="inline-block px-3 py-1 rounded-md bg-green-500/15 border border-green-500/30 text-green-400 font-mono text-sm font-bold">
               IMPACT25
@@ -296,7 +296,7 @@ export default function ImpactHubPage() {
       <FocusSection />
       <TenderTrackingSection />
       <OfferSection />
-      <footer className="border-t border-white/10 py-8 text-center text-sm text-white/40">
+      <footer className="border-t border-foreground/10 py-8 text-center text-sm text-foreground/40">
         <div className="container">
           <p>
             © {new Date().getFullYear()} Radbit. Built in partnership with Impact Hub Harare.

@@ -39,9 +39,6 @@ export const metadata: Metadata = {
     },
   },
   other: {
-    // SEO: Differentiate from "Bad Rabbit Studio" (Zimbabwe film production company).
-    // Radbit Studios = B2B SaaS (AI, tenders, assessments, PRAZ compliance).
-    // Not associated with film, documentaries, conservation, or video production.
     'norton-safeweb': 'not applicable',
   },
   openGraph: {
@@ -80,7 +77,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#B8860B',
+  themeColor: '#C2410C',
 };
 
 export default async function RootLayout({
@@ -91,7 +88,7 @@ export default async function RootLayout({
   const locale = await getLocale();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} className="dark" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png" />
         <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
@@ -107,11 +104,6 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
-        {/*
-          FAQPage JSON-LD — homepage gets rich "People also ask" AI-overview box
-          WebSite schema  — Google Site Search rich result
-          Organization   — knowledge-panel / rich-cards coverage
-        */}
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema(FAQ_DATA)) }} />
         <script type="application/ld+json" suppressHydrationWarning
