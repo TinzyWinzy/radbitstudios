@@ -8,6 +8,7 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "Contact Us — Radbit",
   description: "Get in touch with the Radbit team. Email hello@radbitstudios.co.zw or use the contact form.",
+  alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact Us — Radbit",
     description: "Get in touch with the Radbit team. Email hello@radbitstudios.co.zw or use the contact form.",

@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
           '/dashboard',
           '/settings',
           '/messages',
+          '/notifications',
+          '/news',
           '/export-assessment',
           '/budget-calculator',
         ],

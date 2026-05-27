@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Wallet } from "lucide-react";
+import { breadcrumbSchema } from "@/lib/seo";
 import { FAQSchema } from "@/components/faq-schema";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { InArticleAd } from "@/components/ads/in-article-ad";
@@ -43,6 +44,17 @@ const faq = [
 export default function EcoCashBusinessVsPersonalPage() {
   return (
     <div className="container max-w-3xl py-16">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Resources", url: "/resources" },
+            { name: "EcoCash Business vs Personal", url: "/resources/guides/ecocash-business-vs-personal" },
+          ])),
+        }}
+      />
       <Link href="/resources" className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block">&larr; Back to Resources</Link>
       <article>
         <header className="mb-12">

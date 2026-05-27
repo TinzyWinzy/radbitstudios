@@ -15,6 +15,7 @@ const syne = Syne({
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Radbit SME Hub — AI Tools, Assessments & Tender Intelligence for Zimbabwean Enterprises",
     template: "%s | Radbit SME Hub",
@@ -31,12 +32,6 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: '/',
-    languages: {
-      en: '/en',
-      sn: '/sn',
-      nd: '/nd',
-      pt: '/pt',
-    },
   },
   other: {
     'norton-safeweb': 'not applicable',

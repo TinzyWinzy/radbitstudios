@@ -1,8 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, FileText } from "lucide-react";
 import { AdBanner } from "@/components/ads/ad-banner";
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Free Business Resources for Zimbabwean SMEs — Guides, Tools & FAQs",
+  description: "Free guides on registering a business, ZIMRA tax, SADC exports, and more. Plus VAT calculator, business name generator, and AI tools for Zimbabwean entrepreneurs.",
+  alternates: { canonical: "/resources" },
+  openGraph: {
+    title: "Free Business Resources for Zimbabwean SMEs",
+    description: "Free guides, tools, and answers designed for the realities of running a business in Zimbabwe.",
+    url: `${process.env.FRONTEND_URL || 'https://radbitstudios.co.zw'}/resources`,
+  },
+};
 
 const guides = [
   {

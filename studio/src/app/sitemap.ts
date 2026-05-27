@@ -51,7 +51,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // ── Content hub (public, ad-revenue pages) ─────────────────────────
     { url: `${F}/blog`,                      lastModified: new Date(), changeFrequency: "weekly",  priority: 0.7  },
-    { url: `${F}/blog/feed.xml`,             lastModified: new Date(), changeFrequency: "weekly",  priority: 0.3  },
     ...blogEntries,
 
     // ── Resources ───────────────────────────────────────────────────────

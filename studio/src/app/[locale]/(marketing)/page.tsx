@@ -7,6 +7,7 @@ import PageClient from "./page-client";
 export const metadata: Metadata = {
   title: "Radbit — Digital Sovereignty for Zimbabwean Enterprises",
   description: "AI-driven tools for Zimbabwean entrepreneurs. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agent workforce — built for local resilience.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Radbit — Digital Sovereignty for Zimbabwean Enterprises",
     description: "AI-driven tools for Zimbabwean entrepreneurs. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agent workforce — built for local resilience.",

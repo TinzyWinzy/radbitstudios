@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, BadgeDollarSign, Receipt, FileText, Calculator, BookOpen } from "lucide-react";
+import { breadcrumbSchema } from "@/lib/seo";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { InArticleAd } from "@/components/ads/in-article-ad";
 import { MatchedContent } from "@/components/ads/matched-content";
@@ -70,6 +71,17 @@ export const revalidate = 3600;
 export default function ZimraTaxGuidePage() {
   return (
     <div className="container max-w-3xl py-16">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Resources", url: "/resources" },
+            { name: "ZIMRA Tax Guide for SMEs", url: "/resources/guides/zimra-tax-guide-smes" },
+          ])),
+        }}
+      />
       <Link
         href="/resources"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Sun, Zap, Battery, Home, Leaf } from "lucide-react";
+import { breadcrumbSchema } from "@/lib/seo";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { InArticleAd } from "@/components/ads/in-article-ad";
 import { MatchedContent } from "@/components/ads/matched-content";
@@ -75,6 +76,17 @@ const tips = [
 export default function LoadSheddingSolutionsPage() {
   return (
     <div className="container max-w-3xl py-16">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema([
+            { name: "Home", url: "/" },
+            { name: "Resources", url: "/resources" },
+            { name: "Load-Shedding Solutions for SMEs", url: "/resources/guides/load-shedding-solutions-smes" },
+          ])),
+        }}
+      />
       <Link href="/resources" className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block">&larr; Back to Resources</Link>
       <article>
         <header className="mb-12">

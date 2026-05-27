@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { serviceSchema } from "@/lib/seo";
 
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
@@ -23,5 +24,21 @@ const ConsultancyClient = dynamic(
 );
 
 export default function ConsultancyPage() {
-  return <ConsultancyClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(serviceSchema({
+            name: "Technology & Business Consultancy for African SMEs",
+            description: "End-to-end technology consultancy: software development, cybersecurity, business strategy, brand management, ERP systems, and AI/ML solutions. Starting from $100 USD.",
+            url: `${SITE_URL}/consultancy`,
+            serviceOutput: "Custom software, cybersecurity audits, business strategy, ERP implementation, AI/ML solutions",
+          })),
+        }}
+      />
+      <ConsultancyClient />
+    </>
+  );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { adminDb } from "@/lib/firebase/firebase-admin";
+import { articleSchema } from "@/lib/seo";
 
 const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
@@ -58,6 +59,47 @@ export async function generateMetadata({
   }
 }
 
-export default function BlogPostLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default async function BlogPostLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { slug: string };
+}) {
+  let articleLd = null;
+
+  try {
+    const snap = await adminDb
+      .collection("blog_posts")
+      .where("slug", "==", params.slug)
+      .limit(1)
+      .get();
+
+    if (!snap.empty) {
+      const post = snap.docs[0].data();
+      articleLd = articleSchema({
+        title: post.title as string,
+        description: (post.excerpt as string) || '',
+        url: `${SITE_URL}/blog/${params.slug}`,
+        image: (post.imageUrl as string) || undefined,
+        authorName: (post.authorName as string) || "Radbit SME Hub",
+        publishedTime: post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString(),
+      });
+    }
+  } catch {
+    // Silently fail — JSON-LD is optional
+  }
+
+  return (
+    <>
+      {articleLd && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+        />
+      )}
+      {children}
+    </>
+  );
 }
