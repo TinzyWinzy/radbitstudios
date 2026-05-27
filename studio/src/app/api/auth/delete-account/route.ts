@@ -114,9 +114,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     response.cookies.set('__session', '', {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
       path: '/',
       maxAge: 0,
     });

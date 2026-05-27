@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { verifySession } from '@/lib/api-auth';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export const runtime = 'nodejs';
@@ -72,6 +73,14 @@ async function* streamGemini(
 
 export async function POST(req: NextRequest) {
   try {
+    const user = await verifySession(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const body = await req.json();
     const {
       prompt,

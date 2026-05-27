@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { verifySession } from '@/lib/api-auth';
 import { REQUIRED_DOCUMENTS } from '@/services/praz-types';
 
 export async function GET(req: NextRequest) {
-  const userId = req.nextUrl.searchParams.get('userId');
-  if (!userId) {
-    return NextResponse.json({ error: 'userId required' }, { status: 400 });
+  const user = await verifySession(req);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const userId = user.uid;
 
   const snap = await adminDb.collection('praz_documents')
     .where('userId', '==', userId)

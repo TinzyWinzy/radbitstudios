@@ -28,9 +28,9 @@ export const POST = withIpRateLimit(
       const response = NextResponse.json({ success: true, uid });
 
       response.cookies.set('__session', idToken, {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: 'strict',
         path: '/',
         maxAge: expiresIn,
       });

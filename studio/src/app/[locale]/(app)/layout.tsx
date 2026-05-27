@@ -15,6 +15,12 @@ const PAGE_TITLES: Record<string, string> = {
   "/messages": "Messages — Radbit",
   "/mentor": "AI Mentor — Radbit",
   "/settings": "Settings — Radbit",
+  "/notifications": "Notifications — Radbit",
+  "/export-assessment": "Export Assessment — Radbit",
+  "/praz-compliance": "PRAZ Compliance — Radbit",
+  "/tax-copilot": "Tax Co-Pilot — Radbit",
+  "/bid-writer": "Bid Writer — Radbit",
+  "/investor-portal": "Investor Portal — Radbit",
 };
 import {
   SidebarProvider,
@@ -43,6 +49,11 @@ import {
   PenSquare,
   BookOpen,
   Newspaper,
+  FileCheck,
+  Scale,
+  Bot,
+  FileSignature,
+  TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -84,13 +95,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       { href: "/dashboard", label: "Dashboard", icon: <Home /> },
       { href: "/assessment", label: "Assessment", icon: <FileText /> },
       { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 /> },
+      { href: "/bid-writer", label: "Bid Writer", icon: <FileSignature /> },
+      { href: "/tax-copilot", label: "Tax Co-Pilot", icon: <Bot /> },
       { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator /> },
       { href: "/news", label: "Business News", icon: <Newspaper /> },
       { href: "/tenders", label: "Tenders", icon: <Briefcase /> },
+      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale /> },
       { href: "/community", label: "Community", icon: <Users /> },
       ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send /> }] : []),
       { href: "/mentor", label: "AI Mentor", icon: <MessageCircle /> },
       { href: "/resources", label: "Resources", icon: <BookOpen /> },
+      { href: "/export-assessment", label: "Export Assessment", icon: <FileCheck /> },
+      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp /> },
       ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog", icon: <PenSquare /> }] : []),
     ];
 

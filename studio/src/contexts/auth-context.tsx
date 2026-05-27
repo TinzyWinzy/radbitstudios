@@ -118,11 +118,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
         await fetchAndSetUser(authUser);
-        const token = await authUser.getIdToken();
-        document.cookie = `__session=${token}; path=/; max-age=3600; SameSite=Lax; ${location.protocol === 'https:' ? 'Secure;' : ''}`;
+        await fetch('/api/auth/refresh-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken: await authUser.getIdToken() }),
+        });
       } else {
         setUser(null);
-        document.cookie = '__session=; path=/; max-age=0; SameSite=Lax;';
+        await fetch('/api/auth/refresh-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken: '', expiresIn: 0 }),
+        });
       }
       setLoading(false);
     });
@@ -137,8 +144,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           body: JSON.stringify({ idToken: token }),
         });
         if (!res.ok) {
-          const token = await currentUser.getIdToken(true);
-          document.cookie = `__session=${token}; path=/; max-age=3600; SameSite=Lax; ${location.protocol === 'https:' ? 'Secure;' : ''}`;
+          const newToken = await currentUser.getIdToken(true);
+          await fetch('/api/auth/refresh-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: newToken }),
+          });
         }
       }
     }, 30 * 60 * 1000);
@@ -177,7 +188,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    document.cookie = '__session=; path=/; max-age=0; SameSite=Lax;';
+    fetch('/api/auth/refresh-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: '', expiresIn: 0 }),
+    });
     return signOut(auth);
   };
 
@@ -198,7 +213,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!res.ok) return { success: false, error: data.error || 'Failed to delete account.' };
 
       await currentUser.delete();
-      document.cookie = '__session=; path=/; max-age=0; SameSite=Lax;';
+      await fetch('/api/auth/refresh-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: '', expiresIn: 0 }),
+      });
       setUser(null);
 
       return { success: true };

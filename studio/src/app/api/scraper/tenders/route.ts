@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeAllTenders } from '@/services/tender-scraper';
 import { invalidateCache } from '@/lib/scraper-cache';
+import { verifySession } from '@/lib/api-auth';
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -30,7 +31,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const user = await verifySession(request);
+  if (!user || !['admin', 'super_admin'].includes((user as Record<string, unknown>)['role'] as string || '')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const results = await scrapeAllTenders();
     return NextResponse.json({

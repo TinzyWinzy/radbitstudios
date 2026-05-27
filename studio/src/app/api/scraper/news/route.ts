@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeAllFeeds } from '@/services/news-scraper';
 import { invalidateCache } from '@/lib/scraper-cache';
+import { verifySession } from '@/lib/api-auth';
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -17,9 +18,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    console.log('[API /api/scraper/news] Starting scrape...');
     const results = await scrapeAllFeeds();
-    console.log(`[API /api/scraper/news] Scrape complete: ${results.scraped} scraped, ${results.errors} errors`);
     return NextResponse.json({
       success: true,
       scraped: results.scraped,
@@ -32,7 +31,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const user = await verifySession(request);
+  if (!user || !['admin', 'super_admin'].includes((user as Record<string, unknown>)['role'] as string || '')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const results = await scrapeAllFeeds();
     return NextResponse.json({
