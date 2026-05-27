@@ -738,6 +738,436 @@ async function scrapeSAeTenders(): Promise<Tender[]> {
   return results;
 }
 
+async function scrapeAfDB(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.afdb.org/en/projects-and-operations/tenders', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('table tbody tr, table tr, .views-row, .node').each((_, row) => {
+      const cells = $(row).find('td').map((_, c) => $(c).text().trim().replace(/\s+/g, ' ')).get();
+      const link = $(row).find('a[href]').first();
+      const linkText = link.text().trim();
+      const linkHref = link.attr('href') || '';
+
+      if (!linkHref || linkHref === '#' || linkHref === '/') return;
+      const title = linkText || cells[0];
+      if (!title || title.length < 5) return;
+
+      const fullHref = linkHref.startsWith('http') ? linkHref : `https://www.afdb.org${linkHref}`;
+      const key = fullHref.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      let closingDate: Date | null = null;
+      for (const cell of cells) {
+        const match = cell.match(/(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/);
+        if (match) { try { closingDate = new Date(match[1]); } catch { /* ignore */ } break; }
+      }
+
+      results.push(enrichTender({
+        title,
+        description: cells.join(' | ') || `AfDB tender: ${title}`,
+        organization: 'African Development Bank',
+        sourceUrl: fullHref,
+        closingDate,
+        value: null,
+        sector: classifySector(title),
+        category: 'International Development',
+        requirements: ['AfDB vendor registration', 'International compliance'],
+        region: 'Africa',
+      }));
+    });
+
+    console.log(`[TenderScraper] AfDB: ${results.length} tenders`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] AfDB failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeWorldBank(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.worldbank.org/en/projects/procurement', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/procurement|tender|bid|rfq/i) && !href.match(/login|register|signin/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 5) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.worldbank.org${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `World Bank procurement: ${text}`,
+        organization: 'World Bank',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: 'International Development',
+        requirements: ['World Bank vendor registration'],
+        region: 'Global',
+      }));
+    });
+
+    console.log(`[TenderScraper] World Bank: ${results.length} tenders`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] World Bank failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeUSAID(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.usaid.gov/zimbabwe/work-with-us/partnership-opportunities', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|rfq|rfa|grant|opportunity|procurement/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 5) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.usaid.gov${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `USAID Zimbabwe opportunity: ${text}`,
+        organization: 'USAID Zimbabwe',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: 'NGO / Development',
+        requirements: ['USAID registration', 'DUNS number', 'SAM registration'],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] USAID: ${results.length} opportunities`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] USAID failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeCBZ(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.cbz.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|rfq/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.cbz.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `CBZ Bank procurement: ${text}`,
+        organization: 'CBZ Bank',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Financial Services',
+        category: 'Banking Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] CBZ: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] CBZ failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeEconet(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.econet.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|supplier|vendor/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.econet.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `Econet Wireless procurement: ${text}`,
+        organization: 'Econet Wireless',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Telecommunications',
+        category: 'Corporate Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] Econet: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] Econet failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeNetOne(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.netone.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|supplier|vendor/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.netone.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `NetOne procurement: ${text}`,
+        organization: 'NetOne',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Telecommunications',
+        category: 'Corporate Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] NetOne: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] NetOne failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeTelOne(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.telone.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|supplier|vendor/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.telone.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `TelOne procurement: ${text}`,
+        organization: 'TelOne',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Telecommunications',
+        category: 'Corporate Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] TelOne: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] TelOne failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeFBC(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.fbc.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|rfq/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.fbc.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `FBC Bank procurement: ${text}`,
+        organization: 'FBC Bank',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Financial Services',
+        category: 'Banking Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] FBC: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] FBC failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeNMB(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.nmbz.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|rfq/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.nmbz.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `NMB Bank procurement: ${text}`,
+        organization: 'NMB Bank',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Financial Services',
+        category: 'Banking Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] NMB: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] NMB failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeCABS(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.cabs.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href]').filter((_, el) => {
+      const href = $(el).attr('href') || '';
+      return Boolean(href.match(/tender|procurement|rfq/i));
+    }).each((_, el) => {
+      const text = $(el).text().trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 3) return;
+      const fullHref = href.startsWith('http') ? href : `https://www.cabs.co.zw${href}`;
+      if (seen.has(fullHref.toLowerCase())) return;
+      seen.add(fullHref.toLowerCase());
+
+      results.push(enrichTender({
+        title: text,
+        description: `CABS procurement: ${text}`,
+        organization: 'CABS',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Financial Services',
+        category: 'Banking Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
+
+    console.log(`[TenderScraper] CABS: ${results.length} tender links`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] CABS failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
 export async function scrapeAllTenders(): Promise<{ scraped: number; errors: number; tenders: any[] }> {
   const cacheKey = 'tenders:scrape:all_run';
   const cached = getCached<{ scraped: number; errors: number; tenders: any[] }>(cacheKey);
@@ -752,7 +1182,7 @@ export async function scrapeAllTenders(): Promise<{ scraped: number; errors: num
     console.log(`[TenderScraper] proc.gov.zw: ${live.length} tenders`);
   }
 
-const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.allSettled([
+const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, cbz, econet, netone, telone, fbc, nmb, cabs] = await Promise.allSettled([
     scrapeTendersOnTime(),
     scrapeTendersInfo(),
     scrapePRAZ(),
@@ -762,6 +1192,16 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.al
     scrapeStanbicBank(),
     scrapeSADC(),
     scrapeSAeTenders(),
+    scrapeAfDB(),
+    scrapeWorldBank(),
+    scrapeUSAID(),
+    scrapeCBZ(),
+    scrapeEconet(),
+    scrapeNetOne(),
+    scrapeTelOne(),
+    scrapeFBC(),
+    scrapeNMB(),
+    scrapeCABS(),
   ]);
 
   if (tot.status === 'fulfilled') allTenders.push(...tot.value);
@@ -773,6 +1213,16 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet] = await Promise.al
   if (stanbic.status === 'fulfilled') allTenders.push(...stanbic.value);
   if (sadc.status === 'fulfilled') allTenders.push(...sadc.value);
   if (saet.status === 'fulfilled') allTenders.push(...saet.value);
+  if (afdb.status === 'fulfilled') allTenders.push(...afdb.value);
+  if (wb.status === 'fulfilled') allTenders.push(...wb.value);
+  if (usaid.status === 'fulfilled') allTenders.push(...usaid.value);
+  if (cbz.status === 'fulfilled') allTenders.push(...cbz.value);
+  if (econet.status === 'fulfilled') allTenders.push(...econet.value);
+  if (netone.status === 'fulfilled') allTenders.push(...netone.value);
+  if (telone.status === 'fulfilled') allTenders.push(...telone.value);
+  if (fbc.status === 'fulfilled') allTenders.push(...fbc.value);
+  if (nmb.status === 'fulfilled') allTenders.push(...nmb.value);
+  if (cabs.status === 'fulfilled') allTenders.push(...cabs.value);
 
   if (allTenders.length === 0) {
     console.log('[TenderScraper] All sources failed — falling back to mock data');

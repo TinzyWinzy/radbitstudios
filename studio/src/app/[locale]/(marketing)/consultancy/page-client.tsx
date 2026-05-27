@@ -153,7 +153,7 @@ export function ConsultancyClient() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
       <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-30" />
@@ -170,7 +170,7 @@ export function ConsultancyClient() {
               Transform Your Business with{" "}
               <span className="text-gradient">Radbit Inc</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/60 mb-8 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
               From your first digital step to full-scale enterprise intelligence — we partner with African SMEs to build technology that drives growth, security, and lasting brand impact.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -182,12 +182,12 @@ export function ConsultancyClient() {
               </a>
               <a
                 href="#services"
-                className="inline-flex items-center justify-center px-8 py-4 border border-white/20 rounded-xl hover:bg-white/5 transition-colors"
+                className="inline-flex items-center justify-center px-8 py-4 border border-border rounded-xl hover:bg-muted/50 transition-colors"
               >
                 Explore Services
               </a>
             </div>
-            <p className="mt-6 text-sm text-white/40">
+            <p className="mt-6 text-sm text-muted-foreground/70">
               Projects start from <span className="text-primary font-semibold">$100 USD</span>
             </p>
           </div>
@@ -195,13 +195,13 @@ export function ConsultancyClient() {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="py-20 border-t border-white/5">
+      <section id="services" className="py-20 border-t border-border">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
               What We Do
             </h2>
-            <p className="text-white/50 max-w-xl mx-auto">
+            <p className="text-muted-foreground max-w-xl mx-auto">
               Comprehensive technology solutions tailored to the unique challenges and opportunities of African businesses.
             </p>
           </div>
@@ -212,13 +212,13 @@ export function ConsultancyClient() {
               return (
                 <div
                   key={service.title}
-                  className="group p-8 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-primary/20 transition-all duration-300"
+                  className="group p-8 rounded-2xl border border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/20 transition-all duration-300"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                     <Icon className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="font-headline text-xl font-semibold mb-3">{service.title}</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">{service.description}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
                 </div>
               );
             })}
@@ -227,13 +227,13 @@ export function ConsultancyClient() {
       </section>
 
       {/* Digital Maturity */}
-      <section className="py-20 border-t border-white/5">
+      <section className="py-20 border-t border-border">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
               Your Digital Maturity Journey
             </h2>
-            <p className="text-white/50 max-w-xl mx-auto">
+            <p className="text-muted-foreground max-w-xl mx-auto">
               Every business is at a different stage. We meet you where you are and take you where you need to be.
             </p>
           </div>
@@ -246,7 +246,7 @@ export function ConsultancyClient() {
                     {i + 1}
                   </div>
                   <h3 className="font-semibold text-sm mb-2">{step.title}</h3>
-                  <p className="text-white/40 text-xs">{step.description}</p>
+                  <p className="text-muted-foreground/70 text-xs">{step.description}</p>
                   {i < maturitySteps.length - 1 && (
                     <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-px bg-gradient-to-r from-primary/50 to-transparent" />
                   )}
@@ -258,7 +258,7 @@ export function ConsultancyClient() {
       </section>
 
       {/* Why Radbit */}
-      <section className="py-20 border-t border-white/5">
+      <section className="py-20 border-t border-border">
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -275,7 +275,7 @@ export function ConsultancyClient() {
                       </div>
                       <div>
                         <h3 className="font-semibold mb-1">{item.title}</h3>
-                        <p className="text-white/50 text-sm">{item.description}</p>
+                        <p className="text-muted-foreground text-sm">{item.description}</p>
                       </div>
                     </div>
                   );
@@ -287,12 +287,12 @@ export function ConsultancyClient() {
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="p-6 rounded-2xl border border-white/5 bg-white/[0.02] text-center"
+                  className="p-6 rounded-2xl border border-border bg-muted/30 text-center"
                 >
                   <div className="font-headline text-3xl font-bold text-primary mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-white/50 text-sm">{stat.label}</div>
+                  <div className="text-muted-foreground text-sm">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -301,14 +301,14 @@ export function ConsultancyClient() {
       </section>
 
       {/* Lead Capture Form */}
-      <section id="contact" className="py-20 border-t border-white/5">
+      <section id="contact" className="py-20 border-t border-border">
         <div className="container">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
                 Start Your Transformation
               </h2>
-              <p className="text-white/50">
+              <p className="text-muted-foreground">
                 Tell us about your project. We will respond within 24 hours with a tailored roadmap.
               </p>
             </div>
@@ -319,7 +319,7 @@ export function ConsultancyClient() {
                   <CheckCircle2 className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="font-headline text-2xl font-bold mb-2">Inquiry Received!</h3>
-                <p className="text-white/60">
+                <p className="text-muted-foreground">
                   Thank you for reaching out. We will review your project and respond within 24 hours.
                 </p>
                 <Button
@@ -341,7 +341,7 @@ export function ConsultancyClient() {
                         <FormItem>
                           <FormLabel>Full Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="John Doe" {...field} className="bg-white/5 border-white/10" />
+                            <Input placeholder="John Doe" {...field} className="bg-muted/50 border-white/10" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -354,7 +354,7 @@ export function ConsultancyClient() {
                         <FormItem>
                           <FormLabel>Work Email *</FormLabel>
                           <FormControl>
-                            <Input placeholder="john@company.com" type="email" {...field} className="bg-white/5 border-white/10" />
+                            <Input placeholder="john@company.com" type="email" {...field} className="bg-muted/50 border-white/10" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -370,7 +370,7 @@ export function ConsultancyClient() {
                         <FormItem>
                           <FormLabel>Company Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Acme Inc" {...field} className="bg-white/5 border-white/10" />
+                            <Input placeholder="Acme Inc" {...field} className="bg-muted/50 border-white/10" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -384,7 +384,7 @@ export function ConsultancyClient() {
                           <FormLabel>Industry</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="bg-white/5 border-white/10">
+                              <SelectTrigger className="bg-muted/50 border-white/10">
                                 <SelectValue placeholder="Select your industry" />
                               </SelectTrigger>
                             </FormControl>
@@ -419,7 +419,7 @@ export function ConsultancyClient() {
                           <FormLabel>Service of Interest</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="bg-white/5 border-white/10">
+                              <SelectTrigger className="bg-muted/50 border-white/10">
                                 <SelectValue placeholder="Select a service" />
                               </SelectTrigger>
                             </FormControl>
@@ -445,7 +445,7 @@ export function ConsultancyClient() {
                           <FormLabel>Estimated Budget</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="bg-white/5 border-white/10">
+                              <SelectTrigger className="bg-muted/50 border-white/10">
                                 <SelectValue placeholder="Select budget range" />
                               </SelectTrigger>
                             </FormControl>
@@ -475,7 +475,7 @@ export function ConsultancyClient() {
                             placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
                             rows={5}
                             {...field}
-                            className="bg-white/5 border-white/10 resize-none"
+                            className="bg-muted/50 border-white/10 resize-none"
                           />
                         </FormControl>
                         <FormMessage />
@@ -490,7 +490,7 @@ export function ConsultancyClient() {
                       <FormItem>
                         <FormLabel>How did you hear about us? (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="Google, Social Media, Referral, etc." {...field} className="bg-white/5 border-white/10" />
+                          <Input placeholder="Google, Social Media, Referral, etc." {...field} className="bg-muted/50 border-white/10" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -516,7 +516,7 @@ export function ConsultancyClient() {
                     )}
                   </Button>
 
-                  <p className="text-center text-xs text-white/30">
+                  <p className="text-center text-xs text-muted-foreground/60">
                     We respect your privacy. Your information will never be shared with third parties.
                   </p>
                 </form>
@@ -527,13 +527,13 @@ export function ConsultancyClient() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-20 border-t border-white/5">
+      <section className="py-20 border-t border-border">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight mb-4">
               Ready to Take the First Step?
             </h2>
-            <p className="text-white/50 mb-8">
+            <p className="text-muted-foreground mb-8">
               Whether you need a simple website, a full ERP system, or AI-powered insights — we build it together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -543,7 +543,7 @@ export function ConsultancyClient() {
               >
                 Email Us Directly
               </a>
-              <span className="inline-flex items-center justify-center px-8 py-4 text-white/50">
+              <span className="inline-flex items-center justify-center px-8 py-4 text-muted-foreground">
                 hello@radbitstudios.co.zw
               </span>
             </div>
