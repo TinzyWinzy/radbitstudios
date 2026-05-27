@@ -61,7 +61,6 @@ import { GyeNyame } from "@/components/adinkra-symbols";
 import { NotificationBell } from "@/components/notification-bell";
 import { PushNotificationManager } from "@/components/push-notification-manager";
 import type { AppUser } from "@/types/user";
-import { motion } from 'framer-motion';
 import { UserNav } from "@/components/user-nav";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -181,18 +180,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <motion.main 
+        <main 
             id="main-content"
             key={pathname}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex-1 p-4 md:p-8"
+            className="flex-1 p-4 md:p-8 animate-[fadeSlideIn_0.3s_ease-out]"
         >
           <div className="container max-w-7xl">
             {children}
           </div>
-        </motion.main>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

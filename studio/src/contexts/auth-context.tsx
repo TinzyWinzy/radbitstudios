@@ -1,7 +1,7 @@
 
 'use client';
 
-import { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import {
   onAuthStateChanged,
   User,
@@ -169,34 +169,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   },[fetchAndSetUser]);
 
-  const signUp = async (email: string, pass: string, extraData?: Record<string, unknown>) => {
+  const signUp = useCallback(async (email: string, pass: string, extraData?: Record<string, unknown>) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const newDisplayName = email.split('@')[0] || 'SME User';
     await updateProfile(userCredential.user, { displayName: newDisplayName });
-    // Explicitly wait for the full user profile to be ready before proceeding
     await fetchAndSetUser(userCredential.user, extraData);
     return userCredential;
-  };
+  }, [fetchAndSetUser]);
 
-  const signIn = (email: string, pass: string) => {
+  const signIn = useCallback((email: string, pass: string) => {
     return signInWithEmailAndPassword(auth, email, pass);
-  };
+  }, []);
 
-  const signInWithGoogle = () => {
+  const signInWithGoogle = useCallback(() => {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(auth, provider);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     fetch('/api/auth/refresh-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idToken: '', expiresIn: 0 }),
     });
     return signOut(auth);
-  };
+  }, []);
 
-  const deleteAccount = async (): Promise<{ success: boolean; error?: string }> => {
+  const deleteAccount = useCallback(async (): Promise<{ success: boolean; error?: string }> => {
     try {
       const currentUser = auth.currentUser;
       if (!currentUser) return { success: false, error: 'No user signed in.' };
@@ -227,9 +226,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return { success: false, error: error.message || 'An unexpected error occurred.' };
     }
-  };
+  }, [fetchAndSetUser]);
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     loading,
     role,
@@ -239,7 +238,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
     refreshUserData,
     deleteAccount,
-  };
+  }), [user, loading, role, signUp, signIn, signInWithGoogle, logout, refreshUserData, deleteAccount]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
