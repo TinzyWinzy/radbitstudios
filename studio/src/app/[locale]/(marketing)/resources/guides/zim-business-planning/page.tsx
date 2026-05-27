@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { howToSchema, breadcrumbSchema } from "@/lib/seo";
+import { RelatedContent } from "@/components/related-content";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { InArticleAd } from "@/components/ads/in-article-ad";
 import { MatchedContent } from "@/components/ads/matched-content";
@@ -175,6 +176,7 @@ export default function BusinessPlanningGuide() {
         </section>
       </div>
       <AffiliateDisclosure />
+      <RelatedContent currentPath="/resources/guides/zim-business-planning" />
     </div>
   );
 }
