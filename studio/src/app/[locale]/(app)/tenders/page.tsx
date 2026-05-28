@@ -153,7 +153,7 @@ export default function TendersPage() {
   const [tenders, setTenders] = useState<Tender[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
-  const [regionTab, setRegionTab] = useState<'zimbabwe' | 'regional'>('zimbabwe');
+  const [regionTab, setRegionTab] = useState<'local' | 'regional'>('local');
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
@@ -224,8 +224,10 @@ export default function TendersPage() {
   }, [mySectorOnly, user?.uid]);
 
   const handleRefresh = async () => {
+    setIsRefreshing(true);
     try {
-      const r = await fetch('/api/scraper/tenders');
+      // POST is the correct method — GET requires admin auth
+      const r = await fetch('/api/scraper/tenders', { method: 'POST' });
       if (!r.ok) {
         console.error('Tender scrape API error:', r.status);
       } else {
@@ -241,11 +243,14 @@ export default function TendersPage() {
   const userPlan = user?.plan || 'Free';
   const isRegional = regionTab === 'regional';
 
+  // Zimbabwe tab: show Zimbabwe + SADC tenders (local & sub-regional)
+  // Regional tab: show non-Zimbabwe, non-SADC tenders (South Africa, Global, etc.) — paid feature
   const filteredTenders = tenders
     .filter(t => {
       if (activeTab !== 'all' && t.status !== activeTab) return false;
-      if (isRegional && t.region === 'Zimbabwe') return false;
-      if (!isRegional && t.region !== 'Zimbabwe') return false;
+      const isZimbabweOrSadc = t.region === 'Zimbabwe' || t.region === 'SADC' || t.region === 'Africa';
+      if (isRegional && isZimbabweOrSadc) return false;
+      if (!isRegional && !isZimbabweOrSadc) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         return (
@@ -384,13 +389,13 @@ export default function TendersPage() {
               )}
               <div className="h-4 w-px bg-border mx-1" />
               <Button
-                variant={regionTab === 'zimbabwe' ? 'default' : 'outline'}
+                variant={regionTab === 'local' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setRegionTab('zimbabwe')}
+                onClick={() => setRegionTab('local')}
                 className="text-xs"
               >
                 <Building2 className="h-3 w-3 mr-1" />
-                Zimbabwe
+                Zimbabwe &amp; SADC
               </Button>
               <Button
                 variant={regionTab === 'regional' ? 'default' : 'outline'}
@@ -407,7 +412,7 @@ export default function TendersPage() {
                       setUpgradeInfo({
                         upgradeTo: 'Growth',
                         price: 5,
-                        message: 'SADC regional tenders require the Growth plan. Sign in and upgrade to unlock cross-border procurement opportunities.',
+                        message: 'International tenders (South Africa, Global) require the Growth plan.',
                         feature: 'Tenders Regional',
                       });
                       return;
@@ -418,7 +423,7 @@ export default function TendersPage() {
                 className="text-xs"
               >
                 <Globe className="h-3 w-3 mr-1" />
-                SADC Region
+                International
                 {userPlan === 'Free' && <Lock className="h-3 w-3 ml-1 text-muted-foreground" />}
               </Button>
               <span className="ml-auto text-xs text-muted-foreground">

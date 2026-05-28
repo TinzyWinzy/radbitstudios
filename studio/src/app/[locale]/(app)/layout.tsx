@@ -119,7 +119,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar aria-label="Navigation menu">
         <SidebarHeader>
           <div className="flex items-center gap-3 px-2">
             <Icons.radbit className="size-7 shrink-0" />

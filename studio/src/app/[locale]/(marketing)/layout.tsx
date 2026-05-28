@@ -26,7 +26,7 @@ export default function MarketingLayout({
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <RollingShapes />
-      <header className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "border-b border-border/50 bg-background/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
+      <header role="banner" className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "border-b border-border/50 bg-background/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
         <div className="container flex h-16 items-center">
           <Link href="/" className="flex items-center gap-3 mr-8 group">
             <Icons.radbit className="size-8 shrink-0 transition-transform duration-300 group-hover:scale-110 text-foreground" />
@@ -34,7 +34,7 @@ export default function MarketingLayout({
               RADBIT
             </span>
           </Link>
-            <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <nav aria-label="Main navigation" className="hidden md:flex items-center gap-6 text-sm font-medium">
               <Link href="/assessment" className="text-muted-foreground hover:text-foreground transition-colors">
                 Assessment
               </Link>
@@ -78,7 +78,7 @@ export default function MarketingLayout({
           </div>
         </div>
       </header>
-      <main id="main-content" className="relative flex-1">{children}</main>
+      <main id="main-content" role="main" className="relative flex-1">{children}</main>
     </div>
   );
 }

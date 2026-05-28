@@ -1,4 +1,6 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import fs from 'fs';
+import path from 'path';
 import {
   getTenders as sqliteGetTenders,
   upsertTenders as sqliteUpsertTenders,
@@ -10,6 +12,32 @@ import {
   markTendersSynced,
   markNewsSynced,
 } from '@/lib/sqlite';
+
+// ── Local JSON file fallback (used when DB + Firestore both unavailable) ────
+const DATA_DIR = path.join(process.cwd(), 'data');
+const TENDERS_CACHE_FILE = path.join(DATA_DIR, 'tenders-cache.json');
+const NEWS_CACHE_FILE = path.join(DATA_DIR, 'news-cache.json');
+
+function ensureDataDir(): void {
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+function readJsonCache<T>(filePath: string): T[] {
+  try {
+    if (fs.existsSync(filePath)) {
+      return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T[];
+    }
+  } catch { /* corrupt cache — ignore */ }
+  return [];
+}
+
+function writeJsonCache<T extends { id: string }>(filePath: string, incoming: T[]): void {
+  ensureDataDir();
+  const existing = readJsonCache<T>(filePath);
+  const map = new Map(existing.map(r => [r.id, r]));
+  for (const r of incoming) map.set(r.id, r);
+  fs.writeFileSync(filePath, JSON.stringify(Array.from(map.values()), null, 2), 'utf-8');
+}
 
 let firestoreAvailable: boolean | null = null;
 
@@ -167,7 +195,15 @@ export async function saveTenders(
     if (await checkFirestore()) {
       return firestoreUpsertTenders(tenders);
     }
-    throw dbErr;
+    // Last resort: persist to local JSON file so data survives restarts
+    console.warn('[ScraperStorage] Firestore also unavailable — persisting tenders to local JSON cache');
+    try {
+      writeJsonCache(TENDERS_CACHE_FILE, tenders as Array<{ id: string } & typeof tenders[0]>);
+      return tenders.length;
+    } catch (fsErr: any) {
+      console.error('[ScraperStorage] JSON cache write failed:', fsErr.message);
+      throw dbErr;
+    }
   }
 }
 
@@ -186,7 +222,15 @@ export async function saveNews(
     if (await checkFirestore()) {
       return firestoreUpsertNews(articles);
     }
-    throw dbErr;
+    // Last resort: persist to local JSON file
+    console.warn('[ScraperStorage] Firestore also unavailable — persisting news to local JSON cache');
+    try {
+      writeJsonCache(NEWS_CACHE_FILE, articles as Array<{ id: string } & typeof articles[0]>);
+      return articles.length;
+    } catch (fsErr: any) {
+      console.error('[ScraperStorage] JSON cache write failed:', fsErr.message);
+      throw dbErr;
+    }
   }
 }
 
@@ -194,10 +238,24 @@ export async function loadTenders(options: {
   limit?: number; offset?: number; status?: string; sector?: string; region?: string;
 } = {}): Promise<any[]> {
   try {
-    return await sqliteGetTenders(options);
+    const rows = await sqliteGetTenders(options);
+    if (rows.length > 0) return rows;
+    // DB returned nothing — try JSON cache as supplement
+    const cached = readJsonCache<any>(TENDERS_CACHE_FILE);
+    if (cached.length > 0) {
+      console.log(`[ScraperStorage] DB empty — serving ${cached.length} tenders from local JSON cache`);
+      return cached.slice(0, options.limit || 50);
+    }
+    return rows;
   } catch {
     if (await checkFirestore()) {
       return firestoreGetTenders(options);
+    }
+    // DB and Firestore both down — try JSON cache
+    const cached = readJsonCache<any>(TENDERS_CACHE_FILE);
+    if (cached.length > 0) {
+      console.log(`[ScraperStorage] DB+Firestore unavailable — serving ${cached.length} tenders from local JSON cache`);
+      return cached.slice(0, options.limit || 50);
     }
     return [];
   }
@@ -207,10 +265,24 @@ export async function loadNews(options: {
   limit?: number; offset?: number; category?: string; region?: string;
 } = {}): Promise<any[]> {
   try {
-    return await sqliteGetNews(options);
+    const rows = await sqliteGetNews(options);
+    if (rows.length > 0) return rows;
+    // DB returned nothing — try JSON cache
+    const cached = readJsonCache<any>(NEWS_CACHE_FILE);
+    if (cached.length > 0) {
+      console.log(`[ScraperStorage] DB empty — serving ${cached.length} news from local JSON cache`);
+      return cached.slice(0, options.limit || 50);
+    }
+    return rows;
   } catch {
     if (await checkFirestore()) {
       return firestoreGetNews(options);
+    }
+    // DB and Firestore both down — try JSON cache
+    const cached = readJsonCache<any>(NEWS_CACHE_FILE);
+    if (cached.length > 0) {
+      console.log(`[ScraperStorage] DB+Firestore unavailable — serving ${cached.length} news from local JSON cache`);
+      return cached.slice(0, options.limit || 50);
     }
     return [];
   }

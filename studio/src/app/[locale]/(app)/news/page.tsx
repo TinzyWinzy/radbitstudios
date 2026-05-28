@@ -104,11 +104,16 @@ export default function NewsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [briefLoading, setBriefLoading] = useState(false);
   const [brief, setBrief] = useState<Awaited<ReturnType<typeof generatePersonalizedBrief>> | null>(null);
+  const [myIndustryOnly, setMyIndustryOnly] = useState(false);
 
   const loadNews = useCallback(async () => {
     setIsLoading(true);
     try {
-      const news = await getLatestNews({ limit: 100, industry: user?.industry || undefined });
+      const opts: { limit: number; industry?: string } = { limit: 100 };
+      if (myIndustryOnly && user?.industry) {
+        opts.industry = user.industry;
+      }
+      const news = await getLatestNews(opts);
       setAllNews(news);
       if (user?.uid) {
         const lastVisit = localStorage.getItem('lastNewsVisit');
@@ -141,11 +146,11 @@ export default function NewsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [user?.industry, user?.uid]);
+  }, [user?.industry, user?.uid, myIndustryOnly]);
 
   useEffect(() => {
     loadNews();
-    // Poll every 5 minutes (was 2 minutes — too aggressive)
+    // Poll every 5 minutes
     const interval = setInterval(loadNews, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [loadNews]);
@@ -288,7 +293,17 @@ export default function NewsPage() {
                 <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
                 Refresh
               </Button>
-              {!hasProfile && (
+              {hasProfile ? (
+                <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={myIndustryOnly}
+                    onChange={(e) => setMyIndustryOnly(e.target.checked)}
+                    className="rounded border-gray-300 text-primary focus:ring-primary h-3.5 w-3.5"
+                  />
+                  <span>My Industry</span>
+                </label>
+              ) : (
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <AlertTriangle className="h-3.5 w-3.5" />
                   <span>Complete your profile for personalized news</span>

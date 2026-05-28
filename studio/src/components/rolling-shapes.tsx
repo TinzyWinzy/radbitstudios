@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 interface Shape {
   size: number;
@@ -24,6 +25,36 @@ const shapes: Shape[] = [
 ];
 
 export function RollingShapes() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  if (prefersReducedMotion) {
+    // Static blobs — no animation, just ambient color
+    return (
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        {shapes.slice(0, 3).map((shape, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full blur-[120px] ${shape.color}`}
+            style={{
+              width: shape.size,
+              height: shape.size,
+              left: shape.x,
+              top: shape.y,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
       {shapes.map((shape, i) => (
