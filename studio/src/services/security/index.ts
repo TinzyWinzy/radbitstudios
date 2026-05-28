@@ -101,7 +101,26 @@ export class BruteForceProtection {
 // ============================================
 
 const ALGORITHM = 'aes-256-gcm';
-const KEY = process.env.ENCRYPTION_KEY || crypto.createHash('sha256').update('radbit-default-dev-key-2026').digest();
+
+function getEncryptionKey(): Buffer {
+  const envKey = process.env.ENCRYPTION_KEY;
+  if (envKey) {
+    return Buffer.from(envKey, 'hex').length === 32
+      ? Buffer.from(envKey, 'hex')
+      : crypto.createHash('sha256').update(envKey).digest();
+  }
+  // Allow fallback in development only
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('[Security] ENCRYPTION_KEY not set — using development fallback. Set ENCRYPTION_KEY in production.');
+    return crypto.createHash('sha256').update('radbit-dev-only-key-not-for-production').digest();
+  }
+  throw new Error(
+    'ENCRYPTION_KEY environment variable is required in production. ' +
+    'Generate one with: openssl rand -hex 32'
+  );
+}
+
+const KEY = getEncryptionKey();
 
 export function encrypt(text: string): string {
   const iv = crypto.randomBytes(12);

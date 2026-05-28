@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { PayNowProvider } from './providers/paynow.provider';
 
@@ -14,7 +15,7 @@ export class WebhookHandler {
 
     // Validate signature
     if (!this.verifySignature(provider, rawPayload)) {
-      console.error(`Invalid webhook signature from ${provider}`);
+      console.error(`[WebhookHandler] Invalid webhook signature from ${provider}`);
       return { status: 'ignored' };
     }
 
@@ -31,7 +32,7 @@ export class WebhookHandler {
           await this.handleSubscriptionRenewed(event);
           break;
         default:
-          console.warn(`Unknown webhook event type: ${event.type}`);
+          console.warn(`[WebhookHandler] Unknown webhook event type: ${event.type}`);
       }
 
       // Mark as processed
@@ -45,7 +46,7 @@ export class WebhookHandler {
 
       return { status: 'processed', eventId: event.id };
     } catch (error) {
-      console.error(`Webhook processing failed:`, error);
+      console.error(`[WebhookHandler] Processing failed:`, error);
       throw error;
     }
   }
@@ -124,24 +125,140 @@ export class WebhookHandler {
 
   private verifySignature(provider: string, payload: any): boolean {
     switch (provider) {
-      case 'stripe': {
-        const sigHeader = payload.headers?.['stripe-signature'];
-        if (!sigHeader || !process.env.STRIPE_WEBHOOK_SECRET) return false;
-        // Stripe signature verification would use stripe.webhooks.constructEvent()
-        return true;
-      }
+      case 'stripe':
+        return this.verifyStripeSignature(payload);
       case 'ecocash':
-        // EcoCash basic auth or IP whitelist
-        return true;
-      case 'payfast': {
-        // PayFast uses MD5 signature verification
-        return true;
-      }
-      case 'paynow': {
+        return this.verifyEcoCashSignature(payload);
+      case 'payfast':
+        return this.verifyPayFastSignature(payload);
+      case 'paynow':
         return new PayNowProvider().verifyITNHash(payload);
-      }
       default:
-        return true;
+        console.error(`[WebhookHandler] Unknown provider: ${provider}`);
+        return false;
+    }
+  }
+
+  /**
+   * Stripe: Verify HMAC-SHA256 signature using webhook secret.
+   * Stripe sends signature in `stripe-signature` header as:
+   * t=<timestamp>,v1=<signature>
+   * We compute HMAC over `${timestamp}.${body}` and compare.
+   */
+  private verifyStripeSignature(payload: any): boolean {
+    const secret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!secret) {
+      console.error('[WebhookHandler] STRIPE_WEBHOOK_SECRET not configured');
+      return false;
+    }
+
+    const sigHeader = payload.headers?.['stripe-signature'] || payload.stripeSignature;
+    if (!sigHeader) {
+      console.error('[WebhookHandler] Missing stripe-signature header');
+      return false;
+    }
+
+    try {
+      const elements = sigHeader.split(',').reduce((acc: Record<string, string>, part: string) => {
+        const [key, value] = part.split('=');
+        acc[key.trim()] = value?.trim() || '';
+        return acc;
+      }, {});
+
+      const timestamp = elements['t'];
+      const signature = elements['v1'];
+      if (!timestamp || !signature) return false;
+
+      // Reject if timestamp is older than 5 minutes (replay protection)
+      const timestampSeconds = parseInt(timestamp, 10);
+      if (Math.abs(Date.now() / 1000 - timestampSeconds) > 300) {
+        console.error('[WebhookHandler] Stripe webhook timestamp too old');
+        return false;
+      }
+
+      const body = typeof payload.body === 'string' ? payload.body : JSON.stringify(payload.body || payload);
+      const expectedSig = crypto
+        .createHmac('sha256', secret)
+        .update(`${timestamp}.${body}`)
+        .digest('hex');
+
+      return crypto.timingSafeEqual(
+        Buffer.from(signature, 'hex'),
+        Buffer.from(expectedSig, 'hex')
+      );
+    } catch (e) {
+      console.error('[WebhookHandler] Stripe signature verification failed:', e);
+      return false;
+    }
+  }
+
+  /**
+   * EcoCash: Verify using the API key in the Authorization header.
+   * EcoCash webhooks send Bearer token that should match our ECOCASH_API_KEY.
+   * In production, this should also check IP whitelist.
+   */
+  private verifyEcoCashSignature(payload: any): boolean {
+    const apiKey = process.env.ECOCASH_API_KEY;
+    if (!apiKey) {
+      console.error('[WebhookHandler] ECOCASH_API_KEY not configured');
+      return false;
+    }
+
+    const authHeader = payload.headers?.['authorization'] || payload.authorization;
+    if (!authHeader) {
+      console.error('[WebhookHandler] Missing Authorization header from EcoCash');
+      return false;
+    }
+
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    return crypto.timingSafeEqual(
+      Buffer.from(token),
+      Buffer.from(apiKey)
+    );
+  }
+
+  /**
+   * PayFast: Verify MD5 signature.
+   * PayFast sends a `signature` field computed as:
+   * MD5(sorted query string fields + passphrase)
+   * We recompute and compare.
+   */
+  private verifyPayFastSignature(payload: any): boolean {
+    const passphrase = process.env.PAYFAST_PASSPHRASE;
+    const data = payload.body || payload;
+
+    if (!data.signature) {
+      console.error('[WebhookHandler] Missing PayFast signature');
+      return false;
+    }
+
+    try {
+      // Build the data string from all fields except 'signature'
+      const fields: Record<string, string> = {};
+      for (const [key, value] of Object.entries(data)) {
+        if (key !== 'signature' && value !== '' && value !== undefined && value !== null) {
+          fields[key] = String(value);
+        }
+      }
+
+      // Sort fields alphabetically and build query string
+      const sortedKeys = Object.keys(fields).sort();
+      let dataString = sortedKeys.map(key => `${key}=${encodeURIComponent(fields[key])}`).join('&');
+
+      // Append passphrase if provided
+      if (passphrase) {
+        dataString += `&passphrase=${encodeURIComponent(passphrase)}`;
+      }
+
+      const expectedSignature = crypto.createHash('md5').update(dataString).digest('hex');
+
+      return crypto.timingSafeEqual(
+        Buffer.from(data.signature),
+        Buffer.from(expectedSignature)
+      );
+    } catch (e) {
+      console.error('[WebhookHandler] PayFast signature verification failed:', e);
+      return false;
     }
   }
 }
