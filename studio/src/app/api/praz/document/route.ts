@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
+import { validateBody, PrazDocumentSchema, PrazDeleteSchema } from '@/lib/api-validation';
 
 export async function POST(req: NextRequest) {
   const user = await verifySession(req);
@@ -8,12 +9,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { docType, fileName, fileUrl, expiresAt } = body;
+  const validation = await validateBody(req, PrazDocumentSchema);
+  if (!validation.success) return validation.response;
 
-  if (!docType || !fileName || !fileUrl) {
-    return NextResponse.json({ error: 'docType, fileName, fileUrl required' }, { status: 400 });
-  }
+  const { docType, fileName, fileUrl, expiresAt } = validation.data;
 
   const docRef = adminDb.collection('praz_documents').doc(`${user.uid}_${docType}`);
   await docRef.set({
@@ -36,11 +35,12 @@ export async function DELETE(req: NextRequest) {
   }
 
   const docType = req.nextUrl.searchParams.get('docType');
-  if (!docType) {
+  const validation = PrazDeleteSchema.safeParse({ docType });
+  if (!validation.success) {
     return NextResponse.json({ error: 'docType required' }, { status: 400 });
   }
 
-  await adminDb.collection('praz_documents').doc(`${user.uid}_${docType}`).delete();
+  await adminDb.collection('praz_documents').doc(`${user.uid}_${validation.data.docType}`).delete();
 
   return NextResponse.json({ success: true });
 }

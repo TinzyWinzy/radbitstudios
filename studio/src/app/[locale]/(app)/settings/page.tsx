@@ -368,7 +368,7 @@ export default function SettingsPage() {
                     description: `Complete payment to activate ${newPlan.name}. You'll be redirected after payment.`,
                 });
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error initiating payment:", error);
             setUpgradeInfo({
                 upgradeTo: newPlan.name as any,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import { withIpRateLimit } from '@/services/api-rate-limit';
+import { validateBody, CreateLeadSchema } from '@/lib/api-validation';
 
 function getPool(): Pool {
   const g = globalThis as unknown as { __radbitPgPool?: Pool };
@@ -23,25 +24,10 @@ export const POST = withIpRateLimit(
   { windowMs: 60 * 60 * 1000, maxRequests: 10, keyPrefix: 'leads' },
   async (request: NextRequest): Promise<NextResponse> => {
     try {
-      const body = await request.json();
+      const validation = await validateBody(request, CreateLeadSchema);
+      if (!validation.success) return validation.response;
 
-      const {
-        fullName,
-        workEmail,
-        companyName,
-        industry,
-        serviceInterest,
-        budgetRange,
-        message,
-        referralSource,
-      } = body;
-
-      if (!fullName || !workEmail) {
-        return NextResponse.json(
-          { error: 'Full name and work email are required' },
-          { status: 400 }
-        );
-      }
+      const { fullName, workEmail, companyName, industry, serviceInterest, budgetRange, message, referralSource } = validation.data;
 
       const pool = getPool();
       const client = await pool.connect();
@@ -61,8 +47,8 @@ export const POST = withIpRateLimit(
       } finally {
         client.release();
       }
-    } catch (error: any) {
-      console.error('[Leads API] Error:', error);
+    } catch (error: unknown) {
+      console.error('[Leads API] Error:', error instanceof Error ? error.message : error);
       return NextResponse.json(
         { error: 'Failed to submit inquiry. Please try again later.' },
         { status: 500 }

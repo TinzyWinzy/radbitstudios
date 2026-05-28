@@ -42,8 +42,9 @@ export class StripeProvider implements PaymentProvider {
         status: 'pending',
         redirectUrl: session.url || undefined,
       };
-    } catch (error: any) {
-      return { success: false, transactionId: '', providerRef: '', status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId: '', providerRef: '', status: 'failed', errorMessage: message };
     }
   }
 
@@ -56,8 +57,9 @@ export class StripeProvider implements PaymentProvider {
         providerRef,
         status: session.payment_status === 'paid' ? 'completed' : 'pending',
       };
-    } catch (error: any) {
-      return { success: false, transactionId: '', providerRef, status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId: '', providerRef, status: 'failed', errorMessage: message };
     }
   }
 
@@ -73,8 +75,9 @@ export class StripeProvider implements PaymentProvider {
         providerRef: refund.id,
         status: refund.status === 'succeeded' ? 'refunded' : 'pending',
       };
-    } catch (error: any) {
-      return { success: false, transactionId, providerRef: '', status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId, providerRef: '', status: 'failed', errorMessage: message };
     }
   }
 }

@@ -457,8 +457,9 @@ async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
     }
 
     return articles;
-  } catch (error: any) {
-    console.error(`[NewsScraper] RSS failed ${feed.sourceName}:`, error.message?.slice(0, 100) || error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message.slice(0, 100) : String(error);
+    console.error(`[NewsScraper] RSS failed ${feed.sourceName}:`, message);
     return [];
   }
 }
@@ -541,8 +542,9 @@ async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
       console.log(`[NewsScraper] HTML scraped ${articles.length} from ${feed.sourceName}`);
     }
     return articles.slice(0, 15);
-  } catch (error: any) {
-    console.error(`[NewsScraper] HTML failed ${feed.sourceName}:`, error.message?.slice(0, 100) || error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message.slice(0, 100) : String(error);
+    console.error(`[NewsScraper] HTML failed ${feed.sourceName}:`, message);
     return [];
   }
 }

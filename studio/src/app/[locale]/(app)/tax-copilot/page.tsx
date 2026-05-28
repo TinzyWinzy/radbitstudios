@@ -106,8 +106,8 @@ export default function TaxCopilotPage() {
       };
       setMessages((prev) => [...prev, aiMessage]);
 
-    } catch (error: any) {
-      const errMsg = error.message || 'Sorry, I encountered an error. Please try again.';
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : String(error) || 'Sorry, I encountered an error. Please try again.';
       toast({ title: 'Error', description: errMsg, variant: 'destructive' });
       setMessages((prev) =>
         prev.map((msg) => msg.id === userMessage.id ? { ...msg, status: 'error' } : msg)

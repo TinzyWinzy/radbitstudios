@@ -38,8 +38,9 @@ export class EcoCashProvider implements PaymentProvider {
         status: 'pending',
         redirectUrl: data.redirectUrl,
       };
-    } catch (error: any) {
-      return { success: false, transactionId: '', providerRef: '', status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId: '', providerRef: '', status: 'failed', errorMessage: message };
     }
   }
 
@@ -55,8 +56,9 @@ export class EcoCashProvider implements PaymentProvider {
         providerRef,
         status: data.status || 'failed',
       };
-    } catch (error: any) {
-      return { success: false, transactionId: '', providerRef, status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId: '', providerRef, status: 'failed', errorMessage: message };
     }
   }
 
@@ -77,8 +79,9 @@ export class EcoCashProvider implements PaymentProvider {
         providerRef: data.providerRef || '',
         status: data.status || 'failed',
       };
-    } catch (error: any) {
-      return { success: false, transactionId, providerRef: '', status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId, providerRef: '', status: 'failed', errorMessage: message };
     }
   }
 }

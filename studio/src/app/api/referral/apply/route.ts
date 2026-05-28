@@ -39,7 +39,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     return NextResponse.json({ success: true, message: result.message });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Referral Apply] Error:', error);
     return NextResponse.json({ error: 'Failed to apply referral code' }, { status: 500 });
   }

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 import { crawlForSources } from '@/services/discovery/source-crawler';
 import { classifySources } from '@/services/discovery/source-classifier';
 import { saveDiscoveredSources, getPendingSources, addActiveSource, rejectSource } from '@/services/discovery/source-store';
+import { validateBody, DiscoverySourcePatchSchema } from '@/lib/api-validation';
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,9 +28,10 @@ export async function POST(req: NextRequest) {
       highQuality: highQuality.length,
       sources: highQuality.map(s => ({ id: s.id, name: s.name, relevanceScore: s.relevanceScore, qualityScore: s.qualityScore })),
     });
-  } catch (error: any) {
-    console.error('[Discovery] Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[Discovery] Error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -36,25 +39,40 @@ export async function GET() {
   try {
     const pending = await getPendingSources();
     return NextResponse.json({ pending });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
 export async function PATCH(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { sourceId, action, feedUrl } = body;
+    const validation = await validateBody(req, DiscoverySourcePatchSchema);
+    if (!validation.success) return validation.response;
 
-    if (!sourceId || !action) {
-      return NextResponse.json({ error: 'sourceId and action required' }, { status: 400 });
-    }
+    const { sourceId, action, feedUrl } = validation.data;
 
     if (action === 'approve') {
-      await addActiveSource(
-        { id: sourceId } as any,
-        feedUrl || '',
-      );
+      // Fetch the full source document before approving
+      const sourceDoc = await adminDb.collection('discovered_sources').doc(sourceId).get();
+      if (!sourceDoc.exists) {
+        return NextResponse.json({ error: 'Source not found' }, { status: 404 });
+      }
+      const sourceData = sourceDoc.data() as Record<string, unknown>;
+      await addActiveSource({
+        id: sourceId,
+        url: (sourceData?.url as string) || '',
+        name: (sourceData?.name as string) || '',
+        feedUrl: feedUrl || (sourceData?.feedUrl as string) || '',
+        region: (sourceData?.region as string) || 'Zimbabwe',
+        description: (sourceData?.description as string) || '',
+        relevanceScore: (sourceData?.relevanceScore as number) || 0,
+        qualityScore: (sourceData?.qualityScore as number) || 0,
+        updateFrequency: 'weekly' as const,
+        reasonForSelection: (sourceData?.reasonForSelection as string) || '',
+        discoveredAt: (sourceData?.discoveredAt as string) || new Date().toISOString(),
+        status: 'approved',
+      }, feedUrl || (sourceData?.feedUrl as string) || '');
       return NextResponse.json({ status: 'approved' });
     }
 
@@ -64,7 +82,8 @@ export async function PATCH(req: NextRequest) {
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

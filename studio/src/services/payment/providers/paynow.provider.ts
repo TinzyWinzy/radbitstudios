@@ -30,13 +30,8 @@ export class PayNowProvider implements PaymentProvider {
       ...(this.authEmail ? { authemail: this.authEmail } : {}),
     });
 
-    // PAYNOW_TEST_MODE=Message sends test transactions (skips real payment)
-    if (process.env.PAYNOW_TEST_MODE) {
-      payload.set('status', 'Message');
-    }
-
     try {
-      const response = await fetch('https://www.paynow.co.zw/interface/create', {
+      const response = await fetch('https://www.paynow.co.zw/interface/initiatetransaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: payload.toString(),
@@ -46,7 +41,13 @@ export class PayNowProvider implements PaymentProvider {
       const parsed = Object.fromEntries(new URLSearchParams(text));
 
       if (parsed.status !== 'Ok') {
-        return { success: false, transactionId: '', providerRef: '', status: 'failed', errorMessage: parsed.error || 'PayNow initiation failed' };
+        return {
+          success: false,
+          transactionId: reference,
+          providerRef: '',
+          status: 'failed',
+          errorMessage: parsed.error || 'PayNow initiation failed',
+        };
       }
 
       return {
@@ -56,8 +57,9 @@ export class PayNowProvider implements PaymentProvider {
         status: 'pending',
         redirectUrl: parsed.browserurl,
       };
-    } catch (error: any) {
-      return { success: false, transactionId: '', providerRef: '', status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId: reference, providerRef: '', status: 'failed', errorMessage: message };
     }
   }
 
@@ -73,8 +75,9 @@ export class PayNowProvider implements PaymentProvider {
         providerRef,
         status: parsed.status === 'Paid' ? 'completed' : 'pending',
       };
-    } catch (error: any) {
-      return { success: false, transactionId: '', providerRef, status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId: '', providerRef, status: 'failed', errorMessage: message };
     }
   }
 
@@ -102,8 +105,9 @@ export class PayNowProvider implements PaymentProvider {
         status: parsed.status === 'Ok' ? 'refunded' : 'failed',
         errorMessage: parsed.error,
       };
-    } catch (error: any) {
-      return { success: false, transactionId, providerRef: '', status: 'failed', errorMessage: error.message };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, transactionId, providerRef: '', status: 'failed', errorMessage: message };
     }
   }
 

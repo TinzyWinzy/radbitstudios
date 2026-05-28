@@ -36,12 +36,13 @@ export const POST = withIpRateLimit(
       });
 
       return response;
-    } catch (error: any) {
-      if (error?.status === 429) throw error;
-      if (error?.code?.includes('auth/')) {
+    } catch (error: unknown) {
+      const err = error as Record<string, unknown>;
+      if (err?.status === 429) throw error;
+      if (typeof err?.code === 'string' && err.code.includes('auth/')) {
         return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
       }
-      console.error('Refresh session error:', error);
+      console.error('Refresh session error:', error instanceof Error ? error.message : error);
       return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
   },

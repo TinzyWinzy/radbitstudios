@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminApp } from '@/lib/firebase/firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
-
-const VALID_ROLES = ['sme_owner', 'sme_staff', 'admin', 'super_admin'] as const;
+import { validateBody, SetRoleSchema } from '@/lib/api-validation';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,23 +23,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden: admin role required' }, { status: 403 });
     }
 
-    const body = await request.json();
-    const { uid, role } = body as { uid: string; role: string };
+    const validation = await validateBody(request, SetRoleSchema);
+    if (!validation.success) return validation.response;
 
-    if (!uid || !role) {
-      return NextResponse.json({ error: 'Missing uid or role' }, { status: 400 });
-    }
-    if (!VALID_ROLES.includes(role as any)) {
-      return NextResponse.json({ error: `Invalid role. Must be one of: ${VALID_ROLES.join(', ')}` }, { status: 400 });
-    }
+    const { uid, role } = validation.data;
 
     await adminAuth.setCustomUserClaims(uid, { role });
-
     await getFirestore(adminApp).collection('users').doc(uid).set({ role }, { merge: true });
 
     return NextResponse.json({ success: true, uid, role });
-  } catch (error: any) {
-    console.error('[API /api/admin/set-role] Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[API /api/admin/set-role] Error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

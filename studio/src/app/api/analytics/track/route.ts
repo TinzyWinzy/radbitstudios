@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { validateBody, AnalyticsTrackSchema } from '@/lib/api-validation';
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { event, path: pagePath, userId, timestamp, properties } = body;
+    const validation = await validateBody(req, AnalyticsTrackSchema);
+    if (!validation.success) return validation.response;
 
-    if (!event || !pagePath) {
-      return NextResponse.json({ error: 'event and path required' }, { status: 400 });
-    }
+    const { event, path: pagePath, userId, timestamp, properties } = validation.data;
 
-    // Store in Firestore analytics collection
     await adminDb.collection('analytics_events').add({
       event,
       path: pagePath,
@@ -23,8 +21,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error('[Analytics] Track error:', error);
-    return NextResponse.json({ ok: true }); // Don't fail the client on analytics errors
+  } catch (error: unknown) {
+    console.error('[Analytics] Track error:', error instanceof Error ? error.message : error);
+    return NextResponse.json({ ok: true });
   }
 }

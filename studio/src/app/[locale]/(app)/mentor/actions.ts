@@ -47,7 +47,7 @@ ${tenderCtx || ''}`;
       newsCount: news.length,
       tenderCount: tenders.length,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     Sentry.captureException(error, { tags: { domain: 'mentor', operation: 'getMentorContext' }, extra: { userId: input.userId } });
     return {
       systemPrompt: `You are an AI business mentor for Zimbabwean SMEs. Provide supportive, actionable, and context-aware advice.`,

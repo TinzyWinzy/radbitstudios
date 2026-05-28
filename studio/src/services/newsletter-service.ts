@@ -63,8 +63,10 @@ export async function subscribeUser(
     });
 
     return { success: true, subscriptionId: userId };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[Newsletter] Subscribe error:', message);
+    throw new Error(message);
   }
 }
 

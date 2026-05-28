@@ -51,7 +51,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
 
     return NextResponse.json({ success: true, message: 'Profile saved' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Diaspora Profile] Error:', error);
     return NextResponse.json({ error: 'Failed to save profile' }, { status: 500 });
   }

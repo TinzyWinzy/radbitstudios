@@ -174,11 +174,13 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
     });
 
     return result;
-  } catch (error: any) {
-    if (error.code === 'limit_reached') {
-      const upgrade = getUpgradePath(error.plan, feature);
+  } catch (error: unknown) {
+    const err = error as Record<string, unknown>;
+    if (err?.code === 'limit_reached') {
+      const upgrade = getUpgradePath(err.plan as PlanName, feature);
       return { success: false, message: upgrade.message, upgrade };
     }
-    return { success: false, message: error.message || "An unexpected error occurred." };
+    const message = error instanceof Error ? error.message : String(error);
+    return { success: false, message: message || "An unexpected error occurred." };
   }
 }

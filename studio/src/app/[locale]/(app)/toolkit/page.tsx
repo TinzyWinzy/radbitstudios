@@ -138,11 +138,11 @@ export default function AiToolkitPage() {
       });
 
       setGeneratedContent(response.insight);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error generating insight:', error);
       toast({
         title: 'Generation Failed',
-        description: error.message || 'An unexpected error occurred.',
+        description: (error instanceof Error ? error.message : String(error)) || '',
         variant: 'destructive',
       });
     } finally {

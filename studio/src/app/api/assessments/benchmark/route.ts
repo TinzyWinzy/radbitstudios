@@ -50,8 +50,8 @@ export async function GET(req: NextRequest) {
     }));
 
     return NextResponse.json({ benchmark });
-  } catch (error: any) {
-    console.error('[Benchmark API] Error:', error?.message);
+  } catch (error: unknown) {
+    console.error('[Benchmark API] Error:', error instanceof Error ? error.message : error);
     return NextResponse.json({ benchmark: [] });
   }
 }

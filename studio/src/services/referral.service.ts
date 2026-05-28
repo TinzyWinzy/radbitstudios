@@ -106,8 +106,9 @@ export class ReferralService {
       });
 
       return { success: true, message: 'Referral applied! You both get bonus AI credits.' };
-    } catch (error: any) {
-      return { success: false, message: error.message || 'Failed to apply referral' };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return { success: false, message: message || 'Failed to apply referral' };
     }
   }
 

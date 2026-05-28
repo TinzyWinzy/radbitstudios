@@ -72,11 +72,13 @@ export function useStreamingAI() {
           } catch { /* skip malformed */ }
         }
       }
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      const err = error as Record<string, unknown>;
+      if (err?.name === 'AbortError') {
         setState(prev => ({ ...prev, isStreaming: false }));
       } else {
-        setState({ content: '', isStreaming: false, error: error.message });
+        const message = error instanceof Error ? error.message : String(error);
+        setState({ content: '', isStreaming: false, error: message });
       }
     }
   }, []);

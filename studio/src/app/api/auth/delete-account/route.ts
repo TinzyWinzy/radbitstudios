@@ -122,7 +122,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[DeleteAccount] Error:', error);
     return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
   }

@@ -68,10 +68,10 @@ export default function SignInPage() {
 
     try {
       await signIn(email, password);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Sign In Failed',
-        description: error.message || 'Please check your credentials and try again.',
+        description: (error instanceof Error ? error.message : String(error)) || '',
         variant: 'destructive',
       });
     } finally {
@@ -93,8 +93,9 @@ export default function SignInPage() {
     try {
       await sendPasswordResetEmail(auth, email);
       toast({ title: 'Check your inbox', description: 'If an account exists with that email, a password reset link has been sent.', variant: 'default' });
-    } catch (error: any) {
-      toast({ title: 'Reset failed', description: error.message || 'Could not send reset email. Please try again.', variant: 'destructive' });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast({ title: 'Error', description: message || 'Could not send reset email. Please try again.', variant: 'destructive' });
     } finally {
       setIsResetting(false);
     }
@@ -104,10 +105,10 @@ export default function SignInPage() {
     setIsGoogleLoading(true);
     try {
         await signInWithGoogle();
-    } catch (error: any) {
+    } catch (error: unknown) {
         toast({
             title: 'Google Sign In Failed',
-            description: error.message || 'Could not sign in with Google. Please try again.',
+            description: (error instanceof Error ? error.message : String(error)) || '',
             variant: 'destructive',
         })
     } finally {

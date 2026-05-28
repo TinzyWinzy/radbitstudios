@@ -74,10 +74,10 @@ export default function SignUpPage() {
 
     try {
       await signUp(email, password, { phone: phone?.trim() || '' });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Sign Up Failed',
-        description: error.message || 'An unexpected error occurred.',
+        description: (error instanceof Error ? error.message : String(error)) || '',
         variant: 'destructive',
       });
     } finally {
@@ -89,10 +89,10 @@ export default function SignUpPage() {
     setIsGoogleLoading(true);
     try {
         await signInWithGoogle();
-    } catch (error: any) {
+    } catch (error: unknown) {
         toast({
             title: 'Google Sign In Failed',
-            description: error.message || 'Could not sign in with Google. Please try again.',
+            description: (error instanceof Error ? error.message : String(error)) || '',
             variant: 'destructive',
         })
     } finally {

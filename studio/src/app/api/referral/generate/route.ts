@@ -35,7 +35,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const code = await service.generateCode(verified.uid);
 
     return NextResponse.json({ success: true, code });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Referral Generate] Error:', error);
     return NextResponse.json({ error: 'Failed to generate referral code' }, { status: 500 });
   }

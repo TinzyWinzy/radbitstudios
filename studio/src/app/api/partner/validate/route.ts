@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from 'firebase-admin/auth';
 import { adminApp } from '@/lib/firebase/firebase-admin';
 import { ReferralService } from '@/services/referral.service';
+import { validateBody, PartnerValidatePostSchema } from '@/lib/api-validation';
 
 const referralService = new ReferralService();
 
 export async function POST(req: NextRequest) {
   try {
-    const { idToken, partnerCode } = await req.json();
-    if (!idToken || !partnerCode) {
-      return NextResponse.json({ error: 'Missing idToken or partnerCode' }, { status: 400 });
-    }
+    const validation = await validateBody(req, PartnerValidatePostSchema);
+    if (!validation.success) return validation.response;
 
+    const { idToken, partnerCode } = validation.data;
     const decoded = await getAuth(adminApp).verifyIdToken(idToken);
     const result = await referralService.applyReferral(partnerCode, decoded.uid);
 
@@ -24,8 +24,9 @@ export async function POST(req: NextRequest) {
       message: result.message,
       discountPercent: result.discountPercent,
     });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

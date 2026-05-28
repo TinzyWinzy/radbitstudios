@@ -220,11 +220,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
 
       return { success: true };
-    } catch (error: any) {
-      if (error.code === 'auth/requires-recent-login') {
+    } catch (error: unknown) {
+      const err = error as Record<string, unknown>;
+      if (err?.code === 'auth/requires-recent-login') {
         return { success: false, error: 'Please sign out and sign back in, then try again. This is a security requirement.' };
       }
-      return { success: false, error: error.message || 'An unexpected error occurred.' };
+      return { success: false, error: (error instanceof Error ? error.message : String(error)) || '' };
     }
   }, [fetchAndSetUser]);
 

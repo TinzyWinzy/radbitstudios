@@ -307,7 +307,7 @@ export class AIGateway {
 
         await this.cache.store(request.systemPrompt ?? '', request.prompt, response);
         return response;
-      } catch (error: any) {
+      } catch (error: unknown) {
         lastError = sanitizeError(error);
 
         if (error instanceof DOMException && error.name === 'AbortError') {

@@ -1,10 +1,17 @@
 import { NextRequest } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
+import { validateBody, AiStreamSchema } from '@/lib/api-validation';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+interface GeminiBody {
+  contents: { parts: { text: string }[] }[];
+  generationConfig: { maxOutputTokens: number; temperature: number };
+  systemInstruction?: { parts: { text: string }[] };
+}
 
 async function* streamGemini(
   model: string,
@@ -19,7 +26,7 @@ async function* streamGemini(
   const modelName = model.includes('/') ? model : `models/${model}`;
   const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`;
 
-  const body: any = {
+  const body: GeminiBody = {
     contents: [{ parts: [{ text: prompt }] }],
     generationConfig: {
       maxOutputTokens: maxTokens || 2048,
@@ -81,23 +88,20 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const body = await req.json();
+    const validation = await validateBody(req, AiStreamSchema);
+    if (!validation.success) {
+      return validation.response;
+    }
+
     const {
       prompt,
       systemPrompt,
       maxTokens,
       temperature,
-      model = 'gemini-2.5-flash',
+      model,
       threadId,
       userId,
-    } = body;
-
-    if (!prompt?.trim()) {
-      return new Response(JSON.stringify({ error: 'Prompt is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    } = validation.data;
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -127,8 +131,8 @@ export async function POST(req: NextRequest) {
                 .update({ updatedAt: new Date(), messageCount: FieldValue.increment(1) });
             } catch { /* non-critical */ }
           }
-        } catch (error: any) {
-          const errEvent = JSON.stringify({ error: error.message, done: true });
+        } catch (error: unknown) {
+          const errEvent = JSON.stringify({ error: error instanceof Error ? error.message : String(error), done: true });
           controller.enqueue(new TextEncoder().encode(`data: ${errEvent}\n\n`));
         } finally {
           controller.close();
@@ -143,8 +147,9 @@ export async function POST(req: NextRequest) {
         'Connection': 'keep-alive',
       },
     });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
