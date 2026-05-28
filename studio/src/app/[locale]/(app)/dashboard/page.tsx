@@ -15,21 +15,22 @@ import {
   ArrowRight,
   Lightbulb,
   FileText,
-  Users,
-  Briefcase,
-  BarChart,
   RefreshCw,
   Loader2,
   Wand2,
   Newspaper,
   TrendingUp,
   ExternalLink,
-  Sparkles,
+  Briefcase,
   AlertTriangle,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  BarChart,
 } from "lucide-react";
 import Link from "next/link";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OnboardingWizard } from "@/components/onboarding-wizard";
 import { UsageSummary } from "@/components/usage-summary";
@@ -50,54 +51,22 @@ import type { AppUser } from "@/types/user";
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
-const overviewCards = [
-  {
-    title: "Digital Assessment",
-    description: "Gauge your business's digital readiness.",
-    icon: <FileText className="h-6 w-6 text-primary" />,
-    href: "/assessment",
-  },
-  {
-    title: "AI Toolkit",
-    description: "Use AI to generate slogans, profiles, and more.",
-    icon: <Wand2 className="h-6 w-6 text-primary" />,
-    href: "/toolkit",
-  },
-  {
-    title: "Tenders & News",
-    description: "Find new opportunities and stay updated.",
-    icon: <Briefcase className="h-6 w-6 text-primary" />,
-    href: "/tenders",
-  },
-  {
-    title: "Community Forum",
-    description: "Connect and learn from other entrepreneurs.",
-    icon: <Users className="h-6 w-6 text-primary" />,
-    href: "/community",
-  },
-];
-
 const chartConfig = {
-    score: {
-      label: "Score",
-      color: "hsl(var(--primary))",
-    },
-    category: {
-      label: "Category",
-    },
+  score: { label: "Score", color: "hsl(var(--primary))" },
+  category: { label: "Category" },
 };
 
 interface AssessmentData {
-    chartData: { category: string; score: number }[];
-    aiSummary: string;
+  chartData: { category: string; score: number }[];
+  aiSummary: string;
 }
 
 const AssessmentRadarChart = memo(function AssessmentRadarChart({ data }: { data: AssessmentData }) {
   return (
-    <>
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold flex items-center">
-          <BarChart className="mr-2 h-5 w-5 text-primary" />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold flex items-center gap-1.5">
+          <BarChart className="h-4 w-4 text-primary" />
           Strengths & Gaps
         </h3>
         <ChartContainer config={chartConfig} className="aspect-square h-full w-full">
@@ -105,26 +74,20 @@ const AssessmentRadarChart = memo(function AssessmentRadarChart({ data }: { data
             <ChartTooltip content={<ChartTooltipContent />} />
             <PolarAngleAxis dataKey="category" />
             <PolarGrid />
-            <Radar
-              name="Score"
-              dataKey="score"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
-              fillOpacity={0.6}
-            />
+            <Radar name="Score" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.6} />
           </RadarChart>
         </ChartContainer>
       </div>
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold flex items-center">
-          <Lightbulb className="mr-2 h-5 w-5 text-primary" />
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold flex items-center gap-1.5">
+          <Lightbulb className="h-4 w-4 text-primary" />
           AI Summary
         </h3>
         <div className="p-4 bg-muted rounded-lg flex-1">
           <p className="text-sm whitespace-pre-line">{data.aiSummary}</p>
         </div>
       </div>
-    </>
+    </div>
   );
 });
 
@@ -135,6 +98,7 @@ export default function DashboardPage() {
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [isLoadingInsights, setIsLoadingInsights] = useState(true);
   const [insightsError, setInsightsError] = useState(false);
+  const [insightsExpanded, setInsightsExpanded] = useState(false);
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [assessmentHistory, setAssessmentHistory] = useState<{ date: string; score: number }[]>([]);
@@ -292,14 +256,17 @@ export default function DashboardPage() {
     return () => { mounted = false; };
   }, [user, hasCompletedProfile, retryTrigger]);
 
+  const insightCount = dailyTips.length + recommendations.length;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight">
             Welcome, {user?.displayName?.split(' ')[0] || 'Entrepreneur'}!
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm mt-1">
             Here&apos;s your business overview for today.
           </p>
         </div>
@@ -307,88 +274,58 @@ export default function DashboardPage() {
 
       <OnboardingWizard />
 
-      {user && hasCompletedProfile && allAssessments.length > 0 && (
-        <MaturityOverview
-          assessments={allAssessments}
-          hasProfile={hasCompletedProfile}
-          benchmarkData={benchmarkData}
-        />
-      )}
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {overviewCards.map((card) => (
-          <Card key={card.title}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                {card.title}
-              </CardTitle>
-              {card.icon}
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">
-                {card.description}
-              </p>
-               <Button variant="link" asChild className="px-0 mt-2">
-                <Link href={card.href}>
-                  Go to {card.title} <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+      {/* Main Content: Assessment + Insights side by side */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        {/* Assessment Section (3/5) */}
         <Card className="lg:col-span-3">
-          <CardHeader>
+          <CardHeader className="pb-3">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
               <div>
-                <CardTitle>Your Digital Readiness</CardTitle>
-                <CardDescription>
-                  A summary of your recent assessment.
+                <CardTitle className="text-base">Digital Readiness</CardTitle>
+                <CardDescription className="text-xs">
+                  Your latest assessment results and score trend.
                 </CardDescription>
               </div>
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" asChild className="shrink-0">
                 <Link href="/assessment">
-                  <RefreshCw className="mr-2 h-4 w-4"/>
-                  Retake Assessment
+                  <RefreshCw className="mr-1.5 h-3.5 w-3.5"/>
+                  Retake
                 </Link>
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4">
             <ErrorBoundary>
               {isLoadingAssessment ? (
                 <div className="flex items-center justify-center min-h-[200px]">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
               ) : assessmentData ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <AssessmentRadarChart data={assessmentData} />
-                </div>
+                <AssessmentRadarChart data={assessmentData} />
               ) : (
                 <div className="flex flex-col items-center justify-center text-center min-h-[200px]">
-                  <p className="text-muted-foreground">You haven&apos;t taken the assessment yet.</p>
-                  <Button asChild className="mt-4">
+                  <FileText className="h-8 w-8 text-muted-foreground/40 mb-3" />
+                  <p className="text-sm text-muted-foreground mb-3">You haven&apos;t taken the assessment yet.</p>
+                  <Button asChild size="sm">
                     <Link href="/assessment">Take Your First Assessment</Link>
                   </Button>
                 </div>
               )}
             </ErrorBoundary>
             {assessmentHistory.length > 1 && (
-              <div className="border-t pt-6">
-                <h3 className="text-sm font-semibold flex items-center gap-1.5 mb-3">
-                  <TrendingUp className="h-4 w-4 text-primary" />
+              <div className="border-t pt-4">
+                <h3 className="text-xs font-semibold flex items-center gap-1.5 mb-2">
+                  <TrendingUp className="h-3.5 w-3.5 text-primary" />
                   Score Trend
                 </h3>
-                <div className="h-32">
+                <div className="h-28">
                   <ChartContainer config={chartConfig} className="h-full w-full">
                     <LineChart data={assessmentHistory}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                      <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))", r: 3 }} />
+                      <Line type="monotone" dataKey="score" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))", r: 2 }} />
                     </LineChart>
                   </ChartContainer>
                 </div>
@@ -397,88 +334,95 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
+        {/* AI Insights Sidebar (2/5) */}
         <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>AI Insights</CardTitle>
-            <CardDescription>
-              Personalized tips and recommendations to help you grow.
-            </CardDescription>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-base flex items-center gap-1.5">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  AI Insights
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Personalized tips for your business.
+                </CardDescription>
+              </div>
+              {insightCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setInsightsExpanded(!insightsExpanded)}
+                  className="h-7 px-2 text-xs"
+                >
+                  {insightsExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                  {insightsExpanded ? "Less" : `${insightCount} tips`}
+                </Button>
+              )}
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent>
             <ErrorBoundary>
               {isLoadingInsights ? (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-1/3" />
-                    <Skeleton className="h-3 w-full" />
-                  </div>
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-1/3" />
-                    <Skeleton className="h-3 w-full" />
-                  </div>
+                <div className="space-y-3">
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-4/5" />
+                  <Skeleton className="h-3 w-3/5" />
                 </div>
               ) : insightsError ? (
-                <div className="text-center py-8 space-y-4">
-                  <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10">
-                    <AlertTriangle className="size-6 text-destructive" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-md">Failed to load insights</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Something went wrong. Please try again.
-                    </p>
-                  </div>
+                <div className="text-center py-6 space-y-3">
+                  <AlertTriangle className="h-6 w-6 text-destructive mx-auto" />
+                  <p className="text-xs text-muted-foreground">Failed to load insights.</p>
                   <Button variant="outline" size="sm" onClick={() => setRetryTrigger(c => c + 1)}>
-                    <RefreshCw className="mr-2 h-4 w-4" />
+                    <RefreshCw className="mr-1.5 h-3 w-3" />
                     Retry
                   </Button>
                 </div>
               ) : hasCompletedProfile && !creditsExhausted ? (
-                <>
-                  <div>
-                    <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Daily Tips</h3>
-                    <div className="space-y-3">
-                      {dailyTips.length > 0 ? dailyTips.map((tip, index) => (
-                        <div key={index} className="p-3 bg-muted/50 rounded-lg">
-                          <p className="text-xs text-muted-foreground">{tip}</p>
-                        </div>
-                      )) : (
-                        <p className="text-xs text-muted-foreground">No tips available right now.</p>
-                      )}
+                <div className="space-y-3">
+                  {/* Daily Tips - always show first 2 */}
+                  {dailyTips.length > 0 && dailyTips.slice(0, 2).map((tip, i) => (
+                    <div key={i} className="p-2.5 bg-muted/50 rounded-lg">
+                      <p className="text-xs text-muted-foreground leading-relaxed">{tip}</p>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-md mb-2 flex items-center"><Wand2 className="w-4 h-4 mr-2 text-primary"/>Recommendations</h3>
-                    <div className="space-y-3">
-                      {recommendations.length > 0 ? recommendations.map((rec, index) => (
-                        <div key={index} className="p-3 bg-muted/50 rounded-lg">
-                          <p className="text-xs text-muted-foreground">{rec}</p>
+                  ))}
+                  {/* Expanded: show remaining tips + recommendations */}
+                  {insightsExpanded && (
+                    <>
+                      {dailyTips.slice(2).map((tip, i) => (
+                        <div key={`tip-${i}`} className="p-2.5 bg-muted/50 rounded-lg">
+                          <p className="text-xs text-muted-foreground leading-relaxed">{tip}</p>
                         </div>
-                      )) : (
-                        <p className="text-xs text-muted-foreground">No recommendations right now.</p>
+                      ))}
+                      {recommendations.length > 0 && (
+                        <div className="pt-2 border-t">
+                          <h4 className="text-xs font-semibold mb-2 flex items-center gap-1.5">
+                            <Wand2 className="h-3 w-3 text-primary" />
+                            Recommendations
+                          </h4>
+                          {recommendations.map((rec, i) => (
+                            <div key={`rec-${i}`} className="p-2.5 bg-muted/50 rounded-lg mb-2">
+                              <p className="text-xs text-muted-foreground leading-relaxed">{rec}</p>
+                            </div>
+                          ))}
+                        </div>
                       )}
-                    </div>
-                  </div>
-                </>
+                    </>
+                  )}
+                  {dailyTips.length === 0 && recommendations.length === 0 && (
+                    <p className="text-xs text-muted-foreground text-center py-4">No tips available right now.</p>
+                  )}
+                </div>
               ) : creditsExhausted && hasCompletedProfile ? (
-                <div className="text-center py-8 space-y-4">
-                  <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10">
-                    <Sparkles className="size-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-md">AI Insights Exhausted</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      You&apos;ve used all your dashboard insights credits for this billing period.
-                    </p>
-                  </div>
-                  <Button onClick={() => router.push('/settings?tab=plan')}>
-                    Upgrade to Growth — $5/mo
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                <div className="text-center py-6 space-y-3">
+                  <Sparkles className="h-6 w-6 text-primary mx-auto" />
+                  <p className="text-xs text-muted-foreground">Credits exhausted for this period.</p>
+                  <Button size="sm" onClick={() => router.push('/settings?tab=plan')}>
+                    Upgrade <ArrowRight className="ml-1.5 h-3 w-3" />
                   </Button>
                 </div>
               ) : (
-                <div className="text-center text-muted-foreground py-8">
-                  <p>Complete your business profile to unlock personalized AI insights.</p>
+                <div className="text-center py-6 text-xs text-muted-foreground">
+                  <p>Complete your profile to unlock AI insights.</p>
                 </div>
               )}
             </ErrorBoundary>
@@ -486,15 +430,27 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-        <UsageSummary user={user} />
-        {user && <RecentActivity userId={user.uid} />}
-      </div>
+      {/* Maturity + News + Usage row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Maturity Overview */}
+        {user && hasCompletedProfile && allAssessments.length > 0 && (
+          <MaturityOverview
+            assessments={allAssessments}
+            hasProfile={hasCompletedProfile}
+            benchmarkData={benchmarkData}
+          />
+        )}
 
-      <div id="dashboard-news-insights" className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        {/* News Brief */}
         <ErrorBoundary>
           <NewsInsightsCard user={user} />
         </ErrorBoundary>
+      </div>
+
+      {/* Usage + Activity - compact row */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <UsageSummary user={user} />
+        {user && <RecentActivity userId={user.uid} />}
       </div>
 
       <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => router.push('/settings?tab=plan')} />
@@ -531,95 +487,91 @@ function NewsInsightsCard({ user }: { user: AppUser | null }) {
   };
 
   return (
-    <Card className="lg:col-span-2 border-primary/20">
-      <CardHeader>
+    <Card>
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <CardTitle className="text-base">Industry Intelligence</CardTitle>
+          <div className="flex items-center gap-1.5">
+            <TrendingUp className="h-4 w-4 text-primary" />
+            <CardTitle className="text-base">Industry Intel</CardTitle>
           </div>
           {!brief ? (
-            <Button size="sm" variant="outline" onClick={handleGenerate} disabled={loading} className="gap-1.5">
-              {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Newspaper className="h-3.5 w-3.5" />}
-              {loading ? 'Generating...' : 'Generate Brief'}
+            <Button size="sm" variant="outline" onClick={handleGenerate} disabled={loading} className="h-7 text-xs gap-1.5">
+              {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Newspaper className="h-3 w-3" />}
+              {loading ? 'Generating...' : 'Generate'}
             </Button>
           ) : (
-            <Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)}>
-              {expanded ? 'Show less' : 'Show more'}
+            <Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} className="h-7 text-xs">
+              {expanded ? 'Less' : 'More'}
             </Button>
           )}
         </div>
-        <CardDescription>
-          Live news and tender opportunities relevant to your business.
+        <CardDescription className="text-xs">
+          News and tenders for your industry.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         {!brief ? (
-          <div className="text-center py-6 text-muted-foreground">
-            <Newspaper className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <div className="text-center py-4 text-muted-foreground">
+            <Newspaper className="h-6 w-6 mx-auto mb-2 opacity-30" />
             {error ? (
-              <div className="space-y-3">
-                <p className="text-sm">Failed to generate brief. Try again.</p>
-                <Button size="sm" variant="outline" onClick={handleGenerate}>
-                  <RefreshCw className="mr-2 h-3 w-3" />
+              <div className="space-y-2">
+                <p className="text-xs">Failed to generate. Try again.</p>
+                <Button size="sm" variant="outline" onClick={handleGenerate} className="h-7 text-xs">
+                  <RefreshCw className="mr-1.5 h-3 w-3" />
                   Retry
                 </Button>
               </div>
             ) : (
-              <p className="text-sm">Click &quot;Generate Brief&quot; to get AI-curated news and tender recommendations for your industry.</p>
+              <p className="text-xs">Click &quot;Generate&quot; for AI-curated news.</p>
             )}
           </div>
         ) : (
-          <>
+          <div className="space-y-3">
             {brief.summary && (
-              <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">{brief.summary}</p>
+              <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-2.5">{brief.summary}</p>
             )}
             {brief.topStories?.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-sm font-semibold flex items-center gap-1.5">
-                  <Newspaper className="h-4 w-4 text-primary" />
-                  Top Stories
+              <div className="space-y-1.5">
+                <h4 className="text-xs font-semibold flex items-center gap-1">
+                  <Newspaper className="h-3 w-3 text-primary" />
+                  Stories
                 </h4>
                 {(expanded ? brief.topStories : brief.topStories.slice(0, 2)).map((story: any, i: number) => (
-                  <div key={i} className="p-3 bg-card rounded-lg border border-border/50">
-                    <p className="text-sm font-medium">{story.headline}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{story.whyItMatters}</p>
+                  <div key={i} className="p-2.5 bg-card rounded-lg border border-border/50">
+                    <p className="text-xs font-medium">{story.headline}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{story.whyItMatters}</p>
                     {story.actionStep && (
-                      <p className="text-xs text-primary mt-1 font-medium">Action: {story.actionStep}</p>
+                      <p className="text-[11px] text-primary mt-1 font-medium">→ {story.actionStep}</p>
                     )}
                   </div>
                 ))}
               </div>
             )}
             {brief.relevantTenders?.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-sm font-semibold flex items-center gap-1.5">
-                  <Briefcase className="h-4 w-4 text-primary" />
-                  Relevant Tenders
+              <div className="space-y-1.5">
+                <h4 className="text-xs font-semibold flex items-center gap-1">
+                  <Briefcase className="h-3 w-3 text-primary" />
+                  Tenders
                 </h4>
-                <div className="space-y-1.5">
-                  {(expanded ? brief.relevantTenders : brief.relevantTenders.slice(0, 3)).map((t: any, i: number) => (
-                    <div key={i} className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-border/50 text-sm">
-                      <div>
-                        <p className="font-medium text-sm">{t.title}</p>
-                        <p className="text-xs text-muted-foreground">Deadline: {t.deadline}</p>
-                      </div>
-                      <a href={t.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary font-medium flex items-center gap-1 hover:underline shrink-0 ml-2">
-                        Apply <ExternalLink className="h-3 w-3" />
-                      </a>
+                {(expanded ? brief.relevantTenders : brief.relevantTenders.slice(0, 2)).map((t: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between p-2 bg-card rounded-lg border border-border/50">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium truncate">{t.title}</p>
+                      <p className="text-[10px] text-muted-foreground">Due: {t.deadline}</p>
                     </div>
-                  ))}
-                </div>
-                <Button asChild variant="link" className="text-xs px-0 text-primary">
-                  <Link href="/tenders">View all tenders <ArrowRight className="h-3 w-3 ml-1" /></Link>
+                    <a href={t.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-[11px] text-primary font-medium flex items-center gap-0.5 hover:underline shrink-0 ml-2">
+                      Apply <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  </div>
+                ))}
+                <Button asChild variant="link" className="text-[11px] px-0 text-primary h-auto py-0">
+                  <Link href="/tenders">All tenders <ArrowRight className="h-2.5 w-2.5 ml-0.5" /></Link>
                 </Button>
               </div>
             )}
-          </>
+          </div>
         )}
       </CardContent>
     </Card>
   );
 }
-
-    
