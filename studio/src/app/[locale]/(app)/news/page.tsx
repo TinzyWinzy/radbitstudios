@@ -11,8 +11,8 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import {
-  Newspaper, Clock, ExternalLink, Search, Bookmark,
-  TrendingUp, AlertTriangle, Loader2, Zap, Code
+  Newspaper, Clock, ExternalLink, Search,
+  TrendingUp, AlertTriangle, Loader2, Zap, RefreshCw,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
@@ -21,24 +21,25 @@ import { generatePersonalizedBrief } from '@/ai/flows/generate-personalized-brie
 import { formatDistanceToNow } from 'date-fns';
 import type { NewsArticle } from '@/types/news';
 import { createNotification } from "@/services/notifications/notifications-service";
+import { useToast } from "@/hooks/use-toast";
 
 const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
-  policy: { label: 'Policy', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' },
-  finance: { label: 'Finance', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' },
-  technology: { label: 'Technology', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
-  business: { label: 'Business', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' },
-  regulatory: { label: 'Regulatory', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' },
-  general: { label: 'General', color: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200' },
+  policy: { label: 'Policy', color: 'bg-purple-500/15 text-purple-400 border-purple-500/30' },
+  finance: { label: 'Finance', color: 'bg-green-500/15 text-green-400 border-green-500/30' },
+  technology: { label: 'Technology', color: 'bg-blue-500/15 text-blue-400 border-blue-500/30' },
+  business: { label: 'Business', color: 'bg-orange-500/15 text-orange-400 border-orange-500/30' },
+  regulatory: { label: 'Regulatory', color: 'bg-red-500/15 text-red-400 border-red-500/30' },
+  general: { label: 'General', color: 'bg-muted text-muted-foreground border-border' },
 };
 
 const INDUSTRY_BADGE_COLORS = [
   'bg-primary/10 text-primary border-primary/20',
   'bg-secondary/10 text-secondary border-secondary/20',
-  'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  'bg-green-500/10 text-green-400 border-green-500/20',
+  'bg-blue-500/10 text-blue-400 border-blue-500/20',
 ];
 
-function NewsCard({ article, onBookmark }: { article: NewsArticle & { bookmarked?: boolean }; onBookmark?: () => void }) {
+function NewsCard({ article }: { article: NewsArticle }) {
   const cat = CATEGORY_LABELS[article.category] || CATEGORY_LABELS.general;
   const avgScore = article.impactScore && article.urgencyScore
     ? Math.round((article.impactScore + article.urgencyScore) / 2) : null;
@@ -50,7 +51,7 @@ function NewsCard({ article, onBookmark }: { article: NewsArticle & { bookmarked
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <Badge className={cn('text-xs font-medium', cat.color)}>{cat.label}</Badge>
             {avgScore !== null && avgScore >= 70 && (
-              <Badge variant="default" className="text-xs bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30">
+              <Badge variant="default" className="text-xs bg-amber-500/15 text-amber-400 border-amber-500/30">
                 <Zap className="h-3 w-3 mr-0.5" />{avgScore} impact
               </Badge>
             )}
@@ -89,12 +90,6 @@ function NewsCard({ article, onBookmark }: { article: NewsArticle & { bookmarked
             </a>
           </div>
         </div>
-        {onBookmark && (
-          <Button variant="ghost" size="icon" onClick={onBookmark} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Bookmark className={cn('h-4 w-4', article.bookmarked && 'fill-primary text-primary')} />
-            <span className="sr-only">Bookmark</span>
-          </Button>
-        )}
       </div>
     </div>
   );
@@ -102,14 +97,13 @@ function NewsCard({ article, onBookmark }: { article: NewsArticle & { bookmarked
 
 export default function NewsPage() {
   const { user } = useContext(AuthContext);
+  const { toast } = useToast();
   const [allNews, setAllNews] = useState<NewsArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [briefLoading, setBriefLoading] = useState(false);
   const [brief, setBrief] = useState<Awaited<ReturnType<typeof generatePersonalizedBrief>> | null>(null);
-  const [showRawData, setShowRawData] = useState(false);
-  const [rawData, setRawData] = useState<any>(null);
 
   const loadNews = useCallback(async () => {
     setIsLoading(true);
@@ -136,14 +130,14 @@ export default function NewsPage() {
                 link: '/news',
               });
             } catch (e) {
-              console.error('Failed to create news notification:', e);
+              console.error('[News] Failed to create notification:', e);
             }
           }
         }
         localStorage.setItem('lastNewsVisit', String(now));
       }
     } catch (error) {
-      console.error('Error loading news:', error);
+      console.error('[News] Error loading:', error);
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +145,8 @@ export default function NewsPage() {
 
   useEffect(() => {
     loadNews();
-    const interval = setInterval(loadNews, 120000);
+    // Poll every 5 minutes (was 2 minutes — too aggressive)
+    const interval = setInterval(loadNews, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [loadNews]);
 
@@ -168,7 +163,12 @@ export default function NewsPage() {
       });
       setBrief(result);
     } catch (error) {
-      console.error('Error generating brief:', error);
+      console.error('[News] Brief generation failed:', error);
+      toast({
+        title: "Brief generation failed",
+        description: "Could not generate your personalized brief. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setBriefLoading(false);
     }
@@ -199,13 +199,14 @@ export default function NewsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Newspaper className="h-7 w-7 text-primary" />
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Newspaper className="h-6 w-6 text-primary" />
             Business News
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm mt-1">
             Real-time news from Zimbabwe, Africa, and global markets — curated for your industry.
           </p>
         </div>
@@ -213,34 +214,38 @@ export default function NewsPage() {
           <Button
             onClick={handleGenerateBrief}
             disabled={briefLoading}
-            className="gap-2"
+            size="sm"
+            className="gap-1.5"
           >
-            {briefLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-            {briefLoading ? 'Generating...' : 'AI Brief for My Business'}
+            {briefLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+            {briefLoading ? 'Generating...' : 'AI Brief'}
           </Button>
         )}
       </div>
 
+      {/* AI Brief */}
       {brief && (
         <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-          <CardHeader>
+          <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              <CardTitle className="text-base">Your Personalized Brief</CardTitle>
-              <Badge variant="default" className="ml-auto bg-primary text-primary-foreground text-xs">AI Generated</Badge>
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <CardTitle className="text-sm">Your Personalized Brief</CardTitle>
+              <Badge variant="default" className="ml-auto bg-primary text-primary-foreground text-[10px]">AI</Badge>
             </div>
-            <CardDescription>{brief.summary}</CardDescription>
+            <CardDescription className="text-xs">{brief.summary}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {brief.topStories.length > 0 && (
               <div>
-                <h4 className="font-semibold text-sm mb-2">Top Stories for Your Business</h4>
+                <h4 className="font-semibold text-xs mb-2">Top Stories</h4>
                 <div className="space-y-2">
                   {brief.topStories.map((story, i) => (
-                    <div key={i} className="p-3 bg-card rounded-lg border border-border/50">
-                      <p className="font-medium text-sm">{story.headline}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{story.whyItMatters}</p>
-                      <p className="text-xs text-primary mt-1 font-medium">{story.actionStep}</p>
+                    <div key={i} className="p-2.5 bg-card rounded-lg border border-border/50">
+                      <p className="font-medium text-xs">{story.headline}</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">{story.whyItMatters}</p>
+                      {story.actionStep && (
+                        <p className="text-[11px] text-primary mt-1 font-medium">→ {story.actionStep}</p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -248,15 +253,14 @@ export default function NewsPage() {
             )}
             {brief.relevantTenders.length > 0 && (
               <div>
-                <h4 className="font-semibold text-sm mb-2">Tender Opportunities</h4>
+                <h4 className="font-semibold text-xs mb-2">Tender Opportunities</h4>
                 <div className="space-y-1.5">
                   {brief.relevantTenders.map((t, i) => (
-                    <div key={i} className="flex items-center justify-between p-2.5 bg-card rounded-lg border border-border/50 text-sm">
+                    <div key={i} className="flex items-center justify-between p-2 bg-card rounded-lg border border-border/50">
                       <div>
-                        <p className="font-medium">{t.title}</p>
-                        <p className="text-xs text-muted-foreground">Deadline: {t.deadline}</p>
+                        <p className="font-medium text-xs">{t.title}</p>
+                        <p className="text-[10px] text-muted-foreground">Due: {t.deadline}</p>
                       </div>
-                      <span className="text-xs text-primary font-medium">Apply</span>
                     </div>
                   ))}
                 </div>
@@ -266,47 +270,28 @@ export default function NewsPage() {
         </Card>
       )}
 
-          <Card>
-        <CardHeader>
+      {/* News List */}
+      <Card>
+        <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
             <div className="relative flex-1 w-full">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search news, sources, industries..."
-                className="pl-8"
+                className="pl-8 h-9"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Button variant="outline" size="sm" onClick={async () => {
-                try {
-                  const r = await fetch('/api/scraper/news');
-                  if (!r.ok) {
-                    console.error('News scrape API error:', r.status);
-                    loadNews();
-                    return;
-                  }
-                  const d = await r.json();
-                  setRawData(d);
-                  setShowRawData(true);
-                  loadNews();
-                } catch (e) {
-                  console.error('Failed to refresh news:', e);
-                  loadNews();
-                }
-              }}>
-                <Loader2 className="h-3 w-3 mr-1" />
+              <Button variant="outline" size="sm" onClick={loadNews} disabled={isLoading} className="h-8 text-xs gap-1.5">
+                <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
                 Refresh
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowRawData(v => !v)}>
-                <Code className="h-3 w-3 mr-1" />
-                Raw
-              </Button>
               {!hasProfile && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <AlertTriangle className="h-4 w-4" />
-                  <span>Complete your business profile in Settings to get personalized news</span>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  <span>Complete your profile for personalized news</span>
                 </div>
               )}
             </div>
@@ -321,7 +306,7 @@ export default function NewsPage() {
                   variant={activeCategory === cat ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setActiveCategory(cat)}
-                  className="text-xs capitalize"
+                  className="text-xs capitalize h-7"
                 >
                   {cat === 'all' ? 'All News' : CATEGORY_LABELS[cat]?.label || cat}
                 </Button>
@@ -345,11 +330,7 @@ export default function NewsPage() {
               ) : filteredNews.length > 0 ? (
                 <div className="space-y-3">
                   {filteredNews.map(article => (
-                    <NewsCard
-                      key={article.id}
-                      article={article}
-                      onBookmark={() => {}}
-                    />
+                    <NewsCard key={article.id} article={article} />
                   ))}
                 </div>
               ) : (
@@ -362,23 +343,9 @@ export default function NewsPage() {
                   <Button
                     variant="outline"
                     className="mt-4"
-                    onClick={async () => {
-                      try {
-                        const r = await fetch('/api/scraper/news');
-                        if (!r.ok) {
-                          console.error('News scrape API error:', r.status);
-                          loadNews();
-                          return;
-                        }
-                        const d = await r.json();
-                        setRawData(d);
-                        loadNews();
-                      } catch (e) {
-                        console.error('Failed to refresh news:', e);
-                        loadNews();
-                      }
-                    }}
+                    onClick={loadNews}
                   >
+                    <RefreshCw className="mr-2 h-3.5 w-3.5" />
                     Refresh
                   </Button>
                 </div>
@@ -387,22 +354,6 @@ export default function NewsPage() {
           </Tabs>
         </CardContent>
       </Card>
-
-      {showRawData && rawData && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-mono">Raw Scraper Output</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => setShowRawData(false)}>Close</Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-auto max-h-96 whitespace-pre-wrap">
-              {JSON.stringify(rawData, null, 2)}
-            </pre>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
