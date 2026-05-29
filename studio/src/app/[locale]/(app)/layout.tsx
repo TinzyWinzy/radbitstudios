@@ -54,9 +54,12 @@ import {
   Bot,
   FileSignature,
   TrendingUp,
+  BadgeCheck,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
+import { cn } from "@/lib/utils";
 import { GyeNyame } from "@/components/adinkra-symbols";
 import { NotificationBell } from "@/components/notification-bell";
 import { PushNotificationManager } from "@/components/push-notification-manager";
@@ -173,7 +176,32 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/95 md:bg-background/80 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-background/60">
           <div className="container flex h-14 max-w-7xl items-center">
             <SidebarTrigger className="mr-4" />
-            <div className="flex-1" />
+            <div className="flex-1 flex items-center gap-2">
+              {user && (
+                <Link
+                  href="/settings?tab=account"
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-colors",
+                    (user as AppUser).plan === 'Free'
+                      ? "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/60"
+                      : (user as AppUser).plan === 'Growth'
+                      ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60"
+                      : (user as AppUser).plan === 'Tender Starter'
+                      ? "border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/60"
+                      : (user as AppUser).plan === 'Pro'
+                      ? "border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/60"
+                      : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/60"
+                  )}
+                >
+                  {(user as AppUser).plan === 'Free' ? (
+                    <Sparkles className="size-3" />
+                  ) : (
+                    <BadgeCheck className="size-3" />
+                  )}
+                  {(user as AppUser).plan === 'Free' ? 'Upgrade' : (user as AppUser).plan}
+                </Link>
+              )}
+            </div>
             <div className="flex items-center space-x-2">
               {user && <NotificationBell userId={user.uid} />}
               <PushNotificationManager />

@@ -462,7 +462,7 @@ export default function SettingsPage() {
         </p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="flex w-full overflow-x-auto md:grid md:grid-cols-10 [&>*]:shrink-0">
           <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
           <TabsTrigger value="business">{t('tabs.business')}</TabsTrigger>
           <TabsTrigger value="account">{t('tabs.account')}</TabsTrigger>
