@@ -65,7 +65,7 @@ export function OnboardingWizard() {
   return (
     <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-background p-6 mb-8">
       <div className="flex items-start justify-between mb-4">
-        <button onClick={() => setCollapsed(!collapsed)} className="flex items-center gap-3 flex-1 text-left">
+        <div role="button" tabIndex={0} onClick={() => setCollapsed(!collapsed)} onKeyDown={(e) => e.key === 'Enter' && setCollapsed(!collapsed)} className="flex items-center gap-3 flex-1 text-left cursor-pointer">
           <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
             <Sparkles className="size-5 text-primary" />
           </div>
@@ -85,7 +85,7 @@ export function OnboardingWizard() {
             )}
             {collapsed ? <ChevronDown className="size-4 text-muted-foreground" /> : <ChevronUp className="size-4 text-muted-foreground" />}
           </div>
-        </button>
+        </div>
       </div>
 
       {!collapsed && (

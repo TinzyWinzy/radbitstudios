@@ -27,6 +27,8 @@ import {
   ChevronDown,
   ChevronUp,
   BarChart,
+  WifiOff,
+  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
@@ -46,6 +48,7 @@ import { createNotification } from "@/services/notifications/notifications-servi
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { cacheDashboardData, getCachedDashboardData } from "@/services/offline";
+import { watchNetworkStatus } from "@/services/offline";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import type { AppUser } from "@/types/user";
 
@@ -107,9 +110,20 @@ export default function DashboardPage() {
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
   const [creditsExhausted, setCreditsExhausted] = useState(false);
   const [retryTrigger, setRetryTrigger] = useState(0);
+  const [isOffline, setIsOffline] = useState(false);
+  const [insightsGeneratedAt, setInsightsGeneratedAt] = useState<number | null>(null);
   const upgradeShown = useRef(false);
 
   const hasCompletedProfile = !!(user && user.businessName && user.industry);
+
+  useEffect(() => {
+    const cleanup = watchNetworkStatus(
+      () => setIsOffline(false),
+      () => setIsOffline(true)
+    );
+    setIsOffline(!navigator.onLine);
+    return cleanup;
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -141,6 +155,7 @@ export default function DashboardPage() {
             if (mounted) {
               setDailyTips(data.dailyTips);
               setRecommendations(data.recommendations);
+              if (cached.cachedAt) setInsightsGeneratedAt(cached.cachedAt);
               setIsLoadingInsights(false);
             }
             return;
@@ -156,6 +171,7 @@ export default function DashboardPage() {
         if (mounted) {
           setDailyTips(result.dailyTips);
           setRecommendations(result.recommendations);
+          setInsightsGeneratedAt(Date.now());
           setIsLoadingInsights(false);
           createNotification({
             userId: user.uid,
@@ -201,7 +217,7 @@ export default function DashboardPage() {
           const latest = sorted[0];
           const latestData = latest.data();
           const categoryScores: { [key: string]: { totalScore: number; count: number } } = {};
-          latestData.responses.forEach((response: any) => {
+          latestData.responses?.forEach((response: any) => {
             if (!categoryScores[response.category]) {
               categoryScores[response.category] = { totalScore: 0, count: 0 };
             }
@@ -254,7 +270,8 @@ export default function DashboardPage() {
     fetchAssessmentData();
 
     return () => { mounted = false; };
-  }, [user, hasCompletedProfile, retryTrigger]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid, hasCompletedProfile, retryTrigger]);
 
   const insightCount = dailyTips.length + recommendations.length;
 
@@ -274,6 +291,13 @@ export default function DashboardPage() {
 
       <OnboardingWizard />
 
+      {isOffline && (
+        <div className="flex items-center gap-2 p-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-400 text-sm">
+          <WifiOff className="h-4 w-4 shrink-0" />
+          <span>You&apos;re offline. Showing cached data where available. Insights and news may be stale.</span>
+        </div>
+      )}
+
       {/* Main Content: Assessment + Insights side by side */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Assessment Section (3/5) */}
@@ -289,7 +313,7 @@ export default function DashboardPage() {
               <Button variant="outline" size="sm" asChild className="shrink-0">
                 <Link href="/assessment">
                   <RefreshCw className="mr-1.5 h-3.5 w-3.5"/>
-                  Retake
+                  {assessmentData ? 'Retake' : 'Take Assessment'}
                 </Link>
               </Button>
             </div>
@@ -345,6 +369,12 @@ export default function DashboardPage() {
                 </CardTitle>
                 <CardDescription className="text-xs">
                   Personalized tips for your business.
+                  {insightsGeneratedAt && (
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      Updated {new Date(insightsGeneratedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  )}
                 </CardDescription>
               </div>
               {insightCount > 0 && (
@@ -415,7 +445,8 @@ export default function DashboardPage() {
               ) : creditsExhausted && hasCompletedProfile ? (
                 <div className="text-center py-6 space-y-3">
                   <Sparkles className="h-6 w-6 text-primary mx-auto" />
-                  <p className="text-xs text-muted-foreground">Credits exhausted for this period.</p>
+                  <p className="text-xs text-muted-foreground">AI credits used up for this month.</p>
+                  <p className="text-[11px] text-muted-foreground">Credits reset on the 1st of each month.</p>
                   <Button size="sm" onClick={() => router.push('/settings?tab=plan')}>
                     Upgrade <ArrowRight className="ml-1.5 h-3 w-3" />
                   </Button>
@@ -433,18 +464,36 @@ export default function DashboardPage() {
       {/* Maturity + News + Usage row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Maturity Overview */}
-        {user && hasCompletedProfile && allAssessments.length > 0 && (
+        {user && hasCompletedProfile && allAssessments.length > 0 ? (
           <MaturityOverview
             assessments={allAssessments}
             hasProfile={hasCompletedProfile}
             benchmarkData={benchmarkData}
           />
+        ) : (
+          <Card className="lg:col-span-1 hidden lg:block">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Business Maturity</CardTitle>
+              <CardDescription className="text-xs">Your growth journey starts here.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center justify-center text-center min-h-[180px]">
+              <TrendingUp className="h-8 w-8 text-muted-foreground/30 mb-3" />
+              <p className="text-xs text-muted-foreground">
+                Complete your profile and take the assessment to track your business maturity over time.
+              </p>
+              <Button asChild size="sm" variant="outline" className="mt-3">
+                <Link href="/assessment">Start Assessment</Link>
+              </Button>
+            </CardContent>
+          </Card>
         )}
 
-        {/* News Brief */}
-        <ErrorBoundary>
-          <NewsInsightsCard user={user} />
-        </ErrorBoundary>
+        {/* News Brief — spans remaining cols */}
+        <div className={user && hasCompletedProfile && allAssessments.length > 0 ? '' : 'lg:col-span-3'}>
+          <ErrorBoundary>
+            <NewsInsightsCard user={user} />
+          </ErrorBoundary>
+        </div>
       </div>
 
       {/* Usage + Activity - compact row */}

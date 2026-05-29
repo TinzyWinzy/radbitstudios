@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const snap = await adminDb.collection('assessments').get();
+    const snap = await adminDb.collection('assessments').orderBy('createdAt', 'desc').limit(500).get();
     const allResponses: { category: string; score: number }[] = [];
 
     for (const doc of snap.docs) {
