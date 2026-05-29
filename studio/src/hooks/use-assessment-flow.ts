@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/auth-context";
 import { checkAndDecrementUsage } from "@/services/usage-service";
 import { saveAssessmentDraft, getAssessmentDraft, deleteAssessmentDraft, watchNetworkStatus } from "@/services/offline";
+import { auth } from "@/lib/firebase/firebase";
 import type { UpgradeInfo } from "@/services/feature-gate";
 
 export interface AssessmentQuestion {
@@ -244,7 +245,7 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
         return;
       }
 
-      setAiResult(result);
+      setAiResult(assessmentType === "export-assessment" ? result : result?.summary || String(result));
       await saveResults(assessmentData, result);
       await refreshUserData();
       if (draftKey) await deleteAssessmentDraft(draftKey);
@@ -252,7 +253,9 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
       // Fire-and-forget WhatsApp digest (assessment only)
       if (whatsappDigest && user) {
         try {
-          const idToken = await user.getIdToken();
+          const currentUser = auth.currentUser;
+          if (!currentUser) return;
+          const idToken = await currentUser.getIdToken();
           fetch('/api/whatsapp/schedule-assessment-digest', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
