@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Briefcase, Wand2, Users, PanelLeft } from "lucide-react";
+import { Home, Briefcase, Wand2, Users, Handshake, PanelLeft } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 
 interface NavItem {
@@ -16,6 +16,7 @@ const bottomNavItems: NavItem[] = [
   { href: "/dashboard", label: "Home", icon: <Home className="size-5" /> },
   { href: "/tenders", label: "Tenders", icon: <Briefcase className="size-5" /> },
   { href: "/toolkit", label: "Toolkit", icon: <Wand2 className="size-5" /> },
+  { href: "/investor-portal", label: "Invest", icon: <Handshake className="size-5" /> },
   { href: "/community", label: "Community", icon: <Users className="size-5" /> },
 ];
 
