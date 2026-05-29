@@ -1,7 +1,7 @@
 
 'use client';
 
-import { createContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
+import { createContext, useState, useEffect, ReactNode, useCallback, useMemo, useRef } from 'react';
 import {
   onAuthStateChanged,
   User,
@@ -92,11 +92,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<UserRole | null>(null);
-  
+  const mountedRef = useRef(true);
+  const authEventIdRef = useRef(0);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
+
   const fetchAndSetUser = useCallback(async (authUser: User, extraData?: Record<string, unknown>) => {
     await createUserDocument(authUser, extraData);
     const userDocRef = doc(db, 'users', authUser.uid);
     const userDoc = await withRetry(() => getDoc(userDocRef));
+    if (!mountedRef.current) return;
     if (userDoc.exists()) {
       const mergedUser = { ...authUser, ...userDoc.data() } as AppUser;
       setUser(mergedUser);
@@ -105,51 +113,79 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setRole(docRole);
       } else {
         const idTokenResult = await authUser.getIdTokenResult();
+        if (!mountedRef.current) return;
         setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
       }
     } else {
       setUser(authUser as AppUser);
       const idTokenResult = await authUser.getIdTokenResult();
+      if (!mountedRef.current) return;
       setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
     }
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-      if (authUser) {
-        await fetchAndSetUser(authUser);
-        await fetch('/api/auth/refresh-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken: await authUser.getIdToken() }),
-        });
-      } else {
-        setUser(null);
-        await fetch('/api/auth/refresh-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken: '', expiresIn: 0 }),
-        });
-      }
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      const eventId = ++authEventIdRef.current;
+
+      const handleAuth = async () => {
+        if (authUser) {
+          await fetchAndSetUser(authUser);
+          if (eventId !== authEventIdRef.current) return;
+          try {
+            await fetch('/api/auth/refresh-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ idToken: await authUser.getIdToken() }),
+            });
+          } catch (err) {
+            console.error('Failed to set session cookie on auth state change:', err);
+          }
+        } else {
+          setUser(null);
+          setRole(null);
+          try {
+            await fetch('/api/auth/refresh-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ idToken: '', expiresIn: 0 }),
+            });
+          } catch (err) {
+            console.error('Failed to clear session cookie on logout:', err);
+          }
+        }
+        if (eventId !== authEventIdRef.current) return;
+        setLoading(false);
+      };
+
+      handleAuth().catch((err) => {
+        console.error('Auth state change handler error:', err);
+        if (eventId === authEventIdRef.current) {
+          setLoading(false);
+        }
+      });
     });
 
     const refreshInterval = setInterval(async () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
-        const token = await currentUser.getIdToken(false);
-        const res = await fetch('/api/auth/refresh-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken: token }),
-        });
-        if (!res.ok) {
-          const newToken = await currentUser.getIdToken(true);
-          await fetch('/api/auth/refresh-session', {
+        try {
+          const token = await currentUser.getIdToken(false);
+          const res = await fetch('/api/auth/refresh-session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken: newToken }),
+            body: JSON.stringify({ idToken: token }),
           });
+          if (!res.ok) {
+            const newToken = await currentUser.getIdToken(true);
+            await fetch('/api/auth/refresh-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ idToken: newToken }),
+            });
+          }
+        } catch (err) {
+          console.error('Session token refresh interval error:', err);
         }
       }
     }, 30 * 60 * 1000);
@@ -163,9 +199,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refreshUserData = useCallback(async () => {
     const currentUser = auth.currentUser;
     if (currentUser) {
-        setLoading(true);
         await fetchAndSetUser(currentUser);
-        setLoading(false);
     }
   },[fetchAndSetUser]);
 

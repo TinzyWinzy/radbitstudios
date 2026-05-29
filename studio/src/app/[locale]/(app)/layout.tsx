@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/auth-context";
 
@@ -71,11 +71,36 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { user, loading, role } = useContext(AuthContext);
     const router = useRouter();
     const pathname = usePathname();
+    const wasAuthenticated = useRef(false);
+    const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (!loading && !user) {
-            router.push('/sign-in');
+        if (user) {
+            wasAuthenticated.current = true;
+            if (redirectTimer.current) {
+                clearTimeout(redirectTimer.current);
+                redirectTimer.current = null;
+            }
+            return;
         }
+
+        if (!loading && !user) {
+            if (wasAuthenticated.current) {
+                redirectTimer.current = setTimeout(() => {
+                    router.push('/sign-in');
+                }, 1500);
+            } else if (!wasAuthenticated.current) {
+                redirectTimer.current = setTimeout(() => {
+                    router.push('/sign-in');
+                }, 500);
+            }
+        }
+
+        return () => {
+            if (redirectTimer.current) {
+                clearTimeout(redirectTimer.current);
+            }
+        };
     }, [user, loading, router]);
 
     useEffect(() => {
