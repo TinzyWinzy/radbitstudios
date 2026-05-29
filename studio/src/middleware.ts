@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { jwtVerify } from 'jose/jwt/verify';
 import { createRemoteJWKSet } from 'jose/jwks/remote';
-import crypto from 'crypto';
 
 const i18nMiddleware = createMiddleware({
   locales: ['en', 'sn', 'nd', 'pt'],
@@ -83,8 +82,9 @@ export default async function middleware(request: NextRequest) {
 
   const response = i18nMiddleware(request);
 
-  // Generate CSP nonce for this request
-  const nonce = crypto.randomBytes(16).toString('base64');
+  // Generate CSP nonce using Web Crypto API (edge-compatible)
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  const nonce = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
   response.headers.set('x-nonce', nonce);
 
   return response;

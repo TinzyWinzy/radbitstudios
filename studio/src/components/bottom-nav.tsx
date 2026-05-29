@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Briefcase, Wand2, Users, Menu } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Home, Briefcase, Wand2, Users, PanelLeft } from "lucide-react";
+import { useSidebar } from "@/components/ui/sidebar";
 
 interface NavItem {
   href: string;
@@ -21,6 +21,7 @@ const bottomNavItems: NavItem[] = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { toggleSidebar } = useSidebar();
 
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -50,15 +51,13 @@ export function BottomNav() {
             </span>
           </Link>
         ))}
-        <SidebarTrigger
-          className={cn(
-            "flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-full transition-colors text-muted-foreground hover:text-foreground",
-            "[&>svg]:size-5"
-          )}
+        <button
+          onClick={toggleSidebar}
+          className="flex flex-col items-center justify-center gap-0.5 min-w-0 flex-1 h-full transition-colors text-muted-foreground hover:text-foreground"
         >
-          <Menu className="size-5 shrink-0" />
+          <PanelLeft className="size-5 shrink-0" />
           <span className="text-[10px] font-medium leading-none">Menu</span>
-        </SidebarTrigger>
+        </button>
       </div>
     </nav>
   );
