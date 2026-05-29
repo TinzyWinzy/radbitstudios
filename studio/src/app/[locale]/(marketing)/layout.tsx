@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { MagneticButton } from "@/components/magnetic-button";
@@ -16,17 +16,26 @@ export default function MarketingLayout({
 }) {
   const { user, loading } = useContext(AuthContext);
   const [scrolled, setScrolled] = useState(false);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 80);
+    const handleScroll = () => {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 80);
+      });
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <RollingShapes />
-      <header role="banner" className={`fixed top-0 z-50 w-full transition-all duration-500 ${scrolled ? "border-b border-border/50 bg-background/80 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
+      <header role="banner" className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "border-b border-border/50 bg-background/95 md:bg-background/80 md:backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
         <div className="container flex h-16 items-center">
           <Link href="/" className="flex items-center gap-3 mr-8 group">
             <Icons.radbit className="size-8 shrink-0 transition-transform duration-300 group-hover:scale-110 text-foreground" />

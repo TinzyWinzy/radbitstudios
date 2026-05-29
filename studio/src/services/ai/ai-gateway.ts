@@ -4,6 +4,7 @@ import { generateEmbedding, cosineSimilarity } from './embeddings';
 import { searchRelevantContext } from './rag';
 import { buildRAGContext } from './rag';
 import { checkRateLimit, RateLimits } from '@/services/rate-limiter';
+import { withCircuitBreaker } from '@/lib/circuit-breaker';
 
 export type TaskDifficulty = 'simple' | 'complex' | 'creative';
 
@@ -375,10 +376,45 @@ export class AIGateway {
   }
 
   private async callModel(provider: string, model: string, request: AIGatewayRequest): Promise<string> {
-    if (provider === 'gemini') return this.callGemini(model, request);
-    if (provider === 'openai') return this.callOpenAI(model, request);
-    if (provider === 'anthropic') return this.callAnthropic(model, request);
-    throw new Error(`Unknown provider: ${provider}`);
+    const circuitName = `ai-${provider}`;
+    const fallbackModels: Record<string, string> = {
+      'gemini-2.5-flash': 'gemini-2.5-pro',
+      'gemini-2.5-pro': 'gemini-2.5-flash',
+      'gpt-4o': 'gpt-4o-mini',
+      'gpt-4o-mini': 'gpt-4o',
+      'claude-3-haiku': 'claude-3-sonnet',
+      'claude-3-sonnet': 'claude-3-haiku',
+    };
+
+    try {
+      return await withCircuitBreaker(circuitName, async () => {
+        if (provider === 'gemini') return this.callGemini(model, request);
+        if (provider === 'openai') return this.callOpenAI(model, request);
+        if (provider === 'anthropic') return this.callAnthropic(model, request);
+        throw new Error(`Unknown provider: ${provider}`);
+      }, {
+        failureThreshold: 3,
+        resetTimeoutMs: 60000,
+        successThreshold: 2,
+        onStateChange: (name, from, to) => {
+          console.warn(`[AIGateway] Circuit ${name}: ${from} → ${to}`);
+          Sentry.captureMessage(`AI circuit ${name}: ${from} → ${to}`, {
+            level: to === 'open' ? 'warning' : 'info',
+            tags: { domain: 'ai-gateway', circuit: name },
+          });
+        },
+      });
+    } catch (error: unknown) {
+      // If circuit is open, try fallback model within same provider
+      const circuitState = (error as Error)?.message?.includes('Circuit');
+      if (circuitState && fallbackModels[model]) {
+        console.warn(`[AIGateway] Circuit open for ${provider}, trying fallback model ${fallbackModels[model]}`);
+        if (provider === 'gemini') return this.callGemini(fallbackModels[model], request);
+        if (provider === 'openai') return this.callOpenAI(fallbackModels[model], request);
+        if (provider === 'anthropic') return this.callAnthropic(fallbackModels[model], request);
+      }
+      throw error;
+    }
   }
 
   private async callGemini(model: string, request: AIGatewayRequest): Promise<string> {

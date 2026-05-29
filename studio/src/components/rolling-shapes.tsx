@@ -26,6 +26,7 @@ const shapes: Shape[] = [
 
 export function RollingShapes() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -35,14 +36,42 @@ export function RollingShapes() {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  if (prefersReducedMotion) {
-    // Static blobs — no animation, just ambient color
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Mobile: only 3 static blobs, no animation
+  if (isMobile) {
     return (
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         {shapes.slice(0, 3).map((shape, i) => (
           <div
             key={i}
-            className={`absolute rounded-full blur-[120px] ${shape.color}`}
+            className={`absolute rounded-full blur-[80px] ${shape.color}`}
+            style={{
+              width: shape.size * 0.6,
+              height: shape.size * 0.6,
+              left: shape.x,
+              top: shape.y,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  // Reduced motion: static blobs
+  if (prefersReducedMotion) {
+    return (
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        {shapes.slice(0, 4).map((shape, i) => (
+          <div
+            key={i}
+            className={`absolute rounded-full blur-[100px] ${shape.color}`}
             style={{
               width: shape.size,
               height: shape.size,
@@ -55,9 +84,10 @@ export function RollingShapes() {
     );
   }
 
+  // Desktop: full animation with will-change for GPU acceleration
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-      {shapes.map((shape, i) => (
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true" style={{ contain: 'layout style' }}>
+      {shapes.slice(0, 6).map((shape, i) => (
         <motion.div
           key={i}
           className={`absolute rounded-full blur-[120px] ${shape.color}`}
@@ -66,6 +96,7 @@ export function RollingShapes() {
             height: shape.size,
             left: shape.x,
             top: shape.y,
+            willChange: 'transform',
           }}
           animate={{
             x: [0, 80, -60, 40, 0],

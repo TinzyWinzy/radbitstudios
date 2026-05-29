@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <span className="font-headline text-2xl font-bold tracking-wide text-primary">RADBIT</span>
           </Link>
         </div>
-        <div className="backdrop-blur-xl bg-card/80 border border-primary/10 rounded-2xl shadow-xl shadow-primary/10">
+        <div className="bg-card/90 md:backdrop-blur-xl md:bg-card/80 border border-primary/10 rounded-2xl shadow-xl shadow-primary/10">
           {children}
         </div>
       </div>

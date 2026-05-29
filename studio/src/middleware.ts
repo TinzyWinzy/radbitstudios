@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { jwtVerify } from 'jose/jwt/verify';
 import { createRemoteJWKSet } from 'jose/jwks/remote';
+import crypto from 'crypto';
 
 const i18nMiddleware = createMiddleware({
   locales: ['en', 'sn', 'nd', 'pt'],
@@ -32,6 +33,11 @@ const protectedPaths = [
   '/settings',
   '/praz-compliance',
   '/investor-portal',
+  '/news',
+  '/notifications',
+  '/export-assessment',
+  '/tax-copilot',
+  '/bid-writer',
 ];
 
 const adminOnlyPaths = [
@@ -75,7 +81,13 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return i18nMiddleware(request);
+  const response = i18nMiddleware(request);
+
+  // Generate CSP nonce for this request
+  const nonce = crypto.randomBytes(16).toString('base64');
+  response.headers.set('x-nonce', nonce);
+
+  return response;
 }
 
 export const config = {
