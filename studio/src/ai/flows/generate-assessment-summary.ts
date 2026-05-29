@@ -20,6 +20,7 @@ const GenerateAssessmentSummaryInputSchema = z.object({
   industry: z.string().optional(),
   businessName: z.string().optional(),
   businessDescription: z.string().optional(),
+  userId: z.string().optional(),
 });
 export type GenerateAssessmentSummaryInput = z.infer<typeof GenerateAssessmentSummaryInputSchema>;
 
@@ -65,6 +66,7 @@ export async function generateAssessmentSummary(input: GenerateAssessmentSummary
     systemPrompt,
     difficulty: 'simple',
     maxTokens: 512,
+    userId: input.userId,
   });
 
   let summary = result.content;

@@ -15,6 +15,7 @@ const GenerateExportAssessmentInputSchema = z.object({
   industry: z.string().optional(),
   businessName: z.string().optional(),
   businessDescription: z.string().optional(),
+  userId: z.string().optional(),
 });
 export type GenerateExportAssessmentInput = z.infer<typeof GenerateExportAssessmentInputSchema>;
 
@@ -70,6 +71,7 @@ Return ONLY valid JSON.`;
     difficulty: 'simple',
     maxTokens: 1024,
     jsonMode: true,
+    userId: input.userId,
   });
 
   try {

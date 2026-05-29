@@ -50,13 +50,16 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
   const { toast } = useToast();
   const { user, refreshUserData } = useContext(AuthContext);
 
-  // Stable refs for auto-save closure
+  // Stable refs for auto-save closure and guard against double-fire
   const answersRef = useRef(answers);
   const currentStepRef = useRef(currentStep);
   const userRef = useRef(user);
+  const finishStartedRef = useRef(false);
+  const toastRef = useRef(toast);
   answersRef.current = answers;
   currentStepRef.current = currentStep;
   userRef.current = user;
+  toastRef.current = toast;
 
   // Draft key includes assessment type to prevent collision
   const draftKey = user ? `${user.uid}-${assessmentType}` : null;
@@ -141,8 +144,7 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
     if (isFinished) {
       setIsFinished(false);
       setCurrentStep(totalSteps);
-      setAiResult(null);
-      setBenchmarkData(null);
+      finishStartedRef.current = false;
       return;
     }
     if (currentStep > 1) {
@@ -156,6 +158,7 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
     setIsFinished(false);
     setAiResult(null);
     setBenchmarkData(null);
+    finishStartedRef.current = false;
     if (draftKey) deleteAssessmentDraft(draftKey);
   }, [draftKey]);
 
@@ -184,9 +187,11 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
   // handleFinish is called directly, NOT via useEffect
   const handleFinish = useCallback(async () => {
     if (!user) {
-      toast({ title: "Authentication Error", description: "You must be logged in.", variant: "destructive" });
+      toastRef.current({ title: "Authentication Error", description: "You must be logged in.", variant: "destructive" });
       return;
     }
+    if (finishStartedRef.current) return;
+    finishStartedRef.current = true;
 
     setIsGeneratingSummary(true);
     setIsLoadingBenchmark(true);
@@ -204,6 +209,7 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
         industry: (user as any)?.industry || undefined,
         businessName: (user as any)?.businessName || undefined,
         businessDescription: (user as any)?.businessDescription || undefined,
+        userId: user.uid,
       };
 
       // Generate AI summary FIRST (before decrementing usage)
@@ -216,7 +222,8 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
           ? { readinessScore: 0, strengths: [], gaps: [], recommendedMarkets: [], requiredCertifications: [], summary: "We couldn't generate your AI summary at the moment. Please try again later." }
           : "We couldn't generate your AI summary at the moment. Please try again later."
         );
-        toast({ title: "Error", description: "Failed to generate your assessment.", variant: "destructive" });
+        toastRef.current({ title: "Error", description: "Failed to generate your assessment.", variant: "destructive" });
+        finishStartedRef.current = false;
         return; // Don't decrement usage on AI failure
       }
 
@@ -225,6 +232,7 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
       if (!usageResult.success) {
         if (usageResult.upgrade) {
           setUpgradeInfo(usageResult.upgrade);
+          finishStartedRef.current = false;
           return;
         }
         setAiResult(assessmentType === "export-assessment"
@@ -232,6 +240,7 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
           : usageResult.message + "\n\nYou can still view your results chart and download the report."
         );
         await refreshUserData();
+        finishStartedRef.current = false;
         return;
       }
 
@@ -259,11 +268,11 @@ export function useAssessmentFlow(options: UseAssessmentFlowOptions) {
         ? { readinessScore: 0, strengths: [], gaps: [], recommendedMarkets: [], requiredCertifications: [], summary: "An unexpected error occurred." }
         : "An unexpected error occurred."
       );
-      toast({ title: "Error", description: "Failed to generate or save your assessment.", variant: "destructive" });
+      toastRef.current({ title: "Error", description: "Failed to generate or save your assessment.", variant: "destructive" });
     } finally {
       setIsGeneratingSummary(false);
     }
-  }, [user, answers, questions, assessmentType, usageFeature, generateSummary, saveResults, draftKey, whatsappDigest, toast, refreshUserData, fetchBenchmarkData]);
+  }, [user, answers, questions, assessmentType, usageFeature, generateSummary, saveResults, draftKey, whatsappDigest, refreshUserData, fetchBenchmarkData]);
 
   // Call handleFinish when isFinished becomes true
   useEffect(() => {
