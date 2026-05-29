@@ -68,6 +68,10 @@ export default function PricingPage() {
       </Link>
 
       <header className="text-center max-w-2xl mx-auto mb-16">
+        <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-sm font-medium">
+          <Sparkles className="h-3.5 w-3.5" />
+          First month 50% off — all paid plans
+        </div>
         <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4">
           Simple Pricing for Zimbabwean SMEs
         </h1>

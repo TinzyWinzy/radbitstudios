@@ -110,6 +110,7 @@ export default function SettingsPage() {
       notifySystem: true,
     });
     
+    const [upgradeTriggered, setUpgradeTriggered] = useState(false);
     const [assessmentHistory, setAssessmentHistory] = useState<AssessmentHistory[]>([]);
     const [generationHistory, setGenerationHistory] = useState<GenerationHistory[]>([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -135,6 +136,19 @@ export default function SettingsPage() {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams]);
+
+     useEffect(() => {
+        const upgradeTo = searchParams.get('upgradeTo');
+        if (upgradeTo && user && !upgradeTriggered) {
+          const plan = subscriptionPlans.find(p => p.name === upgradeTo);
+          if (plan && plan.price > 0 && plan.name !== (user as any).plan) {
+            setUpgradeTriggered(true);
+            setActiveTab('account');
+            setTimeout(() => handlePlanChange(plan), 500);
+          }
+        }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, [searchParams, user, upgradeTriggered]);
 
      useEffect(() => {
         if (user) {

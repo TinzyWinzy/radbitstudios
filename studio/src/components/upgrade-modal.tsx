@@ -15,6 +15,14 @@ interface UpgradeModalProps {
 export function UpgradeModal({ open, onOpenChange, upgrade, onUpgrade }: UpgradeModalProps) {
   if (!upgrade || !upgrade.upgradeTo) return null;
 
+  const handleUpgrade = () => {
+    if (onUpgrade) {
+      onUpgrade();
+    } else if (upgrade.upgradeTo) {
+      window.location.href = `/settings?tab=account&upgradeTo=${encodeURIComponent(upgrade.upgradeTo)}`;
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -61,7 +69,7 @@ export function UpgradeModal({ open, onOpenChange, upgrade, onUpgrade }: Upgrade
           <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
             Maybe later
           </Button>
-          <Button className="flex-1" onClick={onUpgrade}>
+          <Button className="flex-1" onClick={handleUpgrade}>
             Upgrade to {upgrade.upgradeTo} — ${upgrade.price}/mo
           </Button>
         </div>

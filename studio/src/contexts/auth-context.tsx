@@ -18,6 +18,7 @@ import { subscriptionPlans } from '@/lib/subscriptions';
 import type { UserRole } from '@/services/permissions';
 import type { AppUser } from '@/types/user';
 import { withRetry } from '@/lib/retry';
+import { welcomeEmail, sendEmail } from '@/services/email-service';
 
 interface AuthContextType {
   user: AppUser | null;
@@ -94,6 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole | null>(null);
   const mountedRef = useRef(true);
   const authEventIdRef = useRef(0);
+  const welcomeSentRef = useRef(false);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -132,6 +134,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (authUser) {
           await fetchAndSetUser(authUser);
           if (eventId !== authEventIdRef.current) return;
+
+          if (!welcomeSentRef.current) {
+            const userDocRef = doc(db, 'users', authUser.uid);
+            const userDoc = await getDoc(userDocRef);
+            const createdAt = userDoc.data()?.createdAt?.toDate?.();
+            if (createdAt && Date.now() - createdAt.getTime() < 120000) {
+              welcomeSentRef.current = true;
+              const name = authUser.displayName || authUser.email?.split('@')[0] || 'Entrepreneur';
+              const { subject, html } = welcomeEmail(name);
+              sendEmail(authUser.email || '', subject, html).catch(() => {});
+            }
+          }
+
           try {
             await fetch('/api/auth/refresh-session', {
               method: 'POST',

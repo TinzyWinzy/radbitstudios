@@ -1,6 +1,7 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
+import { usageWarningEmail, sendEmail } from '@/services/email-service';
 
 import type { PlanName } from '@/types/user';
 import type { UserRole } from '@/services/permissions';
@@ -169,6 +170,13 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
     await updateDoc(userDocRef, {
       [`usage.${gate.creditKey}.remaining`]: increment(-1),
     });
+
+    if (usage.remaining <= 3 && usage.remaining > 0 && userData.email) {
+      const featureLabel = feature.replace(/([A-Z])/g, ' $1').toLowerCase().trim();
+      const name = (userData.displayName || userData.email?.split('@')[0] || 'there') as string;
+      const { subject, html } = usageWarningEmail(name, featureLabel, usage.remaining - 1);
+      sendEmail(userData.email as string, subject, html).catch(() => {});
+    }
 
     return { success: true, message: "Usage decremented successfully." };
   } catch (error: unknown) {

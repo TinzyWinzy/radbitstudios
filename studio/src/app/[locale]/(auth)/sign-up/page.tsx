@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AuthContext } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,7 +33,9 @@ export default function SignUpPage() {
 
   const { user, signUp, signInWithGoogle } = useContext(AuthContext);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+  const intentPlan = searchParams.get('plan');
 
   useUtm();
 
@@ -50,9 +52,17 @@ export default function SignUpPage() {
           navigator.sendBeacon('/api/referral/apply', new Blob([payload], { type: 'application/json' }));
         });
       }
-      router.push('/dashboard');
+      if (intentPlan) {
+        sessionStorage.setItem('radbit_signup_plan', intentPlan);
+      }
+      const nextPlan = intentPlan || sessionStorage.getItem('radbit_signup_plan');
+      if (nextPlan) {
+        router.push(`/settings?tab=account&upgradeTo=${nextPlan.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`);
+      } else {
+        router.push('/dashboard');
+      }
     }
-  }, [user, router]);
+  }, [user, router, intentPlan]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

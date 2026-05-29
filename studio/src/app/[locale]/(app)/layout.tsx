@@ -56,6 +56,7 @@ import {
   TrendingUp,
   BadgeCheck,
   Sparkles,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -203,28 +204,47 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="mr-4" />
             <div className="flex-1 flex items-center gap-2">
               {user && (
-                <Link
-                  href="/settings?tab=account"
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-colors",
-                    (user as AppUser).plan === 'Free'
-                      ? "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/60"
-                      : (user as AppUser).plan === 'Growth'
-                      ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60"
-                      : (user as AppUser).plan === 'Tender Starter'
-                      ? "border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/60"
-                      : (user as AppUser).plan === 'Pro'
-                      ? "border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/60"
-                      : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/60"
-                  )}
-                >
-                  {(user as AppUser).plan === 'Free' ? (
-                    <Sparkles className="size-3" />
-                  ) : (
-                    <BadgeCheck className="size-3" />
-                  )}
-                  {(user as AppUser).plan === 'Free' ? 'Upgrade' : (user as AppUser).plan}
-                </Link>
+                <>
+                  <Link
+                    href="/settings?tab=account"
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-colors",
+                      (user as AppUser).plan === 'Free'
+                        ? "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/60"
+                        : (user as AppUser).plan === 'Growth'
+                        ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60"
+                        : (user as AppUser).plan === 'Tender Starter'
+                        ? "border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/60"
+                        : (user as AppUser).plan === 'Pro'
+                        ? "border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/60"
+                        : "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/60"
+                    )}
+                  >
+                    {(user as AppUser).plan === 'Free' ? (
+                      <Sparkles className="size-3" />
+                    ) : (
+                      <BadgeCheck className="size-3" />
+                    )}
+                    {(user as AppUser).plan === 'Free' ? 'Upgrade' : (user as AppUser).plan}
+                  </Link>
+                  {(user as AppUser).plan === 'Free' && (() => {
+                    const usage = (user as AppUser).usage || {};
+                    const lowFeatures = Object.entries(usage)
+                      .filter(([, v]: [string, any]) => v?.remaining <= 2 && v?.remaining > 0)
+                      .sort(([, a]: [string, any], [, b]: [string, any]) => a.remaining - b.remaining);
+                    if (lowFeatures.length === 0) return null;
+                    const lowest = lowFeatures[0];
+                    return (
+                      <Link
+                        href="/settings?tab=account"
+                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                      >
+                        <AlertTriangle className="size-2.5" />
+                        Only {lowest[1].remaining} {lowest[0].replace(/([A-Z])/g, ' $1').trim().toLowerCase()} {lowest[1].remaining === 1 ? 'credit' : 'credits'} left
+                      </Link>
+                    );
+                  })()}
+                </>
               )}
             </div>
             <div className="flex items-center space-x-2">

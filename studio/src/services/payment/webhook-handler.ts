@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { PayNowProvider } from './providers/paynow.provider';
+import { paymentConfirmationEmail, sendEmail } from '@/services/email-service';
 
 export class WebhookHandler {
   async handle(provider: string, rawPayload: any): Promise<{ status: 'processed' | 'duplicate' | 'ignored'; eventId?: string }> {
@@ -91,6 +92,19 @@ export class WebhookHandler {
       currentPeriodEnd: this.calculateNewPeriodEnd(sub.data()!.currentPeriodEnd?.toDate() || new Date(), sub.data()!.billingPeriod || 'monthly'),
       updated: new Date(),
     });
+
+    const subData = sub.data()!;
+    if (subData.userId) {
+      const userDoc = await adminDb.collection('users').doc(subData.userId).get();
+      const userData = userDoc.data();
+      if (userData?.email) {
+        const name = (userData.displayName || userData.email.split('@')[0] || 'there') as string;
+        const planName = (subData.plan || 'Growth') as string;
+        const price = subData.price || 5;
+        const { subject, html } = paymentConfirmationEmail(name, planName, price);
+        sendEmail(userData.email as string, subject, html).catch(() => {});
+      }
+    }
   }
 
   private async handlePaymentFailed(event: { data: any }): Promise<void> {

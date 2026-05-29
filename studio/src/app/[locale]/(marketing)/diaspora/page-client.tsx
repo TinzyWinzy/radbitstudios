@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Globe, Shield, BarChart, Briefcase, Handshake, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Globe, Shield, BarChart, Briefcase, Handshake, CheckCircle2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TiltCard } from "@/components/tilt-card";
 
@@ -66,6 +66,16 @@ export function DiasporaLanding() {
             <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
               <Link href="/diaspora/invest">Explore Investment Opportunities</Link>
             </Button>
+          </div>
+          <div className="flex items-center justify-center gap-4 pt-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <Users className="h-4 w-4 text-primary" />
+              500+ diaspora entrepreneurs
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              200+ verified SMEs
+            </span>
           </div>
         </div>
       </section>
