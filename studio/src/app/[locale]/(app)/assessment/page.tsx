@@ -69,29 +69,29 @@ export default function AssessmentPage() {
   const currentQuestion = flow.questions[flow.currentStep - 1];
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-start">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {flow.isFinished ? "Assessment Results" : "Digital Readiness Assessment"}
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-1 sm:mt-2">
             {flow.isFinished
               ? "Here's a snapshot of your business's digital readiness."
               : `Step ${flow.currentStep} of ${flow.totalSteps}. Take the first step to digital transformation.`}
           </p>
           {flow.isFinished && <p className="text-xs text-muted-foreground mt-1">AI Summary Generations Left: {flow.remainingGenerations}</p>}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 sm:self-start">
           {flow.isFinished && (
             <>
-              <Button variant="outline" onClick={flow.handleShare} disabled={!flow.aiResult}>
-                <Share2 className="mr-2 h-4 w-4" />
+              <Button variant="outline" size="sm" onClick={flow.handleShare} disabled={!flow.aiResult}>
+                <Share2 className="mr-1.5 h-3.5 w-3.5" />
                 Share
               </Button>
-              <Button variant="outline" onClick={flow.handleDownloadReport} disabled={flow.isDownloading}>
-                {flow.isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                {flow.isDownloading ? "Downloading..." : "Download Report"}
+              <Button variant="outline" size="sm" onClick={flow.handleDownloadReport} disabled={flow.isDownloading}>
+                {flow.isDownloading ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Download className="mr-1.5 h-3.5 w-3.5" />}
+                {flow.isDownloading ? "Saving..." : "Download"}
               </Button>
             </>
           )}
@@ -105,52 +105,52 @@ export default function AssessmentPage() {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center mb-4">
-            <CardTitle className="text-xl">
+            <CardTitle className="text-lg sm:text-xl">
               {flow.isFinished ? "Your Results Overview" : `Question ${flow.currentStep}`}
             </CardTitle>
-            <Progress value={flow.isFinished ? 100 : flow.progress} className="w-1/3" />
+            <Progress value={flow.isFinished ? 100 : flow.progress} className="w-1/3 sm:w-1/4" />
           </div>
         </CardHeader>
-        <CardContent className="min-h-[400px]">
+        <CardContent className="min-h-[300px] sm:min-h-[400px]">
           {!flow.isFinished ? (
             <div className="w-full space-y-6">
-              <h3 className="text-xl font-semibold text-center">{currentQuestion.question}</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-center leading-relaxed">{currentQuestion.question}</h3>
               <RadioGroup
                 value={flow.answers[flow.currentStep - 1]?.answer || ""}
                 onValueChange={flow.handleAnswerChange}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                className="grid grid-cols-1 md:grid-cols-2 gap-3"
               >
                 {currentQuestion.options.map((option, i) => (
                   <Label
                     key={option}
                     htmlFor={`q${flow.currentStep}-${i}`}
-                    className="flex items-center space-x-3 rounded-md border p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:bg-primary [&:has([data-state=checked])]:text-primary-foreground transition-colors"
+                    className="flex items-center gap-2 sm:gap-3 rounded-md border p-3 sm:p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:bg-primary [&:has([data-state=checked])]:text-primary-foreground transition-colors cursor-pointer text-sm"
                   >
-                    <RadioGroupItem value={option} id={`q${flow.currentStep}-${i}`} />
-                    <span>{option}</span>
+                    <RadioGroupItem value={option} id={`q${flow.currentStep}-${i}`} className="shrink-0" />
+                    <span className="leading-snug">{option}</span>
                   </Label>
                 ))}
               </RadioGroup>
             </div>
           ) : (
-            <div ref={flow.resultsRef} className="grid lg:grid-cols-3 gap-8 pt-4 p-4">
+            <div ref={flow.resultsRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
               <div className="space-y-4 lg:col-span-2">
-                <h3 className="text-xl font-semibold flex items-center">
-                  <Users className="mr-2 h-5 w-5 text-primary" />
+                <h3 className="text-lg sm:text-xl font-semibold flex items-center">
+                  <Users className="mr-2 h-5 w-5 text-primary shrink-0" />
                   Your Score vs. SME Average
                 </h3>
                 {flow.isLoadingBenchmark ? (
-                  <div className="flex justify-center items-center h-full aspect-square">
+                  <div className="flex justify-center items-center h-full aspect-square max-h-[280px] sm:max-h-[400px]">
                     <Loader2 className="h-8 w-8 animate-spin" />
                   </div>
                 ) : (
-                  <ChartContainer config={flow.chartConfig} className="aspect-square h-full w-full" aria-label="Radar chart showing your assessment scores compared to SME average">
+                  <ChartContainer config={flow.chartConfig} className="aspect-square w-full max-h-[320px] sm:max-h-none" aria-label="Radar chart showing your assessment scores compared to SME average">
                     <ResponsiveContainer>
                       <RadarChart data={flow.chartData}>
                         <ChartTooltip content={<ChartTooltipContent />} />
-                        <PolarAngleAxis dataKey="category" />
+                        <PolarAngleAxis dataKey="category" tick={{ fontSize: 10 }} />
                         <PolarGrid />
-                        <Legend />
+                        <Legend wrapperStyle={{ fontSize: '11px' }} />
                         <Radar name="Your Score" dataKey="yourScore" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.6} />
                         <Radar name="SME Average" dataKey="benchmarkScore" stroke="hsl(var(--muted-foreground))" fill="hsl(var(--muted-foreground))" fillOpacity={0.4} />
                       </RadarChart>
@@ -158,12 +158,12 @@ export default function AssessmentPage() {
                   </ChartContainer>
                 )}
               </div>
-              <div className="space-y-4 lg:col-span-1">
-                <h3 className="text-xl font-semibold flex items-center">
-                  <Lightbulb className="mr-2 h-5 w-5 text-primary" />
+              <div className="space-y-3 lg:col-span-1">
+                <h3 className="text-lg sm:text-xl font-semibold flex items-center">
+                  <Lightbulb className="mr-2 h-5 w-5 text-primary shrink-0" />
                   AI-Generated Summary
                 </h3>
-                <div className="p-4 bg-muted rounded-lg min-h-[200px]">
+                <div className="p-3 sm:p-4 bg-muted rounded-lg min-h-[150px] sm:min-h-[200px]">
                   {flow.isGeneratingSummary ? (
                     <div className="space-y-2">
                       <Skeleton className="h-4 w-[80%]" />
@@ -171,7 +171,7 @@ export default function AssessmentPage() {
                       <Skeleton className="h-4 w-[60%]" />
                     </div>
                   ) : (
-                    <p className="text-sm whitespace-pre-line">{flow.aiResult}</p>
+                    <p className="text-sm whitespace-pre-line leading-relaxed">{flow.aiResult}</p>
                   )}
                 </div>
               </div>
@@ -179,12 +179,12 @@ export default function AssessmentPage() {
           )}
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={flow.handleBack} disabled={flow.currentStep === 1 && !flow.isFinished}>
+          <Button variant="outline" size="sm" onClick={flow.handleBack} disabled={flow.currentStep === 1 && !flow.isFinished}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           {!flow.isFinished && (
-            <Button onClick={flow.handleNext} disabled={!flow.answers[flow.currentStep - 1]}>
+            <Button size="sm" onClick={flow.handleNext} disabled={!flow.answers[flow.currentStep - 1]}>
               {flow.currentStep === flow.totalSteps ? "Finish & See Results" : "Next"}
             </Button>
           )}
