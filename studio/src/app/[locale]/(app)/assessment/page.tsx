@@ -44,11 +44,12 @@ export default function AssessmentPage() {
     saveResults: async (data, summary) => {
       const { user } = flow;
       if (!user) return;
+      const summaryText = typeof summary === 'string' ? summary : summary?.summary || JSON.stringify(summary);
       try {
         await withRetry(() => addDoc(collection(db, "assessments"), {
           userId: user.uid,
           responses: data.responses,
-          summary,
+          summary: summaryText,
           createdAt: serverTimestamp(),
         }), 3);
         createNotification({

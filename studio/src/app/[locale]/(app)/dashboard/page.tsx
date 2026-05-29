@@ -228,7 +228,9 @@ export default function DashboardPage() {
             category,
             score: (scores.totalScore / (scores.count * 4)) * 100,
           }));
-          if (mounted) setAssessmentData({ chartData, aiSummary: latestData.summary });
+          const rawSummary = latestData.summary;
+          const aiSummary = typeof rawSummary === 'string' ? rawSummary : rawSummary?.summary || '';
+          if (mounted) setAssessmentData({ chartData, aiSummary });
 
           const history = sorted.map(doc => {
             const d = doc.data();
