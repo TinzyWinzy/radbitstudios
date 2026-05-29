@@ -15,6 +15,7 @@ import { db } from "@/lib/firebase/firebase";
 import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { useAssessmentFlow, type AssessmentQuestion } from "@/hooks/use-assessment-flow";
+import { withRetry } from "@/lib/retry";
 
 const questions: AssessmentQuestion[] = [
   { question: "How do you accept payments from your customers?", options: ["Cash only", "Primarily EcoCash/OneMoney", "Bank transfers and swipe machines", "Integrated online payment gateways (e.g., Paynow, DPO)"], category: "Payments" },
@@ -44,12 +45,12 @@ export default function AssessmentPage() {
       const { user } = flow;
       if (!user) return;
       try {
-        await addDoc(collection(db, "assessments"), {
+        await withRetry(() => addDoc(collection(db, "assessments"), {
           userId: user.uid,
           responses: data.responses,
           summary,
           createdAt: serverTimestamp(),
-        });
+        }), 3);
         createNotification({
           userId: user.uid,
           title: "Assessment Complete",

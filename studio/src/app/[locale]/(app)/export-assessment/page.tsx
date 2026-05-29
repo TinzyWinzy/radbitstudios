@@ -15,6 +15,7 @@ import { db } from "@/lib/firebase/firebase";
 import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { useAssessmentFlow } from "@/hooks/use-assessment-flow";
+import { withRetry } from "@/lib/retry";
 import { exportQuestions } from "@/data/export-assessment-questions";
 
 export default function ExportAssessmentPage() {
@@ -27,7 +28,7 @@ export default function ExportAssessmentPage() {
       const { user } = flow;
       if (!user || !result) return;
       try {
-        await addDoc(collection(db, "export_assessments"), {
+        await withRetry(() => addDoc(collection(db, "export_assessments"), {
           userId: user.uid,
           responses: data.responses,
           readinessScore: result.readinessScore,
@@ -37,7 +38,7 @@ export default function ExportAssessmentPage() {
           requiredCertifications: result.requiredCertifications,
           summary: result.summary,
           createdAt: serverTimestamp(),
-        });
+        }), 3);
         createNotification({
           userId: user.uid,
           title: "Export Assessment Complete",

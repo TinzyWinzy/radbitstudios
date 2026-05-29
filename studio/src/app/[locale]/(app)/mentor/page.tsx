@@ -14,7 +14,7 @@ import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { getMentorContext } from './actions';
 import { useStreamingAI } from '@/hooks/use-streaming-ai';
-import { checkAndDecrementUsage } from '@/services/usage-service';
+import { checkFeatureAccess, checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
 import type { UpgradeInfo } from '@/services/feature-gate';
@@ -97,13 +97,13 @@ export default function MentorPage() {
     e.preventDefault();
     if (!input.trim() || !user || isSubmitting) return;
 
-    const usageResult = await checkAndDecrementUsage(user.uid, 'mentorChat');
-    if (!usageResult.success) {
-      if (usageResult.upgrade) {
-        setUpgradeInfo(usageResult.upgrade);
-        return;
+    const accessCheck = await checkFeatureAccess(user.uid, 'mentorChat');
+    if (!accessCheck.allowed) {
+      if (accessCheck.upgrade) {
+        setUpgradeInfo(accessCheck.upgrade);
+      } else {
+        toast({ title: 'Usage Limit Reached', description: accessCheck.message, variant: 'destructive' });
       }
-      toast({ title: 'Usage Limit Reached', description: usageResult.message, variant: 'destructive' });
       return;
     }
 
@@ -123,21 +123,26 @@ export default function MentorPage() {
     let tenderCount = 0;
 
     if (includeContext && hasProfile) {
-      if (!systemPromptCache) {
-        const ctx = await getMentorContext({
-          userId: user.uid,
-          industry: user.industry,
-          businessName: user.businessName,
-          businessDescription: user.businessDescription,
-        });
-        currentContext = ctx.systemPrompt;
-        newsCount = ctx.newsCount;
-        tenderCount = ctx.tenderCount;
-        setSystemPromptCache(currentContext);
-        setContextStats({ news: newsCount, tenders: tenderCount });
-      } else {
-        newsCount = contextStats.news;
-        tenderCount = contextStats.tenders;
+      try {
+        if (!systemPromptCache) {
+          const ctx = await getMentorContext({
+            userId: user.uid,
+            industry: user.industry,
+            businessName: user.businessName,
+            businessDescription: user.businessDescription,
+          });
+          currentContext = ctx.systemPrompt;
+          newsCount = ctx.newsCount;
+          tenderCount = ctx.tenderCount;
+          setSystemPromptCache(currentContext);
+          setContextStats({ news: newsCount, tenders: tenderCount });
+        } else {
+          newsCount = contextStats.news;
+          tenderCount = contextStats.tenders;
+        }
+      } catch (ctxErr) {
+        console.error('[Mentor] getMentorContext failed:', ctxErr);
+        // Continue without context — AI can still answer based on user's message
       }
     }
 
@@ -153,6 +158,8 @@ export default function MentorPage() {
       tenderCount,
     };
     setMessages((prev) => [...prev, aiMessage]);
+
+    checkAndDecrementUsage(user.uid, 'mentorChat').catch(() => {});
 
     stream({
       prompt: input,
