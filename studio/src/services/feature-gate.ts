@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase/firebase';
-import { doc, getDoc, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
 
 import type { PlanName } from '@/types/user';
@@ -139,41 +139,38 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
   const userDocRef = doc(db, 'users', userId);
 
   try {
-    const result = await runTransaction(db, async (transaction) => {
-      const userDoc = await transaction.get(userDocRef);
-      if (!userDoc.exists()) throw new Error('User not found.');
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) throw new Error('User not found.');
 
-      const userData = userDoc.data();
-      if (userData.role === 'super_admin') {
-        return { success: true, message: 'Super admin — no usage deducted.' };
-      }
+    const userData = userDoc.data();
+    if (userData.role === 'super_admin') {
+      return { success: true, message: 'Super admin — no usage deducted.' };
+    }
 
-      const plan = (userData.plan as PlanName) || 'Free';
-      const usage = userData.usage?.[gate.creditKey];
+    const plan = (userData.plan as PlanName) || 'Free';
+    const usage = userData.usage?.[gate.creditKey];
 
-      if (!usage || usage.remaining === undefined) {
-        const planIndex = PLAN_ORDER.indexOf(plan);
-        const planCredits = planIndex < subscriptionPlans.length ? subscriptionPlans[planIndex]?.credits : null;
-        const total = planCredits?.[gate.creditKey as keyof typeof planCredits]?.total ?? 999;
-        transaction.update(userDocRef, {
-          [`usage.${gate.creditKey}.remaining`]: total - 1,
-          [`usage.${gate.creditKey}.total`]: total,
-        });
-        return { success: true, message: "Usage decremented successfully." };
-      }
-
-      if (usage.remaining <= 0) {
-        throw { code: 'limit_reached', plan, feature };
-      }
-
-      transaction.update(userDocRef, {
-        [`usage.${gate.creditKey}.remaining`]: usage.remaining - 1,
+    if (!usage || usage.remaining === undefined) {
+      const planIndex = PLAN_ORDER.indexOf(plan);
+      const planCredits = planIndex < subscriptionPlans.length ? subscriptionPlans[planIndex]?.credits : null;
+      const total = planCredits?.[gate.creditKey as keyof typeof planCredits]?.total ?? 999;
+      await updateDoc(userDocRef, {
+        [`usage.${gate.creditKey}.remaining`]: total - 1,
+        [`usage.${gate.creditKey}.total`]: total,
       });
-
       return { success: true, message: "Usage decremented successfully." };
+    }
+
+    if (usage.remaining <= 0) {
+      const upgrade = getUpgradePath(plan, feature);
+      return { success: false, message: upgrade.message, upgrade };
+    }
+
+    await updateDoc(userDocRef, {
+      [`usage.${gate.creditKey}.remaining`]: increment(-1),
     });
 
-    return result;
+    return { success: true, message: "Usage decremented successfully." };
   } catch (error: unknown) {
     const err = error as Record<string, unknown>;
     if (err?.code === 'limit_reached') {
