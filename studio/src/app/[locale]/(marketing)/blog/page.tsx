@@ -47,7 +47,7 @@ export default function BlogPage() {
   return (
     <div className="container py-16">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="font-headline text-4xl font-bold tracking-tight">Blog</h1>
+        <h1 className="font-headline text-3xl sm:text-4xl font-bold tracking-tight">Blog</h1>
         <Link
           href="/blog/feed.xml"
           target="_blank"

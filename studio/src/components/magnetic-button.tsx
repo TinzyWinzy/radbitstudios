@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button, type ButtonProps } from "@/components/ui/button";
@@ -20,12 +20,21 @@ export function MagneticButton({
   const ref = useRef<HTMLButtonElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(
+      "ontouchstart" in window || navigator.maxTouchPoints > 0
+    );
+  }, []);
+
+  const effectiveMagnetic = magnetic && !isTouchDevice;
 
   const springX = useSpring(x, { stiffness: 300, damping: 15 });
   const springY = useSpring(y, { stiffness: 300, damping: 15 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!magnetic || !ref.current) return;
+    if (!effectiveMagnetic || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -42,7 +51,7 @@ export function MagneticButton({
 
   return (
     <motion.div
-      style={{ x: springX, y: springY }}
+      style={effectiveMagnetic ? { x: springX, y: springY } : undefined}
       className="inline-block"
     >
       <Button

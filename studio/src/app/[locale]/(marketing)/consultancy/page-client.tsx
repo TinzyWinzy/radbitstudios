@@ -309,7 +309,7 @@ export function ConsultancyClient() {
                       <h3 className="font-headline text-xl font-semibold mb-3">{service.title}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
                       <motion.div
-                        className="mt-4 flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="mt-4 flex items-center text-sm font-medium text-primary"
                         initial={{ x: -10 }}
                         animate={{ x: hoveredService === index ? 0 : -10 }}
                       >

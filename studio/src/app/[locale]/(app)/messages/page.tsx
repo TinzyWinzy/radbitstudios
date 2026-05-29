@@ -214,7 +214,7 @@ export default function MessagesPage() {
 
   if (userTierIndex < minTierIndex) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-10rem)]">
+      <div className="flex items-center justify-center h-[calc(100dvh-10rem)]">
         <div className="text-center max-w-md p-8">
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10 mb-4">
             <Lock className="size-8 text-primary" />
@@ -244,7 +244,7 @@ export default function MessagesPage() {
 
 
   return (
-    <div className="h-[calc(100vh-10rem)]">
+    <div className="h-[calc(100dvh-10rem)]">
       <Card className="h-full flex">
         <div className={cn("w-full md:w-1/3 border-r", selectedConversation && 'hidden md:flex flex-col')}>
             <CardHeader>

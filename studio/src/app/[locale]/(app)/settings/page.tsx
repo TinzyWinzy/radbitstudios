@@ -497,7 +497,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" type="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <Input id="phone" type="tel" inputMode="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     <p className="text-xs text-muted-foreground">Used for WhatsApp alerts on tenders and deadlines</p>
                 </div>
                 <div className="space-y-2">
@@ -737,7 +737,7 @@ export default function SettingsPage() {
                         ))}
                     </Accordion>
                 ) : (
-                    <div className="text-center text-muted-foreground py-12">
+                    <div className="text-center text-muted-foreground py-8 sm:py-12">
                         You have no assessment history.
                     </div>
                 )}
@@ -807,7 +807,7 @@ export default function SettingsPage() {
                                   <h4 className="font-semibold text-sm">Output:</h4>
                                   <div className="mt-2 p-4 border rounded-md bg-muted/50">
                                      {item.agent === 'Design' ? (
-                                        <Image src={item.output} alt="Generated logo" width={200} height={200} className="rounded-md" />
+                                        <Image src={item.output} alt="Generated logo" width={200} height={200} sizes="200px" className="rounded-md" />
                                      ) : (
                                         <MarkdownRenderer content={item.output} />
                                      )}
@@ -818,7 +818,7 @@ export default function SettingsPage() {
                         ))}
                     </Accordion>
                 ) : (
-                    <div className="text-center text-muted-foreground py-12">
+                    <div className="text-center text-muted-foreground py-8 sm:py-12">
                         You have no generation history.
                     </div>
                 )}

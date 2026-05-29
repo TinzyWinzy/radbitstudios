@@ -296,7 +296,7 @@ function FeaturesSection() {
                         ))}
                       </div>
                     </div>
-                    <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-2 group-hover:translate-x-0">
+                    <div className="absolute bottom-4 right-4 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 md:translate-x-2 md:group-hover:translate-x-0">
                       <ChevronRight className="h-4 w-4 text-primary" />
                     </div>
                   </div>

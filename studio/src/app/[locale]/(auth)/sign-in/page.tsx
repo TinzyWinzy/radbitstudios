@@ -117,7 +117,7 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       <div className="text-center space-y-2">
         <h1 className="font-headline text-2xl font-bold tracking-tight">Welcome Back</h1>
         <p className="text-sm text-muted-foreground">Sign in to your Radbit account</p>

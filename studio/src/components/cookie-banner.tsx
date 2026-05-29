@@ -23,7 +23,7 @@ export function CookieBanner() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 p-4"
+      className="fixed bottom-0 left-0 right-0 z-50 p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]"
       role="dialog"
       aria-modal={showCustomize ? "true" : "false"}
       aria-label="Cookie consent settings"

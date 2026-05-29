@@ -62,6 +62,7 @@ import { NotificationBell } from "@/components/notification-bell";
 import { PushNotificationManager } from "@/components/push-notification-manager";
 import type { AppUser } from "@/types/user";
 import { UserNav } from "@/components/user-nav";
+import { BottomNav } from "@/components/bottom-nav";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { user, loading, role } = useContext(AuthContext);
@@ -111,7 +112,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (loading || !user) {
     return (
-      <div className="flex h-screen items-center justify-center">
+      <div className="flex h-dvh items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -183,12 +184,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main 
             id="main-content"
             key={pathname}
-            className="flex-1 p-4 md:p-8 animate-[fadeSlideIn_0.3s_ease-out]"
+            className="flex-1 p-4 md:p-8 pb-20 md:pb-8 animate-[fadeSlideIn_0.3s_ease-out]"
         >
           <div className="container max-w-7xl">
             {children}
           </div>
         </main>
+        <BottomNav />
       </SidebarInset>
     </SidebarProvider>
   );

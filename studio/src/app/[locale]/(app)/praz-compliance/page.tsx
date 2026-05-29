@@ -295,7 +295,7 @@ export default function PrazCompliancePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center">
-                <div className="text-4xl font-bold font-headline">{readinessScore}%</div>
+                <div className="text-3xl sm:text-4xl font-bold font-headline">{readinessScore}%</div>
                 <p className="text-xs text-muted-foreground mt-1">Complete</p>
               </div>
               <Progress value={readinessScore} className="h-2" />

@@ -138,7 +138,7 @@ function TenderCard({ tender, onBookmark }: { tender: Tender & { bookmarked?: bo
         </div>
 
         {onBookmark && (
-          <Button variant="ghost" size="icon" onClick={onBookmark} className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button variant="ghost" size="icon" onClick={onBookmark} className="shrink-0 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
             <Bookmark className={cn('h-4 w-4', tender.bookmarked && 'fill-primary text-primary')} />
             <span className="sr-only">Bookmark</span>
           </Button>

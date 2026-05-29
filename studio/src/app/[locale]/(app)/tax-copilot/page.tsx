@@ -118,7 +118,7 @@ export default function TaxCopilotPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-10rem)] flex flex-col">
+    <div className="h-[calc(100dvh-10rem)] flex flex-col">
       <div>
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
           <Landmark className="h-7 w-7 text-primary" />

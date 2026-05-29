@@ -173,7 +173,7 @@ export default function MentorPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-10rem)] flex flex-col">
+    <div className="h-[calc(100dvh-10rem)] flex flex-col">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">

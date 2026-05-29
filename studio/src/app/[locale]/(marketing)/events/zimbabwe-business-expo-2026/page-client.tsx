@@ -101,7 +101,7 @@ function HeroSection() {
 
         <motion.div
           variants={fadeUp}
-          className="mt-10 grid grid-cols-4 gap-4 max-w-md mx-auto"
+          className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-md mx-auto"
         >
           {[
             { value: c.days, label: "Days" },

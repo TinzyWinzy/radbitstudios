@@ -377,7 +377,7 @@ export default function ThreadDetailPage() {
             <CardDescription>Insights for this thread</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex flex-col items-center p-3 rounded-lg bg-card">
                 <MessageSquare className="h-5 w-5 text-primary mb-1" />
                 <span className="text-2xl font-bold">{threadStats.totalReplies}</span>

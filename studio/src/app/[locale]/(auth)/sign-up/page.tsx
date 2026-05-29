@@ -101,7 +101,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-8 space-y-6">
       <div className="text-center space-y-2">
         <h1 className="font-headline text-2xl font-bold tracking-tight">Create Your Account</h1>
         <p className="text-sm text-muted-foreground">Join the Radbit ecosystem</p>
@@ -149,6 +149,7 @@ export default function SignUpPage() {
           <Input
             id="phone"
             type="tel"
+            inputMode="tel"
             placeholder="+263 77 123 4567"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}

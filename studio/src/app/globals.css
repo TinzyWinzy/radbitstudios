@@ -47,6 +47,29 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  input,
+  textarea,
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button,
+  [role="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"] {
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  .overscroll-contain {
+    overscroll-behavior: contain;
+  }
 }
 
 @layer utilities {

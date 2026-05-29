@@ -262,7 +262,7 @@ export default function BudgetCalculatorPage() {
               <Label htmlFor="income-name">Source Name</Label>
               <Input id="income-name" placeholder="e.g., Sales" value={incomeName} onChange={(e) => setIncomeName(e.target.value)} />
               <Label htmlFor="income-amount">Amount</Label>
-              <Input id="income-amount" type="number" placeholder="1000" value={incomeAmount} onChange={(e) => setIncomeAmount(e.target.value)} />
+              <Input id="income-amount" type="number" inputMode="decimal" placeholder="1000" value={incomeAmount} onChange={(e) => setIncomeAmount(e.target.value)} />
               <Button type="submit" className="w-full">
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Income
               </Button>
@@ -294,7 +294,7 @@ export default function BudgetCalculatorPage() {
               <Label htmlFor="expense-name">Expense Name</Label>
               <Input id="expense-name" placeholder="e.g., Rent" value={expenseName} onChange={(e) => setExpenseName(e.target.value)} />
               <Label htmlFor="expense-amount">Amount</Label>
-              <Input id="expense-amount" type="number" placeholder="500" value={expenseAmount} onChange={(e) => setExpenseAmount(e.target.value)} />
+              <Input id="expense-amount" type="number" inputMode="decimal" placeholder="500" value={expenseAmount} onChange={(e) => setExpenseAmount(e.target.value)} />
               <Button type="submit" className="w-full">
                 <PlusCircle className="mr-2 h-4 w-4" /> Add Expense
               </Button>

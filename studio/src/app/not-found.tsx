@@ -13,12 +13,12 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+    <div className="flex min-h-dvh flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center gap-6 text-center max-w-md">
         <Icons.logo className="size-16 shrink-0 opacity-60" />
 
         <div className="space-y-2">
-          <h1 className="font-headline text-6xl font-bold tracking-tighter">
+          <h1 className="font-headline text-4xl sm:text-6xl font-bold tracking-tighter">
             404
           </h1>
           <h2 className="font-headline text-2xl font-bold">Page not found</h2>
