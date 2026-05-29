@@ -14,7 +14,7 @@ import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { searchRelevantContext } from '@/services/ai/rag';
 import { generateTaxAnswer } from '@/ai/flows/tax-copilot';
-import { checkAndDecrementUsage } from '@/services/usage-service';
+import { checkFeatureAccess, checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import type { UpgradeInfo } from '@/services/feature-gate';
 
@@ -50,13 +50,13 @@ export default function TaxCopilotPage() {
     e.preventDefault();
     if (!input.trim() || !user || isSubmitting) return;
 
-    const usageResult = await checkAndDecrementUsage(user.uid, 'taxCopilot');
-    if (!usageResult.success) {
-      if (usageResult.upgrade) {
-        setUpgradeInfo(usageResult.upgrade);
+    const accessCheck = await checkFeatureAccess(user.uid, 'taxCopilot');
+    if (!accessCheck.allowed) {
+      if (accessCheck.upgrade) {
+        setUpgradeInfo(accessCheck.upgrade);
         return;
       }
-      toast({ title: 'Usage Limit Reached', description: usageResult.message, variant: 'destructive' });
+      toast({ title: 'Usage Limit Reached', description: accessCheck.message, variant: 'destructive' });
       return;
     }
 
@@ -67,7 +67,6 @@ export default function TaxCopilotPage() {
       id: Date.now(),
       status: 'pending',
     };
-
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
 
@@ -89,12 +88,13 @@ export default function TaxCopilotPage() {
         businessDescription: appUser?.businessDescription || undefined,
       });
 
+      checkAndDecrementUsage(user.uid, 'taxCopilot').catch(() => {});
+
       setMessages((prev) =>
         prev.map((msg) => (msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg))
       );
 
       const sources = ragResults.map(r => r.metadata.source || 'ZIMRA Guidelines').filter((v, i, a) => a.indexOf(v) === i);
-
       const aiMessage: Message = {
         text: response.answer,
         sender: 'ai',

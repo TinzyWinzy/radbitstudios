@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, FileText, Download, DollarSign, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
-import { checkAndDecrementUsage } from '@/services/usage-service';
+import { checkFeatureAccess, checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import type { UpgradeInfo } from '@/services/feature-gate';
 import { useTranslations } from 'next-intl';
@@ -45,12 +45,12 @@ export default function BidWriterPage() {
       return;
     }
 
-    const access = await checkAndDecrementUsage(user.uid, 'tenderProposal');
-    if (!access.success) {
-      if (access.upgrade) {
-        setUpgradeInfo(access.upgrade);
+    const accessCheck = await checkFeatureAccess(user.uid, 'tenderProposal');
+    if (!accessCheck.allowed) {
+      if (accessCheck.upgrade) {
+        setUpgradeInfo(accessCheck.upgrade);
       } else {
-        toast({ title: 'Usage limit reached', description: access.message, variant: 'destructive' });
+        toast({ title: 'Usage limit reached', description: accessCheck.message, variant: 'destructive' });
       }
       return;
     }
@@ -69,6 +69,7 @@ export default function BidWriterPage() {
         currency,
       });
       setProposal(result);
+      checkAndDecrementUsage(user.uid, 'tenderProposal').catch(() => {});
     } catch (err: any) {
       toast({ title: 'Generation failed', description: err.message || 'Please try again.', variant: 'destructive' });
     } finally {

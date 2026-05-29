@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -35,7 +35,7 @@ import { Loader2, Sparkles, Wand2, Download, Share2, FileText, FileDown } from '
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { generateBusinessInsight } from '@/ai/flows/generate-business-insight';
-import { checkAndDecrementUsage } from '@/services/usage-service';
+import { checkFeatureAccess, checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import { MarkdownRenderer } from '@/components/markdown-renderer';
@@ -96,41 +96,35 @@ export default function AiToolkitPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [generatedContent, setGeneratedContent] = useState('');
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
+  const generatingRef = useRef(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      businessDescription: user?.businessDescription || '',
-      insightType: undefined,
-    },
+    defaultValues: { insightType: 'profile_generator', businessDescription: '' },
   });
 
   const onSubmit = async (data: FormValues) => {
     if (!user) {
-      toast({
-        title: 'Authentication Error',
-        description: 'You must be logged in to use the toolkit.',
-        variant: 'destructive',
-      });
+      toast({ title: 'Authentication Error', description: 'You must be logged in.', variant: 'destructive' });
+      return;
+    }
+    if (generatingRef.current) return;
+
+    const accessCheck = await checkFeatureAccess(user.uid, 'templateGeneration');
+    if (!accessCheck.allowed) {
+      if (accessCheck.upgrade) {
+        setUpgradeInfo(accessCheck.upgrade);
+      } else {
+        toast({ title: 'Usage Limit Reached', description: accessCheck.message, variant: 'destructive' });
+      }
       return;
     }
 
+    generatingRef.current = true;
     setIsLoading(true);
     setGeneratedContent('');
 
     try {
-      const usageResult = await checkAndDecrementUsage(user.uid, 'templateGeneration');
-      if (!usageResult.success) {
-        if (usageResult.upgrade) {
-          setUpgradeInfo(usageResult.upgrade);
-          setIsLoading(false);
-          return;
-        }
-        toast({ title: 'Usage Limit Reached', description: usageResult.message, variant: 'destructive' });
-        setIsLoading(false);
-        return;
-      }
-
       const response = await generateBusinessInsight({
         ...data,
         businessName: user?.businessName,
@@ -138,6 +132,7 @@ export default function AiToolkitPage() {
       });
 
       setGeneratedContent(response.insight);
+      checkAndDecrementUsage(user.uid, 'templateGeneration').catch(() => {});
     } catch (error: unknown) {
       console.error('Error generating insight:', error);
       toast({
@@ -147,6 +142,7 @@ export default function AiToolkitPage() {
       });
     } finally {
       setIsLoading(false);
+      generatingRef.current = false;
     }
   };
 
