@@ -19,6 +19,7 @@ import { AuthContext } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase/firebase";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 import { z } from 'zod';
 
 const budgetItemSchema = z.object({
@@ -34,6 +35,7 @@ type BudgetItem = {
 export default function BudgetCalculatorPage() {
   const { user } = useContext(AuthContext);
   const { toast } = useToast();
+  const bu = useTranslations('budget');
 
   const [income, setIncome] = useState<BudgetItem[]>([]);
   const [expenses, setExpenses] = useState<BudgetItem[]>([]);
@@ -209,22 +211,22 @@ export default function BudgetCalculatorPage() {
     <div className="space-y-8">
       <div className="flex justify-between items-start">
         <div>
-            <h1 className="text-3xl font-bold tracking-tight">Budget Calculator</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{bu('title')}</h1>
             <p className="text-muted-foreground mt-2">
-            Plan your finances by tracking your income and expenses.
+            {bu('description')}
             </p>
         </div>
         <div className="flex items-center gap-2">
             <Button onClick={handleSaveBudget} disabled={isSaving}>
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                {isSaving ? 'Saving...' : 'Save Budget'}
+                {isSaving ? bu('saving') : bu('save')}
             </Button>
             <Button variant="outline" onClick={handleShare}>
-                <Share2 className="mr-2 h-4 w-4" /> Share
+                <Share2 className="mr-2 h-4 w-4" /> {bu('share')}
             </Button>
             <Button variant="outline" onClick={handleDownload} disabled={isDownloading}>
                 {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-                Download
+                {bu('download')}
             </Button>
         </div>
       </div>
@@ -233,20 +235,20 @@ export default function BudgetCalculatorPage() {
         {/* Summary Card */}
         <Card className="md:col-span-3">
             <CardHeader>
-                <CardTitle>Financial Summary</CardTitle>
-                <CardDescription>Your real-time financial balance.</CardDescription>
+                <CardTitle>{bu('summary')}</CardTitle>
+                <CardDescription>{bu('summaryDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-3">
                 <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm font-medium text-muted-foreground">Total Income</p>
+                    <p className="text-sm font-medium text-muted-foreground">{bu('totalIncome')}</p>
                     <p className="text-2xl font-bold text-green-600">${totalIncome.toFixed(2)}</p>
                 </div>
                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm font-medium text-muted-foreground">Total Expenses</p>
+                    <p className="text-sm font-medium text-muted-foreground">{bu('totalExpenses')}</p>
                     <p className="text-2xl font-bold text-red-600">${totalExpenses.toFixed(2)}</p>
                 </div>
                  <div className="p-4 bg-muted rounded-lg">
-                    <p className="text-sm font-medium text-muted-foreground">Net Balance</p>
+                    <p className="text-sm font-medium text-muted-foreground">{bu('netBalance')}</p>
                     <p className={cn("text-2xl font-bold", netBalance >= 0 ? "text-primary" : "text-destructive")}>${netBalance.toFixed(2)}</p>
                 </div>
             </CardContent>
@@ -255,16 +257,16 @@ export default function BudgetCalculatorPage() {
         {/* Income Card */}
         <Card className="md:col-span-3 lg:col-span-1">
           <CardHeader>
-            <CardTitle>Income Sources</CardTitle>
+            <CardTitle>{bu('income')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <form onSubmit={(e) => {e.preventDefault(); addItem("income")}} className="space-y-2">
-              <Label htmlFor="income-name">Source Name</Label>
+              <Label htmlFor="income-name">{bu('sourceName')}</Label>
               <Input id="income-name" placeholder="e.g., Sales" value={incomeName} onChange={(e) => setIncomeName(e.target.value)} />
-              <Label htmlFor="income-amount">Amount</Label>
+              <Label htmlFor="income-amount">{bu('amount')}</Label>
               <Input id="income-amount" type="number" inputMode="decimal" placeholder="1000" value={incomeAmount} onChange={(e) => setIncomeAmount(e.target.value)} />
               <Button type="submit" className="w-full">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Income
+                <PlusCircle className="mr-2 h-4 w-4" /> {bu('addIncome')}
               </Button>
             </form>
             <Separator />
@@ -279,7 +281,7 @@ export default function BudgetCalculatorPage() {
                             </Button>
                         </div>
                     </div>
-                )) : <p className="text-xs text-muted-foreground text-center">No income sources added yet.</p>}
+                )) : <p className="text-xs text-muted-foreground text-center">{bu('noIncome')}</p>}
             </div>
           </CardContent>
         </Card>
@@ -287,16 +289,16 @@ export default function BudgetCalculatorPage() {
         {/* Expenses Card */}
         <Card className="md:col-span-3 lg:col-span-2">
           <CardHeader>
-            <CardTitle>Expense Items</CardTitle>
+            <CardTitle>{bu('expenses')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
              <form onSubmit={(e) => {e.preventDefault(); addItem("expense")}} className="space-y-2">
-              <Label htmlFor="expense-name">Expense Name</Label>
+              <Label htmlFor="expense-name">{bu('sourceName')}</Label>
               <Input id="expense-name" placeholder="e.g., Rent" value={expenseName} onChange={(e) => setExpenseName(e.target.value)} />
-              <Label htmlFor="expense-amount">Amount</Label>
+              <Label htmlFor="expense-amount">{bu('amount')}</Label>
               <Input id="expense-amount" type="number" inputMode="decimal" placeholder="500" value={expenseAmount} onChange={(e) => setExpenseAmount(e.target.value)} />
               <Button type="submit" className="w-full">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Expense
+                <PlusCircle className="mr-2 h-4 w-4" /> {bu('addExpense')}
               </Button>
             </form>
             <Separator />
@@ -311,7 +313,7 @@ export default function BudgetCalculatorPage() {
                             </Button>
                         </div>
                     </div>
-                )) : <p className="text-xs text-muted-foreground text-center">No expenses added yet.</p>}
+                )) : <p className="text-xs text-muted-foreground text-center">{bu('noExpenses')}</p>}
             </div>
           </CardContent>
         </Card>

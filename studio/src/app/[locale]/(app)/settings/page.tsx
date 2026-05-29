@@ -63,6 +63,7 @@ import { SubscriptionEngine } from "@/services/payment/subscription-engine";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface AssessmentHistory {
     id: string;
@@ -119,6 +120,7 @@ export default function SettingsPage() {
     const [deleteError, setDeleteError] = useState<string | null>(null);
     const [isExporting, setIsExporting] = useState(false);
     const { toast } = useToast();
+    const t = useTranslations('settings');
 
      useEffect(() => {
         const tab = searchParams.get('tab');
@@ -454,30 +456,30 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
         <p className="text-muted-foreground mt-2">
-          Manage your profile, account, and history.
+          {t('description')}
         </p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-10">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="business">Business</TabsTrigger>
-          <TabsTrigger value="account">Account & Plan</TabsTrigger>
-          <TabsTrigger value="support">Support</TabsTrigger>
-          <TabsTrigger value="assessment-history">Assessment History</TabsTrigger>
-          <TabsTrigger value="generation-history">Generation History</TabsTrigger>
-          <TabsTrigger value="referral">Referral</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="branding">Branding</TabsTrigger>
-          <TabsTrigger value="privacy">Privacy & Data</TabsTrigger>
+          <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
+          <TabsTrigger value="business">{t('tabs.business')}</TabsTrigger>
+          <TabsTrigger value="account">{t('tabs.account')}</TabsTrigger>
+          <TabsTrigger value="support">{t('tabs.support')}</TabsTrigger>
+          <TabsTrigger value="assessment-history">{t('tabs.assessmentHistory')}</TabsTrigger>
+          <TabsTrigger value="generation-history">{t('tabs.generationHistory')}</TabsTrigger>
+          <TabsTrigger value="referral">{t('tabs.referral')}</TabsTrigger>
+          <TabsTrigger value="notifications">{t('tabs.notifications')}</TabsTrigger>
+          <TabsTrigger value="branding">{t('tabs.branding')}</TabsTrigger>
+          <TabsTrigger value="privacy">{t('tabs.privacy')}</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle>Public Profile</CardTitle>
+              <CardTitle>{t('profile.title')}</CardTitle>
               <CardDescription>
-                This is how others will see you on the platform.
+                {t('profile.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -492,25 +494,25 @@ export default function SettingsPage() {
                     </div>
                 </div>
                  <div className="space-y-2">
-                    <Label htmlFor="displayName">Display Name</Label>
-                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                    <Label htmlFor="displayName">{t('profile.displayName')}</Label>
+                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="name" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" type="tel" inputMode="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                    <p className="text-xs text-muted-foreground">Used for WhatsApp alerts on tenders and deadlines</p>
+                    <Label htmlFor="phone">{t('profile.phone')}</Label>
+                    <Input id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <p className="text-xs text-muted-foreground">{t('profile.whatsappNote')}</p>
                 </div>
                 <div className="space-y-2">
-                    <h3 className="text-lg font-semibold">Your Badges</h3>
+                    <h3 className="text-lg font-semibold">{t('profile.badges')}</h3>
                     <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
                         <Award className="h-10 w-10 text-yellow-500" />
                         <div>
-                            <p className="font-semibold text-primary">Digitally Growing</p>
-                            <p className="text-xs text-muted-foreground">Awarded for completing the Digital Readiness Assessment.</p>
+                            <p className="font-semibold text-primary">{t('profile.digitallyGrowing')}</p>
+                            <p className="text-xs text-muted-foreground">{t('profile.badgeDescription')}</p>
                         </div>
                         <Button variant="outline" size="sm" className="ml-auto" onClick={handleShareBadge}>
                             <Share2 className="mr-2 h-4 w-4" />
-                            Share
+                            {t('profile.share')}
                         </Button>
                     </div>
                 </div>
@@ -518,7 +520,7 @@ export default function SettingsPage() {
              <CardFooter>
                  <Button onClick={handleProfileSave} disabled={isSaving}>
                      {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                     Save Profile
+                     {t('profile.save')}
                  </Button>
             </CardFooter>
           </Card>
@@ -526,29 +528,29 @@ export default function SettingsPage() {
         <TabsContent value="business">
           <Card>
             <CardHeader>
-              <CardTitle>Business Details</CardTitle>
+              <CardTitle>{t('business.title')}</CardTitle>
               <CardDescription>
-                Update your business information. This is used to personalize your AI insights.
+                {t('business.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="business-name">Business Name</Label>
+                <Label htmlFor="business-name">{t('business.name')}</Label>
                 <Input id="business-name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
               </div>
                <div className="space-y-2">
-                <Label htmlFor="industry">Industry</Label>
+                <Label htmlFor="industry">{t('business.industry')}</Label>
                 <Input id="industry" value={industry} onChange={(e) => setIndustry(e.target.value)} />
               </div>
                <div className="space-y-2">
-                <Label htmlFor="business-description">Business Description</Label>
+                <Label htmlFor="business-description">{t('business.description2')}</Label>
                 <Textarea id="business-description" value={businessDescription} onChange={(e) => setBusinessDescription(e.target.value)} />
               </div>
             </CardContent>
             <CardFooter>
                  <Button onClick={handleBusinessSave} disabled={isSaving}>
                     {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                    Save Changes
+                    {t('business.save')}
                 </Button>
             </CardFooter>
           </Card>
@@ -738,7 +740,7 @@ export default function SettingsPage() {
                     </Accordion>
                 ) : (
                     <div className="text-center text-muted-foreground py-8 sm:py-12">
-                        You have no assessment history.
+                        {t('history.noAssessment')}
                     </div>
                 )}
                 </CardContent>
@@ -819,7 +821,7 @@ export default function SettingsPage() {
                     </Accordion>
                 ) : (
                     <div className="text-center text-muted-foreground py-8 sm:py-12">
-                        You have no generation history.
+                        {t('history.noGeneration')}
                     </div>
                 )}
                 </CardContent>
@@ -828,19 +830,19 @@ export default function SettingsPage() {
         <TabsContent value="privacy">
           <Card>
             <CardHeader>
-              <CardTitle>Privacy & Data</CardTitle>
+              <CardTitle>{t('privacy.title')}</CardTitle>
               <CardDescription>
-                Manage your data and privacy preferences in accordance with POPIA, GDPR, and the Zimbabwe Cyber Act.
+                {t('privacy.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <h3 className="font-semibold text-sm flex items-center gap-2">
                   <Shield className="h-4 w-4 text-primary" />
-                  Privacy Policy
+                  {t('privacy.policyHeading')}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Read how we collect, use, and protect your personal data in our{' '}
+                  {t('privacy.policyDescription')}{' '}
                   <Link href="/privacy" className="text-primary hover:underline font-medium" target="_blank">
                     Privacy Policy
                   </Link>
@@ -851,10 +853,10 @@ export default function SettingsPage() {
               <div className="border-t border-border pt-4 space-y-4">
                 <h3 className="font-semibold text-sm flex items-center gap-2">
                   <Trash2 className="h-4 w-4 text-destructive" />
-                  Delete Account
+                  {t('privacy.deleteHeading')}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Permanently delete your account and all associated data. This action cannot be undone.
+                  {t('privacy.deleteDescription')}
                   The following data will be removed:
                 </p>
                 <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
@@ -869,7 +871,7 @@ export default function SettingsPage() {
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="sm" className="gap-2">
                       <Trash2 className="h-4 w-4" />
-                      Delete My Account
+                      {t('privacy.deleteButton')}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -909,10 +911,10 @@ export default function SettingsPage() {
               <div className="border-t border-border pt-4 space-y-4">
                 <h3 className="font-semibold text-sm flex items-center gap-2">
                   <Download className="h-4 w-4 text-primary" />
-                  Data Portability
+                  {t('privacy.exportHeading')}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  You have the right to request a copy of your personal data in a portable format (GDPR Article 20).
+                  {t('privacy.exportDescription')}
                 </p>
                 <Button variant="outline" size="sm" className="gap-2" onClick={handleExportData} disabled={isExporting}>
                   {isExporting ? (
@@ -920,7 +922,7 @@ export default function SettingsPage() {
                   ) : (
                     <Download className="h-4 w-4" />
                   )}
-                  {isExporting ? 'Exporting...' : 'Export My Data'}
+                  {isExporting ? t('privacy.exporting') : t('privacy.exportButton')}
                 </Button>
               </div>
 
@@ -951,15 +953,15 @@ export default function SettingsPage() {
          <TabsContent value="notifications">
           <Card>
             <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
+              <CardTitle>{t('notifications.title')}</CardTitle>
               <CardDescription>
-                Choose which notifications you receive and how they are delivered.
+                {t('notifications.description')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <h3 className="font-semibold text-sm flex items-center gap-2">
                 <Bell className="h-4 w-4 text-primary" />
-                In-App Notifications
+                {t('notifications.inApp')}
               </h3>
               <div className="space-y-3">
                 {[
@@ -986,7 +988,7 @@ export default function SettingsPage() {
               <div className="border-t pt-6 space-y-4">
                 <h3 className="font-semibold text-sm flex items-center gap-2">
                   <Smartphone className="h-4 w-4 text-primary" />
-                  Delivery Channels
+                  {t('notifications.channels')}
                 </h3>
                 <p className="text-xs text-muted-foreground">Configure how notifications are delivered to you.</p>
                 <div className="space-y-3">
@@ -996,16 +998,20 @@ export default function SettingsPage() {
                       checked={whatsappOptIn}
                       onCheckedChange={(checked) => setWhatsappOptIn(checked === true)}
                     />
-                    <div>
-                      <Label htmlFor="whatsapp-opt-in" className="text-sm font-medium">WhatsApp</Label>
-                      <p className="text-xs text-muted-foreground mt-0.5">Receive critical alerts via WhatsApp on {phone || 'your saved number'}</p>
+                  <div>
+                      <Label htmlFor="whatsapp-opt-in" className="text-sm font-medium">{t('notifications.whatsapp')}</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t('notifications.whatsappDescription', { phone: phone || 'your saved number' })}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 p-3 rounded-lg border opacity-60">
-                    <Checkbox id="push-opt-in" checked={false} disabled />
+                  <div className="flex items-start gap-3 p-3 rounded-lg border">
+                    <Checkbox
+                      id="push-opt-in"
+                      checked={notifyPrefs.notifyPush ?? false}
+                      onCheckedChange={(checked) => setNotifyPrefs((prev: any) => ({ ...prev, notifyPush: checked === true }))}
+                    />
                     <div>
-                      <Label htmlFor="push-opt-in" className="text-sm font-medium">Push Notifications</Label>
-                      <p className="text-xs text-muted-foreground mt-0.5">Browser push notifications — coming soon</p>
+                      <Label htmlFor="push-opt-in" className="text-sm font-medium">{t('notifications.push')}</Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">{t('notifications.pushDescription')}</p>
                     </div>
                   </div>
                 </div>
@@ -1014,7 +1020,7 @@ export default function SettingsPage() {
             <CardFooter>
               <Button onClick={handleNotificationPrefsSave} disabled={isSaving}>
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Save Notification Preferences
+                {t('notifications.save')}
               </Button>
             </CardFooter>
           </Card>

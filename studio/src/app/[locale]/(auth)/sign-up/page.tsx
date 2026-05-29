@@ -136,6 +136,7 @@ export default function SignUpPage() {
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -150,6 +151,7 @@ export default function SignUpPage() {
             id="phone"
             type="tel"
             inputMode="tel"
+            autoComplete="tel"
             placeholder="+263 77 123 4567"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -163,6 +165,7 @@ export default function SignUpPage() {
           <Input
             id="password"
             type="password"
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading || isGoogleLoading}
@@ -175,6 +178,7 @@ export default function SignUpPage() {
           <Input
             id="confirm-password"
             type="password"
+            autoComplete="new-password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={isLoading || isGoogleLoading}
