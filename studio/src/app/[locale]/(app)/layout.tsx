@@ -3,6 +3,8 @@
 import { useContext, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/auth-context";
+import { auth } from "@/lib/firebase/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const PAGE_TITLES: Record<string, string> = {
   "/dashboard": "Dashboard — Radbit",
@@ -75,10 +77,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const wasAuthenticated = useRef(false);
     const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const reAuthAttempted = useRef(false);
 
+    /**
+     * When user becomes available, mark as authenticated.
+     * When user is null after loading, attempt silent re-auth via Firebase
+     * before redirecting to sign-in. This handles the case where the middleware
+     * rejected a stale __session cookie but Firebase SDK still has the user.
+     */
     useEffect(() => {
         if (user) {
             wasAuthenticated.current = true;
+            reAuthAttempted.current = false;
             if (redirectTimer.current) {
                 clearTimeout(redirectTimer.current);
                 redirectTimer.current = null;
@@ -87,10 +97,35 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         }
 
         if (!loading && !user) {
-            if (wasAuthenticated.current) {
-                redirectTimer.current = setTimeout(() => {
-                    router.push('/sign-in');
-                }, 1500);
+            if (wasAuthenticated.current && !reAuthAttempted.current) {
+                // User was authenticated but context lost them — attempt silent re-auth
+                reAuthAttempted.current = true;
+                const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+                    unsubscribe();
+                    if (firebaseUser) {
+                        // Firebase still has the user — force token refresh
+                        try {
+                            const token = await firebaseUser.getIdToken(true);
+                            const res = await fetch('/api/auth/refresh-session', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ idToken: token }),
+                            });
+                            if (res.ok) {
+                                // Cookie refreshed — reload to re-trigger middleware check
+                                window.location.reload();
+                                return;
+                            }
+                        } catch {
+                            // Silent re-auth failed — fall through to redirect
+                        }
+                    }
+                    // No Firebase user or refresh failed — redirect to sign-in
+                    redirectTimer.current = setTimeout(() => {
+                        router.push('/sign-in');
+                    }, 500);
+                });
+                return () => { unsubscribe(); };
             } else if (!wasAuthenticated.current) {
                 redirectTimer.current = setTimeout(() => {
                     router.push('/sign-in');

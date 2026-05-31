@@ -60,7 +60,7 @@ function NewsCard({ article }: { article: NewsArticle }) {
                 {avgScore} impact
               </Badge>
             )}
-            {article.industryTags.slice(0, 2).map((tag, i) => (
+            {(article.industryTags || []).slice(0, 2).map((tag, i) => (
               <Badge key={tag} variant="outline" className={cn('text-xs', INDUSTRY_BADGE_COLORS[i % INDUSTRY_BADGE_COLORS.length])}>
                 {tag}
               </Badge>
@@ -188,7 +188,7 @@ export default function NewsPage() {
           article.title.toLowerCase().includes(q) ||
           article.summary.toLowerCase().includes(q) ||
           article.sourceName.toLowerCase().includes(q) ||
-          article.industryTags.some(t => t.toLowerCase().includes(q))
+          article.industryTags?.some(t => t.toLowerCase().includes(q))
         );
       }
       return true;

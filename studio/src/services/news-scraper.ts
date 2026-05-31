@@ -703,7 +703,7 @@ export async function getLatestNews(options: {
   if (industry) {
     const sectorTags = INDUSTRY_TO_SECTOR[industry] || [industry];
     articles = articles.filter(a =>
-      a.industryTags.some(t => sectorTags.some(s => s.toLowerCase() === t.toLowerCase()))
+      (a.industryTags || []).some(t => sectorTags.some(s => s.toLowerCase() === t.toLowerCase()))
     );
   }
 

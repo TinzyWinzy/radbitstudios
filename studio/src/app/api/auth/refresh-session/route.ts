@@ -27,12 +27,16 @@ export const POST = withIpRateLimit(
 
       const response = NextResponse.json({ success: true, uid });
 
+      // Set cookie maxAge 10 minutes longer than token expiry to avoid
+      // the cookie expiring before the next refresh cycle fires.
+      const cookieMaxAge = expiresIn + 600;
+
       response.cookies.set('__session', idToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
-        maxAge: expiresIn,
+        maxAge: cookieMaxAge,
       });
 
       return response;

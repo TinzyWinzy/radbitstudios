@@ -89,6 +89,9 @@ const createUserDocument = async (user: User, extraData?: Record<string, unknown
 }
 
 
+const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000; // Refresh 5 min before expiry
+const TOKEN_LIFETIME_MS = 60 * 60 * 1000; // Firebase ID token lifetime
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,10 +99,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const mountedRef = useRef(true);
   const authEventIdRef = useRef(0);
   const welcomeSentRef = useRef(false);
+  const tokenExpiryRef = useRef<number>(0);
 
   useEffect(() => {
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
+  }, []);
+
+  /**
+   * Force-refresh the Firebase ID token and update the __session cookie.
+   * Called proactively before token expiry and on-demand when cookie may be stale.
+   */
+  const refreshSessionCookie = useCallback(async (force = false): Promise<boolean> => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return false;
+
+    try {
+      const token = await currentUser.getIdToken(force);
+      const res = await fetch('/api/auth/refresh-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: token }),
+      });
+      if (res.ok) {
+        tokenExpiryRef.current = Date.now() + TOKEN_LIFETIME_MS;
+        return true;
+      }
+      // If server rejected the token, force refresh and retry once
+      if (!force) {
+        const newToken = await currentUser.getIdToken(true);
+        const retryRes = await fetch('/api/auth/refresh-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken: newToken }),
+        });
+        if (retryRes.ok) {
+          tokenExpiryRef.current = Date.now() + TOKEN_LIFETIME_MS;
+          return true;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to refresh session cookie:', err);
+    }
+    return false;
   }, []);
 
   const fetchAndSetUser = useCallback(async (authUser: User, extraData?: Record<string, unknown>) => {
@@ -148,11 +190,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
 
           try {
-            await fetch('/api/auth/refresh-session', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ idToken: await authUser.getIdToken() }),
-            });
+            await refreshSessionCookie(false);
           } catch (err) {
             console.error('Failed to set session cookie on auth state change:', err);
           }
@@ -183,27 +221,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const refreshInterval = setInterval(async () => {
       const currentUser = auth.currentUser;
-      if (currentUser) {
-        try {
-          const token = await currentUser.getIdToken(false);
-          const res = await fetch('/api/auth/refresh-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken: token }),
-          });
-          if (!res.ok) {
-            const newToken = await currentUser.getIdToken(true);
-            await fetch('/api/auth/refresh-session', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ idToken: newToken }),
-            });
-          }
-        } catch (err) {
-          console.error('Session token refresh interval error:', err);
-        }
+      if (!currentUser) return;
+
+      const now = Date.now();
+      const timeUntilExpiry = tokenExpiryRef.current - now;
+
+      // If token is expired or expiring within margin, force refresh
+      if (timeUntilExpiry <= TOKEN_REFRESH_MARGIN_MS) {
+        await refreshSessionCookie(true);
+      } else {
+        // Token still valid — proactively refresh to extend
+        await refreshSessionCookie(false);
       }
-    }, 30 * 60 * 1000);
+    }, 15 * 60 * 1000); // Check every 15 minutes
 
     return () => {
       unsubscribe();
@@ -235,12 +265,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return signInWithPopup(auth, provider);
   }, []);
 
-  const logout = useCallback(() => {
-    fetch('/api/auth/refresh-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken: '', expiresIn: 0 }),
-    });
+  const logout = useCallback(async () => {
+    try {
+      await fetch('/api/auth/refresh-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken: '', expiresIn: 0 }),
+      });
+    } catch {
+      // Best effort cookie clear
+    }
     return signOut(auth);
   }, []);
 
