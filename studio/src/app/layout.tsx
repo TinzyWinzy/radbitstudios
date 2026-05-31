@@ -102,6 +102,11 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
         <GA4Script />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
+          crossOrigin="anonymous"
+        />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema(FAQ_DATA)) }} />
         <script type="application/ld+json" suppressHydrationWarning
@@ -115,11 +120,6 @@ export default async function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring">
           Skip to main content
         </a>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
-          crossOrigin="anonymous"
-        />
         {children}
         <CookieBanner />
         <script
