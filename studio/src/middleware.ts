@@ -47,7 +47,10 @@ const adminOnlyPaths = [
 
 async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolean; role: string | null }> {
   const sessionCookie = request.cookies.get('__session')?.value;
-  if (!sessionCookie) return { authenticated: false, role: null };
+  if (!sessionCookie) {
+    console.warn(`[Middleware] No __session cookie for ${request.nextUrl.pathname}`);
+    return { authenticated: false, role: null };
+  }
 
   try {
     const { payload } = await jwtVerify(sessionCookie, getJWKS(), {
@@ -59,7 +62,8 @@ async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolea
       authenticated: true,
       role: (payload['role'] as string) || 'sme_owner',
     };
-  } catch {
+  } catch (err: any) {
+    console.warn(`[Middleware] JWT verification failed for ${request.nextUrl.pathname}: ${err?.message || err}`);
     return { authenticated: false, role: null };
   }
 }
