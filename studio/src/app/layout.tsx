@@ -87,7 +87,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="dark" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />

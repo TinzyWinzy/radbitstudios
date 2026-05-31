@@ -8,18 +8,19 @@ export const Icons = {
       fill="none"
       {...props}
     >
-      <rect x="2" y="2" width="28" height="28" rx="7" fill="currentColor" opacity="0.1" />
+      <rect x="1" y="1" width="30" height="30" rx="7" fill="currentColor" opacity="0.1" />
       <text
-        x="16"
-        y="22"
-        textAnchor="middle"
+        x="5"
+        y="23"
         fill="currentColor"
-        fontSize="18"
-        fontWeight="700"
-        fontFamily="system-ui, sans-serif"
+        fontSize="21"
+        fontWeight="800"
+        fontFamily="system-ui, -apple-system, sans-serif"
+        letterSpacing="-1"
       >
         R
       </text>
+      <circle cx="27" cy="6" r="3" fill="currentColor" opacity="0.4" />
     </svg>
   ),
   radbit: (props: SVGProps<SVGSVGElement>) => (
@@ -31,22 +32,24 @@ export const Icons = {
     >
       <defs>
         <linearGradient id="rb-grad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="hsl(40, 95%, 50%)" />
-          <stop offset="100%" stopColor="hsl(185, 85%, 40%)" />
+          <stop offset="0%" stopColor="#1A8A7A" />
+          <stop offset="50%" stopColor="#0D6B5E" />
+          <stop offset="100%" stopColor="#E8A838" />
         </linearGradient>
       </defs>
-      <rect x="1" y="1" width="30" height="30" rx="8" fill="url(#rb-grad)" />
+      <rect x="1" y="1" width="30" height="30" rx="7" fill="url(#rb-grad)" />
       <text
-        x="16"
-        y="22"
-        textAnchor="middle"
+        x="5"
+        y="23"
         fill="#fff"
-        fontSize="18"
-        fontWeight="700"
-        fontFamily="system-ui, sans-serif"
+        fontSize="21"
+        fontWeight="800"
+        fontFamily="system-ui, -apple-system, sans-serif"
+        letterSpacing="-1"
       >
         R
       </text>
+      <circle cx="27" cy="6" r="3" fill="#E8A838" />
     </svg>
   ),
 };

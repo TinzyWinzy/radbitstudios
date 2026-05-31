@@ -25,14 +25,17 @@ export default function LocaleOgImage() {
             width: 48,
             height: 48,
             borderRadius: 12,
-            background: "#B8860B",
+            background: "linear-gradient(135deg, #1A8A7A 0%, #0D6B5E 50%, #E8A838 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 28,
+            position: "relative",
           }}
         >
-          🔵
+          <span style={{ fontSize: 26, fontWeight: 800, color: "#fff", fontFamily: "Arial, sans-serif", letterSpacing: "-1px" }}>
+            R
+          </span>
+          <div style={{ position: "absolute", top: 4, right: 4, width: 8, height: 8, borderRadius: "50%", background: "#E8A838" }} />
         </div>
         <span style={{ color: "#888", fontSize: 18, fontWeight: 500 }}>
           radbitstudios.co.zw
@@ -50,7 +53,7 @@ export default function LocaleOgImage() {
         <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 16, fontWeight: 500 }}>
           Build · Scale · Own Your Future
         </span>
-        <span style={{ color: "#B8860B", fontSize: 18, fontWeight: 700 }}>
+        <span style={{ color: "#1A8A7A", fontSize: 18, fontWeight: 700 }}>
           radbitstudios.co.zw
         </span>
       </div>
