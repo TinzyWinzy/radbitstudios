@@ -38,9 +38,9 @@ function rateLimitResponse(result: { allowed: boolean; retryAfterSeconds?: numbe
 export function withRateLimit(
   config: RateLimitConfig,
   keyFn: (req: NextRequest) => string,
-  handler: (req: NextRequest) => Promise<NextResponse>,
-): (req: NextRequest) => Promise<NextResponse> {
-  return async (req: NextRequest): Promise<NextResponse> => {
+  handler: (req: NextRequest) => Promise<Response | NextResponse>,
+): (req: NextRequest) => Promise<Response | NextResponse> {
+  return async (req: NextRequest): Promise<Response | NextResponse> => {
     const rawKey = keyFn(req);
     const key = `${config.keyPrefix || 'rl'}:${rawKey}`;
     const result = await checkRateLimit(key, config);
@@ -58,8 +58,8 @@ export function withRateLimit(
  */
 export function withIpRateLimit(
   config: RateLimitConfig,
-  handler: (req: NextRequest) => Promise<NextResponse>,
-): (req: NextRequest) => Promise<NextResponse> {
+  handler: (req: NextRequest) => Promise<Response | NextResponse>,
+): (req: NextRequest) => Promise<Response | NextResponse> {
   return withRateLimit(
     config,
     (req) => getRateLimitKey(req),
@@ -73,9 +73,9 @@ export function withIpRateLimit(
  */
 export function withUserRateLimit(
   config: RateLimitConfig,
-  handler: (req: NextRequest, userId: string) => Promise<NextResponse>,
-): (req: NextRequest) => Promise<NextResponse> {
-  return async (req: NextRequest): Promise<NextResponse> => {
+  handler: (req: NextRequest, userId: string) => Promise<Response | NextResponse>,
+): (req: NextRequest) => Promise<Response | NextResponse> {
+  return async (req: NextRequest): Promise<Response | NextResponse> => {
     const userId = req.cookies.get('__session')?.value || '';
     const rawKey = userId ? `user:${userId}` : `ip:${getRateLimitKey(req)}`;
     const key = `${config.keyPrefix || 'rl'}:${rawKey}`;

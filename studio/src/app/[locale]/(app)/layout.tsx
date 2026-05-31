@@ -57,6 +57,7 @@ import {
   BadgeCheck,
   Sparkles,
   AlertTriangle,
+  Shield,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -117,27 +118,32 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
     const canViewMessages = role !== 'sme_staff';
     const canViewBlog = role === 'admin' || role === 'super_admin';
+    const isAdmin = role === 'admin' || role === 'super_admin';
+    const isStaff = role === 'sme_staff';
     const minTierForMessages = TIER_ORDER.indexOf('Growth');
     const showMessages = canViewMessages && userTierIndex >= minTierForMessages;
 
     const menuItems = [
-      { href: "/dashboard", label: "Dashboard", icon: <Home /> },
-      { href: "/assessment", label: "Assessment", icon: <FileText /> },
-      { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 /> },
-      { href: "/bid-writer", label: "Bid Writer", icon: <FileSignature /> },
-      { href: "/tax-copilot", label: "Tax Co-Pilot", icon: <Bot /> },
-      { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator /> },
-      { href: "/news", label: "Business News", icon: <Newspaper /> },
-      { href: "/tenders", label: "Tenders", icon: <Briefcase /> },
-      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale /> },
-      { href: "/community", label: "Community", icon: <Users /> },
-      ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send /> }] : []),
-      { href: "/mentor", label: "AI Mentor", icon: <MessageCircle /> },
-      { href: "/resources", label: "Resources", icon: <BookOpen /> },
-      { href: "/export-assessment", label: "Export Assessment", icon: <FileCheck /> },
-      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp /> },
-      ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog", icon: <PenSquare /> }] : []),
-    ];
+      { href: "/dashboard", label: "Dashboard", icon: <Home />, show: true },
+      { href: "/assessment", label: "Assessment", icon: <FileText />, show: true },
+      { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 />, show: true },
+      { href: "/bid-writer", label: "Bid Writer", icon: <FileSignature />, show: !isStaff },
+      { href: "/tax-copilot", label: "Tax Co-Pilot", icon: <Bot />, show: !isStaff },
+      { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator />, show: true },
+      { href: "/news", label: "Business News", icon: <Newspaper />, show: true },
+      { href: "/tenders", label: "Tenders", icon: <Briefcase />, show: true },
+      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale />, show: !isStaff },
+      { href: "/community", label: "Community", icon: <Users />, show: true },
+      ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send />, show: true }] : []),
+      { href: "/mentor", label: "AI Mentor", icon: <MessageCircle />, show: true },
+      { href: "/resources", label: "Resources", icon: <BookOpen />, show: true },
+      { href: "/export-assessment", label: "Export Assessment", icon: <FileCheck />, show: !isStaff },
+      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, show: !isStaff },
+      ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog Manager", icon: <PenSquare />, show: true }] : []),
+      ...(isAdmin ? [
+        { href: "/dashboard/admin", label: "Admin Panel", icon: <Shield />, show: true },
+      ] : []),
+    ].filter(item => item.show);
 
   if (loading || !user) {
     return (

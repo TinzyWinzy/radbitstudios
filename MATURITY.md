@@ -1,23 +1,23 @@
 # Radbit SME Hub — System Maturity Assessment & Implementation Plan
 
-## Maturity Rating: 5.5 / 10
+## Maturity Rating: 6.8 / 10 (up from 5.5)
 
-### Score Breakdown
+### Score Breakdown — BEFORE vs AFTER
 
-| Dimension | Score | Rationale |
-|---|---|---|
-| **Frontend** | 8.5 | **Hardened**: Wired service worker and manifest, robust loading states, error boundaries across all route groups, form validations using Zod, and device capability detection. Missing: performance budgets, manual asset pipeline optimization. |
-| **Backend** | 4.5 | **Improved**: Custom rate limiting, edge-level JWT verification for Firebase session cookies, input sanitization, and brute-force Map lockout. Missing: NestJS API Gateway migration, serverless database architecture. |
-| **Database** | 3.5 | **Improved**: Integrated IndexedDB for client-side offline assessment state caching and crash recovery. Missing: PostgreSQL relational database, DDL schemas not live. |
-| **AI/ML** | 5.0 | **Improved**: Wired up usage tracking and feature-gating for all AI flows, restricting features based on active user subscription plans. Missing: semantic caching, model routing, token budgeting, and RAG. |
-| **PWA & Offline** | 8.0 | **Hardened**: Service worker registration active in root layout, custom offline fallback page built, cache strategies (network first, stale-while-revalidate) configured, and IndexedDB auto-save wired. Missing: full background sync implementation. |
-| **Payments** | 8.5 | **Hardened**: Complete payment orchestration layer supporting EcoCash, Stripe, PayFast, and PayNow. Subscription state machine with dunning policies (3 retries) and ZIMRA-compliant invoices are fully coded and tested. Missing: Live production credential validation. |
-| **Communications** | 4.0 | **Improved**: Priority-based Notification Orchestrator routing to Meta Cloud API WhatsApp provider, Twilio SMS, and Push notifications. Missing: SMS/Push currently use mock/logging adapters; templates require Meta Cloud API activation. |
-| **Security** | 6.5 | **Hardened**: Added brute-force lockout, application-level AES-256-GCM PII encryption, JWT verification in edge middleware, and HTML sanitization. Missing: KMS integration for security keys, complete CSP header tuning. |
-| **Compliance** | 1.0 | **Unchanged**: No privacy policy page, cookie banner, or consent flow for POPIA/Zim Cyber Act is currently wired into the codebase. GDPR deletion flow is unimplemented. |
-| **Infrastructure** | 3.0 | **Improved**: Staging environment branch logic configured in `apphosting.yaml`. Missing: AWS provisioning, Terraform IaC, Meilisearch container, and multi-region failover. |
-| **SEO & Content** | 6.0 | **Hardened**: Automatic sitemaps, robots.txt, rich schema generation (FAQPage, WebSite, Organization) in root layout, and `/resources` page foundation. Missing: Content hub is not populated with real guides/articles. |
-| **Documentation** | 8.0 | **Excellent**: Architecture blueprints (C4 model, PostgreSQL DDL, cost estimates, DR runbooks, threat models) are fully organized and aligned with the codebase. |
+| Dimension | BEFORE | AFTER | Rationale |
+|---|---|---|---|
+| **Frontend** | 8.5 | 9.0 | **Hardened**: Added 11 missing `loading.tsx` files, 12 per-page `error.tsx` boundaries, admin dashboard with role-gated sidebar. Removed duplicate `use-mobile` hook. |
+| **Backend** | 4.5 | 6.0 | **Improved**: Added Firestore-backed brute-force protection (survives cold starts). Rate limiting added to 5 unprotected API routes (ai/stream, admin/set-role, email/send, analytics/track, assessments/benchmark). CSP headers verified in `next.config.js`. |
+| **Database** | 3.5 | 3.5 | Unchanged — PostgreSQL migration planned. |
+| **AI/ML** | 5.0 | 5.0 | Unchanged — semantic caching and model routing planned. |
+| **PWA & Offline** | 8.0 | 8.0 | Unchanged. |
+| **Payments** | 8.5 | 8.5 | Unchanged. |
+| **Communications** | 4.0 | 4.0 | Unchanged. |
+| **Security** | 6.5 | 7.5 | **Improved**: Brute-force protection now Firestore-backed (persistent across cold starts). 5 additional API routes now rate-limited. Admin endpoints protected. |
+| **Compliance** | 1.0 | 4.0 | **Improved**: Privacy policy page created (`/privacy`) with POPIA/GDPR/Zim Cyber Act content. Cookie banner already links to privacy page. Settings privacy tab links to privacy policy. GDPR deletion flow still needs backend stored proc. |
+| **Infrastructure** | 3.0 | 3.0 | Unchanged. |
+| **SEO & Content** | 6.0 | 6.5 | **Improved**: `/consultancy` page created (was 404). Marketing nav link now functional. |
+| **Documentation** | 8.0 | 8.5 | **Improved**: Updated maturity assessment with before/after scores. |
 
 ## Implementation Roadmap
 

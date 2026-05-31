@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { validateBody, AnalyticsTrackSchema } from '@/lib/api-validation';
+import { withRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit(
+  RateLimits.apiDefault,
+  (req) => {
+    const forwarded = req.headers.get('x-forwarded-for');
+    const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
+    return `ip:${ip}`;
+  },
+  async (req: NextRequest) => {
   try {
     const validation = await validateBody(req, AnalyticsTrackSchema);
     if (!validation.success) return validation.response;
@@ -25,4 +34,5 @@ export async function POST(req: NextRequest) {
     console.error('[Analytics] Track error:', error instanceof Error ? error.message : error);
     return NextResponse.json({ ok: true });
   }
-}
+},
+);

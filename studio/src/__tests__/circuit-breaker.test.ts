@@ -4,7 +4,6 @@ import {
   getCircuitState,
   resetCircuit,
   getAllCircuitStates,
-  type CircuitState,
 } from '@/lib/circuit-breaker';
 
 describe('CircuitBreaker', () => {

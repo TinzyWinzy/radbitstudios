@@ -3,8 +3,17 @@ import { adminApp } from '@/lib/firebase/firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import { validateBody, SetRoleSchema } from '@/lib/api-validation';
+import { withRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit(
+  RateLimits.mutation,
+  (req) => {
+    const forwarded = req.headers.get('x-forwarded-for');
+    const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
+    return `ip:${ip}`;
+  },
+  async (request: NextRequest) => {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
@@ -37,4 +46,5 @@ export async function POST(request: NextRequest) {
     console.error('[API /api/admin/set-role] Error:', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+},
+);

@@ -37,10 +37,12 @@ const protectedPaths = [
   '/export-assessment',
   '/tax-copilot',
   '/bid-writer',
+  '/resource-center',
 ];
 
 const adminOnlyPaths = [
   '/dashboard/blog',
+  '/dashboard/admin',
 ];
 
 async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolean; role: string | null }> {

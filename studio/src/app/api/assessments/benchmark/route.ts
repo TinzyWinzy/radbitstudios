@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
+import { withRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +11,14 @@ interface CategoryTotal {
   count: number;
 }
 
-export async function GET(req: NextRequest) {
+export const GET = withRateLimit(
+  RateLimits.apiDefault,
+  (req) => {
+    const forwarded = req.headers.get('x-forwarded-for');
+    const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
+    return `ip:${ip}`;
+  },
+  async (req: NextRequest) => {
   try {
     const user = await verifySession(req);
     if (!user) {
@@ -54,4 +63,5 @@ export async function GET(req: NextRequest) {
     console.error('[Benchmark API] Error:', error instanceof Error ? error.message : error);
     return NextResponse.json({ benchmark: [] });
   }
-}
+},
+);

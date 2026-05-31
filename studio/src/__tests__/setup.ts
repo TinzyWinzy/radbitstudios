@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 // Set test environment
-process.env.NODE_ENV = 'development';
+Object.defineProperty(process.env, 'NODE_ENV', { value: 'development', writable: true });
 process.env.ENCRYPTION_KEY = 'test-key-for-testing-only-32bytes!';
 
 vi.mock('@/lib/firebase/firebase', () => ({

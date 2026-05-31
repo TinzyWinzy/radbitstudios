@@ -42,57 +42,111 @@ export function createRefreshToken(): string {
 }
 
 // ============================================
-// Brute Force Protection
+// Brute Force Protection (Firestore-backed)
 // ============================================
 
-interface AttemptRecord {
+import { adminDb } from '@/lib/firebase/firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
+
+const BRUTEFORCE_COLLECTION = 'bruteforce_attempts';
+
+interface BFRecord {
+  key: string;
   count: number;
   lockedUntil: number | null;
+  windowStart: number;
+  updatedAt: FieldValue;
 }
 
+/**
+ * Firestore-backed brute force protection.
+ * Survives serverless cold starts (unlike in-memory Map).
+ * Each key is a single document — updated atomically.
+ */
 export class BruteForceProtection {
-  private attempts = new Map<string, AttemptRecord>();
   private readonly MAX_ATTEMPTS = 5;
   private readonly LOCKOUT_MINUTES = 15;
+  private readonly WINDOW_MS = 15 * 60 * 1000;
 
-  check(key: string): { allowed: boolean; retryAfter?: number } {
-    const record = this.attempts.get(key);
-    if (!record) return { allowed: true };
+  async check(key: string): Promise<{ allowed: boolean; retryAfter?: number }> {
+    try {
+      const docRef = adminDb.doc(`${BRUTEFORCE_COLLECTION}/${key.replace(/[^a-zA-Z0-9_-]/g, '_')}`);
+      const snap = await docRef.get();
+      const record = snap.data() as BFRecord | undefined;
 
-    if (record.lockedUntil && Date.now() < record.lockedUntil) {
-      return { allowed: false, retryAfter: Math.ceil((record.lockedUntil - Date.now()) / 1000) };
-    }
-    if (record.lockedUntil && Date.now() >= record.lockedUntil) {
-      this.attempts.delete(key);
+      if (!record) return { allowed: true };
+
+      const now = Date.now();
+
+      if (record.lockedUntil && now < record.lockedUntil) {
+        return { allowed: false, retryAfter: Math.ceil((record.lockedUntil - now) / 1000) };
+      }
+
+      if (record.lockedUntil && now >= record.lockedUntil) {
+        await docRef.delete().catch(() => {});
+        return { allowed: true };
+      }
+
+      if (now - record.windowStart > this.WINDOW_MS) {
+        await docRef.delete().catch(() => {});
+        return { allowed: true };
+      }
+
+      return { allowed: true };
+    } catch {
       return { allowed: true };
     }
-    return { allowed: true };
   }
 
-  recordFailure(key: string): { locked: boolean } {
-    const now = Date.now();
-    let record = this.attempts.get(key);
-    if (!record) {
-      record = { count: 0, lockedUntil: null };
-      this.attempts.set(key, record);
-    }
+  async recordFailure(key: string): Promise<{ locked: boolean }> {
+    try {
+      const safeKey = key.replace(/[^a-zA-Z0-9_-]/g, '_');
+      const docRef = adminDb.doc(`${BRUTEFORCE_COLLECTION}/${safeKey}`);
+      const now = Date.now();
 
-    // Reset if outside window
-    if (record.count > 0 && record.lockedUntil === null) {
-      // Simplified: always increment within window
-    }
+      await adminDb.runTransaction(async (tx) => {
+        const snap = await tx.get(docRef);
+        const record = snap.data() as BFRecord | undefined;
 
-    record.count++;
+        if (!record || now - record.windowStart > this.WINDOW_MS) {
+          tx.set(docRef, {
+            key: safeKey,
+            count: 1,
+            lockedUntil: null,
+            windowStart: now,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+          return;
+        }
 
-    if (record.count >= this.MAX_ATTEMPTS) {
-      record.lockedUntil = now + this.LOCKOUT_MINUTES * 60 * 1000;
-      return { locked: true };
+        const newCount = record.count + 1;
+        if (newCount >= this.MAX_ATTEMPTS) {
+          tx.update(docRef, {
+            count: newCount,
+            lockedUntil: now + this.LOCKOUT_MINUTES * 60 * 1000,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        } else {
+          tx.update(docRef, {
+            count: newCount,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
+      });
+
+      const updated = await docRef.get();
+      const data = updated.data() as BFRecord | undefined;
+      return { locked: !!data?.lockedUntil };
+    } catch {
+      return { locked: false };
     }
-    return { locked: false };
   }
 
-  reset(key: string): void {
-    this.attempts.delete(key);
+  async reset(key: string): Promise<void> {
+    try {
+      const safeKey = key.replace(/[^a-zA-Z0-9_-]/g, '_');
+      await adminDb.doc(`${BRUTEFORCE_COLLECTION}/${safeKey}`).delete();
+    } catch {}
   }
 }
 

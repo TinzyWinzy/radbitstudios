@@ -3,6 +3,8 @@ import { adminDb } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
 import { validateBody, AiStreamSchema } from '@/lib/api-validation';
 import { FieldValue } from 'firebase-admin/firestore';
+import { withRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -78,7 +80,14 @@ async function* streamGemini(
   }
 }
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit(
+  RateLimits.aiGenerate,
+  (req) => {
+    const forwarded = req.headers.get('x-forwarded-for');
+    const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
+    return `ip:${ip}`;
+  },
+  async (req: NextRequest) => {
   try {
     const user = await verifySession(req);
     if (!user) {
@@ -154,4 +163,5 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-}
+},
+);
