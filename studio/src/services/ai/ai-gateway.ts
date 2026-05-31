@@ -60,65 +60,191 @@ const MODEL_ROUTES: Record<TaskDifficulty, ModelRoute[]> = {
 
 const REQUEST_TIMEOUT_MS = 25_000;
 const MAX_RETRIES = 2;
-const SEMANTIC_CACHE_TTL_MS = 86_400_000;
-const SEMANTIC_CACHE_MAX_SIZE = 500;
-const SEMANTIC_SIMILARITY_THRESHOLD = 0.92;
 const TOKEN_ESTIMATE_FACTOR = 4;
+
+/**
+ * Auto-classify prompt complexity based on heuristics.
+ * Used when difficulty is not explicitly specified by the caller.
+ */
+function classifyComplexity(prompt: string, systemPrompt?: string): TaskDifficulty {
+  const text = `${prompt} ${systemPrompt || ''}`.toLowerCase();
+  const promptLength = prompt.length;
+
+  // Complex indicators: analysis, strategy, multi-step, research, comparison
+  const complexPatterns = [
+    /analy(s|z)e/i, /strateg(y|ies|ic)/i, /compar(e|ison|ing)/i,
+    /research/i, /multi.?step/i, /step.?by.?step/i, /detailed/i,
+    /comprehensive/i, /in.?depth/i, /report/i, /plan(ning)?/i,
+    /evaluat(e|ion)/i, /assess(ment)?/i, /architect/i, /design/i,
+    /integrat(e|ion)/i, /migrat(e|ion)/i, /optimiz(e|ation)/i,
+    /swot/i, /financial/i, /projection/i, /forecast/i, /compliance/i,
+    /legal/i, /regulat(ion|ory)/i, /tax/i, /audit/i,
+  ];
+
+  // Creative indicators: write, generate, create, brainstorm
+  const creativePatterns = [
+    /writ(e|ing)/i, /generat(e|ing)/i, /creat(e|ing)/i,
+    /brainstorm/i, /ideat(e|ion)/i, /draft/i, /compos(e|ing)/i,
+    /slogan/i, /tagline/i, /copy/i, /content/i, /blog/i,
+    /story/i, /narrative/i, /brand/i, /marketing/i, /pitch/i,
+    /email/i, /letter/i, /proposal/i, /essay/i,
+  ];
+
+  const complexScore = complexPatterns.filter(p => p.test(text)).length;
+  const creativeScore = creativePatterns.filter(p => p.test(text)).length;
+
+  // Long prompts with multi-part questions tend to be complex
+  const hasMultipleParts = /\d+[\.\)]\s/.test(prompt) || /firstly|secondly|thirdly|finally/i.test(prompt);
+  const isLongPrompt = promptLength > 500;
+
+  if (complexScore >= 3 || (complexScore >= 2 && (hasMultipleParts || isLongPrompt))) {
+    return 'complex';
+  }
+  if (creativeScore >= 2 || (creativeScore >= 1 && promptLength > 200)) {
+    return 'creative';
+  }
+  return 'simple';
+}
 
 interface CacheEntry {
   response: AIGatewayResponse;
   embedding: number[];
   systemPrompt: string;
   prompt: string;
+  promptHash: string;
   expiry: number;
 }
 
+/**
+ * Two-tier semantic cache:
+ *   Tier 1: In-memory LRU (fast, per-instance)
+ *   Tier 2: Firestore (persistent across cold starts)
+ *
+ * On cache miss, both tiers are populated.
+ * On cache hit from Tier 1, skip Tier 2.
+ * On cache hit from Tier 2, promote to Tier 1.
+ */
 class SemanticCache {
   private entries: CacheEntry[] = [];
+  private readonly MAX_MEMORY_ENTRIES = 100;
+  private readonly Firestore_Collection = 'ai_semantic_cache';
+  private readonly TTL_MS = 86_400_000; // 24h
+  private readonly SIMILARITY_THRESHOLD = 0.92;
 
   async find(query: string, systemPrompt: string): Promise<AIGatewayResponse | null> {
     const now = Date.now();
     this.entries = this.entries.filter(e => now < e.expiry);
 
-    if (this.entries.length === 0) return null;
+    if (this.entries.length > 0) {
+      const queryEmb = await generateEmbedding(query);
+      if (queryEmb.length > 0) {
+        let bestScore = 0;
+        let bestEntry: CacheEntry | null = null;
 
-    const queryEmb = await generateEmbedding(query);
-    if (queryEmb.length === 0) return null;
+        for (const entry of this.entries) {
+          if (entry.systemPrompt !== systemPrompt) continue;
+          const score = cosineSimilarity(queryEmb, entry.embedding);
+          if (score > bestScore) {
+            bestScore = score;
+            bestEntry = entry;
+          }
+        }
 
-    let bestScore = 0;
-    let bestEntry: CacheEntry | null = null;
-
-    for (const entry of this.entries) {
-      if (entry.systemPrompt !== systemPrompt) continue;
-      const score = cosineSimilarity(queryEmb, entry.embedding);
-      if (score > bestScore) {
-        bestScore = score;
-        bestEntry = entry;
+        if (bestEntry && bestScore >= this.SIMILARITY_THRESHOLD) {
+          return { ...bestEntry.response, cached: true };
+        }
       }
     }
 
-    if (bestEntry && bestScore >= SEMANTIC_SIMILARITY_THRESHOLD) {
-      return { ...bestEntry.response, cached: true };
+    // Tier 2: Firestore lookup
+    try {
+      const queryEmb = await generateEmbedding(query);
+      if (queryEmb.length === 0) return null;
+
+      const snap = await adminDb.collection(this.Firestore_Collection)
+        .where('systemPrompt', '==', systemPrompt)
+        .where('expiry', '>', now)
+        .limit(50)
+        .get();
+
+      let bestScore = 0;
+      let bestDoc: FirebaseFirestore.QueryDocumentSnapshot | null = null;
+
+      for (const doc of snap.docs) {
+        const data = doc.data();
+        if (!data.embedding || !Array.isArray(data.embedding)) continue;
+        const score = cosineSimilarity(queryEmb, data.embedding);
+        if (score > bestScore) {
+          bestScore = score;
+          bestDoc = doc;
+        }
+      }
+
+      if (bestDoc && bestScore >= this.SIMILARITY_THRESHOLD) {
+        const data = bestDoc.data();
+        const response: AIGatewayResponse = {
+          content: data.responseContent,
+          model: data.responseModel,
+          tokensUsed: data.responseTokensUsed || 0,
+          costUsd: 0,
+          cached: true,
+        };
+
+        // Promote to memory cache
+        this.addToMemory(data.systemPrompt, data.prompt, response, queryEmb);
+        return response;
+      }
+    } catch {
+      // Firestore unavailable — fall through
     }
+
     return null;
   }
 
   async store(systemPrompt: string, prompt: string, response: AIGatewayResponse): Promise<void> {
-    if (this.entries.length >= SEMANTIC_CACHE_MAX_SIZE) {
-      this.entries.sort((a, b) => a.expiry - b.expiry);
-      this.entries = this.entries.slice(0, Math.floor(SEMANTIC_CACHE_MAX_SIZE / 2));
-    }
-
     const embedding = await generateEmbedding(prompt);
     if (embedding.length === 0) return;
+
+    this.addToMemory(systemPrompt, prompt, response, embedding);
+
+    // Persist to Firestore (fire-and-forget)
+    adminDb.collection(this.Firestore_Collection).add({
+      systemPrompt,
+      prompt,
+      promptHash: this.hashPrompt(prompt),
+      responseContent: response.content,
+      responseModel: response.model,
+      responseTokensUsed: response.tokensUsed,
+      embedding,
+      expiry: Date.now() + this.TTL_MS,
+      createdAt: new Date(),
+    }).catch(() => {});
+  }
+
+  private addToMemory(systemPrompt: string, prompt: string, response: AIGatewayResponse, embedding: number[]): void {
+    if (this.entries.length >= this.MAX_MEMORY_ENTRIES) {
+      this.entries.sort((a, b) => a.expiry - b.expiry);
+      this.entries = this.entries.slice(0, Math.floor(this.MAX_MEMORY_ENTRIES / 2));
+    }
 
     this.entries.push({
       response,
       embedding,
       systemPrompt,
       prompt,
-      expiry: Date.now() + SEMANTIC_CACHE_TTL_MS,
+      promptHash: this.hashPrompt(prompt),
+      expiry: Date.now() + this.TTL_MS,
     });
+  }
+
+  private hashPrompt(prompt: string): string {
+    let hash = 0;
+    for (let i = 0; i < prompt.length; i++) {
+      const char = prompt.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash |= 0;
+    }
+    return hash.toString(36);
   }
 }
 
@@ -238,7 +364,7 @@ export class AIGateway {
   }
 
   async generate(request: AIGatewayRequest): Promise<AIGatewayResponse> {
-    const difficulty = request.difficulty || 'simple';
+    const difficulty = request.difficulty || classifyComplexity(request.prompt, request.systemPrompt);
 
     const rateKey = request.userId ? `ai:${request.userId}` : 'ai:anonymous';
     const rateResult = await checkRateLimit(rateKey, RateLimits.aiGenerate);

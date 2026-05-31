@@ -27,6 +27,15 @@ const USER_COLLECTIONS = [
   'conversations',
   'messages',
   'notifications',
+  'export_assessments',
+  'invoices',
+  'referral_codes',
+  'newsletter_subscriptions',
+  'praz_documents',
+  'whatsapp_sessions',
+  'analytics_events',
+  'bruteforce_attempts',
+  'ai_semantic_cache',
 ];
 
 async function exportUserData(uid: string): Promise<Record<string, any>> {
@@ -44,6 +53,29 @@ async function exportUserData(uid: string): Promise<Record<string, any>> {
     }
   }
 
+  // Also export nested conversation threads/messages
+  try {
+    const convSnap = await adminDb.collection('conversations').where('participants', 'array-contains', uid).get();
+    const convData: any[] = [];
+    for (const convDoc of convSnap.docs) {
+      const threadsSnap = await convDoc.ref.collection('threads').get();
+      const threads = threadsSnap.docs.map(t => ({
+        id: t.id,
+        ...t.data(),
+        messages: [] as any[],
+      }));
+      for (const thread of threads) {
+        const msgsSnap = await convDoc.ref.collection('threads').doc(thread.id).collection('messages').get();
+        thread.messages = msgsSnap.docs.map(m => ({ id: m.id, ...m.data() }));
+      }
+      convData.push({ id: convDoc.id, ...convDoc.data(), threads });
+    }
+    data.conversations_nested = convData;
+  } catch {
+    data.conversations_nested = [];
+  }
+
+  // Export profile
   try {
     const userDoc = await adminDb.doc(`users/${uid}`).get();
     data.profile = userDoc.exists ? { id: userDoc.id, ...userDoc.data() } : null;
@@ -57,6 +89,7 @@ async function exportUserData(uid: string): Promise<Record<string, any>> {
 async function deleteUserData(uid: string): Promise<string[]> {
   const deleted: string[] = [];
 
+  // Delete top-level user-scoped collections
   for (const col of USER_COLLECTIONS) {
     try {
       const snap = await adminDb.collection(col).where('userId', '==', uid).get();
@@ -72,15 +105,54 @@ async function deleteUserData(uid: string): Promise<string[]> {
     }
   }
 
+  // Delete nested conversation threads and messages
   try {
-    const userDocRef = adminDb.doc(`users/${uid}`);
-    const batch = adminDb.batch();
-    batch.delete(userDocRef);
-    await batch.commit();
+    const convSnap = await adminDb.collection('conversations').where('participants', 'array-contains', uid).get();
+    for (const convDoc of convSnap.docs) {
+      // Delete all threads and their nested messages
+      const threadsSnap = await convDoc.ref.collection('threads').get();
+      for (const threadDoc of threadsSnap.docs) {
+        // Delete messages subcollection
+        const msgsSnap = await threadDoc.ref.collection('messages').get();
+        if (!msgsSnap.empty) {
+          const msgBatch = adminDb.batch();
+          msgsSnap.forEach(m => msgBatch.delete(m.ref));
+          await msgBatch.commit();
+        }
+        await threadDoc.ref.delete();
+      }
+      // Delete the conversation document itself
+      await convDoc.ref.delete();
+    }
+    deleted.push(`conversations: ${convSnap.size} docs (with nested threads/messages)`);
+  } catch (err) {
+    console.warn('[DeleteAccount] Error deleting conversations:', err);
+    deleted.push('conversations: error');
+  }
+
+  // Delete user profile
+  try {
+    await adminDb.doc(`users/${uid}`).delete();
     deleted.push('users: 1 doc');
   } catch (err) {
     console.warn('[DeleteAccount] Error deleting user doc:', err);
     deleted.push('users: error');
+  }
+
+  // Clean up Firestore rate limit counters for this user
+  try {
+    const rlSnap = await adminDb.collection('ratelimit_counters')
+      .where('key', '>=', `user:${uid}`)
+      .where('key', '<', `user:${uid}\uf8ff`)
+      .get();
+    if (!rlSnap.empty) {
+      const rlBatch = adminDb.batch();
+      rlSnap.forEach(d => rlBatch.delete(d.ref));
+      await rlBatch.commit();
+      deleted.push(`ratelimit_counters: ${rlSnap.size} docs`);
+    }
+  } catch {
+    // Non-critical
   }
 
   return deleted;

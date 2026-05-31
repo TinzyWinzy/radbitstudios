@@ -205,9 +205,45 @@ service cloud.firestore {
              .hasOnly(['lastMessage']);
 
       match /messages/{messageId} {
-        allow read, create: if request.auth.uid
+        allow read, list: if request.auth.uid
           in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
       }
+    }
+
+    // ─── AI CHAT THREADS (per-user conversations with AI Mentor) ───────────
+    // Server-side writes via Admin SDK. Clients can read their own threads.
+    match /conversations/{userId}/threads/{threadId} {
+      allow read, list: if request.auth.uid == userId;
+      allow create, update, delete: if false; // server-side only via Admin SDK
+
+      match /messages/{messageId} {
+        allow read, list: if request.auth.uid == userId;
+        allow create, update, delete: if false; // server-side only via Admin SDK
+      }
+    }
+
+    // ─── AI SEMANTIC CACHE ─────────────────────────────────────────────────
+    // Server-side only. No client access.
+    match /ai_semantic_cache/{docId} {
+      allow read, list: if false;
+      allow create, update, delete: if false;
+    }
+
+    // ─── BRUTE FORCE ATTEMPTS ──────────────────────────────────────────────
+    // Server-side only. No client access.
+    match /bruteforce_attempts/{docId} {
+      allow read, list: if false;
+      allow create, update, delete: if false;
+    }
+
+    // ─── RATE LIMIT COUNTERS ───────────────────────────────────────────────
+    // Server-side only. No client access.
+    match /ratelimit_counters/{docId} {
+      allow read, list: if false;
+      allow create, update, delete: if false;
+    }
+  }
+}
     }
 
     // ─── AI CHAT THREADS (per-user conversations with AI Mentor) ───────────

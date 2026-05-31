@@ -86,6 +86,14 @@
         { "fieldPath": "region", "order": "ASCENDING" },
         { "fieldPath": "publishedAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "ai_semantic_cache",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "systemPrompt", "order": "ASCENDING" },
+        { "fieldPath": "expiry", "order": "ASCENDING" }
+      ]
     }
   ]
 }
