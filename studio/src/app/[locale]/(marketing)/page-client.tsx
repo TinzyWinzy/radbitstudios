@@ -542,6 +542,61 @@ function CuratedBriefsSection() {
   );
 }
 
+function PricingTeaser() {
+  return (
+    <section className="container py-16 relative z-10">
+      <div className="text-center mb-10">
+        <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-3">
+          Solutions for Every Budget
+        </h2>
+        <p className="text-muted-foreground max-w-xl mx-auto">
+          From a free AI platform to full enterprise systems — find the right fit for your business.
+        </p>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {[
+          {
+            title: "Web Packages",
+            price: "From $150",
+            desc: "Professional websites built for the African market.",
+            href: "/pricing#web",
+          },
+          {
+            title: "AI Platform",
+            price: "Free — $15/mo",
+            desc: "AI tools, tender intelligence, and compliance — start free.",
+            href: "/pricing#saas",
+          },
+          {
+            title: "ERP Systems",
+            price: "From $49/mo",
+            desc: "Integrated accounting, inventory, HR, and CRM. ZIMRA compliant.",
+            href: "/pricing#erp",
+          },
+        ].map((item) => (
+          <Link
+            key={item.title}
+            href={item.href}
+            className="group rounded-xl border border-border/50 bg-card/30 p-6 hover:border-primary/40 hover:bg-primary/5 transition-all duration-200"
+          >
+            <h3 className="font-headline font-bold mb-1 group-hover:text-primary transition-colors">{item.title}</h3>
+            <p className="text-2xl font-bold font-headline text-primary mb-2">{item.price}</p>
+            <p className="text-sm text-muted-foreground">{item.desc}</p>
+            <span className="inline-flex items-center gap-1 text-sm text-primary mt-3 font-medium">
+              View plans <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </Link>
+        ))}
+      </div>
+      <div className="text-center mt-8">
+        <Link href="/pricing" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+          See all pricing <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function CTASection() {
   return (
     <section className="relative py-20 md:py-28 overflow-hidden border-t border-foreground/10">
@@ -618,8 +673,9 @@ function FooterSection() {
             {
               title: "Company",
               links: [
+                { href: "/pricing", label: "Pricing" },
                 { href: "/about", label: "About" },
-                { href: "/contact", label: "Contact" },
+                { href: "/consultancy", label: "Consultancy" },
                 { href: "/privacy", label: "Privacy" },
                 { href: "/terms", label: "Terms" },
               ],
@@ -671,6 +727,7 @@ export default function LandingPage() {
         <section className="container mx-auto py-8 max-w-4xl relative z-10">
           <AdUnit slot="landing-content" format="rectangle" className="min-h-[90px]" />
         </section>
+        <PricingTeaser />
         <CTASection />
         <FooterSection />
       </div>

@@ -20,6 +20,7 @@ import Link from "next/link";
 const navLinks = [
   { href: "/assessment", label: "Assessment" },
   { href: "/toolkit", label: "AI Toolkit" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/resources", label: "Resources" },
   { href: "/tenders", label: "Tenders" },
   { href: "/community", label: "Community" },
@@ -67,6 +68,9 @@ export default function MarketingLayout({
               </Link>
               <Link href="/toolkit" className="text-muted-foreground hover:text-foreground transition-colors">
                 AI Toolkit
+              </Link>
+              <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pricing
               </Link>
               <Link href="/resources" className="text-muted-foreground hover:text-foreground transition-colors">
                 Resources
