@@ -112,7 +112,7 @@ export async function generateDigestForUser(
   const industryContext = sub.industryFilters.join(', ') || sub.tenderAlerts ? 'mixed sectors' : 'general';
 
   const newsSection = news.slice(0, 8).map(n =>
-    `[${n.category.toUpperCase()}] ${n.title}\nSource: ${n.sourceName} | ${n.publishedAt.toLocaleDateString('en-GB')}\n${n.summary.slice(0, 300)}`
+    `[${n.category.toUpperCase()}] ${n.title}\nSource: ${n.sourceName} | ${n.publishedAt.toLocaleDateString('en-GB')}\n${(n.summary || 'No summary available.').slice(0, 300)}`
   ).join('\n\n');
 
   const tenderSection = tenders.filter(t => t.status !== 'closed').slice(0, 6).map(t =>
@@ -161,9 +161,9 @@ Only include tenders with deadline within 30 days. Be specific and actionable.`;
     return {
       topStories: news.slice(0, 5).map(n => ({
         headline: n.title,
-        summary: n.summary.slice(0, 300),
+        summary: (n.summary || '').slice(0, 300),
         source: n.sourceName,
-        url: n.sourceUrl,
+        url: n.sourceUrl || '',
         category: n.category,
       })),
       relevantTenders: tenders.filter(t => t.status !== 'closed').slice(0, 5).map(t => ({

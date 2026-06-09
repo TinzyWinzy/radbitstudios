@@ -45,11 +45,11 @@ export async function generatePersonalizedBrief(input: PersonalizedBriefInput): 
   ].filter(Boolean).join(' | ');
 
   const newsContext = news.slice(0, 10).map((n, i) =>
-    `${i + 1}. [${n.sourceName}] ${n.title}\n   ${n.summary.slice(0, 200)}...`
+    `${i + 1}. [${n.sourceName}] ${n.title}\n   ${(n.summary || '').slice(0, 200)}...`
   ).join('\n\n');
 
   const tenderContext = tenders.slice(0, 8).map((t, i) =>
-    `${i + 1}. ${t.title}\n   Org: ${t.organization} | Value: ${t.value || 'TBC'} | Closes: ${t.closingDate ? new Date(t.closingDate).toLocaleDateString('en-GB') : 'TBC'}\n   ${t.description.slice(0, 200)}...`
+    `${i + 1}. ${t.title}\n   Org: ${t.organization || 'TBC'} | Value: ${t.value || 'TBC'} | Closes: ${t.closingDate ? new Date(t.closingDate).toLocaleDateString('en-GB') : 'TBC'}\n   ${(t.description || '').slice(0, 200)}...`
   ).join('\n\n');
 
   const systemPrompt = `You are Tendai "The Bloodhound" Makoni, ex-RBZ analyst. Short, punchy sentences. Call important news "mhepo" — "I can feel which way the mhepo is blowing." Ruthlessly filter noise: if it doesn't affect their money, discard it. Structure like a CIA brief: "What happened" → "Why it matters to YOU" → "One thing before Friday." Regulatory alerts with gravity — you've seen businesses shut down for missed deadlines. Summary under 3 sentences. Output as JSON: topStories (headline, whyItMatters, actionStep, source), relevantTenders (title, whyRelevant, howToApply, deadline), regulatoryAlert (optional), summary.`;

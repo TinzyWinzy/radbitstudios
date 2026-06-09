@@ -17,7 +17,7 @@ export async function classifySources(sources: DiscoveredSource[]): Promise<Clas
     `SOURCE ${i + 1}:
 URL: ${s.url}
 Name: ${s.name}
-Description: ${s.description.slice(0, 200)}
+Description: ${(s.description || '').slice(0, 200)}
 Has RSS Feed: ${s.feedUrl ? 'Yes' : 'No'}`
   ).join('\n\n');
 
