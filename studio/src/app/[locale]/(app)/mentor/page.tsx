@@ -180,8 +180,8 @@ export default function MentorPage() {
   };
 
   return (
-    <div className="h-[calc(100dvh-10rem)] flex flex-col">
-      <div className="flex items-start justify-between">
+    <div className="flex-1 flex flex-col min-h-0 pb-14 lg:pb-0">
+      <div className="flex items-start justify-between shrink-0">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
             <Sparkles className="h-7 w-7 text-primary" />
@@ -221,14 +221,14 @@ export default function MentorPage() {
       </div>
 
       {!hasProfile && (
-        <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+        <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 shrink-0">
           <Sparkles className="h-4 w-4" />
           <span>Set your industry in Settings to get news-aware answers and tender recommendations</span>
         </div>
       )}
 
-      <Card className="flex-1 flex flex-col mt-6">
-        <CardHeader>
+      <Card className="flex-1 flex flex-col min-h-0 mt-6">
+        <CardHeader className="shrink-0">
           <CardTitle className="flex items-center gap-2 text-base">
             <Sparkles className="h-4 w-4 text-primary" />
             Chat with your Mentor
@@ -239,7 +239,7 @@ export default function MentorPage() {
               : 'Ask questions about starting, running, or growing your business in Zimbabwe.'}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex-1 overflow-hidden">
+        <CardContent className="flex-1 overflow-hidden min-h-0">
           <ScrollArea className="h-full pr-4" ref={scrollAreaRef}>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -325,7 +325,7 @@ export default function MentorPage() {
             </div>
           </ScrollArea>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="border-t border-border/50 pt-4 shrink-0">
           <form onSubmit={handleSubmit} className="flex w-full items-center space-x-2">
             <Input
               name="message"

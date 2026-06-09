@@ -390,7 +390,12 @@ export class AIGateway {
       return { content: this.getFallbackResponse(difficulty), model: 'no-route', tokensUsed: 0, costUsd: 0, cached: false, error: 'No suitable AI model available for your plan.' };
     }
 
-    const cacheHit = await this.cache.find(request.prompt, request.systemPrompt ?? '');
+    let cacheHit: AIGatewayResponse | null = null;
+    try {
+      cacheHit = await this.cache.find(request.prompt, request.systemPrompt ?? '');
+    } catch {
+      // Cache unavailable — proceed directly to model
+    }
     if (cacheHit) return cacheHit;
 
     const ragContext = request.enableRAG
@@ -432,7 +437,7 @@ export class AIGateway {
           cached: false,
         };
 
-        await this.cache.store(request.systemPrompt ?? '', request.prompt, response);
+        this.cache.store(request.systemPrompt ?? '', request.prompt, response).catch(() => {});
         return response;
       } catch (error: unknown) {
         lastError = sanitizeError(error);

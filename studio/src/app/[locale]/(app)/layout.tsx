@@ -302,9 +302,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main 
             id="main-content"
             key={pathname}
-            className="flex-1 p-4 md:p-8 pb-20 md:pb-8 animate-[fadeSlideIn_0.3s_ease-out]"
+            className="flex-1 flex flex-col p-4 md:p-8 pb-20 md:pb-8 animate-[fadeSlideIn_0.3s_ease-out]"
         >
-          <div className="container max-w-7xl">
+          <div className="container max-w-7xl w-full mx-auto flex-1 flex flex-col min-h-0">
             {children}
           </div>
         </main>
