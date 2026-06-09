@@ -20,6 +20,13 @@ vi.mock('@/lib/firebase/firebase-admin', () => ({
   },
 }));
 
+vi.mock('@/services/ai/rag.server', () => ({
+  searchRelevantContext: vi.fn().mockResolvedValue([]),
+  indexDocument: vi.fn().mockResolvedValue('mock-doc-id'),
+  removeDocument: vi.fn().mockResolvedValue(undefined),
+  getDocumentCount: vi.fn().mockResolvedValue(0),
+}));
+
 vi.mock('@sentry/nextjs', () => ({
   captureException: vi.fn(),
   captureMessage: vi.fn(),

@@ -142,7 +142,6 @@ describe('Pattern B — JSON mode with parse/fallback', () => {
 
     const result = await generateTaxAnswer({
       query: 'VAT deadline?',
-      context: [{ content: 'VAT info', source: 'ZIMRA', score: 0.9 }],
     });
     expect(result.answer).toContain('VAT');
     expect(result.regulations).toHaveLength(1);
@@ -326,7 +325,7 @@ describe('Gateway generates correct parameters for each flow', () => {
 
   it('tax-copilot uses simple difficulty with jsonMode', async () => {
     const { generateTaxAnswer } = await import('@/ai/flows/tax-copilot');
-    setMockContent('x'); await generateTaxAnswer({ query: 'test', context: [] }).catch(() => {});
+    setMockContent('x'); await generateTaxAnswer({ query: 'test' }).catch(() => {});
     const call = getLastGenerateCall();
     expect(call?.difficulty).toBe('simple');
     expect(call?.jsonMode).toBe(true);

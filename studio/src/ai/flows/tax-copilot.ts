@@ -2,14 +2,10 @@
 
 import { z } from 'zod';
 import { AIGateway } from '@/services/ai/ai-gateway';
+import { searchRelevantContext } from '@/services/ai/rag.server';
 
 const InputSchema = z.object({
   query: z.string(),
-  context: z.array(z.object({
-    content: z.string(),
-    source: z.string(),
-    score: z.number(),
-  })),
   industry: z.string().optional(),
   businessName: z.string().optional(),
   businessDescription: z.string().optional(),
@@ -29,9 +25,14 @@ const gateway = new AIGateway();
 export async function generateTaxAnswer(input: TaxCopilotInput): Promise<TaxCopilotOutput> {
   const validated = InputSchema.parse(input);
 
-  const contextBlock = validated.context.length > 0
-    ? validated.context.map((c, i) =>
-        `[Source ${i + 1}] (${c.source}, relevance: ${(c.score * 100).toFixed(0)}%)\n${c.content}`
+  const ragResults = await searchRelevantContext(
+    `${validated.query} ${validated.industry || ''} tax compliance`.trim(),
+    5, 0.5,
+  );
+
+  const contextBlock = ragResults.length > 0
+    ? ragResults.map((c, i) =>
+        `[Source ${i + 1}] (${c.metadata.source || 'ZIMRA Guidelines'}, relevance: ${(c.score * 100).toFixed(0)}%)\n${c.content}`
       ).join('\n\n')
     : 'No specific reference documents found. Answer based on general knowledge.';
 

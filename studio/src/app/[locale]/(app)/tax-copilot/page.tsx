@@ -12,7 +12,6 @@ import { Badge } from '@/components/ui/badge';
 import { Send, Landmark, Loader2, FileText, AlertTriangle, Scale } from 'lucide-react';
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
-import { searchRelevantContext } from '@/services/ai/rag';
 import { generateTaxAnswer } from '@/ai/flows/tax-copilot';
 import { checkFeatureAccess, checkAndDecrementUsage } from '@/services/usage-service';
 import { UpgradeModal } from '@/components/upgrade-modal';
@@ -71,18 +70,9 @@ export default function TaxCopilotPage() {
     setInput('');
 
     try {
-      const searchQuery = user?.industry ? `${input} ${user.industry} tax compliance` : input;
-      const ragResults = await searchRelevantContext(searchQuery, 5, 0.5);
-      const context = ragResults.map(r => ({
-        content: r.content,
-        source: r.metadata.source || 'ZIMRA Guidelines',
-        score: r.score,
-      }));
-
       const appUser = user as any;
       const response = await generateTaxAnswer({
         query: input,
-        context,
         industry: appUser?.industry || undefined,
         businessName: appUser?.businessName || undefined,
         businessDescription: appUser?.businessDescription || undefined,
@@ -94,7 +84,6 @@ export default function TaxCopilotPage() {
         prev.map((msg) => (msg.id === userMessage.id ? { ...msg, status: 'sent' } : msg))
       );
 
-      const sources = ragResults.map(r => r.metadata.source || 'ZIMRA Guidelines').filter((v, i, a) => a.indexOf(v) === i);
       const aiMessage: Message = {
         text: response.answer,
         sender: 'ai',
@@ -102,7 +91,6 @@ export default function TaxCopilotPage() {
         status: 'sent',
         regulations: response.regulations,
         disclaimers: response.disclaimers,
-        sources,
       };
       setMessages((prev) => [...prev, aiMessage]);
 
