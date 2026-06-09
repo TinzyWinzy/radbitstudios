@@ -1,6 +1,6 @@
 import { serverTimestamp } from "firebase/firestore";
 import type { Persona, PersonaAnswers, ChecklistItem } from "@/types/project";
-import { createChecklist } from "./project-service";
+import { createChecklist } from "./project-service-admin";
 import { generateOnboardingChecklistFlow } from "@/ai/flows/generate-onboarding-checklist";
 
 const FALLBACK_TEMPLATES: Record<string, ChecklistItem[]> = {

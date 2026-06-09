@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import { withIpRateLimit } from '@/services/api-rate-limit';
 import { validateBody, CreateLeadSchema } from '@/lib/api-validation';
-import { createProject } from '@/services/project-service';
+import { createProject } from '@/services/project-service-admin';
 import { generateOnboardingChecklist } from '@/services/onboarding-engine';
 import { db } from '@/lib/firebase/firebase';
 import { collection, query, where, getDocs, limit as fbLimit } from 'firebase/firestore';

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getChecklist, updateChecklistItem } from "@/services/project-service";
+import { getChecklist, updateChecklistItem } from "@/services/project-service-admin";
 import { generateOnboardingChecklist } from "@/services/onboarding-engine";
 import { withAuth } from "@/lib/api-auth";
 

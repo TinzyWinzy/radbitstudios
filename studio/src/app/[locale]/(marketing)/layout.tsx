@@ -94,7 +94,7 @@ export default function MarketingLayout({
           </Link>
           <nav
             aria-label="Main navigation"
-            className="hidden md:flex items-center gap-1 text-sm font-medium"
+            className="hidden md:flex items-center gap-0.5 text-sm font-medium"
           >
             {navLinks.map((link) => {
               const active = isActive(link.href);
@@ -103,15 +103,15 @@ export default function MarketingLayout({
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "relative px-3 py-2 rounded-md transition-colors",
+                    "relative px-3.5 py-2 rounded-lg transition-all duration-200 tracking-tight",
                     active
-                      ? "text-foreground font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                      ? "text-foreground font-semibold bg-accent/40"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
                   )}
                 >
                   {link.label}
                   {active && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-primary rounded-full" />
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
                   )}
                 </Link>
               );
@@ -134,7 +134,12 @@ export default function MarketingLayout({
                 className="w-[280px] sm:w-[340px] pt-12 overflow-y-auto"
               >
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                <nav className="flex flex-col gap-1 mt-6">
+                <nav className="flex flex-col gap-0.5 mt-2">
+                  <div className="px-4 pb-1.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                      Pages
+                    </p>
+                  </div>
                   {navLinks.map((link) => {
                     const Icon = link.icon;
                     const active = isActive(link.href);
@@ -143,10 +148,10 @@ export default function MarketingLayout({
                         <Link
                           href={link.href}
                           className={cn(
-                            "flex items-center gap-3 h-12 px-4 rounded-md text-base font-medium transition-colors",
+                            "flex items-center gap-3 h-11 px-4 rounded-md text-sm font-medium transition-all duration-200",
                             active
-                              ? "text-foreground bg-accent/50"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                              ? "text-foreground bg-accent/50 border-l-2 border-primary"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/30 border-l-2 border-transparent"
                           )}
                         >
                           <Icon className="size-4 shrink-0" />
@@ -155,19 +160,24 @@ export default function MarketingLayout({
                       </SheetClose>
                     );
                   })}
-                  <div className="border-t border-border mt-4 pt-4 space-y-2">
+                  <div className="border-t border-border mt-4 pt-4 space-y-1">
+                    <div className="px-4 pb-1.5">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                        Account
+                      </p>
+                    </div>
                     {loading ? null : user ? (
                       <>
                         <SheetClose asChild>
                           <Link
                             href="/dashboard"
-                            className="flex items-center gap-3 h-12 px-4 rounded-md text-base font-medium text-foreground hover:bg-accent/30 transition-colors"
+                            className="flex items-center gap-3 h-11 px-4 rounded-md text-sm font-medium text-foreground hover:bg-accent/30 transition-colors"
                           >
                             <LayoutDashboard className="size-4 shrink-0" />
                             Dashboard
                           </Link>
                         </SheetClose>
-                        <div className="px-4">
+                        <div className="px-4 pt-1">
                           <UserNav />
                         </div>
                       </>
@@ -176,7 +186,7 @@ export default function MarketingLayout({
                         <SheetClose asChild>
                           <Link
                             href="/sign-in"
-                            className="flex items-center gap-3 h-12 px-4 rounded-md text-base font-medium text-muted-foreground hover:bg-accent/30 transition-colors"
+                            className="flex items-center gap-3 h-11 px-4 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent/30 transition-colors"
                           >
                             <LogIn className="size-4 shrink-0" />
                             Sign In
@@ -185,7 +195,7 @@ export default function MarketingLayout({
                         <SheetClose asChild>
                           <Link
                             href="/sign-up"
-                            className="flex items-center justify-center gap-2 h-12 mx-4 rounded-md text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                            className="flex items-center justify-center gap-2 h-11 mx-4 rounded-md text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                           >
                             Get Started
                             <ArrowRight className="size-4" />

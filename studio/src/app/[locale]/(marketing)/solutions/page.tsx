@@ -59,7 +59,7 @@ import {
 import { Card3D, MagneticElement } from "@/components/animations/interactive-cards";
 import { AnimatedCounter } from "@/components/animations/animated-text";
 import { GradientOrb } from "@/components/animations/scroll-effects";
-import { getSuggestedPackage } from "@/services/onboarding-engine";
+import { getSuggestedPackage } from "@/services/onboarding-engine-client";
 import type { Persona, PersonaAnswers } from "@/types/project";
 
 // ─── Persona Config ────────────────────────────────────────────────────────────

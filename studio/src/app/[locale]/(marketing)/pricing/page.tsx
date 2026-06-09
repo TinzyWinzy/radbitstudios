@@ -239,28 +239,7 @@ const SERVICES = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="font-headline text-xl font-bold tracking-wide">RADBIT</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Sign In
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <main className="container max-w-6xl py-8 md:py-12 px-4 md:px-6">
+    <div className="container max-w-6xl mx-auto py-8 md:py-12 px-4 md:px-6">
         {/* Hero */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium">
@@ -632,7 +611,6 @@ export default function PricingPage() {
             <span>📞 24/7 Support</span>
           </div>
         </section>
-      </main>
     </div>
   );
 }

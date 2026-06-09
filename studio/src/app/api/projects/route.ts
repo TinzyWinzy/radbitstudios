@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getClientProjects, getAllProjects, updateProject, deleteProject } from "@/services/project-service";
+import { getClientProjects, getAllProjects, updateProject, deleteProject } from "@/services/project-service-admin";
 import { withAuth } from "@/lib/api-auth";
 
 export const GET = withAuth(async (request: NextRequest, userId: string) => {
