@@ -48,8 +48,8 @@ import { checkFeatureAccess, checkAndDecrementUsage } from "@/services/usage-ser
 import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { cacheDashboardData, getCachedDashboardData } from "@/services/offline";
-import { watchNetworkStatus } from "@/services/offline";
+import { cacheDashboardData, getCachedDashboardData, watchNetworkStatus } from "@/services/offline";
+import { getCachedQuery, setCachedQuery, buildQueryKey } from "@/services/query-cache";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import type { AppUser } from "@/types/user";
 import type { Project, ProjectTask } from "@/types/project";
@@ -206,22 +206,32 @@ export default function DashboardPage() {
       if (!user) return;
       if (mounted) setIsLoadingAssessment(true);
       try {
-        const q = query(
-          collection(db, "assessments"),
-          where("userId", "==", user.uid)
-        );
-        const querySnapshot = await withRetry(() => getDocs(q));
-        const sorted = querySnapshot.docs.sort((a, b) => {
-          const aDate = a.data().createdAt?.toDate?.() ?? new Date(0);
-          const bDate = b.data().createdAt?.toDate?.() ?? new Date(0);
+        const cacheKey = buildQueryKey('assessments', 'userId', user.uid);
+        let docs: Record<string, unknown>[] | null = null;
+
+        const cached = await getCachedQuery<Record<string, unknown>[]>(cacheKey);
+        if (cached) {
+          docs = cached;
+        } else {
+          const q = query(
+            collection(db, "assessments"),
+            where("userId", "==", user.uid)
+          );
+          const querySnapshot = await withRetry(() => getDocs(q));
+          docs = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setCachedQuery(cacheKey, docs, 10 * 60 * 1000);
+        }
+
+        const sorted = docs.sort((a, b) => {
+          const aDate = (a as any).createdAt?.toDate?.() ?? new Date(0);
+          const bDate = (b as any).createdAt?.toDate?.() ?? new Date(0);
           return bDate.getTime() - aDate.getTime();
         });
-        if (mounted) setAllAssessments(sorted.map(d => ({ ...d.data(), id: d.id })));
+        if (mounted) setAllAssessments(sorted);
         if (sorted.length > 0 && mounted) {
-          const latest = sorted[0];
-          const latestData = latest.data();
+          const latest = sorted[0] as any;
           const categoryScores: { [key: string]: { totalScore: number; count: number } } = {};
-          latestData.responses?.forEach((response: any) => {
+          latest.responses?.forEach((response: any) => {
             if (!categoryScores[response.category]) {
               categoryScores[response.category] = { totalScore: 0, count: 0 };
             }
@@ -232,12 +242,12 @@ export default function DashboardPage() {
             category,
             score: (scores.totalScore / (scores.count * 4)) * 100,
           }));
-          const rawSummary = latestData.summary;
+          const rawSummary = latest.summary;
           const aiSummary = typeof rawSummary === 'string' ? rawSummary : rawSummary?.summary || '';
           if (mounted) setAssessmentData({ chartData, aiSummary });
 
           const history = sorted.map(doc => {
-            const d = doc.data();
+            const d = doc as any;
             const scores = d.responses as Array<{ score: number }>;
             const total = scores.reduce((sum, r) => sum + r.score, 0);
             const max = scores.length * 4;

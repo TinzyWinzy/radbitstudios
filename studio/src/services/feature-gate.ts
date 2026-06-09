@@ -2,6 +2,7 @@ import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
 import { usageWarningEmail, sendEmail } from '@/services/email-service';
+import { getCachedUser, setCachedUser, invalidateUserCache } from '@/services/user-cache';
 
 import type { PlanName } from '@/types/user';
 import type { UserRole } from '@/services/permissions';
@@ -77,14 +78,35 @@ export interface UserPlanData {
 }
 
 export async function getUserPlanData(userId: string): Promise<UserPlanData> {
+  const cached = await getCachedUser(userId);
+  if (cached && cached.plan) {
+    return {
+      plan: (cached.plan as PlanName) || 'Free',
+      usage: (cached.usage as Record<string, { remaining: number; total: number }>) || {},
+      role: (cached.role as UserRole) ?? null,
+    };
+  }
   const userDoc = await getDoc(doc(db, 'users', userId));
   if (!userDoc.exists()) throw new Error('User not found');
   const data = userDoc.data();
-  return {
+  const result: UserPlanData = {
     plan: (data.plan as PlanName) || 'Free',
     usage: (data.usage as Record<string, { remaining: number; total: number }>) || {},
     role: (data.role as UserRole) ?? null,
   };
+  const cacheData: Record<string, unknown> = {};
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const val = data[key];
+      if (val && typeof val === 'object' && typeof (val as any).toDate === 'function') {
+        cacheData[key] = (val as any).toDate().toISOString();
+      } else {
+        cacheData[key] = val;
+      }
+    }
+  }
+  setCachedUser(userId, cacheData);
+  return result;
 }
 
 export function getUpgradePath(currentPlan: PlanName, feature: FeatureName): UpgradeInfo {
@@ -159,6 +181,7 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
         [`usage.${gate.creditKey}.remaining`]: total - 1,
         [`usage.${gate.creditKey}.total`]: total,
       });
+      invalidateUserCache(userId);
       return { success: true, message: "Usage decremented successfully." };
     }
 
@@ -170,6 +193,7 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
     await updateDoc(userDocRef, {
       [`usage.${gate.creditKey}.remaining`]: increment(-1),
     });
+    invalidateUserCache(userId);
 
     if (usage.remaining <= 3 && usage.remaining > 0 && userData.email) {
       const featureLabel = feature.replace(/([A-Z])/g, ' $1').toLowerCase().trim();

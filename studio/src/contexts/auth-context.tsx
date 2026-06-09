@@ -19,6 +19,7 @@ import type { UserRole } from '@/services/permissions';
 import type { AppUser } from '@/types/user';
 import { withRetry } from '@/lib/retry';
 import { welcomeEmail, sendEmail } from '@/services/email-service';
+import { getCachedUser, setCachedUser, invalidateUserCache } from '@/services/user-cache';
 
 interface AuthContextType {
   user: AppUser | null;
@@ -106,14 +107,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const fetchAndSetUser = useCallback(async (authUser: User, extraData?: Record<string, unknown>) => {
+    if (!extraData) {
+      const cached = await getCachedUser(authUser.uid);
+      if (cached) {
+        if (!mountedRef.current) return;
+        const mergedUser = { ...authUser, ...cached } as AppUser;
+        setUser(mergedUser);
+        const docRole = cached.role as UserRole | undefined;
+        if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
+          setRole(docRole);
+        } else {
+          const idTokenResult = await authUser.getIdTokenResult();
+          if (!mountedRef.current) return;
+          setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
+        }
+        return;
+      }
+    }
+
     await createUserDocument(authUser, extraData);
     const userDocRef = doc(db, 'users', authUser.uid);
     const userDoc = await withRetry(() => getDoc(userDocRef));
     if (!mountedRef.current) return;
     if (userDoc.exists()) {
-      const mergedUser = { ...authUser, ...userDoc.data() } as AppUser;
+      const rawData = userDoc.data();
+      const mergedUser = { ...authUser, ...rawData } as AppUser;
       setUser(mergedUser);
-      const docRole = userDoc.data().role as UserRole | undefined;
+      const docRole = rawData.role as UserRole | undefined;
       if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
         setRole(docRole);
       } else {
@@ -121,6 +141,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (!mountedRef.current) return;
         setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
       }
+      const cacheData: Record<string, unknown> = {};
+      for (const key in rawData) {
+        if (Object.prototype.hasOwnProperty.call(rawData, key)) {
+          const val = rawData[key];
+          if (val && typeof val === 'object' && typeof (val as any).toDate === 'function') {
+            cacheData[key] = (val as any).toDate().toISOString();
+          } else {
+            cacheData[key] = val;
+          }
+        }
+      }
+      setCachedUser(authUser.uid, cacheData);
     } else {
       setUser(authUser as AppUser);
       const idTokenResult = await authUser.getIdTokenResult();
@@ -244,6 +276,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const logout = useCallback(async () => {
+    const currentUid = auth.currentUser?.uid;
     try {
       await fetch('/api/auth/refresh-session', {
         method: 'POST',
@@ -253,7 +286,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       // Best effort cookie clear
     }
-    return signOut(auth);
+    await signOut(auth);
+    if (currentUid) {
+      invalidateUserCache(currentUid);
+    }
   }, []);
 
   const deleteAccount = useCallback(async (): Promise<{ success: boolean; error?: string }> => {
