@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useContext, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { MagneticButton } from "@/components/magnetic-button";
@@ -14,18 +15,33 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import {
+  Menu,
+  LayoutDashboard,
+  ClipboardCheck,
+  Sparkles,
+  CreditCard,
+  BookOpen,
+  Briefcase,
+  Users,
+  Newspaper,
+  Handshake,
+  ArrowRight,
+  LogIn,
+} from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/assessment", label: "Assessment" },
-  { href: "/toolkit", label: "AI Toolkit" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/resources", label: "Resources" },
-  { href: "/tenders", label: "Tenders" },
-  { href: "/community", label: "Community" },
-  { href: "/blog", label: "Blog" },
-  { href: "/consultancy", label: "Consultancy" },
+  { href: "/solutions", label: "Solutions", icon: Sparkles },
+  { href: "/assessment", label: "Assessment", icon: ClipboardCheck },
+  { href: "/toolkit", label: "AI Toolkit", icon: LayoutDashboard },
+  { href: "/pricing", label: "Pricing", icon: CreditCard },
+  { href: "/resources", label: "Resources", icon: BookOpen },
+  { href: "/tenders", label: "Tenders", icon: Briefcase },
+  { href: "/community", label: "Community", icon: Users },
+  { href: "/blog", label: "Blog", icon: Newspaper },
+  { href: "/consultancy", label: "Consultancy", icon: Handshake },
 ];
 
 export default function MarketingLayout({
@@ -36,6 +52,12 @@ export default function MarketingLayout({
   const { user, loading } = useContext(AuthContext);
   const [scrolled, setScrolled] = useState(false);
   const rafRef = useRef<number>(0);
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,7 +76,15 @@ export default function MarketingLayout({
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <RollingShapes />
-      <header role="banner" className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? "border-b border-border/50 bg-background/95 md:bg-background/80 md:backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
+      <header
+        role="banner"
+        className={cn(
+          "fixed top-0 z-50 w-full transition-all duration-300",
+          scrolled
+            ? "border-b border-border/50 bg-background/95 md:bg-background/80 md:backdrop-blur-xl shadow-sm"
+            : "border-b border-transparent bg-transparent"
+        )}
+      >
         <div className="container flex h-16 items-center">
           <Link href="/" className="flex items-center gap-3 mr-8 group">
             <Icons.radbit className="size-8 shrink-0 transition-transform duration-300 group-hover:scale-110 text-foreground" />
@@ -62,60 +92,78 @@ export default function MarketingLayout({
               RADBIT
             </span>
           </Link>
-            <nav aria-label="Main navigation" className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <Link href="/assessment" className="text-muted-foreground hover:text-foreground transition-colors">
-                Assessment
-              </Link>
-              <Link href="/toolkit" className="text-muted-foreground hover:text-foreground transition-colors">
-                AI Toolkit
-              </Link>
-              <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
-                Pricing
-              </Link>
-              <Link href="/resources" className="text-muted-foreground hover:text-foreground transition-colors">
-                Resources
-              </Link>
-              <Link href="/tenders" className="text-muted-foreground hover:text-foreground transition-colors">
-                Tenders
-              </Link>
-              <Link href="/community" className="text-muted-foreground hover:text-foreground transition-colors">
-                Community
-              </Link>
-              <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                Blog
-              </Link>
-              <Link href="/consultancy" className="text-muted-foreground hover:text-foreground transition-colors text-primary">
-                Consultancy
-              </Link>
-            </nav>
+          <nav
+            aria-label="Main navigation"
+            className="hidden md:flex items-center gap-1 text-sm font-medium"
+          >
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "relative px-3 py-2 rounded-md transition-colors",
+                    active
+                      ? "text-foreground font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  )}
+                >
+                  {link.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-primary rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
           <div className="flex flex-1 items-center justify-end space-x-3">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  aria-label="Open menu"
+                >
                   <Menu className="size-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] sm:w-[340px] pt-12">
+              <SheetContent
+                side="right"
+                className="w-[280px] sm:w-[340px] pt-12 overflow-y-auto"
+              >
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                <nav className="flex flex-col gap-2 mt-6">
-                  {navLinks.map((link) => (
-                    <SheetClose asChild key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="flex items-center h-12 px-4 rounded-md text-base font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    </SheetClose>
-                  ))}
+                <nav className="flex flex-col gap-1 mt-6">
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const active = isActive(link.href);
+                    return (
+                      <SheetClose asChild key={link.href}>
+                        <Link
+                          href={link.href}
+                          className={cn(
+                            "flex items-center gap-3 h-12 px-4 rounded-md text-base font-medium transition-colors",
+                            active
+                              ? "text-foreground bg-accent/50"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/30"
+                          )}
+                        >
+                          <Icon className="size-4 shrink-0" />
+                          {link.label}
+                        </Link>
+                      </SheetClose>
+                    );
+                  })}
                   <div className="border-t border-border mt-4 pt-4 space-y-2">
                     {loading ? null : user ? (
                       <>
                         <SheetClose asChild>
                           <Link
                             href="/dashboard"
-                            className="flex items-center h-12 px-4 rounded-md text-base font-medium text-foreground hover:bg-accent transition-colors"
+                            className="flex items-center gap-3 h-12 px-4 rounded-md text-base font-medium text-foreground hover:bg-accent/30 transition-colors"
                           >
+                            <LayoutDashboard className="size-4 shrink-0" />
                             Dashboard
                           </Link>
                         </SheetClose>
@@ -128,17 +176,19 @@ export default function MarketingLayout({
                         <SheetClose asChild>
                           <Link
                             href="/sign-in"
-                            className="flex items-center h-12 px-4 rounded-md text-base font-medium text-muted-foreground hover:bg-accent transition-colors"
+                            className="flex items-center gap-3 h-12 px-4 rounded-md text-base font-medium text-muted-foreground hover:bg-accent/30 transition-colors"
                           >
+                            <LogIn className="size-4 shrink-0" />
                             Sign In
                           </Link>
                         </SheetClose>
                         <SheetClose asChild>
                           <Link
                             href="/sign-up"
-                            className="flex items-center justify-center h-12 mx-4 rounded-md text-base font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors"
+                            className="flex items-center justify-center gap-2 h-12 mx-4 rounded-md text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                           >
                             Get Started
+                            <ArrowRight className="size-4" />
                           </Link>
                         </SheetClose>
                       </>
@@ -149,7 +199,11 @@ export default function MarketingLayout({
             </Sheet>
             {loading ? null : user ? (
               <>
-                <Button variant="ghost" asChild className="hidden md:inline-flex text-sm text-muted-foreground hover:text-foreground hover:bg-accent">
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="hidden md:inline-flex text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
+                >
                   <Link href="/dashboard">Dashboard</Link>
                 </Button>
                 <div className="hidden md:block">
@@ -158,18 +212,30 @@ export default function MarketingLayout({
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild className="hidden md:inline-flex text-sm text-muted-foreground hover:text-foreground hover:bg-accent">
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="hidden md:inline-flex text-sm text-muted-foreground hover:text-foreground hover:bg-accent"
+                >
                   <Link href="/sign-in">Sign In</Link>
                 </Button>
-                <MagneticButton asChild className="hidden md:inline-flex bg-foreground text-background hover:bg-foreground/90">
-                  <Link href="/sign-up">Get Started</Link>
+                <MagneticButton
+                  asChild
+                  className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+                >
+                  <Link href="/sign-up">
+                    Get Started
+                    <ArrowRight className="size-4 ml-1.5" />
+                  </Link>
                 </MagneticButton>
               </>
             )}
           </div>
         </div>
       </header>
-      <main id="main-content" role="main" className="relative flex-1">{children}</main>
+      <main id="main-content" role="main" className="relative flex-1">
+        {children}
+      </main>
     </div>
   );
 }
