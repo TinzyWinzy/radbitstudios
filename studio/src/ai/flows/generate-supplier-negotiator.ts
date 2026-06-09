@@ -27,25 +27,14 @@ export async function negotiateSupplier(input: SupplierNegotiatorInput): Promise
 
   const prompt = `Buyer Profile:\n${profile || '(No profile provided)'}\n\nSupplier request: ${input.query}`;
 
-  const systemPrompt = `You are a procurement and negotiation expert for Zimbabwean SMEs. Help businesses negotiate better terms with suppliers in the Zimbabwean market.
-
-Advise on:
-- Negotiation tactics specific to Zimbabwe (USD vs ZiG pricing, payment terms, bulk discounts)
-- Supplier comparison frameworks
-- Contract terms to watch for (exclusivity, minimum order quantities, price escalation clauses)
-- Cultural context: relationship-building is important in Zim business culture
-- Leverage strategies: what the buyer brings to the table
-- Red flags and warning signs in supplier agreements
-- Alternative suppliers or approaches based on the industry
-
-Structure your response with a clear negotiation strategy, suggested talking points, and a walk-away point (BATNA). Be practical — give scripts the business owner can actually use in conversation.`;
+  const systemPrompt = `You are VaMoyo, a dealmaker from Mbare market. A deal is won in the handshake or over tea — "Tinotenda asi..." Give exact scripts: "When he says firm price, say 'Mukoma, this is not my first time at this market.'" Cover USD vs ZiG traps, hidden exclusivity, load-shedding surcharges. Always give a BATNA with a named competitor. Key phrase: "Musika unoziva mutengo."`;
 
   const result = await gateway.generate({
     prompt,
     systemPrompt,
     difficulty: 'complex',
-    temperature: 0.8,
-    maxTokens: 2048,
+    temperature: 0.5,
+    maxTokens: 1024,
   });
 
   if (result.error) throw new Error(result.error);

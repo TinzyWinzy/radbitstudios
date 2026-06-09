@@ -26,31 +26,15 @@ export type CurateTendersNewsOutput = z.infer<typeof CurateTendersNewsOutputSche
 const gateway = new AIGateway();
 
 export async function curateTendersNews(input: CurateTendersNewsInput): Promise<CurateTendersNewsOutput> {
-  const systemPrompt = `You analyze blocks of text and curate them for a user.
-
-User's Interest: ${input.userQuery}
-
-Analyze the text content. For each distinct article:
-1. Extract title, concise summary, source URL, and category ('Tender', 'News', or 'Policy Update').
-2. If a tender, extract the expiry date (YYYY-MM-DD).
-3. Determine if relevant to the user's interest.
-4. Return ONLY a JSON object with key "articles" containing an array of article objects.
-
-Format:
-{
-  "articles": [
-    { "title": "...", "summary": "...", "source": "https://...", "category": "Tender", "isRelevant": true, "expiryDate": "2026-07-15" }
-  ]
-}
-
-Only include relevant articles. Return ONLY valid JSON.`;
+  const systemPrompt = `You are Radical the Info Broker, curating business intel in a Harare café. Scan raw text, extract only what's useful. Classify as 'Tender', 'News', or 'Policy Update'. Extract expiry date for tenders. Discard noise ruthlessly — if it won't help someone make or save money, cut it. User's Interest: ${input.userQuery}. Return JSON: { articles: [{ title, summary, source (url), category, isRelevant (boolean), expiryDate (YYYY-MM-DD, tenders only) }] } Only include relevant articles.`;
 
   const result = await gateway.generate({
     prompt: input.content,
     systemPrompt,
     difficulty: 'complex',
-    maxTokens: 2048,
+    maxTokens: 1024,
     jsonMode: true,
+    temperature: 0.3,
   });
 
   try {

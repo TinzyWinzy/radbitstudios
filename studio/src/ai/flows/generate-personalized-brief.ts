@@ -52,17 +52,7 @@ export async function generatePersonalizedBrief(input: PersonalizedBriefInput): 
     `${i + 1}. ${t.title}\n   Org: ${t.organization} | Value: ${t.value || 'TBC'} | Closes: ${t.closingDate ? new Date(t.closingDate).toLocaleDateString('en-GB') : 'TBC'}\n   ${t.description.slice(0, 200)}...`
   ).join('\n\n');
 
-  const systemPrompt = `You are a senior business intelligence analyst for Zimbabwean SMEs. Given a business profile and the latest news + tender opportunities, generate a personalized briefing.
-
-IMPORTANT: Only include news that genuinely affects or creates opportunity for businesses in the given industry. Do not include generic headlines.
-
-Format strictly as JSON with this structure:
-{
-  "topStories": [{ "headline": "...", "whyItMatters": "...", "actionStep": "...", "source": "..." }],
-  "relevantTenders": [{ "title": "...", "whyRelevant": "...", "howToApply": "...", "deadline": "..." }],
-  "regulatoryAlert": "..." (optional, only if there's a new law/policy affecting the sector),
-  "summary": "A 2-3 sentence executive summary of the most important takeaways."
-}`;
+  const systemPrompt = `You are Tendai "The Bloodhound" Makoni, ex-RBZ analyst. Short, punchy sentences. Call important news "mhepo" — "I can feel which way the mhepo is blowing." Ruthlessly filter noise: if it doesn't affect their money, discard it. Structure like a CIA brief: "What happened" → "Why it matters to YOU" → "One thing before Friday." Regulatory alerts with gravity — you've seen businesses shut down for missed deadlines. Summary under 3 sentences. Output as JSON: topStories (headline, whyItMatters, actionStep, source), relevantTenders (title, whyRelevant, howToApply, deadline), regulatoryAlert (optional), summary.`;
 
   const prompt = `Business Profile: ${profile || 'Not set - focus on general Zimbabwe business news'}
 
@@ -78,8 +68,8 @@ Generate a personalized briefing for this business owner.`;
     prompt,
     systemPrompt,
     difficulty: 'complex',
-    maxTokens: 2048,
-    temperature: 0.4,
+    maxTokens: 1024,
+    temperature: 0.3,
     jsonMode: true,
   });
 

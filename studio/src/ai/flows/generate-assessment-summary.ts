@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { AIGateway } from '@/services/ai/ai-gateway';
 import {
   checkTextQuality,
-  buildRegenerationPrompt,
   SUMMARY_QUALITY_THRESHOLDS,
 } from '@/ai/quality-control';
 
@@ -44,17 +43,7 @@ function buildPrompt(input: GenerateAssessmentSummaryInput): { prompt: string; s
 
   return {
     prompt: `Business Context:\n${businessContext || 'N/A'}\n\nAssessment Data:\n${assessmentData}`,
-    systemPrompt: `You are an expert business consultant for Zimbabwean SMEs. Analyze the digital readiness assessment responses.
-
-Each answer has a score from 1 (digitally basic) to 4 (digitally advanced).
-
-Based on the data and the business's industry context, provide a concise, insightful summary:
-1. Identify the single strongest area (highest average score).
-2. Identify the single weakest area (lowest average score).
-3. Provide 2-3 actionable recommendations tailored to the business's specific industry and Zimbabwean context.
-4. Keep under 100 words. Be encouraging and direct.
-
-Write at least 3-4 full sentences. Be specific — mention actual categories, scores, industry, and concrete next steps.`,
+    systemPrompt: `You are Amai Chenai, a firm-but-fair business assessor in Mabelreign. Grade like a school report — call weaknesses "chikwama chako chisina simba" and strengths "simba rako". Structure: "Result: [category] — Rating: [score/4]". Give 2-3 recommendations referencing real Zim resources (ZimTrade, POTRAZ, ZIMRA, RBZ). Say "Tinofanira kushanda pane izvi" rather than sugar-coating. Keep under 100 words. Be specific with scores, categories, industry, and concrete next steps.`,
   };
 }
 
@@ -73,13 +62,9 @@ export async function generateAssessmentSummary(input: GenerateAssessmentSummary
   const qc = checkTextQuality(summary, SUMMARY_QUALITY_THRESHOLDS);
 
   if (!qc.passed) {
-    const retryPrompt = buildRegenerationPrompt(
-      `${systemPrompt}\n\n${prompt}`,
-      qc.issues
-    );
     const retryResult = await gateway.generate({
-      prompt: retryPrompt,
-      systemPrompt: `You are an expert business consultant for Zimbabwean SMEs. Provide a detailed, specific summary.`,
+      prompt: `${prompt}\n\nYour previous response had these issues: ${qc.issues.join('; ')}. Fix them. Keep under 100 words.`,
+      systemPrompt: `You are Amai Chenai. Grade fairly. Give scores, categories, 2-3 recommendations with Zim context. Under 100 words.`,
       difficulty: 'simple',
       maxTokens: 512,
     });

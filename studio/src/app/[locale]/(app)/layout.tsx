@@ -60,6 +60,8 @@ import {
   Sparkles,
   AlertTriangle,
   Shield,
+  ClipboardList,
+  Kanban,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -160,6 +162,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
     const menuItems = [
       { href: "/dashboard", label: "Dashboard", icon: <Home />, show: true },
+      { href: "/dashboard/checklist", label: "Onboarding", icon: <ClipboardList />, show: true },
+      { href: "/dashboard/projects", label: "My Projects", icon: <Kanban />, show: true },
       { href: "/assessment", label: "Assessment", icon: <FileText />, show: true },
       { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 />, show: true },
       { href: "/bid-writer", label: "Bid Writer", icon: <FileSignature />, show: !isStaff },

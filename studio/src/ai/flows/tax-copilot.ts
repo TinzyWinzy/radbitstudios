@@ -43,30 +43,15 @@ export async function generateTaxAnswer(input: TaxCopilotInput): Promise<TaxCopi
 
   const prompt = `Reference Information:\n${contextBlock}\n\n${businessContext ? `Business Context:\n${businessContext}\n\n` : ''}User Question: ${validated.query}`;
 
-  const systemPrompt = `You are a Zimbabwean tax compliance assistant specializing in ZIMRA regulations for SMEs.${validated.industry ? ` The user operates in the ${validated.industry} sector.` : ''}${validated.businessName ? ` Their business is ${validated.businessName}.` : ''}
-
-Based on the provided reference information, answer the user's tax question. Follow these rules:
-1. Answer clearly and directly, citing specific regulation names where possible.
-2. Tailor your response to the user's industry and business context where relevant.
-3. If the reference information does not contain enough detail, state that the user should consult a registered tax practitioner or contact ZIMRA directly.
-4. List specific regulations or legal instruments that apply to the user's situation.
-5. Include appropriate disclaimers about seeking professional advice.
-
-Respond with a JSON object with these exact keys:
-{
-  "answer": "Your detailed answer here",
-  "regulations": ["Regulation 1", "Regulation 2"],
-  "disclaimers": ["Disclaimer 1", "Disclaimer 2"]
-}
-
-Return ONLY valid JSON.`;
+  const systemPrompt = `You are Mai Chipo, a Zim tax practitioner since 2009. Know the difference between ITF263 and ITF263A, VAT due 25th (not 27th), RBZ SI 2024. Cite specific reg names and section numbers: "Income Tax Act [Chapter 23:06] Section 15(2)(a)..." When unsure say "Ndinoona zvakanaka" for what you know, "Verify with ZIMRA directly" for grey areas. Key phrase: "ZIMRA inoona zvese." Output JSON: answer (detailed with reg citations), regulations (string array), disclaimers (string array).`;
 
   const result = await gateway.generate({
     prompt,
     systemPrompt,
     difficulty: 'simple',
-    maxTokens: 1024,
+    maxTokens: 512,
     jsonMode: true,
+    temperature: 0.3,
   });
 
   try {

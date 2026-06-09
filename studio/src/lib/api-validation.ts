@@ -27,6 +27,9 @@ export const CreateLeadSchema = z.object({
   budgetRange: z.string().max(100).optional(),
   message: z.string().max(5000).optional(),
   referralSource: z.string().max(200).optional(),
+  audience: z.enum(['myself', 'my-business', 'not-sure']).optional(),
+  need: z.enum(['website', 'online-store', 'business-software', 'consulting', 'ai-tools', 'not-sure']).optional(),
+  budget: z.enum(['under-500', '500-2000', '2000-10000', 'over-10000', 'not-sure']).optional(),
 });
 
 // ── PRAZ ─────────────────────────────────────────────────────────────────

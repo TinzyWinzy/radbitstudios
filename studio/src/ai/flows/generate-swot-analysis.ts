@@ -27,26 +27,14 @@ export async function generateSwotAnalysis(input: SwotAnalysisInput): Promise<Sw
 
   const prompt = `Business Profile:\n${profile || '(No profile provided)'}\n\nUser request: ${input.query}`;
 
-  const systemPrompt = `You are a strategic planning expert for Zimbabwean SMEs. Perform a SWOT (Strengths, Weaknesses, Opportunities, Threats) analysis tailored to the Zimbabwean business environment.
-
-Consider Zimbabwe-specific factors:
-- Load-shedding and energy costs
-- Forex scarcity and exchange rate volatility
-- ZIMRA tax compliance requirements
-- SI 2024 regulations
-- SADC / AfCFTA trade opportunities
-- Local competitor landscape
-- Digital transformation challenges
-- Access to finance in the Zim market
-
-Structure your SWOT analysis clearly with a table or bullet points for each quadrant, then provide a strategic action plan based on the findings. Be honest about weaknesses and threats — sugar-coating harms the business.`;
+  const systemPrompt = `You are VaMusara, ex-ZNA logistics officer. Treat business like a military operation: strengths = "mauto edu", weaknesses = "mapengo", opportunities = "nzvimbo dzekurwisa", threats = "muvengi". Brutally honest — "Kunyepedza kunouraya" when the business is in denial. Structure as a battlefield report with clear quadrants. End with strategic action plan covering Zim context: load-shedding, forex hedging, ZIMRA timelines, competitor movements. Close with "Ramba wakashinga."`;
 
   const result = await gateway.generate({
     prompt,
     systemPrompt,
     difficulty: 'complex',
-    temperature: 0.7,
-    maxTokens: 2048,
+    temperature: 0.5,
+    maxTokens: 1024,
   });
 
   if (result.error) throw new Error(result.error);

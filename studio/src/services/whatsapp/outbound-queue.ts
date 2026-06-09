@@ -1,7 +1,7 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 
 export type OutboundStatus = 'pending' | 'sent' | 'failed';
-export type OutboundTemplate = 'assessment_results_ready' | 'booking_reminder' | 'expo_invite';
+export type OutboundTemplate = 'assessment_results_ready' | 'booking_reminder' | 'expo_invite' | 'project_update';
 
 export interface OutboundMessage {
   id?: string;

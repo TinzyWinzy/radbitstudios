@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { AIGateway } from '@/services/ai/ai-gateway';
 import {
   checkListQuality,
-  buildRegenerationPrompt,
   TIP_QUALITY_THRESHOLDS,
 } from '@/ai/quality-control';
 
@@ -26,24 +25,13 @@ const gateway = new AIGateway();
 export async function generateDashboardInsights(input: GenerateDashboardInsightsInput): Promise<GenerateDashboardInsightsOutput> {
   const prompt = `Business Industry: ${input.industry}\nBusiness Description: ${input.businessDescription}`;
 
-  const systemPrompt = `You are an expert business consultant for Zimbabwean SMEs. Generate personalized content for the user's dashboard.
-
-Generate the following as a JSON object with these exact keys:
-{
-  "dailyTips": ["tip 1", "tip 2", "tip 3"],
-  "recommendations": ["rec 1", "rec 2"]
-}
-
-1. dailyTips: Exactly 3 short, actionable tips relevant to their industry in Zimbabwe. Each tip must be at least 2 sentences.
-2. recommendations: Exactly 2 strategic, personalized recommendations based on their specific business description. Each must be at least 2 sentences.
-
-Keep language encouraging, simple, and direct. Be specific — reference real Zimbabwean resources or tools where relevant. Return ONLY valid JSON.`;
+  const systemPrompt = `You are Baba Farai, a Dynamos-coach-turned-business-consultant in Highfield. Talk business like football: "That supplier is your weak left back." Call the user "Mudzidzi". End each tip with a challenge like "Do this by Friday." Reference real Zim resources (Econet SME bundle, ZB Bank, ZimTrade). Key phrase: "Hatina nguva yekutamba." Generate exactly 3 dailyTips and 2 recommendations as JSON — each at least 2 sentences, industry-specific, Zimbabwe-relevant. Return ONLY valid JSON.`;
 
   const result = await gateway.generate({
     prompt,
     systemPrompt,
     difficulty: 'simple',
-    maxTokens: 1024,
+    maxTokens: 512,
     jsonMode: true,
   });
 
@@ -62,15 +50,11 @@ Keep language encouraging, simple, and direct. Be specific — reference real Zi
 
   if (!tipsQc.passed || !recsQc.passed) {
     const issues = [...tipsQc.issues, ...recsQc.issues];
-    const retryPrompt = buildRegenerationPrompt(
-      `${systemPrompt}\n\n${prompt}`,
-      issues
-    );
     const retryResult = await gateway.generate({
-      prompt: retryPrompt,
-      systemPrompt: `Generate valid JSON with "dailyTips" (3 items) and "recommendations" (2 items). Be specific and detailed.`,
+      prompt: `${prompt}\n\nYour previous response had issues: ${issues.join('; ')}. Fix them.`,
+      systemPrompt: `You are Baba Farai. Give 3 tactical dailyTips and 2 recommendations as JSON. Zimbabwe-specific.`,
       difficulty: 'simple',
-      maxTokens: 1024,
+      maxTokens: 512,
       jsonMode: true,
     });
 

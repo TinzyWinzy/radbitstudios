@@ -38,6 +38,7 @@ import { OnboardingWizard } from "@/components/onboarding-wizard";
 import { UsageSummary } from "@/components/usage-summary";
 import { RecentActivity } from "@/components/recent-activity";
 import { MaturityOverview } from "@/components/maturity-overview";
+import { ProjectProgress } from "@/components/project-progress";
 import { generateDashboardInsights } from "@/ai/flows/generate-dashboard-insights";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
@@ -51,6 +52,7 @@ import { cacheDashboardData, getCachedDashboardData } from "@/services/offline";
 import { watchNetworkStatus } from "@/services/offline";
 import type { UpgradeInfo } from "@/services/feature-gate";
 import type { AppUser } from "@/types/user";
+import type { Project, ProjectTask } from "@/types/project";
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
@@ -112,6 +114,8 @@ export default function DashboardPage() {
   const [retryTrigger, setRetryTrigger] = useState(0);
   const [isOffline, setIsOffline] = useState(false);
   const [insightsGeneratedAt, setInsightsGeneratedAt] = useState<number | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [projectTasks, setProjectTasks] = useState<Record<string, ProjectTask[]>>({});
   const upgradeShown = useRef(false);
 
   const hasCompletedProfile = !!(user && user.businessName && user.industry);
@@ -268,8 +272,31 @@ export default function DashboardPage() {
       return;
     }
 
+    const fetchProjects = async () => {
+      if (!user) return;
+      try {
+        const res = await fetch(`/api/projects?clientId=${user.uid}`);
+        const json = await res.json();
+        if (json.projects && mounted) {
+          setProjects(json.projects);
+          const tasksPromises = json.projects.map((p: Project) =>
+            fetch(`/api/projects/${p.id}`).then(r => r.json()).catch(() => ({ tasks: [] }))
+          );
+          const tasksResults = await Promise.all(tasksPromises);
+          const tasksMap: Record<string, ProjectTask[]> = {};
+          json.projects.forEach((p: Project, i: number) => {
+            tasksMap[p.id] = tasksResults[i]?.tasks || [];
+          });
+          if (mounted) setProjectTasks(tasksMap);
+        }
+      } catch (e) {
+        console.warn("[Dashboard] fetchProjects failed:", e);
+      }
+    };
+
     fetchDashboardInsights();
     fetchAssessmentData();
+    fetchProjects();
 
     return () => { mounted = false; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -292,6 +319,26 @@ export default function DashboardPage() {
       </div>
 
       <OnboardingWizard />
+
+      {projects.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Active Projects</h2>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/dashboard/projects">View All</Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {projects.slice(0, 3).map((project) => (
+              <ProjectProgress
+                key={project.id}
+                project={project}
+                tasks={projectTasks[project.id] || []}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {isOffline && (
         <div className="flex items-center gap-2 p-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-400 text-sm">

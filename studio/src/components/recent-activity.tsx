@@ -13,6 +13,7 @@ const TYPE_ICONS: Record<string, React.ReactNode> = {
   news: <Newspaper className="h-4 w-4" />,
   community: <MessageCircle className="h-4 w-4" />,
   system: <Sparkles className="h-4 w-4" />,
+  project: <Briefcase className="h-4 w-4" />,
 };
 
 interface Props {

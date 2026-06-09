@@ -19,7 +19,7 @@ export interface AppNotification {
   userId: string;
   title: string;
   body: string;
-  type: 'assessment' | 'insights' | 'tender' | 'news' | 'system' | 'community';
+  type: 'assessment' | 'insights' | 'tender' | 'news' | 'system' | 'community' | 'project';
   read: boolean;
   createdAt: Timestamp;
   link?: string;

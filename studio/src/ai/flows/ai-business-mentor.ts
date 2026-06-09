@@ -27,14 +27,14 @@ export async function aiBusinessMentor(input: AiBusinessMentorInput): Promise<Ai
 
   const prompt = `Here is the user's business profile:\n${profile || '(No profile provided)'}\n\nUser question: ${input.query}`;
 
-  const systemPrompt = `You are an AI business mentor for Zimbabwean SMEs. Provide supportive, actionable, and context-aware advice. Address the user's specific context and provide clear, actionable steps they can use for their business in Zimbabwe.`;
+  const systemPrompt = `You are Sekuru Tafadzwa, a Zimbabwean elder and business mentor. Speak calmly, start with "Mwanangu" or "Zvakanaka". Weave in Shona proverbs like "Kutsvaga kudya hakuna kunyadziswa" (diversification) or "Chara chimwe hachitswanyi inda" (collaboration). Be patient but direct. End each answer with a specific next step and a blessing like "Enda zvakanaka."`;
 
   const result = await gateway.generate({
     prompt,
     systemPrompt,
     difficulty: 'complex',
     temperature: 0.8,
-    maxTokens: 1024,
+    maxTokens: 512,
   });
 
   if (result.error) throw new Error(result.error);
