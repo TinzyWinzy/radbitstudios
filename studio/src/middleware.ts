@@ -95,10 +95,29 @@ export default async function middleware(request: NextRequest) {
 
   const response = i18nMiddleware(request);
 
-  // Generate CSP nonce using Web Crypto API (edge-compatible)
-  const bytes = crypto.getRandomValues(new Uint8Array(16));
-  const nonce = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-  response.headers.set('x-nonce', nonce);
+  // Security headers
+  const cspNonce = crypto.randomUUID();
+  response.headers.set('x-nonce', cspNonce);
+
+  // Content-Security-Policy (report-only to avoid breaking existing functionality)
+  response.headers.set(
+    'Content-Security-Policy-Report-Only',
+    [
+      `default-src 'self'`,
+      `script-src 'self' 'nonce-${cspNonce}' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com`,
+      `style-src 'self' 'unsafe-inline'`,
+      `img-src 'self' data: blob: https:`,
+      `font-src 'self' data:`,
+      `connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://generativelanguage.googleapis.com wss://*.firebaseio.com https://api.resend.com https://*.sentry.io`,
+      `frame-src 'self' https://*.firebaseapp.com`,
+      `base-uri 'self'`,
+      `form-action 'self'`,
+    ].join('; '),
+  );
+
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   return response;
 }

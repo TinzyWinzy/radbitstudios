@@ -35,6 +35,10 @@ jobs:
         working-directory: studio
       - run: npm run typecheck
         working-directory: studio
+      - name: Dependency vulnerability check
+        run: npm audit --audit-level=high
+        working-directory: studio
+        continue-on-error: true
 
   test:
     name: Tests
