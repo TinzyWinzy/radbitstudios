@@ -71,6 +71,13 @@ async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolea
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Block bot probes for non-existent file types (PHP, ASP, JSP, etc.)
+  // These are automated scanners — return 404 immediately without app processing
+  const probeExtensions = /\.(php\d*|asp|aspx|jsp|jspx|cgi|pl|py|rb|phtml|shtml|htaccess|env|sql|bak|old|swp)$/i;
+  if (probeExtensions.test(pathname)) {
+    return new NextResponse(null, { status: 404, statusText: 'Not Found' });
+  }
+
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
   const isAdminOnly = adminOnlyPaths.some(path => pathname.startsWith(path));
 
