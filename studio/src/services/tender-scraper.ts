@@ -199,14 +199,14 @@ function determineStatus(closingDate: Date | null): Tender['status'] {
   return 'open';
 }
 
-function enrichTender(raw: Omit<Tender, 'id' | 'sourceName' | 'publishedAt' | 'status' | 'processedAt' | 'scrapedAt'> & { region?: string; sourceName?: string }): Tender {
+function enrichTender(raw: Omit<Tender, 'id' | 'sourceName' | 'publishedAt' | 'status' | 'processedAt' | 'scrapedAt'> & { region?: string; sourceName?: string; publishedAt?: Date }): Tender {
   const sector = raw.sector || classifySector(raw.title + ' ' + raw.description);
   return {
     ...raw,
     region: raw.region || 'Zimbabwe',
     id: generateId(raw.title + raw.sourceUrl + (raw.closingDate ? raw.closingDate.toISOString() : '')),
     sourceName: raw.sourceName || 'Government Tenders Portal',
-    publishedAt: new Date(),
+    publishedAt: raw.publishedAt || new Date(),
     sector,
     status: determineStatus(raw.closingDate),
     processedAt: new Date(),
@@ -576,36 +576,32 @@ async function scrapeStanbicBank(): Promise<Tender[]> {
   const results: Tender[] = [];
 
   try {
-    const r = await axios.get('https://www.stanbicbank.co.zw/', {
+    const r = await axios.get('https://www.stanbicbank.co.zw/about-us/procurement', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
 
-    const tenderLinks = $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|vacancy|opportunity/i));
-    }).map((_, el) => ({ text: $(el).text().trim(), href: $(el).attr('href') ?? '' })).get();
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
+      const fullHref = href.startsWith('http') ? href : `https://www.stanbicbank.co.zw${href}`;
+      results.push(enrichTender({
+        title: text,
+        description: `Stanbic Bank procurement: ${text}`,
+        organization: 'Stanbic Bank Zimbabwe',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: 'Financial Services',
+        category: 'Banking Procurement',
+        requirements: [],
+        region: 'Zimbabwe',
+      }));
+    });
 
-    for (const link of tenderLinks.slice(0, 10)) {
-      const fullHref = link.href.startsWith('http') ? link.href : `https://www.stanbicbank.co.zw${link.href}`;
-      if (link.text && link.text.length > 3 && link.href !== '#') {
-        results.push(enrichTender({
-          title: link.text,
-          description: `Stanbic Bank procurement: ${link.text}`,
-          organization: 'Stanbic Bank Zimbabwe',
-          sourceUrl: fullHref,
-          closingDate: null,
-          value: null,
-          sector: 'Financial Services',
-          category: 'Banking Procurement',
-          requirements: [],
-          region: 'Zimbabwe',
-        }));
-      }
-    }
-
-    console.log(`[TenderScraper] Stanbic Bank: ${results.length} tender links`);
+    console.log(`[TenderScraper] Stanbic Bank: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] Stanbic Bank failed: ${e.message.slice(0, 100)}`);
   }
@@ -877,24 +873,20 @@ async function scrapeUSAID(): Promise<Tender[]> {
 async function scrapeCBZ(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.cbz.co.zw/', {
+    const r = await axios.get('https://www.cbz.co.zw/tenders', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|rfq/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.cbz.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `CBZ Bank procurement: ${text}`,
@@ -909,7 +901,7 @@ async function scrapeCBZ(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] CBZ: ${results.length} tender links`);
+    console.log(`[TenderScraper] CBZ: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] CBZ failed: ${e.message?.slice(0, 100)}`);
   }
@@ -919,24 +911,20 @@ async function scrapeCBZ(): Promise<Tender[]> {
 async function scrapeEconet(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.econet.co.zw/', {
+    const r = await axios.get('https://www.econet.co.zw/procurement/', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|supplier|vendor/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.econet.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `Econet Wireless procurement: ${text}`,
@@ -951,7 +939,7 @@ async function scrapeEconet(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] Econet: ${results.length} tender links`);
+    console.log(`[TenderScraper] Econet: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] Econet failed: ${e.message?.slice(0, 100)}`);
   }
@@ -961,24 +949,20 @@ async function scrapeEconet(): Promise<Tender[]> {
 async function scrapeNetOne(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.netone.co.zw/', {
+    const r = await axios.get('https://www.netone.co.zw/procurement', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|supplier|vendor/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.netone.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `NetOne procurement: ${text}`,
@@ -993,7 +977,7 @@ async function scrapeNetOne(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] NetOne: ${results.length} tender links`);
+    console.log(`[TenderScraper] NetOne: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] NetOne failed: ${e.message?.slice(0, 100)}`);
   }
@@ -1003,24 +987,20 @@ async function scrapeNetOne(): Promise<Tender[]> {
 async function scrapeTelOne(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.telone.co.zw/', {
+    const r = await axios.get('https://www.telone.co.zw/procurement', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|supplier|vendor/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.telone.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `TelOne procurement: ${text}`,
@@ -1035,7 +1015,7 @@ async function scrapeTelOne(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] TelOne: ${results.length} tender links`);
+    console.log(`[TenderScraper] TelOne: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] TelOne failed: ${e.message?.slice(0, 100)}`);
   }
@@ -1045,24 +1025,20 @@ async function scrapeTelOne(): Promise<Tender[]> {
 async function scrapeFBC(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.fbc.co.zw/', {
+    const r = await axios.get('https://www.fbc.co.zw/tenders', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|rfq/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.fbc.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `FBC Bank procurement: ${text}`,
@@ -1077,7 +1053,7 @@ async function scrapeFBC(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] FBC: ${results.length} tender links`);
+    console.log(`[TenderScraper] FBC: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] FBC failed: ${e.message?.slice(0, 100)}`);
   }
@@ -1087,24 +1063,20 @@ async function scrapeFBC(): Promise<Tender[]> {
 async function scrapeNMB(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.nmbz.co.zw/', {
+    const r = await axios.get('https://www.nmbz.co.zw/about/procurement', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|rfq/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.nmbz.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `NMB Bank procurement: ${text}`,
@@ -1119,7 +1091,7 @@ async function scrapeNMB(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] NMB: ${results.length} tender links`);
+    console.log(`[TenderScraper] NMB: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] NMB failed: ${e.message?.slice(0, 100)}`);
   }
@@ -1129,24 +1101,20 @@ async function scrapeNMB(): Promise<Tender[]> {
 async function scrapeCABS(): Promise<Tender[]> {
   const results: Tender[] = [];
   try {
-    const r = await axios.get('https://www.cabs.co.zw/', {
+    const r = await axios.get('https://www.cabs.co.zw/tenders', {
       timeout: 15000,
       headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
     });
     const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
     const seen = new Set<string>();
 
-    $('a[href]').filter((_, el) => {
+    $('table tbody tr, table tr, .file a[href], a[href$=".pdf"], .tender-item a[href]').each((_, el) => {
       const href = $(el).attr('href') || '';
-      return Boolean(href.match(/tender|procurement|rfq/i));
-    }).each((_, el) => {
-      const text = $(el).text().trim();
-      const href = $(el).attr('href') || '';
-      if (!text || text.length < 3) return;
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
       const fullHref = href.startsWith('http') ? href : `https://www.cabs.co.zw${href}`;
       if (seen.has(fullHref.toLowerCase())) return;
       seen.add(fullHref.toLowerCase());
-
       results.push(enrichTender({
         title: text,
         description: `CABS procurement: ${text}`,
@@ -1161,7 +1129,7 @@ async function scrapeCABS(): Promise<Tender[]> {
       }));
     });
 
-    console.log(`[TenderScraper] CABS: ${results.length} tender links`);
+    console.log(`[TenderScraper] CABS: ${results.length} procurement items`);
   } catch (e: any) {
     console.warn(`[TenderScraper] CABS failed: ${e.message?.slice(0, 100)}`);
   }

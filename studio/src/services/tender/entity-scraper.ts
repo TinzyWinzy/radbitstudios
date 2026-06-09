@@ -1,6 +1,7 @@
 import { PROCURING_ENTITIES, type ProcuringEntity } from '@/data/procuring-entities';
 import { withRateLimit } from '@/lib/scraper-cache';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import crypto from 'crypto';
 
 export interface ScrapedTender {
   title: string;
@@ -16,12 +17,14 @@ export interface ScrapedTender {
 
 function extractLinks(html: string, baseUrl: string): { text: string; href: string }[] {
   const results: { text: string; href: string }[] = [];
-  const regex = /<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
+  const regex = /<a[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
   let match;
   while ((match = regex.exec(html)) !== null) {
-    const href = match[1].startsWith('http') ? match[1] : `${baseUrl.replace(/\/$/, '')}/${match[1].replace(/^\//, '')}`;
-    const text = match[2].replace(/<[^>]*>/g, '').trim();
-    if (text && href) results.push({ text, href });
+    const href = match[2];
+    if (!href || href === '#' || href === '/') continue;
+    const fullHref = href.startsWith('http') ? href : `${baseUrl.replace(/\/$/, '')}/${href.replace(/^\//, '')}`;
+    const text = match[3].replace(/<[^>]*>/g, '').trim();
+    if (text && fullHref) results.push({ text, href: fullHref });
   }
   return results;
 }
@@ -41,7 +44,10 @@ async function scrapeEntityHtml(entity: ProcuringEntity): Promise<ScrapedTender[
     const tenders: ScrapedTender[] = [];
     const links = extractLinks(html, entity.tenderUrl);
 
+    const seenHrefs = new Set<string>();
     for (const link of links) {
+      if (seenHrefs.has(link.href.toLowerCase())) continue;
+      seenHrefs.add(link.href.toLowerCase());
       const hasKeyword = !entity.keywords || entity.keywords.some(k =>
         link.text.toLowerCase().includes(k.toLowerCase()),
       );
@@ -134,18 +140,25 @@ export async function scrapeAllEntities(): Promise<ScrapedTender[]> {
   return allTenders;
 }
 
+function deterministicTenderId(tender: ScrapedTender): string {
+  return crypto.createHash('sha256')
+    .update(`${tender.sourceEntityId}:${tender.sourceUrl}:${tender.title}`)
+    .digest('hex')
+    .slice(0, 32);
+}
+
 export async function storeEntityTenders(tenders: ScrapedTender[]): Promise<void> {
   const batch = adminDb.batch();
   const now = new Date();
 
   for (const tender of tenders) {
-    const docId = `${tender.sourceEntityId}_${now.getTime()}_${Math.random().toString(36).slice(2, 6)}`;
+    const docId = deterministicTenderId(tender);
     const ref = adminDb.collection('scraped_items').doc(docId);
     batch.set(ref, {
       ...tender,
       publishedAt: tender.publishedAt,
       fetchedAt: now,
-    });
+    }, { merge: true });
   }
 
   await batch.commit();

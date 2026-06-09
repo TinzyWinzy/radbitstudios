@@ -467,7 +467,7 @@ async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
 // ── HTML scraping ──────────────────────────────────────────────────────────
 async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   const rateKey = `html:${feed.sourceName}`;
-  const { allowed } = await checkRateLimit(rateKey, 'rss');
+  const { allowed } = await checkRateLimit(rateKey, 'html');
   if (!allowed) {
     console.warn(`[NewsScraper] Rate limited for ${feed.sourceName}, skipping.`);
     return [];

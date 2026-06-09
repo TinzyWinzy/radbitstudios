@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import crypto from 'crypto';
 
 const cache = new Map<string, { data: unknown; expiresAt: number }>();
 const getCached = <T>(key: string): T | null => {
@@ -104,8 +105,8 @@ describe('news-scraper: extractIndustryTags', () => {
   });
 });
 
-describe('news-scraper: generateId', () => {
-  const generateId = (url: string): string => Buffer.from(url).toString('base64url').slice(0, 32);
+describe('news-scraper: generateId (matches real MD5 implementation)', () => {
+  const generateId = (url: string): string => crypto.createHash('md5').update(url).digest('hex');
 
   it('generates consistent IDs for same URL', () => {
     expect(generateId('https://example.com/article-1')).toBe(generateId('https://example.com/article-1'));
@@ -117,71 +118,100 @@ describe('news-scraper: generateId', () => {
     expect(id1).not.toBe(id2);
   });
 
-  it('produces same ID for URL with/without trailing slash', () => {
-    expect(generateId('https://example.com/article')).toBe(generateId('https://example.com/article/'));
-  });
-
-  it('truncates to 32 characters', () => {
-    const id = generateId('https://example.com/very/long/path/to/article/' + 'x'.repeat(100));
-    expect(id.length).toBe(32);
+  it('produces 32-character hex hash', () => {
+    const id = generateId('https://example.com/article');
+    expect(id).toHaveLength(32);
+    expect(/^[0-9a-f]{32}$/.test(id)).toBe(true);
   });
 });
 
-describe('tender-scraper: enrichTender', () => {
-  const enrichTender = (raw: any): any => {
-    const now = new Date();
-    const published = raw.publishedAt || now;
-    const closing = raw.closingDate ? new Date(raw.closingDate) : null;
-    let status: string;
-    if (!closing) {
-      status = 'open';
-    } else {
-      const days = (closing.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
-      status = days < 0 ? 'closed' : days < 7 ? 'closing_soon' : 'open';
+describe('tender-scraper: enrichTender (matches real implementation)', () => {
+  const SECTOR_KEYWORDS: Record<string, string[]> = {
+    'Construction & Engineering': ['construction', 'building', 'infrastructure'],
+    'Information Technology': ['IT', 'software', 'computer'],
+    'Professional Services': ['consulting', 'legal', 'audit'],
+    'Financial Services': ['banking', 'insurance', 'finance'],
+  };
+
+  const classifySector = (text: string): string => {
+    const lower = text.toLowerCase();
+    for (const [sector, keywords] of Object.entries(SECTOR_KEYWORDS)) {
+      if (keywords.some(k => lower.includes(k))) return sector;
     }
+    return 'General Services';
+  };
+
+  const determineStatus = (closingDate: Date | null): string => {
+    if (!closingDate) return 'open';
+    const daysLeft = Math.ceil((closingDate.getTime() - Date.now()) / 86400000);
+    if (daysLeft < 0) return 'closed';
+    if (daysLeft <= 7) return 'closing_soon';
+    return 'open';
+  };
+
+  const generateId = (text: string): string => crypto.createHash('sha256').update(text).digest('hex').slice(0, 32);
+
+  const enrichTender = (raw: any): any => {
+    const sector = raw.sector || classifySector(raw.title + ' ' + (raw.description || ''));
     return {
-      id: raw.id || '',
-      title: raw.title || '',
-      description: raw.description || '',
-      organization: raw.organization || '',
-      sourceUrl: raw.sourceUrl || '',
-      sourceName: raw.sourceName || 'proc.gov.zw',
-      publishedAt: published,
-      closingDate: closing,
-      value: raw.value || null,
-      sector: raw.sector || 'General Services',
-      category: raw.category || 'Works',
+      ...raw,
       region: raw.region || 'Zimbabwe',
-      requirements: raw.requirements || [],
-      status,
-      processedAt: now,
-      scrapedAt: now,
+      id: generateId(raw.title + raw.sourceUrl + (raw.closingDate ? new Date(raw.closingDate).toISOString() : '')),
+      sourceName: raw.sourceName || 'Government Tenders Portal',
+      publishedAt: raw.publishedAt || new Date(),
+      sector,
+      status: determineStatus(raw.closingDate ? new Date(raw.closingDate) : null),
+      processedAt: new Date(),
+      scrapedAt: new Date(),
     };
   };
 
   it('sets open status for future closing dates', () => {
-    const t = enrichTender({ id: '1', title: 'Test', publishedAt: new Date(), closingDate: new Date(Date.now() + 86400000 * 30) });
+    const t = enrichTender({ title: 'Test', sourceUrl: 'http://test.com', closingDate: new Date(Date.now() + 86400000 * 30) });
     expect(t.status).toBe('open');
   });
 
   it('sets closing_soon for tenders closing within 7 days', () => {
-    const t = enrichTender({ id: '2', title: 'Test', publishedAt: new Date(), closingDate: new Date(Date.now() + 86400000 * 3) });
+    const t = enrichTender({ title: 'Test', sourceUrl: 'http://test.com', closingDate: new Date(Date.now() + 86400000 * 3) });
     expect(t.status).toBe('closing_soon');
   });
 
   it('sets closed for past closing dates', () => {
-    const t = enrichTender({ id: '3', title: 'Test', publishedAt: new Date(), closingDate: new Date(Date.now() - 86400000) });
+    const t = enrichTender({ title: 'Test', sourceUrl: 'http://test.com', closingDate: new Date(Date.now() - 86400000) });
     expect(t.status).toBe('closed');
   });
 
   it('sets open when closingDate is null', () => {
-    const t = enrichTender({ id: '4', title: 'Test', publishedAt: new Date() });
+    const t = enrichTender({ title: 'Test', sourceUrl: 'http://test.com' });
     expect(t.status).toBe('open');
   });
 
-  it('defaults sector and category', () => {
-    const t = enrichTender({ id: '5', title: 'Test' });
+  it('preserves publishedAt when provided', () => {
+    const pubDate = new Date('2026-01-15');
+    const t = enrichTender({ title: 'Test', sourceUrl: 'http://test.com', publishedAt: pubDate });
+    expect(t.publishedAt).toEqual(pubDate);
+  });
+
+  it('falls back to now when publishedAt missing', () => {
+    const before = Date.now();
+    const t = enrichTender({ title: 'Test', sourceUrl: 'http://test.com' });
+    expect(t.publishedAt.getTime()).toBeGreaterThanOrEqual(before - 100);
+  });
+
+  it('classifies sector from title', () => {
+    const t = enrichTender({ title: 'IT Software Development Tender', sourceUrl: 'http://test.com' });
+    expect(t.sector).toBe('Information Technology');
+  });
+
+  it('defaults to General Services when sector unknown', () => {
+    const t = enrichTender({ title: 'Miscellaneous Items', sourceUrl: 'http://test.com' });
     expect(t.sector).toBe('General Services');
-    expect(t.category).toBe('Works');
+  });
+
+  it('generates deterministic IDs', () => {
+    const raw = { title: 'Same Title', sourceUrl: 'http://test.com' };
+    const t1 = enrichTender(raw);
+    const t2 = enrichTender(raw);
+    expect(t1.id).toBe(t2.id);
   });
 });

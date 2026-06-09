@@ -38,6 +38,7 @@ export function cacheStats(): { size: number; keys: string[] } {
 const DEFAULT_LIMITS: Record<string, { maxRequests: number; window: string }> = {
   default: { maxRequests: 10, window: '60 s' },
   rss: { maxRequests: 5, window: '60 s' },
+  html: { maxRequests: 5, window: '60 s' },
   api: { maxRequests: 30, window: '60 s' },
   tender: { maxRequests: 3, window: '60 s' },
   newsScrape: { maxRequests: 1, window: '4 h' },
