@@ -1,4 +1,6 @@
 import { checkUpstashRateLimit } from '@/lib/upstash-ratelimit';
+import fs from 'fs';
+import path from 'path';
 
 interface CacheEntry<T> {
   data: T;
@@ -86,4 +88,70 @@ export async function withCache<T>(
   const data = await fn();
   setCached(key, data, ttlMs);
   return data;
+}
+
+const SCRAPE_TRACKER_FILE = path.join(process.cwd(), 'data', 'scrape-tracker.json');
+
+interface ScrapeTracker {
+  [sourceKey: string]: {
+    lastScrapedAt: string;
+    itemCount: number;
+    success: boolean;
+  };
+}
+
+function loadScrapeTracker(): ScrapeTracker {
+  try {
+    if (fs.existsSync(SCRAPE_TRACKER_FILE)) {
+      return JSON.parse(fs.readFileSync(SCRAPE_TRACKER_FILE, 'utf-8'));
+    }
+  } catch { /* ignore */ }
+  return {};
+}
+
+function saveScrapeTracker(tracker: ScrapeTracker): void {
+  try {
+    const dir = path.dirname(SCRAPE_TRACKER_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(SCRAPE_TRACKER_FILE, JSON.stringify(tracker, null, 2), 'utf-8');
+  } catch { /* ignore */ }
+}
+
+export function shouldScrapeSource(sourceKey: string, minIntervalMs: number): boolean {
+  const tracker = loadScrapeTracker();
+  const entry = tracker[sourceKey];
+  if (!entry) return true;
+  const elapsed = Date.now() - new Date(entry.lastScrapedAt).getTime();
+  return elapsed >= minIntervalMs;
+}
+
+export function recordScrapeAttempt(sourceKey: string, itemCount: number, success: boolean): void {
+  const tracker = loadScrapeTracker();
+  tracker[sourceKey] = {
+    lastScrapedAt: new Date().toISOString(),
+    itemCount,
+    success,
+  };
+  saveScrapeTracker(tracker);
+}
+
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  options: { maxAttempts?: number; baseDelayMs?: number; label?: string } = {},
+): Promise<T> {
+  const { maxAttempts = 2, baseDelayMs = 1000, label = 'operation' } = options;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error: unknown) {
+      lastError = error;
+      if (attempt < maxAttempts) {
+        const delay = baseDelayMs * Math.pow(2, attempt - 1);
+        console.warn(`[Retry] ${label} attempt ${attempt}/${maxAttempts} failed, retrying in ${delay}ms`);
+        await new Promise(r => setTimeout(r, delay));
+      }
+    }
+  }
+  throw lastError;
 }

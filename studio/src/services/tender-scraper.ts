@@ -6,6 +6,7 @@ import { saveTenders, loadTenders, safeTenderFromDb, saveLog } from '@/lib/scrap
 import { scoreBatch } from '@/services/scoring/content-scorer';
 import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { scrapeAllEntities, storeEntityTenders } from '@/services/tender/entity-scraper';
 
 export interface Tender {
   id: string;
@@ -40,7 +41,7 @@ const SECTOR_KEYWORDS: Record<string, string[]> = {
   'Telecommunications': ['telecom', 'fiber', 'communication', 'broadband', 'antenna', 'satellite'],
   'Education & Training': ['education', 'training', 'school', 'university', 'curriculum', 'books', 'stationery'],
   'Manufacturing': ['manufacturing', 'production', 'factory', 'assembly', 'textile', 'processing'],
-  'Retail & Wholesale': ['retail', 'wholesale', 'supplies', 'procurement', 'inventory', 'distribution'],
+  'Retail & Wholesale': ['retail', 'wholesale', 'inventory', 'distribution', 'supermarket', 'grocery', 'shop', 'store', 'merchandise'],
   'Financial Services': ['banking', 'insurance', 'finance', 'investment', 'credit', 'leasing'],
 };
 
@@ -178,6 +179,35 @@ const MOCK_TENDERS: Omit<Tender, 'id' | 'sourceName' | 'publishedAt' | 'status' 
     requirements: ['Insurance broker license', 'Fleet experience', 'Tax clearance'],
   },
 ];
+
+const NON_TENDER_PATTERNS = [
+  'download', 'policy', 'manual', 'guideline', 'procedure', 'handbook',
+  'standard bidding', 'procurement policy', 'procurement manual',
+  'code of conduct', 'terms of reference', 'appn', 'annual report',
+  'newsletter', 'brochure', 'catalogue', 'price list',
+];
+
+const NAVIGATION_PATTERNS = [
+  'home', 'contact us', 'about us', 'our services', 'sitemap',
+  'login', 'register', 'sign in', 'sign up', 'subscribe',
+  'procurement', 'tendering', 'tenders', 'rfq', 'rfi', 'eoi',
+  'procurement notice', 'current tenders', 'open tenders',
+];
+
+function isQualityTender(title: string, description: string): boolean {
+  const text = `${title} ${description}`.toLowerCase();
+  if (title.length < 8) return false;
+  if (NON_TENDER_PATTERNS.some(p => text.startsWith(p) || text.includes(` ${p} `))) return false;
+  if (NAVIGATION_PATTERNS.some(p => {
+    const lower = title.toLowerCase().trim();
+    return lower === p || lower.endsWith(` ${p}`) || lower === p.replace(/ /g, ' ');
+  })) return false;
+  if (title.match(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx)$/i)) return false;
+  const mayBeTender = text.match(/(?:tender|bid|rfq|rfi|eoi|invitation|supply|delivery|construction|consultancy|procurement of)/i);
+  if (!mayBeTender) return false;
+  if (description.length < 10 && title.match(/^(download|view|read|open)/i)) return false;
+  return true;
+}
 
 function generateId(text: string): string {
   return crypto.createHash('sha256').update(text).digest('hex').slice(0, 32);
@@ -1653,15 +1683,31 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, c
     new Map(allTenders.map(t => [t.id, t])).values()
   );
 
-  if (uniqueTenders.length > 0) {
+  const qualityTenders = uniqueTenders.filter(t => isQualityTender(t.title, t.description));
+  const removedCount = uniqueTenders.length - qualityTenders.length;
+  if (removedCount > 0) {
+    console.log(`[TenderScraper] Filtered out ${removedCount} non-tender items`);
+  }
+
+  // Also scrape entity-specific tenders
+  try {
+    const entityTenders = await scrapeAllEntities();
+    if (entityTenders.length > 0) {
+      console.log(`[TenderScraper] Entity scraper: ${entityTenders.length} tenders found`);
+      await storeEntityTenders(entityTenders);
+    }
+  } catch (e: any) {
+    console.warn(`[TenderScraper] Entity scraper failed: ${e.message?.slice(0, 100)}`);
+  }
+
+  if (qualityTenders.length > 0) {
     try {
-      await saveTenders(uniqueTenders);
-      results.scraped = uniqueTenders.length;
+      await saveTenders(qualityTenders);
+      results.scraped = qualityTenders.length;
       results.errors = 0;
       console.log(`[TenderScraper] Saved ${results.scraped} tenders`);
 
-      // Score newly saved tenders (fire-and-forget)
-      scoreBatch(uniqueTenders.map(t => ({
+      scoreBatch(qualityTenders.map(t => ({
         id: t.id,
         title: t.title,
         summary: t.description || '',
@@ -1684,13 +1730,13 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, c
 
       try { await saveLog('tenders', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
     } catch (err: any) {
-      results.errors = uniqueTenders.length;
+      results.errors = qualityTenders.length;
       console.error('[TenderScraper] Write error:', err);
       try { await saveLog('tenders', 0, 'error', err.message); } catch { /* saveLog failed, ignore */ }
     }
   }
 
-  const result = { ...results, tenders: uniqueTenders.slice(0, 20).map(t => ({
+  const result = { ...results, tenders: qualityTenders.slice(0, 20).map(t => ({
     id: t.id,
     title: t.title,
     description: t.description,

@@ -364,12 +364,13 @@ const FEEDS: FeedConfig[] = [
 
 // ── rss-parser with custom request headers ──────────────────────────────────
 const rssParser = new parser({
-  timeout: 15000,
+  timeout: 30000,
   requestOptions: {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
       'Accept': 'application/rss+xml, application/xml, text/xml, */*',
     },
+    timeout: 30000,
   },
 });
 
@@ -378,6 +379,26 @@ const SECTORS = [
   'Healthcare', 'Education', 'Hospitality', 'Tourism', 'Transport', 'Construction',
   'Creative', 'Media', 'Professional Services', 'Mining', 'Energy', 'Telecommunications',
 ];
+
+const SECTOR_SYNONYMS: Record<string, string[]> = {
+  Agriculture: ['farming', 'crop', 'livestock', 'agro', 'seed', 'fertilizer', 'farm', 'wheat', 'maize', 'tobacco', 'horticulture'],
+  Retail: ['shop', 'store', 'wholesale', 'supermarket', 'grocery', 'mall', 'vendor', 'merchandise'],
+  Manufacturing: ['factory', 'production', 'plant', 'processing', 'textile', 'assembly', 'industrial'],
+  Technology: ['tech', 'digital', 'software', 'hardware', 'app', 'platform', 'AI', 'startup', 'fintech', 'cyber', 'blockchain', 'SaaS', 'mobile', 'data', 'cloud', 'ICT', 'EcoCash', 'TelOne', 'NetOne', 'internet', 'broadband'],
+  'Financial Services': ['bank', 'finance', 'insurance', 'investment', 'fintech', 'RBZ', 'reserve bank', 'forex', 'inflation', 'stock', 'market', 'trading', 'dividend', 'loan', 'credit', 'ZiG', 'ZWG', 'USD', 'deposit', 'interest rate', 'MPU', 'monetary policy'],
+  Healthcare: ['health', 'medical', 'hospital', 'clinic', 'pharmaceutical', 'medicine', 'doctor', 'nurse', 'patient', 'disease', 'HIV', 'malaria', 'surgery', 'drug'],
+  Education: ['school', 'university', 'college', 'education', 'training', 'student', 'teacher', 'curriculum', 'scholarship', 'academy'],
+  Hospitality: ['hotel', 'lodge', 'resort', 'restaurant', 'catering', 'accommodation'],
+  Tourism: ['tourism', 'travel', 'tourist', 'safari', 'wildlife', 'conservation', 'national park'],
+  Transport: ['transport', 'road', 'railway', 'rail', 'airport', 'aviation', 'bus', 'fleet', 'vehicle', 'logistics', 'freight', 'shipping'],
+  Construction: ['construction', 'building', 'infrastructure', 'civil', 'road', 'bridge', 'housing', 'real estate', 'property', 'contractor'],
+  Creative: ['creative', 'art', 'design', 'film', 'music', 'photography', 'fashion', 'entertainment'],
+  Media: ['media', 'news', 'broadcast', 'television', 'radio', 'publishing', 'journalism', 'press'],
+  'Professional Services': ['consulting', 'legal', 'lawyer', 'audit', 'accounting', 'tax', 'advisory', 'survey', 'architect', 'engineering', 'management'],
+  Mining: ['mining', 'mine', 'gold', 'mineral', 'lithium', 'coal', 'chrome', 'platinum', 'diamond', 'quarry', 'excavation', 'mercury'],
+  Energy: ['energy', 'power', 'solar', 'electricity', 'generator', 'renewable', 'battery', 'grid', 'fuel', 'petrol', 'diesel', 'oil', 'gas', 'hydro'],
+  Telecommunications: ['telecom', 'telecommunication', 'mobile', 'network', 'fiber', 'broadband', 'Econet', 'NetOne', 'TelOne', 'Telecel', 'data', 'signal', 'coverage'],
+};
 
 const INDUSTRY_TO_SECTOR: Record<string, string[]> = {
   'Retail & Wholesale': ['Retail'],
@@ -397,20 +418,36 @@ const INDUSTRY_TO_SECTOR: Record<string, string[]> = {
   'Telecommunications': ['Telecommunications'],
 };
 
+const GLOBAL_CATEGORY_KEYWORDS: Record<string, string[]> = {
+  finance: ['bank', 'inflation', 'forex', 'currency', 'ZiG', 'ZWG', 'RBZ', 'reserve bank', 'interest rate', 'monetary policy', 'stock market', 'investment', 'loan', 'credit', 'insurance', 'dividend', 'MPU', 'treasury bill', 'bond', 'imf', 'world bank', 'afdb', 'budget', 'fiscal', 'deficit', 'revenue', 'tax', 'tariff', 'trade deficit', 'balance of payment'],
+  technology: ['tech', 'digital', 'software', 'hardware', 'AI', 'artificial intelligence', 'startup', 'cyber', 'blockchain', 'SaaS', 'mobile app', 'internet', 'data breach', 'cloud computing', 'fintech', 'ICT', 'EcoCash', 'TelOne', 'NetOne', 'broadband', 'innovation', 'patent', 'automation'],
+  policy: ['government', 'minister', 'parliament', 'cabinet', 'president', 'MP', 'senator', 'policy', 'legislation', 'bill', 'act', 'regulation', 'decree', 'executive order', 'ministry', 'department', 'commission', 'authority'],
+  regulatory: ['court', 'law', 'legal', 'judge', 'ruling', 'licence', 'license', 'ZERA', 'PRAZ', 'ZIMRA', 'SI', 'statutory instrument', 'compliance', 'regulatory', 'competition', 'tribunal', 'prosecution', 'verdict'],
+  business: ['SME', 'business', 'company', 'startup', 'enterprise', 'entrepreneur', 'corporate', 'partnership', 'venture', 'trade', 'commerce', 'export', 'import', 'market', 'industry', 'manufacturing', 'retail', 'wholesale', 'supply chain', 'franchise', 'merger', 'acquisition'],
+};
+
 function classifyCategory(title: string, content: string, mapping: Record<string, string[]>): NewsArticle['category'] {
   const text = `${title} ${content}`.toLowerCase();
   for (const [category, keywords] of Object.entries(mapping)) {
     if (keywords.some(k => text.includes(k.toLowerCase()))) return category as NewsArticle['category'];
+  }
+  for (const [category, keywords] of Object.entries(GLOBAL_CATEGORY_KEYWORDS)) {
+    if (keywords.some(k => text.includes(k))) return category as NewsArticle['category'];
   }
   return 'general';
 }
 
 function extractIndustryTags(title: string, content: string): string[] {
   const text = `${title} ${content}`.toLowerCase();
-  return SECTORS.filter(s =>
-    text.includes(s.toLowerCase()) ||
-    text.includes(s.split(' ')[0].toLowerCase())
-  );
+  const matched = new Set<string>();
+  for (const sector of SECTORS) {
+    if (text.includes(sector.toLowerCase())) { matched.add(sector); continue; }
+    const firstWord = sector.split(' ')[0].toLowerCase();
+    if (firstWord !== sector.toLowerCase() && text.includes(firstWord)) { matched.add(sector); continue; }
+    const synonyms = SECTOR_SYNONYMS[sector] || [];
+    if (synonyms.some(s => text.includes(s.toLowerCase()))) { matched.add(sector); continue; }
+  }
+  return Array.from(matched);
 }
 
 function generateId(url: string): string {
@@ -427,8 +464,17 @@ async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   }
 
   try {
+    const startTime = Date.now();
     const parsed = await rssParser.parseURL(feed.url);
+    const elapsed = Date.now() - startTime;
     const articles: NewsArticle[] = [];
+
+    if (!parsed.items || parsed.items.length === 0) {
+      console.warn(`[NewsScraper] RSS ${feed.sourceName} returned 0 items (${elapsed}ms)`);
+      return [];
+    }
+
+    console.log(`[NewsScraper] RSS ${feed.sourceName}: ${parsed.items.length} items fetched (${elapsed}ms)`);
 
     for (const item of parsed.items.slice(0, 15)) {
       if (!item.link || !item.title) continue;
@@ -456,15 +502,41 @@ async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
       });
     }
 
+    console.log(`[NewsScraper] RSS ${feed.sourceName}: ${articles.length} articles kept after filtering`);
     return articles;
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message.slice(0, 100) : String(error);
-    console.error(`[NewsScraper] RSS failed ${feed.sourceName}:`, message);
+    const message = error instanceof Error ? error.message.slice(0, 150) : String(error);
+    console.error(`[NewsScraper] RSS failed ${feed.sourceName} (${feed.url}): ${message}`);
     return [];
   }
 }
 
 // ── HTML scraping ──────────────────────────────────────────────────────────
+// Per-site HTML selectors for better scraping reliability
+const SITE_SELECTORS: Record<string, { container: string; title: string; link: string }> = {
+  'Bulawayo24 News': { container: '.story', title: 'a', link: 'a' },
+  'NewsDay Zimbabwe': { container: '.article-list article', title: 'h3 a', link: 'h3 a' },
+  'ZimLive': { container: '.post-title', title: 'a', link: 'a' },
+  'TechZim': { container: 'article', title: 'h2 a', link: 'h2 a' },
+  '263Chat': { container: '.entry-title', title: 'a', link: 'a' },
+};
+
+const FALLBACK_SELECTORS = [
+  'article a[href]',
+  '.post a[href]',
+  '.entry a[href]',
+  '.news-item a[href]',
+  '.story a[href]',
+  'h2 a[href]',
+  'h3 a[href]',
+  '.headline a[href]',
+  '.title a[href]',
+  'a[href*="/202"]',
+  '.latest-news a[href]',
+  '.news-list a[href]',
+  '.article-title a[href]',
+];
+
 async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   const rateKey = `html:${feed.sourceName}`;
   const { allowed } = await checkRateLimit(rateKey, 'html');
@@ -474,35 +546,26 @@ async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
   }
 
   try {
+    const startTime = Date.now();
     const response = await axios.get(feed.url, {
-      timeout: 15000,
+      timeout: 20000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       },
     });
 
+    const elapsed = Date.now() - startTime;
     const html = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
     const $ = cheerio.load(html);
     const articles: NewsArticle[] = [];
     const seen = new Set<string>();
 
-    // Try multiple common selectors for article links
-    const selectors = [
-      'article a[href]',
-      '.post a[href]',
-      '.entry a[href]',
-      '.news-item a[href]',
-      '.story a[href]',
-      'h2 a[href]',
-      'h3 a[href]',
-      '.headline a[href]',
-      '.title a[href]',
-      'a[href*="/202"]',
-      '.latest-news a[href]',
-      '.news-list a[href]',
-      '.article-title a[href]',
-    ];
+    // Use per-site selectors if available, fall back to generic
+    const siteConfig = SITE_SELECTORS[feed.sourceName];
+    const selectors = siteConfig
+      ? [`${siteConfig.container} ${siteConfig.link}`]
+      : FALLBACK_SELECTORS;
 
     for (const selector of selectors) {
       $(selector).each((_, el) => {
@@ -538,13 +601,11 @@ async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
       if (articles.length >= 10) break;
     }
 
-    if (articles.length > 0) {
-      console.log(`[NewsScraper] HTML scraped ${articles.length} from ${feed.sourceName}`);
-    }
+    console.log(`[NewsScraper] HTML ${feed.sourceName}: ${articles.length} articles scraped (${elapsed}ms)`);
     return articles.slice(0, 15);
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message.slice(0, 100) : String(error);
-    console.error(`[NewsScraper] HTML failed ${feed.sourceName}:`, message);
+    const message = error instanceof Error ? error.message.slice(0, 150) : String(error);
+    console.error(`[NewsScraper] HTML failed ${feed.sourceName} (${feed.url}): ${message}`);
     return [];
   }
 }

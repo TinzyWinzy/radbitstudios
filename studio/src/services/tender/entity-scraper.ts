@@ -110,14 +110,13 @@ async function scrapeSingleEntity(entity: ProcuringEntity): Promise<ScrapedTende
     `entity_scraper:${entity.id}`,
     'tender',
     async () => {
-      switch (entity.scraperMethod) {
-        case 'html':
-          return scrapeEntityHtml(entity);
-        case 'praz_feed':
-          return scrapePrazFeed(entity);
-        default:
-          return [];
+      if (entity.scraperMethod === 'praz_feed') {
+        return scrapePrazFeed(entity);
       }
+      const htmlResults = await scrapeEntityHtml(entity);
+      if (htmlResults.length > 0) return htmlResults;
+      console.log(`[EntityScraper] HTML failed for ${entity.name}, falling back to PRAZ feed`);
+      return scrapePrazFeed(entity);
     },
     [],
   );
