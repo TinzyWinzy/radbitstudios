@@ -99,7 +99,7 @@ export default function IndustryPage({
       <AdBanner slot="industry-hero" className="container max-w-4xl mb-16" />
 
       {/* Problems */}
-      <section className="container max-w-4xl mb-20">
+      <section className="container max-w-4xl mb-12 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-2">The Challenges</h2>
         <p className="text-muted-foreground mb-8">Common pain points for {page.slug.replace(/-/g, ' ')} businesses in Zimbabwe.</p>
         <div className="grid md:grid-cols-2 gap-6">
@@ -118,7 +118,7 @@ export default function IndustryPage({
       </section>
 
       {/* Solutions */}
-      <section className="container max-w-4xl mb-20">
+      <section className="container max-w-4xl mb-12 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-2">How Radbit Helps</h2>
         <p className="text-muted-foreground mb-8">Purpose-built tools for your industry.</p>
         <div className="grid md:grid-cols-2 gap-6">
@@ -137,7 +137,7 @@ export default function IndustryPage({
       </section>
 
       {/* Features */}
-      <section className="container max-w-4xl mb-20">
+      <section className="container max-w-4xl mb-12 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-8">Key Features</h2>
         <div className="flex flex-wrap gap-3">
           {page.features.map((feature, i) => (
@@ -153,8 +153,8 @@ export default function IndustryPage({
       </section>
 
       {/* CTA */}
-      <section className="container max-w-4xl mb-20 text-center">
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-12">
+      <section className="container max-w-4xl mb-12 md:mb-20 text-center">
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 sm:p-8 md:p-12">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">{page.cta}</h2>
           <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
             Join thousands of Zimbabwean businesses using Radbit to digitize operations, win tenders, and grow.

@@ -87,7 +87,7 @@ export default function FAQPage() {
   ));
 
   return (
-    <div className="container max-w-3xl py-16">
+    <div className="container max-w-3xl py-8 md:py-16">
       <Link href="/resources" className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block">&larr; Back to Resources</Link>
 
       {/* Structured data — FAQPage */}

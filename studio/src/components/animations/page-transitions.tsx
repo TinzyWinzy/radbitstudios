@@ -3,9 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { useDevice } from "@/contexts/device-context";
 
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { reducedAnimations } = useDevice();
+
+  if (reducedAnimations) return <>{children}</>;
 
   return (
     <AnimatePresence mode="wait">

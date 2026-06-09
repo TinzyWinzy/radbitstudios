@@ -142,7 +142,7 @@ function HeroSection() {
 
 function EventDetailsSection() {
   return (
-    <section className="relative py-16 md:py-20 border-t border-foreground/10 bg-foreground/[0.02]">
+    <section className="relative py-16 md:py-20 border-t border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -209,7 +209,7 @@ function RegistrationSection() {
   };
 
   return (
-    <section id="register" className="relative py-20 md:py-28">
+    <section id="register" className="relative py-20 md:py-28 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -332,14 +332,14 @@ function RegistrationSection() {
 
 function LiveDemoSection() {
   return (
-    <section id="demo" className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02]">
+    <section id="demo" className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="grid md:grid-cols-2 gap-12 items-center max-w-4xl mx-auto"
+          className="grid md:grid-cols-2 gap-6 md:gap-12 items-center max-w-4xl mx-auto"
         >
           <motion.div variants={stagger} className="space-y-6">
             <motion.span

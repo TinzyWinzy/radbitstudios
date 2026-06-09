@@ -63,6 +63,10 @@
   input[type="reset"],
   input[type="button"] {
     touch-action: manipulation;
+    min-height: 44px;
+  }
+  a, [role="button"] {
+    min-height: 44px;
   }
 }
 
@@ -89,6 +93,40 @@
   .bg-grid {
     background-image: linear-gradient(to right, hsl(var(--border) / 0.2) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--border) / 0.2) 1px, transparent 1px);
+  }
+  .text-fluid-xs {
+    font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  }
+  .text-fluid-sm {
+    font-size: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  }
+  .text-fluid-base {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  }
+  .text-fluid-lg {
+    font-size: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+  }
+  .text-fluid-xl {
+    font-size: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);
+  }
+  .text-fluid-2xl {
+    font-size: clamp(1.5rem, 1rem + 2.5vw, 2rem);
+  }
+  .text-fluid-3xl {
+    font-size: clamp(1.875rem, 1rem + 4vw, 3rem);
+  }
+  .text-fluid-4xl {
+    font-size: clamp(2.25rem, 1rem + 6vw, 4rem);
+  }
+  .text-fluid-5xl {
+    font-size: clamp(2.5rem, 1rem + 8vw, 5rem);
+  }
+}
+
+@layer components {
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 500px;
   }
 }
 

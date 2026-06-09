@@ -13,8 +13,8 @@ export const revalidate = 86400;
 
 export default function UseCasesIndexPage() {
   return (
-    <div className="container max-w-4xl py-16">
-      <div className="text-center max-w-2xl mx-auto mb-16">
+    <div className="container max-w-4xl py-8 md:py-16">
+      <div className="text-center max-w-2xl mx-auto mb-8 md:mb-16">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium mb-6">
           <Zap className="h-3.5 w-3.5" />
           Use Cases

@@ -17,13 +17,13 @@ export const revalidate = 3600;
 
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16 space-y-10">
+    <div className="max-w-3xl mx-auto px-4 py-8 md:py-16 space-y-6 md:space-y-10">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">About Radbit SME Hub</h1>
+        <h1 className="text-fluid-3xl font-bold tracking-tight">About Radbit SME Hub</h1>
         <p className="text-muted-foreground">Digital sovereignty for Zimbabwean enterprises.</p>
       </div>
 
-      <section className="space-y-4">
+      <section className="space-y-4 content-visibility-auto">
         <h2 className="text-xl font-semibold">Our Mission</h2>
         <p>
           Radbit SME Hub exists to level the playing field for Zimbabwean entrepreneurs. We believe
@@ -39,7 +39,7 @@ export default function AboutPage() {
 
       <AdBanner slot="content-banner" className="mb-12" />
 
-      <section className="space-y-4">
+      <section className="space-y-4 content-visibility-auto">
         <h2 className="text-xl font-semibold">What We Do</h2>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
           <li><strong>Digital Readiness Assessment:</strong> A 15-minute radar-chart analysis of your business&apos;s digital maturity across Payments, Finance, Marketing, Operations, Infrastructure, and Customer Service</li>
@@ -50,7 +50,7 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="space-y-4">
+      <section className="space-y-4 content-visibility-auto">
         <h2 className="text-xl font-semibold">Our Values</h2>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
           <li><strong>Digital sovereignty:</strong> Zimbabwean data stays in Zimbabwean hands</li>
@@ -60,7 +60,7 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="space-y-4">
+      <section className="space-y-4 content-visibility-auto">
         <h2 className="text-xl font-semibold">Who It&apos;s For</h2>
         <p>
           Radbit is built for Zimbabwean small and medium enterprises — from the sole trader in
@@ -69,7 +69,7 @@ export default function AboutPage() {
         </p>
       </section>
 
-      <section className="space-y-4">
+      <section className="space-y-4 content-visibility-auto">
         <h2 className="text-xl font-semibold">Contact</h2>
         <p>
           Have questions or feedback? Reach out at{' '}

@@ -41,13 +41,13 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16 space-y-10">
+    <div className="max-w-3xl mx-auto px-4 py-8 md:py-16 space-y-6 md:space-y-10">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Contact Us</h1>
+        <h1 className="text-fluid-3xl font-bold tracking-tight">Contact Us</h1>
         <p className="text-muted-foreground">We&apos;d love to hear from you.</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid md:grid-cols-2 gap-4 md:gap-8">
         <div className="space-y-6">
           <div className="flex items-start gap-3">
             <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />

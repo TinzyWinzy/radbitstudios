@@ -109,7 +109,7 @@ export default function AgriTechManufacturingPage() {
 
   return (
     <div className="flex flex-col w-full min-h-full bg-background overflow-x-hidden">
-      <section ref={sectionRef} className="relative min-h-[75vh] flex items-center justify-center overflow-hidden pt-16">
+      <section ref={sectionRef} className="relative min-h-[75vh] flex items-center justify-center overflow-hidden pt-8 md:pt-16 content-visibility-auto">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-green-500/5 via-background to-background" />
         <motion.div style={{ opacity, y }} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <motion.div

@@ -29,8 +29,8 @@ const services = [
 
 export default function ConsultancyPage() {
   return (
-    <div className="container max-w-5xl py-12 px-4 md:px-6">
-      <div className="text-center mb-12">
+    <div className="container max-w-5xl py-8 md:py-12 px-4 md:px-6">
+      <div className="text-center mb-6 md:mb-12">
         <Badge variant="secondary" className="mb-4">Professional Services</Badge>
         <h1 className="font-headline text-4xl font-bold mb-4">
           Expert Consultancy for Your SME
@@ -41,7 +41,7 @@ export default function ConsultancyPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 mb-12">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 mb-6 md:mb-12">
         {services.map((service) => (
           <Card key={service.title} className="relative overflow-hidden hover:shadow-lg transition-shadow">
             <CardHeader>

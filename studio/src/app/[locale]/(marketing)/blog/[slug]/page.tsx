@@ -82,7 +82,7 @@ export default function BlogPostPage({
   const sections = splitContent(post.content);
 
   return (
-    <article className="container max-w-3xl py-16">
+    <article className="container max-w-3xl py-8 md:py-16">
       <Link
         href="/blog"
         className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"
@@ -107,7 +107,7 @@ export default function BlogPostPage({
         {post.title}
       </h1>
 
-      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
+      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8 flex-wrap">
         {post.authorName && <span>{post.authorName}</span>}
         {post.createdAt && (
           <time dateTime={post.createdAt.toDate().toISOString()}>
@@ -144,7 +144,7 @@ export default function BlogPostPage({
       <MatchedContent />
 
       {post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-12 pt-8 border-t border-border/50">
+        <div className="flex flex-wrap gap-2 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-border/50">
           {post.tags.map((tag) => (
             <span
               key={tag}

@@ -175,7 +175,7 @@ export function ConsultancyClient() {
       <GradientOrb />
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
+      <section className="relative pt-20 md:pt-32 pb-12 md:pb-20 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-30" />
         <motion.div
           className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"
@@ -274,9 +274,9 @@ export function ConsultancyClient() {
       </section>
 
       {/* Services Grid */}
-      <section id="services" className="py-20 border-t border-border">
+      <section id="services" className="py-12 md:py-20 border-t border-border content-visibility-auto">
         <div className="container">
-          <ScrollReveal className="text-center mb-16">
+          <ScrollReveal className="text-center mb-8 md:mb-16">
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
               What We Do
             </h2>
@@ -292,7 +292,7 @@ export function ConsultancyClient() {
                 <StaggerItem key={service.title} direction="scale">
                   <Card3D intensity={5}>
                     <motion.div
-                      className={`group p-8 rounded-2xl border border-border bg-gradient-to-br ${service.color} backdrop-blur-sm hover:border-primary/30 transition-all duration-300 h-full`}
+                      className={`group p-4 md:p-8 rounded-2xl border border-border bg-gradient-to-br ${service.color} backdrop-blur-sm hover:border-primary/30 transition-all duration-300 h-full`}
                       onMouseEnter={() => setHoveredService(index)}
                       onMouseLeave={() => setHoveredService(null)}
                       whileHover={{ y: -5 }}
@@ -325,9 +325,9 @@ export function ConsultancyClient() {
       </section>
 
       {/* Digital Maturity */}
-      <section className="py-20 border-t border-border overflow-hidden">
+      <section className="py-12 md:py-20 border-t border-border overflow-hidden content-visibility-auto">
         <div className="container">
-          <ScrollReveal className="text-center mb-16">
+          <ScrollReveal className="text-center mb-8 md:mb-16">
             <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
               Your Digital Maturity Journey
             </h2>
@@ -376,9 +376,9 @@ export function ConsultancyClient() {
       </section>
 
       {/* Why Radbit */}
-      <section className="py-20 border-t border-border">
+      <section className="py-12 md:py-20 border-t border-border content-visibility-auto">
         <div className="container">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
             <div>
               <ScrollReveal>
                 <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-6">
@@ -437,10 +437,10 @@ export function ConsultancyClient() {
       </section>
 
       {/* Lead Capture Form */}
-      <section id="contact" className="py-20 border-t border-border">
+      <section id="contact" className="py-12 md:py-20 border-t border-border content-visibility-auto">
         <div className="container">
           <div className="max-w-2xl mx-auto">
-            <ScrollReveal className="text-center mb-12">
+            <ScrollReveal className="text-center mb-8 md:mb-12">
               <motion.div
                 className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
                 whileHover={{ scale: 1.05 }}
@@ -463,7 +463,7 @@ export function ConsultancyClient() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-center p-8 rounded-2xl border border-primary/30 bg-primary/5"
+                  className="text-center p-4 md:p-8 rounded-2xl border border-primary/30 bg-primary/5"
                 >
                   <motion.div
                     className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6"
@@ -716,7 +716,7 @@ export function ConsultancyClient() {
       </section>
 
       {/* Footer CTA */}
-      <section className="py-20 border-t border-border">
+      <section className="py-12 md:py-20 border-t border-border content-visibility-auto">
         <div className="container">
           <motion.div
             className="max-w-3xl mx-auto text-center"

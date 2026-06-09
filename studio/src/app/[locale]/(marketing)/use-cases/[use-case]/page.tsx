@@ -99,7 +99,7 @@ export default function UseCasePage({
       <AdBanner slot="usecase-hero" className="container max-w-4xl mb-16" />
 
       {/* How it works */}
-      <section className="container max-w-4xl mb-20">
+      <section className="container max-w-4xl mb-10 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-2">How It Works</h2>
         <p className="text-muted-foreground mb-8">Get started in minutes, not days.</p>
         <div className="space-y-6">
@@ -118,7 +118,7 @@ export default function UseCasePage({
       </section>
 
       {/* Benefits */}
-      <section className="container max-w-4xl mb-20">
+      <section className="container max-w-4xl mb-10 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-8">Why It Matters</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {page.benefits.map((benefit, i) => (
@@ -131,8 +131,8 @@ export default function UseCasePage({
       </section>
 
       {/* CTA */}
-      <section className="container max-w-4xl mb-20 text-center">
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-12">
+      <section className="container max-w-4xl mb-10 md:mb-20 text-center">
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-12">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">{page.cta}</h2>
           <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
             Join thousands of Zimbabwean entrepreneurs using Radbit to grow their businesses.

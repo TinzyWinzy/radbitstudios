@@ -45,20 +45,20 @@ function BlogListSkeleton() {
 /* ── page ───────────────────────────────────── */
 export default function BlogPage() {
   return (
-    <div className="container py-16">
+    <div className="container py-8 md:py-16">
       <div className="flex items-center justify-between mb-2">
         <h1 className="font-headline text-3xl sm:text-4xl font-bold tracking-tight">Blog</h1>
         <Link
           href="/blog/feed.xml"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-primary transition-colors"
+          className="text-muted-foreground hover:text-primary transition-colors p-2"
           title="RSS Feed"
         >
           <Rss className="size-5" />
         </Link>
       </div>
-      <p className="text-muted-foreground mb-12 max-w-lg">
+      <p className="text-muted-foreground mb-6 md:mb-12 max-w-lg">
         Thoughts on digital sovereignty, AI, and building for Zimbabwe.
       </p>
 

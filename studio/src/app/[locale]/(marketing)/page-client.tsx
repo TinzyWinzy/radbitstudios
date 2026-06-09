@@ -39,12 +39,12 @@ function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-      <motion.div style={{ opacity, y, scale }} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <motion.div style={{ opacity, y, scale }} className="relative z-10 text-center sm:px-4 max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-foreground/20 bg-foreground/[0.07] text-sm font-medium text-foreground/80 mb-8"
+          className="flex sm:inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-foreground/20 bg-foreground/[0.07] text-xs sm:text-sm font-medium text-foreground/80 mb-8 text-left sm:text-center"
         >
           <Sparkles className="h-3.5 w-3.5 text-primary" />
           Digital sovereignty. Built for resilience in Zimbabwe.
@@ -54,7 +54,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
+          className="font-headline text-fluid-5xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           <span className="text-gradient">Build. Scale.</span>
           <br />
@@ -94,7 +94,7 @@ function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-8 flex items-center justify-center gap-6 text-sm text-foreground/50"
+          className="mt-8 flex items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-foreground/50 flex-wrap"
         >
           <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-primary" />No credit card</span>
           <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-secondary" />Free tier available</span>
@@ -114,7 +114,7 @@ function HeroSection() {
 
 function DemoSection() {
   return (
-    <section className="relative py-16 border-y border-foreground/10 bg-foreground/[0.02]">
+    <section className="relative py-16 border-y border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
       <div className="container max-w-3xl mx-auto text-center space-y-6">
         <p className="text-xs tracking-[0.3em] text-primary uppercase font-headline">See Radbit in Action</p>
         <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground">
@@ -161,7 +161,7 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section ref={sectionRef} className="relative py-20 md:py-28">
+    <section ref={sectionRef} className="relative py-20 md:py-28 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -170,7 +170,7 @@ function HowItWorksSection() {
           className="text-center space-y-3 mb-12"
         >
           <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">How it works</span>
-          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
+          <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             3 Steps to <span className="text-gradient">Sovereignty</span>
           </h2>
         </motion.div>
@@ -256,7 +256,7 @@ function FeaturesSection() {
   ];
 
   return (
-    <section className="relative py-20 md:py-28">
+    <section className="relative py-20 md:py-28 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -265,7 +265,7 @@ function FeaturesSection() {
           className="text-center space-y-3 mb-12"
         >
           <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">What you get</span>
-          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
+          <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             Tools That <span className="text-gradient">Multiply</span> You
           </h2>
         </motion.div>
@@ -329,7 +329,7 @@ function FeaturesSection() {
 
 function MetricsSection() {
   return (
-    <section className="relative py-16 md:py-20">
+    <section className="relative py-16 md:py-20 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -360,7 +360,7 @@ function MetricsSection() {
                 </span>
               </div>
               <p className="text-sm text-foreground/60 font-medium mt-2">{metric.label}</p>
-              <p className="text-xs text-foreground/40 mt-1 max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
+              <p className="text-xs text-foreground/40 mt-1 max-w-[180px] sm:max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -395,7 +395,7 @@ const caseStudies = [
 
 function CaseStudiesSection() {
   return (
-    <section className="relative py-20 md:py-28">
+    <section className="relative py-20 md:py-28 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -469,7 +469,7 @@ function CuratedBriefsSection() {
   };
 
   return (
-    <section className="relative py-20 md:py-28">
+    <section className="relative py-20 md:py-28 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -478,7 +478,7 @@ function CuratedBriefsSection() {
           className="text-center space-y-3 mb-10"
         >
           <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Curated Briefs</span>
-          <h2 className="font-headline text-2xl md:text-3xl lg:text-4xl font-bold tracking-tighter text-foreground">
+          <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             Intelligence That <span className="text-gradient">Moves Your Business</span>
           </h2>
           <p className="text-foreground/60 max-w-lg mx-auto text-base">
@@ -599,7 +599,7 @@ function PricingTeaser() {
 
 function CTASection() {
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden border-t border-foreground/10">
+    <section className="relative py-20 md:py-28 overflow-hidden border-t border-foreground/10 content-visibility-auto">
       <WaveField
         className="absolute inset-0 z-0 opacity-10"
         waveCount={1}
@@ -614,7 +614,7 @@ function CTASection() {
           viewport={{ once: true }}
           className="space-y-4"
         >
-          <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-foreground">
+          <h2 className="font-headline text-fluid-5xl font-bold tracking-tighter text-foreground">
             Your Next Move.
             <br />
             <span className="text-gradient">Start Today.</span>
@@ -646,7 +646,7 @@ function FooterSection() {
     <footer className="relative border-t border-foreground/10 bg-background/60">
       <ChevronPattern variant="divider" direction="down" className="absolute -top-16 opacity-30" />
       <div className="container pt-20 pb-12">
-        <div className="grid md:grid-cols-4 gap-12">
+        <div className="grid md:grid-cols-4 gap-8 md:gap-12">
           <div className="md:col-span-1 space-y-6">
             <Link href="/" className="flex items-center gap-3 group">
               <span className="font-headline text-xl font-bold tracking-wide text-foreground">RADBIT</span>

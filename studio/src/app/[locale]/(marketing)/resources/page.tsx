@@ -78,7 +78,7 @@ const tools = [
 
 export default function ResourcesPage() {
   return (
-    <div className="container py-16 max-w-5xl">
+    <div className="container py-8 md:py-16 max-w-5xl">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link href="/" className="hover:text-foreground">Home</Link>
@@ -87,7 +87,7 @@ export default function ResourcesPage() {
       </nav>
 
       {/* Hero */}
-      <div className="text-center max-w-2xl mx-auto mb-16">
+      <div className="text-center max-w-2xl mx-auto mb-8 md:mb-16">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium mb-6">
           <BookOpen className="h-3.5 w-3.5" />
           Resources
@@ -104,7 +104,7 @@ export default function ResourcesPage() {
       <AdBanner slot="content-banner" className="mb-12" />
 
       {/* Pillar Guides */}
-      <section className="mb-20">
+      <section className="mb-10 md:mb-20 content-visibility-auto">
         <div className="flex items-center gap-3 mb-8">
           <BookOpen className="h-5 w-5 text-primary" />
           <h2 className="font-headline text-2xl font-bold">Pillar Guides</h2>
@@ -142,7 +142,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Interactive Tools */}
-      <section className="mb-20">
+      <section className="mb-10 md:mb-20 content-visibility-auto">
         <div className="flex items-center gap-3 mb-8">
           <Calculator className="h-5 w-5 text-primary" />
           <h2 className="font-headline text-2xl font-bold">Free Tools</h2>
@@ -171,8 +171,8 @@ export default function ResourcesPage() {
       </section>
 
       {/* FAQ teaser */}
-      <section className="mb-8">
-        <div className="rounded-xl border border-border/50 bg-card/50 p-8">
+      <section className="mb-8 content-visibility-auto">
+        <div className="rounded-xl border border-border/50 bg-card/50 p-4 md:p-8">
           <div className="flex items-start gap-4">
             <HelpCircle className="h-6 w-6 text-primary shrink-0 mt-1" />
             <div>
@@ -193,7 +193,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* CTA */}
-      <div className="mt-16 text-center">
+      <div className="mt-8 md:mt-16 text-center">
         <p className="text-muted-foreground mb-4">
           Can&apos;t find what you&apos;re looking for?
         </p>

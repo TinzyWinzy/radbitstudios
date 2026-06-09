@@ -1,10 +1,14 @@
+'use client';
+
 import { cn } from '@/lib/utils';
+import { useDevice } from '@/contexts/device-context';
 
 interface HeroBackgroundProps {
   className?: string;
 }
 
 export function HeroBackground({ className }: HeroBackgroundProps) {
+  const { reducedAnimations } = useDevice();
   return (
     <div
       className={cn('fixed inset-0 z-0 overflow-hidden', className)}
@@ -20,10 +24,11 @@ export function HeroBackground({ className }: HeroBackgroundProps) {
             linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 50%, hsl(var(--background) / 0.95) 100%)
           `,
           backgroundSize: '200% 200%',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: 'scroll',
         }}
       />
 
+      {!reducedAnimations && (
       <div className="absolute inset-0 hidden md:block">
         {/* Connecting wall — runs between tower and enclosure */}
         <div
@@ -124,6 +129,7 @@ export function HeroBackground({ className }: HeroBackgroundProps) {
           />
         ))}
       </div>
+      )}
 
       <div className="absolute inset-0">
         <div
@@ -150,6 +156,7 @@ export function HeroBackground({ className }: HeroBackgroundProps) {
         />
       </div>
 
+      {!reducedAnimations && (
       <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
         {[...Array(18)].map((_, i) => (
           <div
@@ -167,6 +174,7 @@ export function HeroBackground({ className }: HeroBackgroundProps) {
           />
         ))}
       </div>
+      )}
 
       <div
         className="absolute inset-x-0 bottom-0 h-[50vh] pointer-events-none"

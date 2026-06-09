@@ -115,7 +115,7 @@ export function DiasporaLanding() {
           <h2 className="text-center font-headline text-3xl font-bold mb-12">
             How It Works
           </h2>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-4 md:gap-8 md:grid-cols-3">
             {howItWorks.map((item) => (
               <div key={item.step} className="text-center">
                 <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary font-headline text-xl font-bold mx-auto mb-4">

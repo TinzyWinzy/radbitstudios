@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useSpring, useMotionValue } from "framer-motion";
 import { useEffect } from "react";
+import { useDevice } from "@/contexts/device-context";
 
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
@@ -21,6 +22,7 @@ export function ScrollProgress() {
 
 // Background gradient orb that follows mouse
 export function GradientOrb() {
+  const { reducedAnimations, isTouchDevice } = useDevice();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -28,6 +30,8 @@ export function GradientOrb() {
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
   useEffect(() => {
+    if (reducedAnimations || isTouchDevice) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -35,7 +39,9 @@ export function GradientOrb() {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, reducedAnimations, isTouchDevice]);
+
+  if (reducedAnimations || isTouchDevice) return null;
 
   return (
     <motion.div
@@ -57,16 +63,21 @@ interface ParallaxProps {
 }
 
 export function Parallax({ children, className = "", speed = 0.5 }: ParallaxProps) {
+  const { reducedAnimations } = useDevice();
   const y = useMotionValue(0);
 
   useEffect(() => {
+    if (reducedAnimations) return;
+
     const handleScroll = () => {
       y.set(window.scrollY * speed);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [y, speed]);
+  }, [y, speed, reducedAnimations]);
+
+  if (reducedAnimations) return <div className={className}>{children}</div>;
 
   return (
     <motion.div className={className} style={{ y }}>

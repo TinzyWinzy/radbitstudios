@@ -260,7 +260,7 @@ export default function PricingPage() {
         </div>
       </header>
 
-      <main className="container max-w-6xl py-12 px-4 md:px-6">
+      <main className="container max-w-6xl py-8 md:py-12 px-4 md:px-6">
         {/* Hero */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium">
@@ -281,7 +281,7 @@ export default function PricingPage() {
           {TABS.map((tab) => (
             <span
               key={tab.id}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors cursor-default"
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors cursor-default"
             >
               {tab.icon}
               {tab.label}
@@ -290,7 +290,7 @@ export default function PricingPage() {
         </nav>
 
         {/* ─── Web Packages ─────────────────────────────────────────────── */}
-        <section id="web" className="mb-20">
+        <section id="web" className="mb-10 md:mb-20 content-visibility-auto">
           <div className="text-center mb-10">
             <h2 className="font-headline text-3xl font-bold mb-3">Web Packages</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
@@ -347,7 +347,7 @@ export default function PricingPage() {
         </section>
 
         {/* ─── AI Platform (SaaS) ──────────────────────────────────────── */}
-        <section id="saas" className="mb-20">
+        <section id="saas" className="mb-10 md:mb-20 content-visibility-auto">
           <div className="text-center mb-10">
             <h2 className="font-headline text-3xl font-bold mb-3">AI Platform</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
@@ -429,7 +429,7 @@ export default function PricingPage() {
         </section>
 
         {/* ─── ERP Systems ─────────────────────────────────────────────── */}
-        <section id="erp" className="mb-20">
+        <section id="erp" className="mb-10 md:mb-20 content-visibility-auto">
           <div className="text-center mb-10">
             <h2 className="font-headline text-3xl font-bold mb-3">ERP Systems</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
@@ -497,7 +497,7 @@ export default function PricingPage() {
         </section>
 
         {/* ─── Professional Services ───────────────────────────────────── */}
-        <section id="services" className="mb-20">
+        <section id="services" className="mb-10 md:mb-20 content-visibility-auto">
           <div className="text-center mb-10">
             <h2 className="font-headline text-3xl font-bold mb-3">Professional Services</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
@@ -545,7 +545,7 @@ export default function PricingPage() {
         </section>
 
         {/* ─── CTA Section ─────────────────────────────────────────────── */}
-        <section className="mb-16 rounded-2xl border border-border/50 bg-gradient-to-br from-primary/5 to-background p-8 md:p-12 text-center">
+        <section className="mb-8 md:mb-16 rounded-2xl border border-border/50 bg-gradient-to-br from-primary/5 to-background p-8 md:p-12 text-center">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">
             Not sure what you need?
           </h2>
@@ -574,8 +574,8 @@ export default function PricingPage() {
         </section>
 
         {/* ─── FAQ ──────────────────────────────────────────────────────── */}
-        <section className="max-w-3xl mx-auto mb-16">
-          <h2 className="font-headline text-2xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
+        <section className="max-w-3xl mx-auto mb-16 content-visibility-auto">
+          <h2 className="font-headline text-fluid-2xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
               {

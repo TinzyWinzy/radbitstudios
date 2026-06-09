@@ -124,7 +124,7 @@ function CreativeAIAgentsSection() {
   ];
 
   return (
-    <section className="relative py-20 md:py-28">
+    <section className="relative py-20 md:py-28 content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"
@@ -187,7 +187,7 @@ function CreativeAIAgentsSection() {
 
 function CreativeProcessSection() {
   return (
-    <section className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02]">
+    <section className="relative py-20 md:py-28 border-t border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial="hidden"

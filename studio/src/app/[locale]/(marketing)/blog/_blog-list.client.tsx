@@ -24,7 +24,7 @@ export function BlogList() {
 
   if (loading) {
     return (
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3 content-visibility-auto">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
@@ -53,7 +53,7 @@ export function BlogList() {
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => (
         <Link
           key={post.id}

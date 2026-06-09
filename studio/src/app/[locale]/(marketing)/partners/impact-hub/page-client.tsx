@@ -135,7 +135,7 @@ function FocusSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
           variants={stagger}
-          className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          className="grid md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto"
         >
           {focuses.map((f) => (
             <motion.div key={f.title} variants={fadeUp}>
@@ -172,7 +172,7 @@ function TenderTrackingSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={stagger}
-          className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto"
+          className="grid md:grid-cols-2 gap-6 md:gap-12 items-center max-w-5xl mx-auto"
         >
           <motion.div variants={stagger} className="space-y-6">
             <motion.span

@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
         </div>
       </header>
 
-      <main className="container max-w-4xl py-12 px-4 md:px-6">
+      <main className="container max-w-4xl py-8 md:py-12 px-4 md:px-6">
         <Button variant="ghost" asChild className="mb-6">
           <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground">
             <ArrowLeft className="h-4 w-4" />
@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
           </Link>
         </Button>
 
-        <h1 className="font-headline text-3xl font-bold mb-2">Privacy Policy</h1>
+        <h1 className="font-headline text-fluid-3xl font-bold mb-2">Privacy Policy</h1>
         <p className="text-muted-foreground mb-8">Last updated: May 31, 2026</p>
 
         <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8">

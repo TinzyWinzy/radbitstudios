@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ReactNode, useRef } from "react";
+import { useDevice } from "@/contexts/device-context";
 
 interface Card3DProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface Card3DProps {
 }
 
 export function Card3D({ children, className = "", intensity = 10 }: Card3DProps) {
+  const { reducedAnimations, isTouchDevice } = useDevice();
   const ref = useRef<HTMLDivElement>(null);
 
   const x = useMotionValue(0);
@@ -34,6 +36,10 @@ export function Card3D({ children, className = "", intensity = 10 }: Card3DProps
     x.set(0);
     y.set(0);
   };
+
+  if (reducedAnimations || isTouchDevice) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -63,6 +69,7 @@ interface MagneticElementProps {
 }
 
 export function MagneticElement({ children, className = "", intensity = 0.3 }: MagneticElementProps) {
+  const { reducedAnimations, isTouchDevice } = useDevice();
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -83,6 +90,10 @@ export function MagneticElement({ children, className = "", intensity = 0.3 }: M
     x.set(0);
     y.set(0);
   };
+
+  if (reducedAnimations || isTouchDevice) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -106,6 +117,10 @@ interface FloatingProps {
 }
 
 export function Floating({ children, className = "", duration = 3, distance = 10 }: FloatingProps) {
+  const { reducedAnimations } = useDevice();
+
+  if (reducedAnimations) return <div className={className}>{children}</div>;
+
   return (
     <motion.div
       className={className}
@@ -131,6 +146,10 @@ interface PulseProps {
 }
 
 export function Pulse({ children, className = "" }: PulseProps) {
+  const { reducedAnimations } = useDevice();
+
+  if (reducedAnimations) return <div className={className}>{children}</div>;
+
   return (
     <motion.div
       className={className}

@@ -10,7 +10,11 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        md: "2rem",
+      },
       screens: {
         "2xl": "1400px",
       },
@@ -20,6 +24,17 @@ export default {
         body: ['var(--font-body)', 'sans-serif'],
         headline: ['var(--font-headline)', 'sans-serif'],
         code: ['monospace'],
+      },
+      fontSize: {
+        'fluid-xs': ['clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)', { lineHeight: '1.25rem' }],
+        'fluid-sm': ['clamp(0.875rem, 0.8rem + 0.375vw, 1rem)', { lineHeight: '1.5rem' }],
+        'fluid-base': ['clamp(1rem, 0.9rem + 0.5vw, 1.125rem)', { lineHeight: '1.75rem' }],
+        'fluid-lg': ['clamp(1.125rem, 1rem + 0.625vw, 1.25rem)', { lineHeight: '1.75rem' }],
+        'fluid-xl': ['clamp(1.25rem, 1rem + 1.25vw, 1.5rem)', { lineHeight: '2rem' }],
+        'fluid-2xl': ['clamp(1.5rem, 1rem + 2.5vw, 2rem)', { lineHeight: '2.25rem' }],
+        'fluid-3xl': ['clamp(1.875rem, 1rem + 4vw, 3rem)', { lineHeight: '2.5rem' }],
+        'fluid-4xl': ['clamp(2.25rem, 1rem + 6vw, 4rem)', { lineHeight: '1' }],
+        'fluid-5xl': ['clamp(2.5rem, 1rem + 8vw, 5rem)', { lineHeight: '1' }],
       },
       colors: {
         background: 'hsl(var(--background))',
