@@ -1136,6 +1136,438 @@ async function scrapeCABS(): Promise<Tender[]> {
   return results;
 }
 
+async function scrapeTendersZimbabwe(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://tenderszimbabwe.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href*="/tender"], a[href*="/rfq"], a[href*="/eoi"], .tender-card, .listing-item, article').each((_, el) => {
+      const text = $(el).text().replace(/\s+/g, ' ').trim();
+      const href = $(el).attr('href') || '';
+      if (!text || text.length < 10) return;
+      const fullHref = href.startsWith('http') ? href : `https://tenderszimbabwe.co.zw${href}`;
+      const key = (fullHref + text.slice(0, 80)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const title = $(el).find('h2, h3, h4, .title, .card-title').first().text().trim() || text.slice(0, 100);
+      const orgMatch = text.match(/(?:by|from|organisation|organization)[:\s]+([A-Z][A-Za-z\s&.]+?)(?:\d|closing|deadline|$)/i);
+      const dateMatch = text.match(/(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4})/i);
+      const daysLeftMatch = text.match(/(\d+)\s*days?\s*left/i);
+
+      let closingDate: Date | null = null;
+      if (dateMatch) closingDate = new Date(dateMatch[1]);
+      else if (daysLeftMatch) closingDate = new Date(Date.now() + parseInt(daysLeftMatch[1]) * 86400000);
+
+      if (title && title.length > 5) {
+        results.push(enrichTender({
+          title: title.slice(0, 200),
+          description: text.slice(0, 500),
+          organization: orgMatch ? orgMatch[1].trim() : 'Tenders Zimbabwe',
+          sourceUrl: fullHref || `https://tenderszimbabwe.co.zw/tender/${generateId(title)}`,
+          closingDate,
+          value: null,
+          sector: classifySector(title),
+          category: text.includes('Quotation') ? 'RFQ' : text.includes('EOI') ? 'EOI' : 'Tender Notice',
+          requirements: [],
+          region: 'Zimbabwe',
+          sourceName: 'Tenders Zimbabwe',
+        }));
+      }
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] TendersZimbabwe: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] TendersZimbabwe failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeGlobalTenders(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.globaltenders.com/zw/zimbabwe-vehicles-engines-tenders', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const html = typeof r.data === 'string' ? r.data : JSON.stringify(r.data);
+    const $ = cheerio.load(html);
+    const seen = new Set<string>();
+
+    $('div[id*="tender"], div[class*="tender"], tr[class*="tender"], .notice-item, .tender-row').each((_, el) => {
+      const text = $(el).text().replace(/\s+/g, ' ').trim();
+      if (!text || text.length < 20) return;
+
+      const summaryMatch = text.match(/Summary:\s*([^\n]+)/i);
+      const countryMatch = text.match(/Country:\s*([^\n]+)/i);
+      const deadlineMatch = text.match(/Deadline:\s*([^\n]+)/i);
+      const noticeMatch = text.match(/Notice Type:\s*([^\n]+)/i);
+      const postingMatch = text.match(/Posting Date:\s*([^\n]+)/i);
+      const link = $(el).find('a[href]').first();
+      const href = link.attr('href') || '';
+
+      const title = summaryMatch?.[1]?.trim() || link.text().trim() || text.slice(0, 100);
+      const key = (href + title.slice(0, 60)).toLowerCase();
+      if (seen.has(key) || !title || title.length < 5) return;
+      seen.add(key);
+
+      const cleanHref = href.startsWith('http') ? href : `https://www.globaltenders.com${href}`;
+      let closingDate: Date | null = null;
+      if (deadlineMatch) {
+        const parsed = new Date(deadlineMatch[1].trim());
+        if (!isNaN(parsed.getTime())) closingDate = parsed;
+      }
+
+      results.push(enrichTender({
+        title: title.slice(0, 200),
+        description: text.slice(0, 500),
+        organization: countryMatch?.[1]?.trim() || 'GlobalTenders Zimbabwe',
+        sourceUrl: cleanHref,
+        closingDate,
+        value: null,
+        sector: classifySector(title),
+        category: noticeMatch?.[1]?.trim() || 'Tender Notice',
+        requirements: [],
+        region: 'Zimbabwe',
+        sourceName: 'GlobalTenders',
+        publishedAt: postingMatch ? new Date(postingMatch[1].trim()) : undefined,
+      }));
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] GlobalTenders: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] GlobalTenders failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeOnlineTenders(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.onlinetenders.co.za/tenders/zimbabwe', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('table tbody tr, table tr, .tender-item, .listing-row').each((_, row) => {
+      const cells = $(row).find('td').map((_, c) => $(c).text().trim().replace(/\s+/g, ' ')).get();
+      const links = $(row).find('a[href]');
+      const link = links.first();
+      const href = link.attr('href') || '';
+
+      if (cells.length < 2) return;
+
+      const contractNo = cells[0] || '';
+      const description = cells[1] || '';
+      const closingDateStr = cells[cells.length - 1] || '';
+      const key = (href + contractNo + description.slice(0, 40)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const title = description.length > 10 ? description.slice(0, 200) : contractNo;
+      const cleanHref = href.startsWith('http') ? href : `https://www.onlinetenders.co.za${href}`;
+      let closingDate: Date | null = null;
+      const dateMatch = closingDateStr.match(/(\d{4}-\d{2}-\d{2})/);
+      if (dateMatch) closingDate = new Date(dateMatch[1]);
+
+      if (title && title.length > 5 && !title.toLowerCase().includes('login') && !title.toLowerCase().includes('subscribe')) {
+        results.push(enrichTender({
+          title,
+          description: description.slice(0, 500),
+          organization: 'OnlineTenders Zimbabwe',
+          sourceUrl: cleanHref,
+          closingDate,
+          value: null,
+          sector: classifySector(title + ' ' + description),
+          category: 'Tender Notice',
+          requirements: [],
+          region: 'Zimbabwe',
+          sourceName: 'OnlineTenders',
+        }));
+      }
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] OnlineTenders: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] OnlineTenders failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeBidDetail(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.biddetail.com/zimbabwe-tenders', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('.tender-box, .listing-item, .item-row, tr, div[class*="tender"]').each((_, el) => {
+      const text = $(el).text().replace(/\s+/g, ' ').trim();
+      const link = $(el).find('a[href]').first();
+      const href = link.attr('href') || '';
+      const linkText = link.text().trim();
+
+      if (!text || text.length < 15) return;
+      const key = (href + text.slice(0, 60)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const title = linkText || text.split('.').slice(0, 2).join('.').trim().slice(0, 200);
+      const cleanHref = href.startsWith('http') ? href : `https://www.biddetail.com${href}`;
+      const dateMatch = text.match(/(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4})/i);
+      let closingDate: Date | null = null;
+      if (dateMatch) closingDate = new Date(dateMatch[1]);
+
+      if (title && title.length > 5 && !title.toLowerCase().includes('login') && !title.toLowerCase().includes('subscribe')) {
+        results.push(enrichTender({
+          title: title.slice(0, 200),
+          description: text.slice(0, 500),
+          organization: 'BidDetail Zimbabwe',
+          sourceUrl: cleanHref,
+          closingDate,
+          value: null,
+          sector: classifySector(title),
+          category: 'Tender Notice',
+          requirements: [],
+          region: 'Zimbabwe',
+          sourceName: 'BidDetail',
+        }));
+      }
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] BidDetail: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] BidDetail failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeTenderInfoOrg(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.tenderinfo.org/countries/zimbabwe', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('div[class*="tender"], .notice-item, .row, tr').each((_, el) => {
+      const text = $(el).text().replace(/\s+/g, ' ').trim();
+      const link = $(el).find('a[href]').first();
+      const href = link.attr('href') || '';
+      const linkText = link.text().trim();
+
+      if (!text || text.length < 15) return;
+      const title = linkText || text.split('(')[0].trim().slice(0, 200);
+      const key = (href + title.slice(0, 60)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const cleanHref = href.startsWith('http') ? href : `https://www.tenderinfo.org${href}`;
+      const dateMatch = text.match(/(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*)/i);
+      let closingDate: Date | null = null;
+      if (dateMatch) closingDate = new Date(dateMatch[1]);
+
+      if (title && title.length > 5) {
+        results.push(enrichTender({
+          title: title.slice(0, 200),
+          description: text.slice(0, 500),
+          organization: 'TenderInfo.Org',
+          sourceUrl: cleanHref,
+          closingDate,
+          value: null,
+          sector: classifySector(title),
+          category: 'RFQ',
+          requirements: [],
+          region: 'Zimbabwe',
+          sourceName: 'TenderInfoOrg',
+        }));
+      }
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] TenderInfoOrg: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] TenderInfoOrg failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeTenderLink(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://tenderlink.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href*="tender"], a[href*="rfq"], a[href*="notice"], .post-title a, h2 a, h3 a, .entry-title a').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
+      const key = (href + text.slice(0, 60)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const fullHref = href.startsWith('http') ? href : `https://tenderlink.co.zw${href}`;
+      results.push(enrichTender({
+        title: text.slice(0, 200),
+        description: `TenderLink Zimbabwe: ${text}`,
+        organization: 'TenderLink Zimbabwe',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: 'Tender Notice',
+        requirements: [],
+        region: 'Zimbabwe',
+        sourceName: 'TenderLink',
+      }));
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] TenderLink: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] TenderLink failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeETender(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://etender.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href*="listing"], a[href*="tender"], a[href*="opportunity"], .listing-title a, h2 a, h3 a').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
+      const key = (href + text.slice(0, 60)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const fullHref = href.startsWith('http') ? href : `https://etender.co.zw${href}`;
+      results.push(enrichTender({
+        title: text.slice(0, 200),
+        description: `eTender Zimbabwe: ${text}`,
+        organization: 'eTender Zimbabwe',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: 'Tender Notice',
+        requirements: [],
+        region: 'Zimbabwe',
+        sourceName: 'ETender',
+      }));
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] ETender: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] ETender failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeTenderNoticeboard(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://tendernoticeboard.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href*="tender"], a[href*="project"], a[href*="opportunity"], h2 a, h3 a, .card-title a, .post-title a').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5 || href === '#') return;
+      const key = (href + text.slice(0, 60)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const fullHref = href.startsWith('http') ? href : `https://tendernoticeboard.co.zw${href}`;
+      results.push(enrichTender({
+        title: text.slice(0, 200),
+        description: `Tender Noticeboard Zimbabwe: ${text}`,
+        organization: 'Tender Noticeboard',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: 'Tender Notice',
+        requirements: [],
+        region: 'Zimbabwe',
+        sourceName: 'TenderNoticeboard',
+      }));
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] TenderNoticeboard: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] TenderNoticeboard failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
+async function scrapeClassifieds(): Promise<Tender[]> {
+  const results: Tender[] = [];
+  try {
+    const r = await axios.get('https://www.classifieds.co.zw/', {
+      timeout: 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = cheerio.load(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    const seen = new Set<string>();
+
+    $('a[href*="tender"], a[href*="contract"], a[href*="procurement"], h2 a, h3 a, .card a, .listing a').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5) return;
+      if (!text.toLowerCase().includes('tender') && !text.toLowerCase().includes('contract') && !text.toLowerCase().includes('procurement') && !text.toLowerCase().includes('bid') && !text.toLowerCase().includes('supply') && !text.toLowerCase().includes('rfq')) return;
+      const key = (href + text.slice(0, 60)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+
+      const fullHref = href.startsWith('http') ? href : `https://www.classifieds.co.zw${href}`;
+      results.push(enrichTender({
+        title: text.slice(0, 200),
+        description: `Classifieds Zimbabwe: ${text}`,
+        organization: 'Classifieds Zimbabwe',
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: 'Tender Notice',
+        requirements: [],
+        region: 'Zimbabwe',
+        sourceName: 'ClassifiedsZW',
+      }));
+    });
+
+    if (results.length > 0) console.log(`[TenderScraper] Classifieds: ${results.length} items`);
+  } catch (e: any) {
+    console.warn(`[TenderScraper] Classifieds failed: ${e.message?.slice(0, 100)}`);
+  }
+  return results;
+}
+
 export async function scrapeAllTenders(): Promise<{ scraped: number; errors: number; tenders: any[] }> {
   const cacheKey = 'tenders:scrape:all_run';
   const cached = getCached<{ scraped: number; errors: number; tenders: any[] }>(cacheKey);
@@ -1150,7 +1582,7 @@ export async function scrapeAllTenders(): Promise<{ scraped: number; errors: num
     console.log(`[TenderScraper] proc.gov.zw: ${live.length} tenders`);
   }
 
-const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, cbz, econet, netone, telone, fbc, nmb, cabs] = await Promise.allSettled([
+const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, cbz, econet, netone, telone, fbc, nmb, cabs, tzw, gt, ot, bd, tio, tl, et, tnb, cl] = await Promise.allSettled([
     scrapeTendersOnTime(),
     scrapeTendersInfo(),
     scrapePRAZ(),
@@ -1170,6 +1602,15 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, c
     scrapeFBC(),
     scrapeNMB(),
     scrapeCABS(),
+    scrapeTendersZimbabwe(),
+    scrapeGlobalTenders(),
+    scrapeOnlineTenders(),
+    scrapeBidDetail(),
+    scrapeTenderInfoOrg(),
+    scrapeTenderLink(),
+    scrapeETender(),
+    scrapeTenderNoticeboard(),
+    scrapeClassifieds(),
   ]);
 
   if (tot.status === 'fulfilled') allTenders.push(...tot.value);
@@ -1191,6 +1632,15 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, c
   if (fbc.status === 'fulfilled') allTenders.push(...fbc.value);
   if (nmb.status === 'fulfilled') allTenders.push(...nmb.value);
   if (cabs.status === 'fulfilled') allTenders.push(...cabs.value);
+  if (tzw.status === 'fulfilled') allTenders.push(...tzw.value);
+  if (gt.status === 'fulfilled') allTenders.push(...gt.value);
+  if (ot.status === 'fulfilled') allTenders.push(...ot.value);
+  if (bd.status === 'fulfilled') allTenders.push(...bd.value);
+  if (tio.status === 'fulfilled') allTenders.push(...tio.value);
+  if (tl.status === 'fulfilled') allTenders.push(...tl.value);
+  if (et.status === 'fulfilled') allTenders.push(...et.value);
+  if (tnb.status === 'fulfilled') allTenders.push(...tnb.value);
+  if (cl.status === 'fulfilled') allTenders.push(...cl.value);
 
   if (allTenders.length === 0) {
     console.log('[TenderScraper] All sources failed — falling back to mock data');
