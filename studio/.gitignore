@@ -59,3 +59,7 @@ firebase-debug.log
 
 # Firebase
 firebase-debug.log
+
+# Binary spreadsheet documents
+*.xls
+*.xlsx
