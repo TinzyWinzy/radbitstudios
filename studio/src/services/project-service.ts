@@ -1,19 +1,7 @@
-import { db } from "@/lib/firebase/firebase";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 import {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  getDocs,
-  getDoc,
-  doc,
-  updateDoc,
-  serverTimestamp,
-  addDoc,
-  writeBatch,
-  deleteDoc,
-} from "firebase/firestore";
+  Timestamp,
+} from "firebase-admin/firestore";
 import type {
   Project,
   ProjectStatus,
@@ -33,101 +21,91 @@ function withId<T>(doc: { id: string; data: () => Record<string, unknown> }): T 
 }
 
 export async function getProject(projectId: string): Promise<Project | null> {
-  const snap = await getDoc(doc(db, PROJECTS_COLLECTION, projectId));
-  if (!snap.exists()) return null;
+  const snap = await adminDb.collection(PROJECTS_COLLECTION).doc(projectId).get();
+  if (!snap.exists) return null;
   return { id: snap.id, ...snap.data() } as Project;
 }
 
 export async function getClientProjects(clientId: string): Promise<Project[]> {
-  const q = query(
-    collection(db, PROJECTS_COLLECTION),
-    where("clientId", "==", clientId),
-    orderBy("createdAt", "desc"),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(PROJECTS_COLLECTION)
+    .where("clientId", "==", clientId)
+    .orderBy("createdAt", "desc")
+    .get();
   return snap.docs.map((d) => withId<Project>(d));
 }
 
 export async function getAllProjects(max = 50): Promise<Project[]> {
-  const q = query(
-    collection(db, PROJECTS_COLLECTION),
-    orderBy("createdAt", "desc"),
-    limit(max),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(PROJECTS_COLLECTION)
+    .orderBy("createdAt", "desc")
+    .limit(max)
+    .get();
   return snap.docs.map((d) => withId<Project>(d));
 }
 
 export async function getProjectsByStatus(status: ProjectStatus): Promise<Project[]> {
-  const q = query(
-    collection(db, PROJECTS_COLLECTION),
-    where("status", "==", status),
-    orderBy("createdAt", "desc"),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(PROJECTS_COLLECTION)
+    .where("status", "==", status)
+    .orderBy("createdAt", "desc")
+    .get();
   return snap.docs.map((d) => withId<Project>(d));
 }
 
 export async function createProject(data: Omit<Project, "id" | "createdAt" | "updatedAt">): Promise<string> {
-  const ref = await addDoc(collection(db, PROJECTS_COLLECTION), {
+  const ref = await adminDb.collection(PROJECTS_COLLECTION).add({
     ...data,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
   });
   return ref.id;
 }
 
 export async function updateProject(projectId: string, data: Partial<Project>): Promise<void> {
-  await updateDoc(doc(db, PROJECTS_COLLECTION, projectId), {
+  await adminDb.collection(PROJECTS_COLLECTION).doc(projectId).update({
     ...data,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
   });
 }
 
 export async function deleteProject(projectId: string): Promise<void> {
-  await deleteDoc(doc(db, PROJECTS_COLLECTION, projectId));
+  await adminDb.collection(PROJECTS_COLLECTION).doc(projectId).delete();
 }
 
 export async function getProjectTasks(projectId: string): Promise<ProjectTask[]> {
-  const q = query(
-    collection(db, TASKS_COLLECTION),
-    where("projectId", "==", projectId),
-    orderBy("order", "asc"),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(TASKS_COLLECTION)
+    .where("projectId", "==", projectId)
+    .orderBy("order", "asc")
+    .get();
   return snap.docs.map((d) => withId<ProjectTask>(d));
 }
 
 export async function createTask(data: Omit<ProjectTask, "id" | "createdAt">): Promise<string> {
-  const ref = await addDoc(collection(db, TASKS_COLLECTION), {
+  const ref = await adminDb.collection(TASKS_COLLECTION).add({
     ...data,
-    createdAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
   });
   return ref.id;
 }
 
 export async function updateTask(taskId: string, data: Partial<ProjectTask>): Promise<void> {
-  await updateDoc(doc(db, TASKS_COLLECTION, taskId), data);
+  await adminDb.collection(TASKS_COLLECTION).doc(taskId).update(data);
 }
 
 export async function deleteTask(taskId: string): Promise<void> {
-  await deleteDoc(doc(db, TASKS_COLLECTION, taskId));
+  await adminDb.collection(TASKS_COLLECTION).doc(taskId).delete();
 }
 
 export async function getChecklist(userId: string): Promise<OnboardingChecklist | null> {
-  const q = query(
-    collection(db, CHECKLISTS_COLLECTION),
-    where("userId", "==", userId),
-    orderBy("generatedAt", "desc"),
-    limit(1),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(CHECKLISTS_COLLECTION)
+    .where("userId", "==", userId)
+    .orderBy("generatedAt", "desc")
+    .limit(1)
+    .get();
   if (snap.empty) return null;
   return withId<OnboardingChecklist>(snap.docs[0]);
 }
 
 export async function createChecklist(data: Omit<OnboardingChecklist, "id">): Promise<string> {
-  const ref = await addDoc(collection(db, CHECKLISTS_COLLECTION), data);
+  const ref = await adminDb.collection(CHECKLISTS_COLLECTION).add(data);
   return ref.id;
 }
 
@@ -136,63 +114,59 @@ export async function updateChecklistItem(
   itemId: string,
   status: "pending" | "completed",
 ): Promise<void> {
-  const ref = doc(db, CHECKLISTS_COLLECTION, checklistId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
-  const items: ChecklistItem[] = snap.data().items || [];
+  const ref = adminDb.collection(CHECKLISTS_COLLECTION).doc(checklistId);
+  const snap = await ref.get();
+  if (!snap.exists) return;
+  const items: ChecklistItem[] = snap.data()?.items || [];
   const updated = items.map((item) =>
     item.id === itemId ? { ...item, status } : item,
   );
   const allDone = updated.every((item) => item.status === "completed");
-  await updateDoc(ref, {
+  await ref.update({
     items: updated,
-    ...(allDone ? { completedAt: serverTimestamp() } : {}),
+    ...(allDone ? { completedAt: Timestamp.now() } : {}),
   });
 }
 
 export async function deleteChecklist(checklistId: string): Promise<void> {
-  await deleteDoc(doc(db, CHECKLISTS_COLLECTION, checklistId));
+  await adminDb.collection(CHECKLISTS_COLLECTION).doc(checklistId).delete();
 }
 
 export async function getClientNotes(clientId: string): Promise<ClientNote[]> {
-  const q = query(
-    collection(db, NOTES_COLLECTION),
-    where("clientId", "==", clientId),
-    orderBy("createdAt", "desc"),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(NOTES_COLLECTION)
+    .where("clientId", "==", clientId)
+    .orderBy("createdAt", "desc")
+    .get();
   return snap.docs.map((d) => withId<ClientNote>(d));
 }
 
 export async function createNote(data: Omit<ClientNote, "id" | "createdAt">): Promise<string> {
-  const ref = await addDoc(collection(db, NOTES_COLLECTION), {
+  const ref = await adminDb.collection(NOTES_COLLECTION).add({
     ...data,
-    createdAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
   });
   return ref.id;
 }
 
 export async function deleteNote(noteId: string): Promise<void> {
-  await deleteDoc(doc(db, NOTES_COLLECTION, noteId));
+  await adminDb.collection(NOTES_COLLECTION).doc(noteId).delete();
 }
 
 export async function getProjectsByAdmin(adminId: string): Promise<Project[]> {
-  const q = query(
-    collection(db, PROJECTS_COLLECTION),
-    where("assignedTo", "==", adminId),
-    orderBy("createdAt", "desc"),
-  );
-  const snap = await getDocs(q);
+  const snap = await adminDb.collection(PROJECTS_COLLECTION)
+    .where("assignedTo", "==", adminId)
+    .orderBy("createdAt", "desc")
+    .get();
   return snap.docs.map((d) => withId<Project>(d));
 }
 
 export async function batchUpdateProjectStatus(
   updates: Array<{ projectId: string; status: ProjectStatus }>,
 ): Promise<void> {
-  const batch = writeBatch(db);
-  const now = serverTimestamp();
+  const batch = adminDb.batch();
+  const now = Timestamp.now();
   for (const { projectId, status } of updates) {
-    const ref = doc(db, PROJECTS_COLLECTION, projectId);
+    const ref = adminDb.collection(PROJECTS_COLLECTION).doc(projectId);
     batch.update(ref, { status, updatedAt: now });
   }
   await batch.commit();
