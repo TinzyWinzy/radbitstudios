@@ -470,6 +470,90 @@ const undp: CustomParser = async (config) => {
   return results;
 };
 
+const herald: CustomParser = async (config) => {
+  const results: Tender[] = [];
+  const seen = new Set<string>();
+  try {
+    const r = await axios.get(config.url, {
+      timeout: config.timeout || 15000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html',
+      },
+    });
+    const $ = parseHtml(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+
+    // Extract article links from the WordPress listing
+    const articles = $('article, .post, .entry, .listing-item').map((_, el) => {
+      const link = $(el).find('a[href]').first();
+      const href = link.attr('href') || '';
+      const title = link.text().trim().replace(/\s+/g, ' ') || $(el).find('h2, h3').first().text().trim();
+      const excerpt = $(el).find('.excerpt, .entry-summary, p').first().text().trim().replace(/\s+/g, ' ');
+      const dateText = $(el).find('.date, .entry-date, .published, time').first().text().trim() || '';
+      return { href, title, excerpt, dateText };
+    }).get().filter(a => a.href && a.title && a.title.length > 5);
+    
+    for (const article of articles.slice(0, 25)) {
+      const key = article.href.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      // Try to parse closing date from title, excerpt, or published date
+      let closingDate: Date | null = null;
+      const allText = `${article.title} ${article.excerpt}`;
+      
+      // Match common date patterns used in Zim tender ads
+      const datePatterns = [
+        /(?:clos(?:ing|e)|deadline|due date)[:\s]*(\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s*\d{4})/i,
+        /(?:clos(?:ing|e)|deadline|due date)[:\s]*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})/i,
+        /(\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s*\d{4})/i,
+      ];
+      
+      for (const pattern of datePatterns) {
+        const match = allText.match(pattern);
+        if (match) {
+          try { closingDate = new Date(match[1]); } catch { /* ignore */ }
+          if (closingDate && !isNaN(closingDate.getTime())) break;
+        }
+      }
+
+      // Extract organization/buyer name
+      const orgMatch = allText.match(/(?:invites|issued by|procuring entity|buyer|organization)[:\s]+([A-Z][A-Za-z\s&.]+?)(?:\d|closing|deadline|tender|rfq|eoi|\,|\s{2,}|$)/i);
+      
+      // Extract tender reference number
+      const refMatch = allText.match(/(?:ref(?:erence)?|tender no|contract no)[.:\s]*([A-Z0-9][-A-Z0-9\/\s]+?)(?:\s{2,}|\,|$)/i);
+      const description = refMatch ? `Ref: ${refMatch[1].trim()}. ${article.excerpt}` : article.excerpt;
+
+      const fullHref = article.href.startsWith('http') ? article.href : `https://www.heraldonline.co.zw${article.href}`;
+
+      let publishedAt: Date | undefined;
+      if (article.dateText) {
+        try { publishedAt = new Date(article.dateText); } catch { /* ignore */ }
+      }
+
+      results.push(enrichTender({
+        title: article.title.slice(0, 200),
+        description: description.slice(0, 500),
+        organization: orgMatch ? orgMatch[1].trim() : config.organization,
+        sourceUrl: fullHref,
+        closingDate,
+        value: null,
+        sector: classifySector(article.title),
+        category: config.category,
+        requirements: [],
+        region: config.region || 'Zimbabwe',
+        sourceName: config.name,
+        publishedAt,
+      }));
+    }
+
+    console.log(`[TenderScraper] ${config.name}: ${results.length} tenders`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] ${config.name} failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
+  }
+  return results;
+};
+
 const liveTenders: CustomParser = async (config) => {
   const results: Tender[] = [];
   try {
@@ -523,5 +607,6 @@ export const customScrapers: Record<string, CustomParser> = {
   'tenders-zimbabwe': tendersZimbabwe,
   'zimra': zimra,
   'undp': undp,
+  'herald': herald,
   'live-tenders': liveTenders,
 };

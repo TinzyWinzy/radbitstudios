@@ -125,7 +125,7 @@ export const TENDER_SOURCES: TenderSourceConfig[] = [
     name: 'AfDB',
     displayName: 'African Development Bank',
     baseUrl: 'https://www.afdb.org',
-    url: 'https://www.afdb.org/en/projects-and-operations/tenders',
+    url: 'https://www.afdb.org/en/about-us/corporate-procurement/procurement-notices/current-solicitations',
     strategy: 'html-table',
     organization: 'African Development Bank',
     region: 'Africa',
@@ -208,6 +208,16 @@ export const TENDER_SOURCES: TenderSourceConfig[] = [
     category: 'Tender Notice',
   },
   {
+    name: 'PRAZ-eGP',
+    displayName: 'PRAZ e-GP Portal',
+    baseUrl: 'https://egp.praz.org.zw',
+    url: 'https://egp.praz.org.zw/',
+    strategy: 'html-links',
+    linkFilter: 'a[href*="notice"], a[href*="tender"], a[href*="bid"], a[href*="procurement"], a[href*="opportunity"], a[href*="award"], a[href*="plan"]',
+    organization: 'PRAZ e-GP Portal',
+    category: 'Public Procurement',
+  },
+  {
     name: 'Classifieds',
     displayName: 'Classifieds Zimbabwe',
     baseUrl: 'https://www.classifieds.co.zw',
@@ -228,6 +238,18 @@ export const TENDER_SOURCES: TenderSourceConfig[] = [
     category: 'International Development',
     requirements: ['World Bank vendor registration'],
     region: 'Global',
+  },
+
+  {
+    name: 'Herald',
+    displayName: 'The Herald Tenders',
+    baseUrl: 'https://www.heraldonline.co.zw',
+    url: 'https://www.heraldonline.co.zw/category/tenders/',
+    strategy: 'custom',
+    organization: 'The Herald (Zimbabwe)',
+    category: 'Newspaper Tender Notice',
+    region: 'Zimbabwe',
+    customParser: 'herald',
   },
 
   // ── HTML Divs scrapers ─────────────────────────────────────────────
