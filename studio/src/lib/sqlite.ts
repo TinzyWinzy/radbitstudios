@@ -1,6 +1,6 @@
 import { Pool, PoolClient } from 'pg';
 
-function getPool(): Pool {
+export function getPool(): Pool {
   if (!process.env.DATABASE_URL) {
     throw new Error(
       'DATABASE_URL is not set. Add it to your .env to connect to Supabase PostgreSQL.',
@@ -84,6 +84,34 @@ async function ensureSchema(): Promise<void> {
       error TEXT,
       createdAt TEXT DEFAULT (NOW()::TEXT)
     );
+
+    -- pgvector RAG tables
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+    CREATE TABLE IF NOT EXISTS rag_documents (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      source TEXT,
+      category TEXT,
+      locale TEXT DEFAULT 'en',
+      chunk_count INTEGER DEFAULT 0,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS rag_chunks (
+      id SERIAL PRIMARY KEY,
+      document_id TEXT NOT NULL REFERENCES rag_documents(id) ON DELETE CASCADE,
+      chunk_index INTEGER NOT NULL,
+      content TEXT NOT NULL,
+      embedding vector(768),
+      metadata JSONB DEFAULT '{}',
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_rag_chunks_doc_id ON rag_chunks(document_id);
+    CREATE INDEX IF NOT EXISTS idx_rag_chunks_metadata_category ON rag_chunks((metadata->>'category'));
+    CREATE INDEX IF NOT EXISTS idx_rag_chunks_metadata_locale ON rag_chunks((metadata->>'locale'));
   `);
 }
 

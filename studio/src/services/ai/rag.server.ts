@@ -1,6 +1,5 @@
-import { adminDb } from '@/lib/firebase/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
-import { generateEmbedding, cosineSimilarity } from './embeddings';
+import { getPool } from '@/lib/sqlite';
+import { generateEmbedding } from './embeddings';
 
 const CHUNK_SIZE = 512;
 
@@ -21,32 +20,41 @@ export async function indexDocument(
   category: string,
   locale = 'en',
 ): Promise<string> {
-  const docRef = await adminDb.collection('rag_documents').add({
-    title, content, source, category, locale,
-    createdAt: Timestamp.now(),
-  });
+  const pool = getPool();
+
+  const id = `doc_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+  await pool.query(
+    `INSERT INTO rag_documents (id, title, content, source, category, locale)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [id, title, content, source, category, locale],
+  );
 
   const chunks = chunkText(`${title}\n\n${content}`);
   const embeddings = await Promise.allSettled(chunks.map(c => generateEmbedding(c)));
 
-  const batchItems: any[] = [];
+  let storedCount = 0;
   for (let i = 0; i < chunks.length; i++) {
     const emb = embeddings[i];
     if (emb.status !== 'fulfilled' || emb.value.length === 0) continue;
-    batchItems.push({
-      documentId: docRef.id,
-      chunkIndex: i,
-      content: chunks[i],
-      embedding: emb.value,
-      metadata: { title, source, category, locale },
-    });
+
+    await pool.query(
+      `INSERT INTO rag_chunks (document_id, chunk_index, content, embedding, metadata)
+       VALUES ($1, $2, $3, $4::vector, $5::jsonb)`,
+      [
+        id,
+        i,
+        chunks[i],
+        `[${emb.value.join(',')}]`,
+        JSON.stringify({ title, source, category, locale }),
+      ],
+    );
+    storedCount++;
   }
 
-  for (const item of batchItems) {
-    await adminDb.collection('rag_chunks').add(item);
-  }
+  await pool.query('UPDATE rag_documents SET chunk_count = $1 WHERE id = $2', [storedCount, id]);
 
-  return docRef.id;
+  return id;
 }
 
 export async function searchRelevantContext(
@@ -59,39 +67,66 @@ export async function searchRelevantContext(
   const queryEmbedding = await generateEmbedding(searchQuery);
   if (queryEmbedding.length === 0) return [];
 
-  let query = adminDb.collection('rag_chunks') as any;
-  if (category) query = query.where('metadata.category', '==', category);
-  if (locale) query = query.where('metadata.locale', '==', locale);
-  query = query.limit(200);
+  const pool = getPool();
+  const embeddingStr = `[${queryEmbedding.join(',')}]`;
 
-  const snapshot = await query.get();
+  let sql = `
+    SELECT
+      rc.content,
+      1 - (rc.embedding <=> $1::vector) AS score,
+      rc.metadata
+    FROM rag_chunks rc
+    JOIN rag_documents rd ON rc.document_id = rd.id
+    WHERE 1=1
+  `;
+  const params: (string | number)[] = [embeddingStr];
+  let p = 2;
 
-  const scored: { doc: any; score: number }[] = [];
-  for (const docSnap of snapshot.docs) {
-    const data = docSnap.data();
-    if (!data.embedding || !Array.isArray(data.embedding)) continue;
-    const score = cosineSimilarity(queryEmbedding, data.embedding);
-    if (score >= minScore) {
-      scored.push({ doc: data, score });
-    }
+  if (category) {
+    sql += ` AND rc.metadata->>'category' = $${p++}`;
+    params.push(category);
+  }
+  if (locale) {
+    sql += ` AND rc.metadata->>'locale' = $${p++}`;
+    params.push(locale);
   }
 
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, topK).map(s => ({
-    content: s.doc.content,
-    score: s.score,
-    metadata: s.doc.metadata || {},
-  }));
+  sql += ` ORDER BY rc.embedding <=> $1::vector LIMIT $${p++}`;
+  params.push(topK * 3);
+
+  const { rows } = await pool.query(sql, params);
+
+  return rows
+    .filter((r: Record<string, unknown>) => (r.score as number) >= minScore)
+    .slice(0, topK)
+    .map((r: Record<string, unknown>) => ({
+      content: r.content as string,
+      score: r.score as number,
+      metadata: typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}),
+    }));
 }
 
 export async function removeDocument(docId: string): Promise<void> {
-  const chunksSnap = await adminDb.collection('rag_chunks').where('documentId', '==', docId).get();
-  const deletions = chunksSnap.docs.map(d => adminDb.doc(`rag_chunks/${d.id}`).delete());
-  await Promise.all(deletions);
-  await adminDb.doc(`rag_documents/${docId}`).delete();
+  const pool = getPool();
+  await pool.query('DELETE FROM rag_chunks WHERE document_id = $1', [docId]);
+  await pool.query('DELETE FROM rag_documents WHERE id = $1', [docId]);
 }
 
 export async function getDocumentCount(): Promise<number> {
-  const snap = await adminDb.collection('rag_documents').get();
-  return snap.size;
+  const pool = getPool();
+  const { rows } = await pool.query('SELECT COUNT(*)::int AS count FROM rag_documents');
+  return (rows[0]?.count as number) ?? 0;
+}
+
+export async function createIndex(): Promise<void> {
+  const pool = getPool();
+  try {
+    await pool.query(`
+      CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_rag_chunks_embedding
+      ON rag_chunks USING ivfflat (embedding vector_cosine_ops)
+      WITH (lists = 100)
+    `);
+  } catch {
+    console.warn('[RAG] IVFFlat index creation skipped (need at least 100 rows)');
+  }
 }
