@@ -8,7 +8,7 @@ import type { PlanName } from '@/types/user';
 import type { UserRole } from '@/services/permissions';
 
 export type { PlanName };
-export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot' | 'prazCompliance';
+export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot' | 'prazCompliance' | 'multiAgentWorkflow';
 
 export function getTierLevel(plan: PlanName): number {
   return PLAN_ORDER.indexOf(plan);
@@ -40,6 +40,7 @@ const FEATURE_GATES: Record<string, FeatureGate> = {
   tendersCuration:       { type: 'credit', creditKey: 'tendersCuration' },
   taxCopilot:            { type: 'credit', creditKey: 'taxCopilot' },
   tenderProposal:        { type: 'credit', creditKey: 'tenderProposal' },
+  multiAgentWorkflow:    { type: 'credit', creditKey: 'multiAgentWorkflow' },
   tendersRegional:       { type: 'tier', minTier: 'Growth' },
   directMessages:        { type: 'tier', minTier: 'Growth' },
   prazCompliance:        { type: 'tier', minTier: 'Tender Starter' },

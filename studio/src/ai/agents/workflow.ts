@@ -3,6 +3,7 @@
 import { Orchestrator, type OrchestratorResponse } from './orchestrator';
 import { SubagentExecutor } from './subagent-executor';
 import { getAgent, listAgents } from './registry';
+import { checkAndDecrementUsage } from '@/services/feature-gate';
 import { z } from 'zod';
 
 // ─── Input/Output Schemas ───────────────────────────────────────────────────
@@ -50,6 +51,21 @@ export type WorkflowResult = z.infer<typeof WorkflowResultSchema>;
 export async function runMultiAgentWorkflow(input: RunWorkflowInput): Promise<WorkflowResult> {
   const validated = RunWorkflowInputSchema.parse(input);
   const startTime = Date.now();
+
+  // Credit gate: check and deduct 1 multiAgentWorkflow credit
+  if (validated.userId) {
+    const access = await checkAndDecrementUsage(validated.userId, 'multiAgentWorkflow');
+    if (!access.success) {
+      return {
+        analysis: '',
+        subtasks: [],
+        finalOutput: access.message,
+        totalTokensUsed: 0,
+        totalCostUsd: 0,
+        executionTimeMs: Date.now() - startTime,
+      };
+    }
+  }
 
   if (validated.mode === 'single' && validated.agentId) {
     return runSingleAgent(validated.agentId, validated.request, validated.userId);

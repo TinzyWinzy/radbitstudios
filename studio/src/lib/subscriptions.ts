@@ -17,6 +17,7 @@ export interface SubscriptionPlan {
       templateGeneration: { remaining: number; total: number };
       tenderProposal: { remaining: number; total: number };
       taxCopilot: { remaining: number; total: number };
+      multiAgentWorkflow: { remaining: number; total: number };
     };
   }
 
@@ -41,6 +42,7 @@ export interface SubscriptionPlan {
         tendersCuration: { remaining: 10, total: 10 },
         tenderProposal: { remaining: 2, total: 2 },
         taxCopilot: { remaining: 5, total: 5 },
+        multiAgentWorkflow: { remaining: 3, total: 3 },
       },
     },
     {
@@ -65,6 +67,7 @@ export interface SubscriptionPlan {
         tendersCuration: { remaining: 999, total: 999 },
         tenderProposal: { remaining: 20, total: 20 },
         taxCopilot: { remaining: 50, total: 50 },
+        multiAgentWorkflow: { remaining: 10, total: 10 },
       },
     },
     {
@@ -90,6 +93,7 @@ export interface SubscriptionPlan {
         tendersCuration: { remaining: 9999, total: 9999 },
         tenderProposal: { remaining: 10, total: 10 },
         taxCopilot: { remaining: 50, total: 50 },
+        multiAgentWorkflow: { remaining: 25, total: 25 },
       },
     },
     {
@@ -114,6 +118,7 @@ export interface SubscriptionPlan {
         tendersCuration: { remaining: 9999, total: 9999 },
         tenderProposal: { remaining: 999, total: 999 },
         taxCopilot: { remaining: 9999, total: 9999 },
+        multiAgentWorkflow: { remaining: 999, total: 999 },
       },
     },
     {
@@ -138,6 +143,7 @@ export interface SubscriptionPlan {
         tendersCuration: { remaining: 9999, total: 9999 },
         tenderProposal: { remaining: 9999, total: 9999 },
         taxCopilot: { remaining: 9999, total: 9999 },
+        multiAgentWorkflow: { remaining: 9999, total: 9999 },
       },
     },
   ];
