@@ -1,9 +1,10 @@
 'use server';
 
-import { Orchestrator, type OrchestratorResponse } from './orchestrator';
+import { Orchestrator, type OrchestratorResponse, type ProgressEvent } from './orchestrator';
 import { SubagentExecutor } from './subagent-executor';
 import { getAgent, listAgents } from './registry';
 import { checkAndDecrementUsage } from '@/services/feature-gate';
+import { adminDb } from '@/lib/firebase/firebase-admin';
 import { z } from 'zod';
 
 // ─── Input/Output Schemas ───────────────────────────────────────────────────
@@ -13,6 +14,12 @@ const RunWorkflowInputSchema = z.object({
   userId: z.string().optional(),
   mode: z.enum(['orchestrated', 'single']).default('orchestrated'),
   agentId: z.string().optional(),
+  threadId: z.string().optional(),
+  businessContext: z.object({
+    businessName: z.string().optional(),
+    industry: z.string().optional(),
+    businessDescription: z.string().optional(),
+  }).optional(),
 });
 
 export type RunWorkflowInput = z.infer<typeof RunWorkflowInputSchema>;
@@ -39,20 +46,79 @@ const WorkflowResultSchema = z.object({
 
 export type WorkflowResult = z.infer<typeof WorkflowResultSchema>;
 
+// ─── Business Context Builder ───────────────────────────────────────────────
+
+function buildContextBlock(ctx?: RunWorkflowInput['businessContext']): string {
+  if (!ctx) return '';
+  return [
+    ctx.businessName && `Business: ${ctx.businessName}`,
+    ctx.industry && `Industry: ${ctx.industry}`,
+    ctx.businessDescription && `Description: ${ctx.businessDescription}`,
+  ].filter(Boolean).join(' | ');
+}
+
+// ─── Thread Persistence ─────────────────────────────────────────────────────
+
+async function saveThreadMessage(
+  userId: string,
+  threadId: string,
+  role: 'user' | 'assistant',
+  content: string,
+  metadata?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    const msgCol = adminDb
+      .collection('agent_threads')
+      .doc(userId)
+      .collection('threads')
+      .doc(threadId)
+      .collection('messages');
+
+    await msgCol.add({
+      role,
+      content,
+      metadata: metadata || {},
+      createdAt: new Date(),
+    });
+
+    await adminDb
+      .collection('agent_threads')
+      .doc(userId)
+      .collection('threads')
+      .doc(threadId)
+      .set({ updatedAt: new Date() }, { merge: true });
+  } catch { /* non-critical */ }
+}
+
+async function getThreadHistory(
+  userId: string,
+  threadId: string,
+  limit = 10,
+): Promise<Array<{ role: string; content: string }>> {
+  try {
+    const snap = await adminDb
+      .collection('agent_threads')
+      .doc(userId)
+      .collection('threads')
+      .doc(threadId)
+      .collection('messages')
+      .orderBy('createdAt', 'desc')
+      .limit(limit)
+      .get();
+
+    return snap.docs.map(d => d.data()).reverse() as Array<{ role: string; content: string }>;
+  } catch {
+    return [];
+  }
+}
+
 // ─── Main Server Action ─────────────────────────────────────────────────────
 
-/**
- * Multi-Agent Workflow Execution
- *
- * Usage:
- *   - mode: "orchestrated" → Decomposes request, runs parallel subagents, aggregates
- *   - mode: "single" → Runs a single specified agent
- */
 export async function runMultiAgentWorkflow(input: RunWorkflowInput): Promise<WorkflowResult> {
   const validated = RunWorkflowInputSchema.parse(input);
   const startTime = Date.now();
 
-  // Credit gate: check and deduct 1 multiAgentWorkflow credit
+  // Credit gate
   if (validated.userId) {
     const access = await checkAndDecrementUsage(validated.userId, 'multiAgentWorkflow');
     if (!access.success) {
@@ -67,15 +133,94 @@ export async function runMultiAgentWorkflow(input: RunWorkflowInput): Promise<Wo
     }
   }
 
-  if (validated.mode === 'single' && validated.agentId) {
-    return runSingleAgent(validated.agentId, validated.request, validated.userId);
+  // Build enriched request with business context and thread history
+  let enrichedRequest = validated.request;
+
+  if (validated.businessContext) {
+    const ctx = buildContextBlock(validated.businessContext);
+    if (ctx) enrichedRequest = `Business Profile: ${ctx}\n\nRequest: ${enrichedRequest}`;
   }
 
-  // Orchestrated mode
-  const orchestrator = new Orchestrator();
-  const response = await orchestrator.run(validated.request, validated.userId);
+  if (validated.userId && validated.threadId) {
+    const history = await getThreadHistory(validated.userId, validated.threadId);
+    if (history.length > 0) {
+      const historyBlock = history.map(m => `${m.role}: ${m.content}`).join('\n');
+      enrichedRequest = `Previous conversation:\n${historyBlock}\n\nCurrent request: ${enrichedRequest}`;
+    }
+  }
 
-  return formatOrchestratorResponse(response, Date.now() - startTime);
+  // Execute
+  let result: WorkflowResult = {
+    analysis: '',
+    subtasks: [],
+    finalOutput: '',
+    totalTokensUsed: 0,
+    totalCostUsd: 0,
+    executionTimeMs: 0,
+  };
+
+  if (validated.mode === 'single' && validated.agentId) {
+    result = await runSingleAgent(validated.agentId, enrichedRequest, validated.userId);
+  } else {
+    const orchestrator = new Orchestrator();
+    const response = await orchestrator.run(enrichedRequest, validated.userId);
+    result = formatOrchestratorResponse(response, Date.now() - startTime);
+  }
+
+  // Persist to thread
+  if (validated.userId && validated.threadId) {
+    await saveThreadMessage(validated.userId, validated.threadId, 'user', validated.request);
+    await saveThreadMessage(validated.userId, validated.threadId, 'assistant', result.finalOutput, {
+      subtasks: result.subtasks.map((s: { agentId: string; success: boolean }) => ({ agentId: s.agentId, success: s.success })),
+      tokensUsed: result.totalTokensUsed,
+    });
+  }
+
+  return result;
+}
+
+// ─── Streaming Server Action ────────────────────────────────────────────────
+
+export async function streamMultiAgentWorkflow(
+  input: RunWorkflowInput,
+  onEvent: (event: ProgressEvent & { type: string }) => void,
+): Promise<WorkflowResult> {
+  const validated = RunWorkflowInputSchema.parse(input);
+  const startTime = Date.now();
+
+  // Credit gate
+  if (validated.userId) {
+    const access = await checkAndDecrementUsage(validated.userId, 'multiAgentWorkflow');
+    if (!access.success) {
+      return {
+        analysis: '',
+        subtasks: [],
+        finalOutput: access.message,
+        totalTokensUsed: 0,
+        totalCostUsd: 0,
+        executionTimeMs: Date.now() - startTime,
+      };
+    }
+  }
+
+  let enrichedRequest = validated.request;
+  if (validated.businessContext) {
+    const ctx = buildContextBlock(validated.businessContext);
+    if (ctx) enrichedRequest = `Business Profile: ${ctx}\n\nRequest: ${enrichedRequest}`;
+  }
+
+  const orchestrator = new Orchestrator();
+  orchestrator.onProgress((event) => onEvent(event));
+
+  const response = await orchestrator.run(enrichedRequest, validated.userId);
+  const result = formatOrchestratorResponse(response, Date.now() - startTime);
+
+  if (validated.userId && validated.threadId) {
+    await saveThreadMessage(validated.userId, validated.threadId, 'user', validated.request);
+    await saveThreadMessage(validated.userId, validated.threadId, 'assistant', result.finalOutput);
+  }
+
+  return result;
 }
 
 // ─── Single Agent Execution ─────────────────────────────────────────────────
@@ -132,9 +277,6 @@ export async function listAvailableAgents(): Promise<Array<{
 
 // ─── Quick Agent Calls ──────────────────────────────────────────────────────
 
-/**
- * Convenience function: Marketing copy only
- */
 export async function runMarketingAgent(
   businessDescription: string,
   contentType: string,
@@ -149,9 +291,6 @@ export async function runMarketingAgent(
   return result.response;
 }
 
-/**
- * Convenience function: Financial projection only
- */
 export async function runFinancialAgent(
   businessDescription: string,
   projectionType: string,
@@ -166,9 +305,6 @@ export async function runFinancialAgent(
   return result.response;
 }
 
-/**
- * Convenience function: SWOT analysis only
- */
 export async function runSwotAgent(
   businessDescription: string,
   businessName: string,

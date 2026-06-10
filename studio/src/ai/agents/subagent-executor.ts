@@ -24,35 +24,101 @@ export interface AgentExecution {
 export interface SubagentConfig {
   maxToolCalls: number;
   maxRetries: number;
+  timeoutMs: number;
+  concurrency: number;
 }
 
 const DEFAULT_CONFIG: SubagentConfig = {
   maxToolCalls: 3,
   maxRetries: 2,
+  timeoutMs: 30_000,
+  concurrency: 3,
 };
+
+// ─── Semaphore ──────────────────────────────────────────────────────────────
+
+class Semaphore {
+  private permits: number;
+  private waitQueue: Array<() => void> = [];
+
+  constructor(permits: number) {
+    this.permits = permits;
+  }
+
+  async acquire(): Promise<void> {
+    if (this.permits > 0) {
+      this.permits--;
+      return;
+    }
+    return new Promise<void>((resolve) => {
+      this.waitQueue.push(resolve);
+    });
+  }
+
+  release(): void {
+    const next = this.waitQueue.shift();
+    if (next) {
+      next();
+    } else {
+      this.permits++;
+    }
+  }
+}
+
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
+function extractJsonBlocks(text: string): Record<string, unknown>[] {
+  const results: Record<string, unknown>[] = [];
+
+  // Try ```json blocks
+  const codeBlockRegex = /```(?:json)?\s*([\s\S]*?)```/g;
+  let match;
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    try {
+      const parsed = JSON.parse(match[1].trim());
+      if (parsed && typeof parsed === 'object') results.push(parsed);
+    } catch { /* skip */ }
+  }
+
+  // Try inline JSON objects
+  const inlineRegex = /\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g;
+  while ((match = inlineRegex.exec(text)) !== null) {
+    try {
+      const parsed = JSON.parse(match[0]);
+      if (parsed && typeof parsed === 'object' && parsed.tool) {
+        results.push(parsed);
+      }
+    } catch { /* skip */ }
+  }
+
+  return results;
+}
 
 // ─── Subagent Executor ──────────────────────────────────────────────────────
 
-/**
- * Executes a single subagent with optional tool-calling loop.
- *
- * Flow:
- *   1. Send prompt to agent's LLM with tool definitions
- *   2. If LLM responds with a tool call → execute tool → feed result back
- *   3. Repeat until LLM gives a final text response (or maxToolCalls reached)
- */
 export class SubagentExecutor {
   private gateway: AIGateway;
   private config: SubagentConfig;
+  private semaphore: Semaphore;
 
   constructor(config?: Partial<SubagentConfig>) {
     this.gateway = new AIGateway();
     this.config = { ...DEFAULT_CONFIG, ...config };
+    this.semaphore = new Semaphore(this.config.concurrency);
   }
 
   /**
    * Run a single agent with the given prompt.
-   * Optionally allow tool calls.
+   * Supports tool-calling loop, timeout, and concurrency limits.
    */
   async run(
     agentId: string,
@@ -62,21 +128,11 @@ export class SubagentExecutor {
   ): Promise<AgentExecution> {
     const agent = getAgent(agentId);
     if (!agent) {
-      return {
-        agentId,
-        prompt,
-        response: '',
-        toolCalls: [],
-        toolResults: [],
-        tokensUsed: 0,
-        costUsd: 0,
-        model: 'error',
-        success: false,
-        error: `Agent not found: ${agentId}`,
-      };
+      return this.errorExecution(agentId, prompt, `Agent not found: ${agentId}`);
     }
 
-    const tools = getToolsForAgent(agentId);
+    await this.semaphore.acquire();
+
     const execution: AgentExecution = {
       agentId,
       prompt,
@@ -89,84 +145,90 @@ export class SubagentExecutor {
       success: false,
     };
 
-    // Build tool descriptions for the prompt
-    const toolDescriptions = tools.length > 0
-      ? `\n\n## Available Tools\nYou have access to these tools. To use a tool, respond with a JSON block:\n\`\`\`json\n{"tool": "tool_name", "params": {"param": "value"}}\n\`\`\`\n\nTools:\n${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}\n\nIf you don't need a tool, just respond normally with your analysis.`
-      : '';
+    try {
+      const tools = getToolsForAgent(agentId);
+      const toolBlock = this.buildToolBlock(tools);
+      const contextBlock = this.buildContextBlock(context);
 
-    // Inject context if provided
-    const contextBlock = context && Object.keys(context).length > 0
-      ? `\n\n## Context\n${Object.entries(context).map(([k, v]) => `${k}: ${v}`).join('\n')}`
-      : '';
+      let currentPrompt = prompt + toolBlock + contextBlock;
+      let toolCallCount = 0;
 
-    let currentPrompt = prompt + toolDescriptions + contextBlock;
-    let toolCallCount = 0;
+      // Tool-calling loop with timeout
+      while (toolCallCount < this.config.maxToolCalls) {
+        const response = await withTimeout(
+          this.gateway.generate({
+            prompt: currentPrompt,
+            systemPrompt: agent.systemPrompt,
+            difficulty: agent.model as any,
+            maxTokens: agent.maxTokens,
+            temperature: agent.temperature,
+            userId,
+          }),
+          this.config.timeoutMs,
+          `Agent ${agentId}`,
+        );
 
-    // Tool-calling loop
-    while (toolCallCount < this.config.maxToolCalls) {
-      const response = await this.gateway.generate({
-        prompt: currentPrompt,
-        systemPrompt: agent.systemPrompt,
-        difficulty: agent.model as any,
-        maxTokens: agent.maxTokens,
-        temperature: agent.temperature,
-        userId,
-      });
+        execution.tokensUsed += response.tokensUsed;
+        execution.costUsd += response.costUsd;
+        execution.model = response.model;
 
-      execution.tokensUsed += response.tokensUsed;
-      execution.costUsd += response.costUsd;
-      execution.model = response.model;
+        if (response.error) {
+          execution.error = response.error;
+          break;
+        }
 
-      if (response.error) {
-        execution.error = response.error;
-        break;
+        // Check for tool calls using structured extraction
+        const toolCall = this.extractToolCall(response.content, tools.map(t => t.name));
+        if (!toolCall) {
+          execution.response = response.content;
+          execution.success = true;
+          break;
+        }
+
+        // Execute the tool
+        const tool = builtInTools[toolCall.tool];
+        if (!tool) {
+          execution.response = response.content;
+          execution.error = `Unknown tool: ${toolCall.tool}`;
+          break;
+        }
+
+        execution.toolCalls.push(toolCall);
+
+        try {
+          const toolResult = await withTimeout(
+            tool.execute(toolCall.params),
+            10_000,
+            `Tool ${toolCall.tool}`,
+          );
+          execution.toolResults.push(toolResult);
+          currentPrompt = `${currentPrompt}\n\n## Tool Response (${toolCall.tool}):\n${toolResult}\n\nNow provide your final response based on this tool result.`;
+          toolCallCount++;
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          execution.toolResults.push(`Error: ${msg}`);
+          currentPrompt = `${currentPrompt}\n\n## Tool Error (${toolCall.tool}):\n${msg}\n\nPlease provide your response without this tool.`;
+          toolCallCount++;
+        }
       }
 
-      // Check if response contains a tool call
-      const toolCall = this.extractToolCall(response.content);
-      if (!toolCall) {
-        // No tool call — this is the final response
-        execution.response = response.content;
-        execution.success = true;
-        break;
+      if (!execution.response && !execution.error) {
+        execution.response = 'Tool call limit reached. Partial results may be available.';
+        execution.success = execution.toolResults.length > 0;
       }
-
-      // Execute the tool
-      const tool = builtInTools[toolCall.tool];
-      if (!tool) {
-        execution.response = response.content;
-        execution.error = `Unknown tool: ${toolCall.tool}`;
-        break;
-      }
-
-      execution.toolCalls.push(toolCall);
-
-      try {
-        const toolResult = await tool.execute(toolCall.params);
-        execution.toolResults.push(toolResult);
-
-        // Feed tool result back into the conversation
-        currentPrompt = `${currentPrompt}\n\n## Tool Response (${toolCall.tool}):\n${toolResult}\n\nNow provide your final response based on this tool result.`;
-        toolCallCount++;
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err);
-        execution.toolResults.push(`Error: ${msg}`);
-        currentPrompt = `${currentPrompt}\n\n## Tool Error (${toolCall.tool}):\n${msg}\n\nPlease provide your response without this tool.`;
-        toolCallCount++;
-      }
-    }
-
-    // If we exhausted tool calls without a final response
-    if (!execution.response && !execution.error) {
-      execution.response = 'Tool call limit reached. Partial results may be available.';
-      execution.success = execution.toolResults.length > 0;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      execution.error = msg;
+      execution.success = false;
+    } finally {
+      this.semaphore.release();
     }
 
     return execution;
   }
 
   /**
-   * Run multiple agents in parallel.
+   * Run multiple agents in parallel with concurrency limits.
    */
   async runMany(
     tasks: Array<{ agentId: string; prompt: string; context?: Record<string, string> }>,
@@ -177,63 +239,78 @@ export class SubagentExecutor {
 
     return results.map((r, i) => {
       if (r.status === 'fulfilled') return r.value;
-      return {
-        agentId: tasks[i].agentId,
-        prompt: tasks[i].prompt,
-        response: '',
-        toolCalls: [],
-        toolResults: [],
-        tokensUsed: 0,
-        costUsd: 0,
-        model: 'error',
-        success: false,
-        error: r.reason?.message || 'Execution failed',
-      };
+      return this.errorExecution(tasks[i].agentId, tasks[i].prompt, r.reason?.message || 'Execution failed');
     });
   }
 
   // ── Private Helpers ──────────────────────────────────────────────────────
 
+  private buildToolBlock(tools: Array<{ name: string; description: string }>): string {
+    if (tools.length === 0) return '';
+    return `\n\n## Available Tools\nYou have access to these tools. To use a tool, respond with ONLY a JSON block:\n\`\`\`json\n{"tool": "tool_name", "params": {"param": "value"}}\n\`\`\`\n\nTools:\n${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}\n\nIf you don't need a tool, respond normally with your analysis. Do not include tool calls in regular text.`;
+  }
+
+  private buildContextBlock(context?: Record<string, string>): string {
+    if (!context || Object.keys(context).length === 0) return '';
+    return `\n\n## Context\n${Object.entries(context).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
+  }
+
   /**
-   * Extract a tool call from LLM response text.
-   * Looks for JSON blocks with "tool" key.
+   * Extract tool call from LLM response.
+   * Tries structured JSON extraction first, then falls back to regex.
    */
-  private extractToolCall(text: string): ToolCall | null {
-    // Try JSON code blocks first
-    const jsonBlockMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
-    if (jsonBlockMatch) {
+  private extractToolCall(text: string, validTools: string[]): ToolCall | null {
+    // Strategy 1: Find all JSON blocks and look for tool calls
+    const jsonBlocks = extractJsonBlocks(text);
+    for (const block of jsonBlocks) {
+      if (typeof block.tool === 'string' && validTools.includes(block.tool)) {
+        return {
+          tool: block.tool,
+          params: (block.params && typeof block.params === 'object')
+            ? block.params as Record<string, string>
+            : {},
+        };
+      }
+    }
+
+    // Strategy 2: Look for a standalone JSON object with "tool" key at start/end of text
+    const trimmed = text.trim();
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
       try {
-        const parsed = JSON.parse(jsonBlockMatch[1]);
-        if (parsed.tool && typeof parsed.tool === 'string') {
+        const parsed = JSON.parse(trimmed);
+        if (parsed.tool && validTools.includes(parsed.tool)) {
           return { tool: parsed.tool, params: parsed.params || {} };
         }
-      } catch { /* fall through */ }
+      } catch { /* skip */ }
     }
 
-    // Try inline JSON
-    const inlineMatch = text.match(/\{"tool"\s*:\s*"([^"]+)"(?:,\s*"params"\s*:\s*(\{[^}]*\}))?\}/);
-    if (inlineMatch) {
+    // Strategy 3: Last-line JSON (LLM often puts tool call on its own line)
+    const lines = text.split('\n').filter(l => l.trim());
+    const lastLine = lines[lines.length - 1]?.trim();
+    if (lastLine?.startsWith('{') && lastLine.endsWith('}')) {
       try {
-        const params = inlineMatch[2] ? JSON.parse(inlineMatch[2]) : {};
-        return { tool: inlineMatch[1], params };
-      } catch { /* fall through */ }
-    }
-
-    // Try a more relaxed pattern for multi-line tool calls
-    const relaxedMatch = text.match(/\{\s*"tool"\s*:\s*"([^"]+)"[\s\S]*?"params"\s*:\s*\{([\s\S]*?)\}/);
-    if (relaxedMatch) {
-      try {
-        // Try to extract key-value pairs from the params block
-        const paramsBlock = relaxedMatch[2];
-        const params: Record<string, string> = {};
-        const kvPairs = paramsBlock.matchAll(/"(\w+)"\s*:\s*"([^"]*)"/g);
-        for (const kv of kvPairs) {
-          params[kv[1]] = kv[2];
+        const parsed = JSON.parse(lastLine);
+        if (parsed.tool && validTools.includes(parsed.tool)) {
+          return { tool: parsed.tool, params: parsed.params || {} };
         }
-        return { tool: relaxedMatch[1], params };
-      } catch { /* fall through */ }
+      } catch { /* skip */ }
     }
 
     return null;
+  }
+
+  private errorExecution(agentId: string, prompt: string, error: string): AgentExecution {
+    return {
+      agentId,
+      prompt,
+      response: '',
+      toolCalls: [],
+      toolResults: [],
+      tokensUsed: 0,
+      costUsd: 0,
+      model: 'error',
+      success: false,
+      error,
+    };
   }
 }

@@ -1,6 +1,6 @@
 const EMBEDDING_MODEL = 'text-embedding-004';
 const EMBEDDING_BATCH_SIZE = 100;
-const API_VERSION = 'v1';
+const API_VERSION = 'v1beta';
 
 function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
   const controller = new AbortController();

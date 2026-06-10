@@ -35,19 +35,68 @@ export interface OrchestratorResponse {
   totalCostUsd: number;
 }
 
+// ─── Progress Events ────────────────────────────────────────────────────────
+
+export type ProgressEventType =
+  | 'decompose:start'
+  | 'decompose:complete'
+  | 'execute:start'
+  | 'execute:subtask:start'
+  | 'execute:subtask:complete'
+  | 'execute:subtask:error'
+  | 'execute:level:complete'
+  | 'aggregate:start'
+  | 'aggregate:complete'
+  | 'error';
+
+export interface ProgressEvent {
+  type: ProgressEventType;
+  timestamp: number;
+  data?: Record<string, unknown>;
+}
+
+export type ProgressListener = (event: ProgressEvent) => void;
+
+// ─── Decomposition Plan Cache ───────────────────────────────────────────────
+
+interface CachedPlan {
+  plan: DecompositionPlan;
+  expiry: number;
+}
+
+const planCache = new Map<string, CachedPlan>();
+const PLAN_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function cacheKey(request: string): string {
+  let hash = 0;
+  for (let i = 0; i < request.length; i++) {
+    hash = ((hash << 5) - hash) + request.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString(36);
+}
+
+// ─── Compact Agent List ─────────────────────────────────────────────────────
+
+function buildCompactAgentList(): string {
+  return Object.values(AGENT_REGISTRY)
+    .filter(a => a.id !== 'orchestrator')
+    .map(a => `${a.id}[${a.capabilities.slice(0, 3).join(',')}]`)
+    .join(', ');
+}
+
 // ─── Orchestrator ───────────────────────────────────────────────────────────
 
-const DECOMPOSITION_SYSTEM_PROMPT = `You are a task decomposition engine. Analyze the user request and create a plan.
+const DECOMPOSITION_SYSTEM_PROMPT = `You are a task decomposition engine. Analyze the request and create a plan.
 
-You MUST respond with valid JSON only. No markdown, no explanation outside the JSON.
+MUST respond with valid JSON only. No markdown, no explanation outside the JSON.
 
-Response format:
 {
-  "analysis": "Brief understanding of the request",
+  "analysis": "Brief understanding",
   "subtasks": [
     {
       "agentId": "agent_id",
-      "task": "Specific task description for this agent",
+      "task": "Specific task description",
       "params": {},
       "dependsOn": []
     }
@@ -56,39 +105,53 @@ Response format:
 }
 
 Rules:
-- agentId must be one of the registered agents listed below
+- agentId must be from the available agents list
 - Keep subtasks to 2-4 maximum
-- Use dependsOn for sequential tasks that need prior results
-- Use empty dependsOn [] for tasks that can run in parallel
-- Each task should be self-contained with clear input/output`;
+- dependsOn: [] = parallel, ["other_agent"] = sequential
+- Each task must be self-contained`;
 
 export class Orchestrator {
   private gateway: AIGateway;
+  private listeners: ProgressListener[] = [];
 
   constructor() {
     this.gateway = new AIGateway();
+  }
+
+  onProgress(listener: ProgressListener): () => void {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  }
+
+  private emit(type: ProgressEventType, data?: Record<string, unknown>): void {
+    const event: ProgressEvent = { type, timestamp: Date.now(), data };
+    for (const listener of this.listeners) {
+      try { listener(event); } catch { /* swallow */ }
+    }
   }
 
   /**
    * Step 1: Decompose user request into subtasks
    */
   async decompose(userRequest: string, userId?: string): Promise<DecompositionPlan> {
-    const agentList = Object.values(AGENT_REGISTRY)
-      .filter(a => a.id !== 'orchestrator')
-      .map(a => `- ${a.id}: ${a.description} | Capabilities: ${a.capabilities.join(', ')}`)
-      .join('\n');
+    // Check cache
+    const key = cacheKey(userRequest);
+    const cached = planCache.get(key);
+    if (cached && Date.now() < cached.expiry) {
+      return cached.plan;
+    }
 
-    const decompositionPrompt = `## Available Agents
-${agentList}
+    this.emit('decompose:start');
 
-## User Request
-${userRequest}
+    const agentList = buildCompactAgentList();
 
-## Instructions
-Break this request into 2-4 subtasks. Assign each to the best specialist agent.
-Determine which tasks can run in parallel (no dependencies) vs sequential (needs prior result).
+    const decompositionPrompt = `Available agents: ${agentList}
 
-Respond with JSON only.`;
+User request: ${userRequest}
+
+Break this into 2-4 subtasks. Assign each to the best agent. Use dependsOn: [] for parallel, ["id"] for sequential. Respond with JSON only.`;
 
     const response = await this.gateway.generate({
       prompt: decompositionPrompt,
@@ -108,7 +171,6 @@ Respond with JSON only.`;
         expectedOutput: parsed.expectedOutput || '',
       };
     } catch {
-      // Fallback: single task, no decomposition
       plan = {
         analysis: 'Could not decompose. Treating as single task.',
         subtasks: [{ agentId: 'orchestrator', task: userRequest, params: { prompt: userRequest } }],
@@ -116,35 +178,44 @@ Respond with JSON only.`;
       };
     }
 
+    // Cache the plan
+    planCache.set(key, { plan, expiry: Date.now() + PLAN_CACHE_TTL });
+
+    this.emit('decompose:complete', { subtaskCount: plan.subtasks.length });
     return plan;
   }
 
   /**
-   * Step 2: Execute subtasks (respecting dependencies)
+   * Step 2: Execute subtasks (respecting dependencies, with concurrency limits)
    */
   async executeSubtasks(
     plan: DecompositionPlan,
     userId?: string,
   ): Promise<SubtaskResult[]> {
+    this.emit('execute:start', { subtaskCount: plan.subtasks.length });
+
     const results: SubtaskResult[] = [];
     const completed = new Set<string>();
-
-    // Group by dependency level (topological sort, simplified)
     const levels = this.topologicalSort(plan.subtasks);
 
     for (const level of levels) {
-      // Execute all tasks in this level in parallel
-      const promises = level.map(subtask =>
-        this.executeSingleSubtask(subtask, userId, results)
-      );
+      const promises = level.map(subtask => {
+        this.emit('execute:subtask:start', { agentId: subtask.agentId, task: subtask.task });
+        return this.executeSingleSubtask(subtask, userId, results);
+      });
+
       const levelResults = await Promise.allSettled(promises);
 
       for (const r of levelResults) {
         if (r.status === 'fulfilled') {
           results.push(r.value);
           completed.add(r.value.agentId);
+          this.emit(
+            r.value.success ? 'execute:subtask:complete' : 'execute:subtask:error',
+            { agentId: r.value.agentId, success: r.value.success, error: r.value.error },
+          );
         } else {
-          results.push({
+          const failResult: SubtaskResult = {
             agentId: 'unknown',
             task: 'Failed subtask',
             result: '',
@@ -153,9 +224,13 @@ Respond with JSON only.`;
             tokensUsed: 0,
             costUsd: 0,
             model: 'error',
-          });
+          };
+          results.push(failResult);
+          this.emit('execute:subtask:error', { error: failResult.error });
         }
       }
+
+      this.emit('execute:level:complete', { levelSize: level.length });
     }
 
     return results;
@@ -169,6 +244,8 @@ Respond with JSON only.`;
     results: SubtaskResult[],
     userId?: string,
   ): Promise<string> {
+    this.emit('aggregate:start');
+
     const successfulResults = results.filter(r => r.success);
     if (successfulResults.length === 0) {
       return 'All subtasks failed. Please try again later.';
@@ -178,7 +255,6 @@ Respond with JSON only.`;
       return successfulResults[0].result;
     }
 
-    // Multiple results: aggregate with LLM
     const resultSummaries = successfulResults.map((r, i) => {
       const agent = getAgent(r.agentId);
       return `### ${i + 1}. ${agent?.name || r.agentId} (${agent?.persona || 'Unknown'}):\n${r.result}`;
@@ -192,9 +268,8 @@ ${resultSummaries}
 
 ## Instructions
 Combine these specialist outputs into a single, coherent, actionable response.
-${plan.expectedOutput ? `The expected output should be: ${plan.expectedOutput}` : ''}
-Keep the strengths of each specialist's contribution. Remove redundancy.
-Format in clear markdown with sections.`;
+${plan.expectedOutput ? `Expected output: ${plan.expectedOutput}` : ''}
+Keep strengths of each contribution. Remove redundancy. Format in clear markdown.`;
 
     const response = await this.gateway.generate({
       prompt: aggregatePrompt,
@@ -204,6 +279,7 @@ Format in clear markdown with sections.`;
       userId,
     });
 
+    this.emit('aggregate:complete');
     return response.content;
   }
 
@@ -211,16 +287,65 @@ Format in clear markdown with sections.`;
    * Full pipeline: decompose → execute → aggregate
    */
   async run(userRequest: string, userId?: string): Promise<OrchestratorResponse> {
-    const plan = await this.decompose(userRequest, userId);
-    const results = await this.executeSubtasks(plan, userId);
-    const finalOutput = await this.aggregate(plan, results, userId);
+    try {
+      const plan = await this.decompose(userRequest, userId);
+      const results = await this.executeSubtasks(plan, userId);
+      const finalOutput = await this.aggregate(plan, results, userId);
+
+      return {
+        plan,
+        results,
+        finalOutput,
+        totalTokensUsed: results.reduce((sum, r) => sum + r.tokensUsed, 0),
+        totalCostUsd: results.reduce((sum, r) => sum + r.costUsd, 0),
+      };
+    } catch (error: unknown) {
+      this.emit('error', { error: error instanceof Error ? error.message : String(error) });
+
+      // Fallback: run as single agent
+      return this.fallbackRun(userRequest, userId);
+    }
+  }
+
+  /**
+   * Fallback: if orchestration fails, route to business_mentor directly
+   */
+  private async fallbackRun(userRequest: string, userId?: string): Promise<OrchestratorResponse> {
+    const agent = getAgent('business_mentor') || getAgent('orchestrator');
+    if (!agent) {
+      return {
+        plan: { analysis: 'Fallback failed', subtasks: [], expectedOutput: '' },
+        results: [],
+        finalOutput: 'Unable to process your request. Please try again later.',
+        totalTokensUsed: 0,
+        totalCostUsd: 0,
+      };
+    }
+
+    const response = await this.gateway.generate({
+      prompt: userRequest,
+      systemPrompt: agent.systemPrompt,
+      difficulty: agent.model as any,
+      maxTokens: agent.maxTokens,
+      temperature: agent.temperature,
+      userId,
+    });
 
     return {
-      plan,
-      results,
-      finalOutput,
-      totalTokensUsed: results.reduce((sum, r) => sum + r.tokensUsed, 0),
-      totalCostUsd: results.reduce((sum, r) => sum + r.costUsd, 0),
+      plan: { analysis: 'Fallback to single agent', subtasks: [{ agentId: agent.id, task: userRequest, params: {} }], expectedOutput: '' },
+      results: [{
+        agentId: agent.id,
+        task: userRequest,
+        result: response.content,
+        success: !response.error,
+        error: response.error,
+        tokensUsed: response.tokensUsed,
+        costUsd: response.costUsd,
+        model: response.model,
+      }],
+      finalOutput: response.content,
+      totalTokensUsed: response.tokensUsed,
+      totalCostUsd: response.costUsd,
     };
   }
 
@@ -245,23 +370,21 @@ Format in clear markdown with sections.`;
       };
     }
 
-    // Inject prior results if this task depends on others
     let enrichedTask = subtask.task;
     if (subtask.dependsOn && subtask.dependsOn.length > 0 && priorResults) {
       const deps = priorResults
         .filter(r => subtask.dependsOn!.includes(r.agentId))
-        .map(r => `[${r.agentId} output]: ${r.result}`)
+        .map(r => `[${r.agentId}]: ${r.result}`)
         .join('\n\n');
-      enrichedTask = `${subtask.task}\n\n## Prior Results from Dependencies:\n${deps}`;
+      enrichedTask = `${subtask.task}\n\nPrior results:\n${deps}`;
     }
 
-    // Build prompt with agent-specific params
     const paramText = Object.entries(subtask.params || {})
       .map(([k, v]) => `${k}: ${v}`)
       .join('\n');
 
     const prompt = paramText
-      ? `${paramText}\n\n## Task:\n${enrichedTask}`
+      ? `${paramText}\n\nTask:\n${enrichedTask}`
       : enrichedTask;
 
     try {
@@ -310,7 +433,6 @@ Format in clear markdown with sections.`;
       );
 
       if (level.length === 0) {
-        // Circular dependency or unknown dep — push all remaining
         levels.push(remaining.splice(0));
         break;
       }
