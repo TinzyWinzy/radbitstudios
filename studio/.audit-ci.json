@@ -1,0 +1,13 @@
+{
+  "$schema": "https://github.com/quinnturner/audit-ci/raw/main/docs/schema.json",
+  "high": true,
+  "critical": true,
+  "allowlist": [
+    "GHSA-q7rr-3cgh-j5r3",
+    "GHSA-2r85-x9cf-8v9x",
+    "GHSA-wf5p-g6vw-rhxx",
+    "GHSA-8r69-3w4x-6w32",
+    "GHSA-rwhj-9w4m-4h37",
+    "GHSA-7425-5vx7-3x8h"
+  ]
+}

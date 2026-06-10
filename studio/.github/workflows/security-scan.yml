@@ -40,10 +40,9 @@ jobs:
           cache-dependency-path: studio/package-lock.json
       - run: npm ci
         working-directory: studio
-      - name: Run npm audit
-        run: npm audit --audit-level=high
+      - name: Run audit-ci
+        run: npx audit-ci --config .audit-ci.json
         working-directory: studio
-        continue-on-error: true
 
   trivy-scan:
     name: Trivy FS Scan
@@ -78,3 +77,17 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  zap-scan:
+    name: OWASP ZAP DAST
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          target: ${{ secrets.ZAP_TARGET_URL || 'https://radbitstudios.co.zw' }}
+          issue_title: OWASP ZAP Scan Results
+          fail_action: false
+          allow_issue_writing: false
+          cmd_options: '-I -a -j -z "-config rules.cookie.ignorelist=d60c2ef6f5f9"'

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { jwtVerify } from 'jose/jwt/verify';
 import { createRemoteJWKSet } from 'jose/jwks/remote';
+import { buildCspWithNonce } from '@/lib/csp-nonce';
 
 const i18nMiddleware = createMiddleware({
   locales: ['en', 'sn', 'nd', 'pt'],
@@ -68,52 +69,49 @@ async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolea
   }
 }
 
+const API_PROBE_EXTENSIONS = /\.(php\d*|asp|aspx|jsp|jspx|cgi|pl|py|rb|phtml|shtml|htaccess|env|sql|bak|old|swp)$/i;
+
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Block bot probes for non-existent file types (PHP, ASP, JSP, etc.)
-  // These are automated scanners — return 404 immediately without app processing
-  const probeExtensions = /\.(php\d*|asp|aspx|jsp|jspx|cgi|pl|py|rb|phtml|shtml|htaccess|env|sql|bak|old|swp)$/i;
-  if (probeExtensions.test(pathname)) {
+  // Block bot probes — applies to ALL paths including API
+  if (API_PROBE_EXTENSIONS.test(pathname)) {
     return new NextResponse(null, { status: 404, statusText: 'Not Found' });
   }
 
-  const isProtected = protectedPaths.some(path => pathname.startsWith(path));
-  const isAdminOnly = adminOnlyPaths.some(path => pathname.startsWith(path));
+  const isApiRoute = pathname.startsWith('/api/');
 
-  if (isProtected || isAdminOnly) {
-    const { authenticated, role } = await verifyAuth(request);
-    if (!authenticated) {
-      const signInUrl = new URL('/sign-in', request.url);
-      signInUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(signInUrl);
-    }
-    if (isAdminOnly && role !== 'admin' && role !== 'super_admin') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (!isApiRoute) {
+    const isProtected = protectedPaths.some(path => pathname.startsWith(path));
+    const isAdminOnly = adminOnlyPaths.some(path => pathname.startsWith(path));
+
+    if (isProtected || isAdminOnly) {
+      const { authenticated, role } = await verifyAuth(request);
+      if (!authenticated) {
+        const signInUrl = new URL('/sign-in', request.url);
+        signInUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(signInUrl);
+      }
+      if (isAdminOnly && role !== 'admin' && role !== 'super_admin') {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
     }
   }
 
-  const response = i18nMiddleware(request);
+  const response = isApiRoute ? NextResponse.next() : i18nMiddleware(request);
 
-  // Security headers
+  // Security headers — applied to ALL routes including API
   const cspNonce = crypto.randomUUID();
   response.headers.set('x-nonce', cspNonce);
 
-  // Content-Security-Policy (report-only to avoid breaking existing functionality)
-  response.headers.set(
-    'Content-Security-Policy-Report-Only',
-    [
-      `default-src 'self'`,
-      `script-src 'self' 'nonce-${cspNonce}' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com`,
-      `style-src 'self' 'unsafe-inline'`,
-      `img-src 'self' data: blob: https:`,
-      `font-src 'self' data:`,
-      `connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://generativelanguage.googleapis.com wss://*.firebaseio.com https://api.resend.com https://*.sentry.io`,
-      `frame-src 'self' https://*.firebaseapp.com`,
-      `base-uri 'self'`,
-      `form-action 'self'`,
-    ].join('; '),
+  // Content-Security-Policy (enforce — 'unsafe-inline' retained for scripts as
+  // a transition fallback; remove after monitoring CSP violations for one week)
+  const baseCsp = buildCspWithNonce(cspNonce);
+  const transitionalCsp = baseCsp.replace(
+    "script-src 'self' ",
+    "script-src 'self' 'unsafe-inline' ",
   );
+  response.headers.set('Content-Security-Policy', transitionalCsp);
 
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
@@ -123,5 +121,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
 };

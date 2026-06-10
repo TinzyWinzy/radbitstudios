@@ -3,14 +3,15 @@
    Used to replace 'unsafe-inline' in script-src.
    ─────────────────────────────────────────────────────────────────── */
 
-import crypto from 'crypto';
-
 /**
  * Generate a cryptographically random nonce for CSP.
  * Returns a base64-encoded string suitable for use in headers and script tags.
+ * Uses Web Crypto API for Edge Runtime compatibility.
  */
 export function generateNonce(): string {
-  return crypto.randomBytes(16).toString('base64');
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return btoa(String.fromCharCode(...bytes));
 }
 
 /**

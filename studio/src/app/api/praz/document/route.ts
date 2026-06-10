@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
 import { validateBody, PrazDocumentSchema, PrazDeleteSchema } from '@/lib/api-validation';
 
-export async function POST(req: NextRequest) {
+export const POST = withIpRateLimit(
+  { maxRequests: 20, windowMs: 60 * 1000, keyPrefix: 'ratelimit:praz-doc' },
+  async (req: NextRequest) => {
   const user = await verifySession(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -26,9 +29,12 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json({ success: true });
-}
+},
+);
 
-export async function DELETE(req: NextRequest) {
+export const DELETE = withIpRateLimit(
+  { maxRequests: 20, windowMs: 60 * 1000, keyPrefix: 'ratelimit:praz-doc-delete' },
+  async (req: NextRequest) => {
   const user = await verifySession(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -43,4 +49,5 @@ export async function DELETE(req: NextRequest) {
   await adminDb.collection('praz_documents').doc(`${user.uid}_${validation.data.docType}`).delete();
 
   return NextResponse.json({ success: true });
-}
+},
+);

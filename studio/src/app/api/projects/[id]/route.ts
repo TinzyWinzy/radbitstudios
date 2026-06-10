@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProject, getProjectTasks } from "@/services/project-service-admin";
 import { withAuth } from "@/lib/api-auth";
+import { withIpRateLimit } from '@/services/api-rate-limit';
 
-export const GET = withAuth(async (_request: NextRequest, _userId: string) => {
+export const GET = withIpRateLimit(
+  { maxRequests: 100, windowMs: 60 * 1000, keyPrefix: 'ratelimit:project-detail' },
+  withAuth(async (_request: NextRequest, _userId: string) => {
   try {
     const url = new URL(_request.url);
     const segments = url.pathname.split("/");
@@ -20,4 +23,4 @@ export const GET = withAuth(async (_request: NextRequest, _userId: string) => {
     console.error("[Project API] Error:", error);
     return NextResponse.json({ error: "Failed to fetch project" }, { status: 500 });
   }
-});
+}));

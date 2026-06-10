@@ -117,7 +117,7 @@ async function ensureSchema(): Promise<void> {
 
 /* ── ensure schema on first import ───────────────────────────────────────── */
 let schemaPromise: Promise<void> | null = null;
-function initSchema(): Promise<void> {
+export function initSchema(): Promise<void> {
   if (!schemaPromise) schemaPromise = ensureSchema();
   return schemaPromise;
 }

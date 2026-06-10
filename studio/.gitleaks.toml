@@ -1,0 +1,73 @@
+# ─── Radbit Studios — Gitleaks Config ──────────────────────────────────────
+# Extends default rules and adds project-specific patterns.
+# Ref: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+
+title = "Radbit Studios Gitleaks Config"
+extend_use_default = true
+
+# ─── Project-specific deny-list (false-positive suppression) ──────────────
+[allowlist]
+description = "Known non-secret values used in tests or examples"
+paths = [
+  # Test fixtures — these only contain fake/example credentials
+  "(?i)__tests__/fixtures/",
+  # Example env templates — no real secrets
+  "\\.env\\.example$",
+  # Documentation files
+  "(?i)readme\\.md$",
+  "(?i)contributing\\.md$",
+]
+regexes = [
+  # Radbit Studios company values that look like secrets but aren't
+  "(?i)radbitstudios\\.co\\.zw",
+  # Example/test placeholder tokens
+  "(?i)test-verify-token",
+  "(?i)placeholder-api-key",
+  # Public Firebase config values (documented in setup guides)
+  "AIzaSy[A-Za-z0-9_-]{20,40}",
+]
+
+# ─── Custom rules ─────────────────────────────────────────────────────────
+
+[[rules]]
+id = "firebase-service-account"
+description = "Firebase service account private key"
+regex = '''-----BEGIN PRIVATE KEY-----[^-]+-----END PRIVATE KEY-----'''
+tags = ["firebase", "gcp", "service-account"]
+
+[[rules]]
+id = "resend-api-key"
+description = "Resend API key"
+regex = '''re_[A-Za-z0-9]{20,40}'''
+tags = ["email", "resend"]
+
+[[rules]]
+id = "sentry-dsn"
+description = "Sentry DSN"
+regex = '''https://[a-f0-9]{32}@[a-f0-9]{16}\.ingest\.sentry\.io'''
+tags = ["sentry", "dsn"]
+
+[[rules]]
+id = "stripe-webhook-secret"
+description = "Stripe webhook signing secret"
+regex = '''whsec_[A-Za-z0-9]+'''
+tags = ["stripe", "webhook"]
+
+[[rules]]
+id = "paynow-integration-key"
+description = "PayNow integration key/ID"
+regex = '''\b\d{4,10}\b(?=.*paynow|.*payment)'''
+tags = ["paynow", "payment"]
+
+[[rules]]
+id = "upstash-redis-url"
+description = "Upstash Redis REST URL"
+regex = '''https://[a-z0-9]+-[a-z0-9]+-[a-z0-9]+\.upstash\.io'''
+keywords = ["upstash"]
+tags = ["redis", "upstash"]
+
+[[rules]]
+id = "whatsapp-token"
+description = "WhatsApp API token (long-lived)"
+regex = '''EAA[A-Za-z0-9]{60,}'''
+tags = ["whatsapp", "meta"]

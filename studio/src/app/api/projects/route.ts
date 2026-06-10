@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientProjects, getAllProjects, updateProject, deleteProject } from "@/services/project-service-admin";
 import { withAuth } from "@/lib/api-auth";
+import { withIpRateLimit } from '@/services/api-rate-limit';
 
-export const GET = withAuth(async (request: NextRequest, userId: string) => {
+const rlRead = { maxRequests: 100, windowMs: 60 * 1000, keyPrefix: 'ratelimit:projects' };
+const rlWrite = { maxRequests: 20, windowMs: 60 * 1000, keyPrefix: 'ratelimit:projects-write' };
+
+export const GET = withIpRateLimit(rlRead, withAuth(async (request: NextRequest, userId: string) => {
   try {
     const url = new URL(request.url);
     const clientId = url.searchParams.get("clientId");
@@ -24,9 +28,9 @@ export const GET = withAuth(async (request: NextRequest, userId: string) => {
     console.error("[Projects API] Error:", error);
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
   }
-});
+}));
 
-export const PATCH = withAuth(async (request: NextRequest, _userId: string) => {
+export const PATCH = withIpRateLimit(rlWrite, withAuth(async (request: NextRequest, _userId: string) => {
   try {
     const { projectId, ...data } = await request.json();
     if (!projectId) {
@@ -38,9 +42,9 @@ export const PATCH = withAuth(async (request: NextRequest, _userId: string) => {
     console.error("[Projects API] Error:", error);
     return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
   }
-});
+}));
 
-export const DELETE = withAuth(async (request: NextRequest) => {
+export const DELETE = withIpRateLimit(rlWrite, withAuth(async (request: NextRequest) => {
   try {
     const { projectId } = await request.json();
     if (!projectId) {
@@ -52,4 +56,4 @@ export const DELETE = withAuth(async (request: NextRequest) => {
     console.error("[Projects API] Error:", error);
     return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });
   }
-});
+}));

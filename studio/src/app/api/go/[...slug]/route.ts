@@ -1,25 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { affiliateLinks, getAffiliateUrl } from '@/lib/affiliate-links';
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { slug: string[] } },
-) {
-  const { slug: slugParts } = params;
-  const slug = slugParts?.join('/');
+export const GET = withIpRateLimit(
+  { maxRequests: 30, windowMs: 60 * 1000, keyPrefix: 'ratelimit:affiliate-redirect' },
+  async (req: NextRequest): Promise<NextResponse> => {
+  const slugParts = req.nextUrl.pathname.replace('/go/', '').split('/').filter(Boolean);
+  const slug = slugParts.join('/');
 
   if (!slug || !(slug in affiliateLinks)) {
-    return NextResponse.redirect(new URL('/404', _req.url), 308);
+    return NextResponse.redirect(new URL('/404', req.url), 308);
   }
 
   const link = affiliateLinks[slug as keyof typeof affiliateLinks];
   const targetUrl = getAffiliateUrl(slug as keyof typeof affiliateLinks);
 
-  void logClick(slug, link, _req);
+  void logClick(slug, link, req);
 
   return NextResponse.redirect(targetUrl, 302);
-}
+},
+);
 
 async function logClick(
   slug: string,

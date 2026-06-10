@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { verifySession } from '@/lib/api-auth';
 import { crawlForSources } from '@/services/discovery/source-crawler';
 import { classifySources } from '@/services/discovery/source-classifier';
 import { saveDiscoveredSources, getPendingSources, addActiveSource, rejectSource } from '@/services/discovery/source-store';
@@ -35,7 +36,12 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const user = await verifySession(req);
+  if (!user || !['admin', 'super_admin'].includes((user as Record<string, unknown>)['role'] as string || '')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const pending = await getPendingSources();
     return NextResponse.json({ pending });
@@ -46,6 +52,11 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const user = await verifySession(req);
+  if (!user || !['admin', 'super_admin'].includes((user as Record<string, unknown>)['role'] as string || '')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const validation = await validateBody(req, DiscoverySourcePatchSchema);
     if (!validation.success) return validation.response;

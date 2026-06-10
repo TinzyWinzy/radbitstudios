@@ -5,11 +5,12 @@
  *
  * Prerequisites:
  *   - DATABASE_URL set in .env (Supabase PostgreSQL)
- *   - Firebase Admin credentials set
+ *   - Firebase Admin credentials set (FIREBASE_SERVICE_ACCOUNT_KEY or ADC)
  *   - pgvector extension enabled (run once via Supabase SQL editor):
  *       CREATE EXTENSION IF NOT EXISTS vector;
  */
 
+import 'dotenv/config';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { getPool } from '@/lib/sqlite';
 import { generateEmbedding } from '@/services/ai/embeddings';

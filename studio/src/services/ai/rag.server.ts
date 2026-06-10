@@ -1,4 +1,4 @@
-import { getPool } from '@/lib/sqlite';
+import { getPool, initSchema } from '@/lib/sqlite';
 import { generateEmbedding } from './embeddings';
 
 const CHUNK_SIZE = 512;
@@ -21,6 +21,7 @@ export async function indexDocument(
   locale = 'en',
 ): Promise<string> {
   const pool = getPool();
+  await initSchema();
 
   const id = `doc_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
@@ -68,6 +69,7 @@ export async function searchRelevantContext(
   if (queryEmbedding.length === 0) return [];
 
   const pool = getPool();
+  await initSchema();
   const embeddingStr = `[${queryEmbedding.join(',')}]`;
 
   let sql = `
@@ -108,18 +110,21 @@ export async function searchRelevantContext(
 
 export async function removeDocument(docId: string): Promise<void> {
   const pool = getPool();
+  await initSchema();
   await pool.query('DELETE FROM rag_chunks WHERE document_id = $1', [docId]);
   await pool.query('DELETE FROM rag_documents WHERE id = $1', [docId]);
 }
 
 export async function getDocumentCount(): Promise<number> {
   const pool = getPool();
+  await initSchema();
   const { rows } = await pool.query('SELECT COUNT(*)::int AS count FROM rag_documents');
   return (rows[0]?.count as number) ?? 0;
 }
 
 export async function createIndex(): Promise<void> {
   const pool = getPool();
+  await initSchema();
   try {
     await pool.query(`
       CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_rag_chunks_embedding

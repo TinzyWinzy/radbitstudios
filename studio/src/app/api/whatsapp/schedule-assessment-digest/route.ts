@@ -1,12 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getAuth } from 'firebase-admin/auth';
+import { adminApp } from '@/lib/firebase/firebase-admin';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { enqueueOutboundMessage } from '@/services/whatsapp/outbound-queue';
 
-export async function POST(req: NextRequest) {
+const adminAuth = getAuth(adminApp);
+
+export const POST = withIpRateLimit(
+  { maxRequests: 5, windowMs: 60 * 1000, keyPrefix: 'ratelimit:schedule-digest' },
+  async (req: NextRequest) => {
   try {
     const { userId, idToken } = await req.json();
     if (!userId || !idToken) {
       return NextResponse.json({ error: 'Missing userId or idToken' }, { status: 400 });
+    }
+
+    let decoded;
+    try {
+      decoded = await adminAuth.verifyIdToken(idToken);
+    } catch {
+      return NextResponse.json({ error: 'Invalid idToken' }, { status: 401 });
+    }
+    if (decoded.uid !== userId) {
+      return NextResponse.json({ error: 'userId mismatch' }, { status: 403 });
     }
 
     const userDoc = await adminDb.collection('users').doc(userId).get();
@@ -32,4 +49,5 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
-}
+},
+);

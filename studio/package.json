@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "lighthouse": "lhci autorun --config=.lighthouserc.json"
+    "lighthouse": "lhci autorun --config=.lighthouserc.json",
+    "prepare": "cd .. && husky studio/.husky"
   },
   "dependencies": {
     "@fontsource/syne": "^5.2.7",
@@ -93,6 +94,7 @@
     "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.2.6",
     "@playwright/test": "^1.60.0",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/axios": "^0.9.36",
@@ -101,15 +103,27 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@types/web-push": "^3.6.4",
+    "audit-ci": "^7.1.0",
     "cheerio": "^1.2.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.35",
     "genkit-cli": "^1.14.1",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.7",
     "postcss": "^8",
     "prettier": "^3.8.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
     "vitest": "^4.1.6"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
   }
 }

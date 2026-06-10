@@ -22,7 +22,26 @@ export const POST = withIpRateLimit(
         return NextResponse.json({ error: 'Missing idToken' }, { status: 400 });
       }
 
-      const decoded = await adminAuth.verifyIdToken(idToken);
+      const { BruteForceProtection } = await import('@/services/security/index');
+      const bruteForce = new BruteForceProtection();
+      const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
+      const bfCheck = await bruteForce.check(`refresh-session:${ip}`);
+      if (!bfCheck.allowed) {
+        return NextResponse.json(
+          { error: `Too many attempts. Retry after ${bfCheck.retryAfter}s` },
+          { status: 429 },
+        );
+      }
+
+      let decoded;
+      try {
+        decoded = await adminAuth.verifyIdToken(idToken);
+      } catch {
+        await bruteForce.recordFailure(`refresh-session:${ip}`);
+        return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
+      }
+
+      await bruteForce.reset(`refresh-session:${ip}`);
       const uid = decoded.uid;
 
       const response = NextResponse.json({ success: true, uid });

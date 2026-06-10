@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 
 function revenueLabel(revenue: number | undefined): string {
@@ -10,7 +11,9 @@ function revenueLabel(revenue: number | undefined): string {
   return '$1M+';
 }
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export const GET = withIpRateLimit(
+  { maxRequests: 60, windowMs: 60 * 1000, keyPrefix: 'ratelimit:diaspora-smes' },
+  async (req: NextRequest): Promise<NextResponse> => {
   try {
     const { searchParams } = new URL(req.url);
     const sectorFilter = searchParams.get('sector');
@@ -63,4 +66,5 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.error('[Diaspora SMEs] Error:', error);
     return NextResponse.json({ error: 'Failed to load SMEs' }, { status: 500 });
   }
-}
+},
+);

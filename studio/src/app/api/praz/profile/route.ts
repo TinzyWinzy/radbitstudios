@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
 import { REQUIRED_DOCUMENTS } from '@/services/praz-types';
 
-export async function GET(req: NextRequest) {
+export const GET = withIpRateLimit(
+  { maxRequests: 60, windowMs: 60 * 1000, keyPrefix: 'ratelimit:praz-profile' },
+  async (req: NextRequest) => {
   const user = await verifySession(req);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -44,4 +47,5 @@ export async function GET(req: NextRequest) {
   const readinessScore = Math.round((uploadedCount / REQUIRED_DOCUMENTS.length) * 100);
 
   return NextResponse.json({ documents, readinessScore, companyName: '', registrationNumber: '' });
-}
+},
+);
