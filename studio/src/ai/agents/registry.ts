@@ -65,7 +65,7 @@ export const builtInTools: Record<string, AgentTool> = {
   // ── 3. generate-hr-policy ─────────────────────────────────────────────────
   generate_hr_policy: {
     name: 'generate_hr_policy',
-    description: 'Generate an HR policy. Params: query (the policy request), businessName, industry, businessDescription, employeeCount.',
+    description: 'Generate an HR policy. Params: query (the policy request), businessName, industry, businessDescription.',
     execute: async (params) => {
       const { generateHrPolicy } = await import('@/ai/flows/generate-hr-policy');
       const result = await generateHrPolicy({
@@ -73,7 +73,6 @@ export const builtInTools: Record<string, AgentTool> = {
         businessName: params.businessName,
         industry: params.industry,
         businessDescription: params.businessDescription,
-        employeeCount: params.employeeCount ? Number(params.employeeCount) : undefined,
       });
       return result.answer;
     },

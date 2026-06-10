@@ -44,7 +44,7 @@ describe('Pattern A — simple text response with error check', () => {
     const { generateHrPolicy } = await import('@/ai/flows/generate-hr-policy');
     setMockContent('HR policy document');
 
-    const result = await generateHrPolicy({ query: 'Draft policy', businessName: 'Biz', employeeCount: 5 });
+    const result = await generateHrPolicy({ query: 'Draft policy', businessName: 'Biz' });
     expect(result.answer).toBe('HR policy document');
     expect(getLastGenerateCall()?.maxTokens).toBe(2048);
   });

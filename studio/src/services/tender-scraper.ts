@@ -1,12 +1,12 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { saveTenders, loadTenders, safeTenderFromDb, saveLog } from '@/lib/scraper-storage';
 import { scoreBatch } from '@/services/scoring/content-scorer';
 import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { scrapeAllEntities, storeEntityTenders } from '@/services/tender/entity-scraper';
+import { generateContentId } from '@/lib/content-classification';
 
 export interface Tender {
   id: string;
@@ -209,10 +209,6 @@ function isQualityTender(title: string, description: string): boolean {
   return true;
 }
 
-function generateId(text: string): string {
-  return crypto.createHash('sha256').update(text).digest('hex').slice(0, 32);
-}
-
 function classifySector(text: string): string {
   const lower = text.toLowerCase();
   for (const [sector, keywords] of Object.entries(SECTOR_KEYWORDS)) {
@@ -234,7 +230,7 @@ function enrichTender(raw: Omit<Tender, 'id' | 'sourceName' | 'publishedAt' | 's
   return {
     ...raw,
     region: raw.region || 'Zimbabwe',
-    id: generateId(raw.title + raw.sourceUrl + (raw.closingDate ? raw.closingDate.toISOString() : '')),
+    id: generateContentId(raw.title + raw.sourceUrl + (raw.closingDate ? raw.closingDate.toISOString() : '')),
     sourceName: raw.sourceName || 'Government Tenders Portal',
     publishedAt: raw.publishedAt || new Date(),
     sector,
@@ -1199,7 +1195,7 @@ async function scrapeTendersZimbabwe(): Promise<Tender[]> {
           title: title.slice(0, 200),
           description: text.slice(0, 500),
           organization: orgMatch ? orgMatch[1].trim() : 'Tenders Zimbabwe',
-          sourceUrl: fullHref || `https://tenderszimbabwe.co.zw/tender/${generateId(title)}`,
+          sourceUrl: fullHref || `https://tenderszimbabwe.co.zw/tender/${generateContentId(title)}`,
           closingDate,
           value: null,
           sector: classifySector(title),
@@ -1787,7 +1783,7 @@ export async function getLatestTenders(options: {
     const seenIds = new Set(tenders.map(t => t.id));
     for (const d of entitySnap.docs) {
       const data = d.data();
-      const id = crypto.createHash('sha256').update(data.title + data.sourceUrl).digest('hex').slice(0, 32);
+      const id = generateContentId(data.title + data.sourceUrl);
       if (seenIds.has(id)) continue;
       seenIds.add(id);
       tenders.push({

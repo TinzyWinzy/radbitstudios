@@ -1,12 +1,12 @@
 import parser from 'rss-parser';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import crypto from 'crypto';
 import { getCached, setCached, checkRateLimit } from '@/lib/scraper-cache';
 import { saveNews, loadNews, safeNewsFromDb, saveLog } from '@/lib/scraper-storage';
 import { scoreBatch } from '@/services/scoring/content-scorer';
 import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
 import { getActiveSources, recordSourceFetch } from '@/services/discovery/source-store';
+import { generateContentId, extractIndustryTags, INDUSTRY_TO_SECTOR, CATEGORY_KEYWORDS } from '@/lib/content-classification';
 import fs from 'fs';
 import path from 'path';
 import type { NewsArticle } from '@/types/news';
@@ -374,84 +374,16 @@ const rssParser = new parser({
   },
 });
 
-const SECTORS = [
-  'Agriculture', 'Retail', 'Manufacturing', 'Technology', 'Financial Services',
-  'Healthcare', 'Education', 'Hospitality', 'Tourism', 'Transport', 'Construction',
-  'Creative', 'Media', 'Professional Services', 'Mining', 'Energy', 'Telecommunications',
-];
-
-const SECTOR_SYNONYMS: Record<string, string[]> = {
-  Agriculture: ['farming', 'crop', 'livestock', 'agro', 'seed', 'fertilizer', 'farm', 'wheat', 'maize', 'tobacco', 'horticulture'],
-  Retail: ['shop', 'store', 'wholesale', 'supermarket', 'grocery', 'mall', 'vendor', 'merchandise'],
-  Manufacturing: ['factory', 'production', 'plant', 'processing', 'textile', 'assembly', 'industrial'],
-  Technology: ['tech', 'digital', 'software', 'hardware', 'app', 'platform', 'AI', 'startup', 'fintech', 'cyber', 'blockchain', 'SaaS', 'mobile', 'data', 'cloud', 'ICT', 'EcoCash', 'TelOne', 'NetOne', 'internet', 'broadband'],
-  'Financial Services': ['bank', 'finance', 'insurance', 'investment', 'fintech', 'RBZ', 'reserve bank', 'forex', 'inflation', 'stock', 'market', 'trading', 'dividend', 'loan', 'credit', 'ZiG', 'ZWG', 'USD', 'deposit', 'interest rate', 'MPU', 'monetary policy'],
-  Healthcare: ['health', 'medical', 'hospital', 'clinic', 'pharmaceutical', 'medicine', 'doctor', 'nurse', 'patient', 'disease', 'HIV', 'malaria', 'surgery', 'drug'],
-  Education: ['school', 'university', 'college', 'education', 'training', 'student', 'teacher', 'curriculum', 'scholarship', 'academy'],
-  Hospitality: ['hotel', 'lodge', 'resort', 'restaurant', 'catering', 'accommodation'],
-  Tourism: ['tourism', 'travel', 'tourist', 'safari', 'wildlife', 'conservation', 'national park'],
-  Transport: ['transport', 'road', 'railway', 'rail', 'airport', 'aviation', 'bus', 'fleet', 'vehicle', 'logistics', 'freight', 'shipping'],
-  Construction: ['construction', 'building', 'infrastructure', 'civil', 'road', 'bridge', 'housing', 'real estate', 'property', 'contractor'],
-  Creative: ['creative', 'art', 'design', 'film', 'music', 'photography', 'fashion', 'entertainment'],
-  Media: ['media', 'news', 'broadcast', 'television', 'radio', 'publishing', 'journalism', 'press'],
-  'Professional Services': ['consulting', 'legal', 'lawyer', 'audit', 'accounting', 'tax', 'advisory', 'survey', 'architect', 'engineering', 'management'],
-  Mining: ['mining', 'mine', 'gold', 'mineral', 'lithium', 'coal', 'chrome', 'platinum', 'diamond', 'quarry', 'excavation', 'mercury'],
-  Energy: ['energy', 'power', 'solar', 'electricity', 'generator', 'renewable', 'battery', 'grid', 'fuel', 'petrol', 'diesel', 'oil', 'gas', 'hydro'],
-  Telecommunications: ['telecom', 'telecommunication', 'mobile', 'network', 'fiber', 'broadband', 'Econet', 'NetOne', 'TelOne', 'Telecel', 'data', 'signal', 'coverage'],
-};
-
-const INDUSTRY_TO_SECTOR: Record<string, string[]> = {
-  'Retail & Wholesale': ['Retail'],
-  'Hospitality & Tourism': ['Hospitality', 'Tourism'],
-  'Transport & Logistics': ['Transport'],
-  'Creative & Media': ['Creative', 'Media'],
-  'Agriculture': ['Agriculture'],
-  'Manufacturing': ['Manufacturing'],
-  'Technology': ['Technology'],
-  'Financial Services': ['Financial Services'],
-  'Healthcare': ['Healthcare'],
-  'Education': ['Education'],
-  'Construction': ['Construction'],
-  'Professional Services': ['Professional Services'],
-  'Mining': ['Mining'],
-  'Energy': ['Energy'],
-  'Telecommunications': ['Telecommunications'],
-};
-
-const GLOBAL_CATEGORY_KEYWORDS: Record<string, string[]> = {
-  finance: ['bank', 'inflation', 'forex', 'currency', 'ZiG', 'ZWG', 'RBZ', 'reserve bank', 'interest rate', 'monetary policy', 'stock market', 'investment', 'loan', 'credit', 'insurance', 'dividend', 'MPU', 'treasury bill', 'bond', 'imf', 'world bank', 'afdb', 'budget', 'fiscal', 'deficit', 'revenue', 'tax', 'tariff', 'trade deficit', 'balance of payment'],
-  technology: ['tech', 'digital', 'software', 'hardware', 'AI', 'artificial intelligence', 'startup', 'cyber', 'blockchain', 'SaaS', 'mobile app', 'internet', 'data breach', 'cloud computing', 'fintech', 'ICT', 'EcoCash', 'TelOne', 'NetOne', 'broadband', 'innovation', 'patent', 'automation'],
-  policy: ['government', 'minister', 'parliament', 'cabinet', 'president', 'MP', 'senator', 'policy', 'legislation', 'bill', 'act', 'regulation', 'decree', 'executive order', 'ministry', 'department', 'commission', 'authority'],
-  regulatory: ['court', 'law', 'legal', 'judge', 'ruling', 'licence', 'license', 'ZERA', 'PRAZ', 'ZIMRA', 'SI', 'statutory instrument', 'compliance', 'regulatory', 'competition', 'tribunal', 'prosecution', 'verdict'],
-  business: ['SME', 'business', 'company', 'startup', 'enterprise', 'entrepreneur', 'corporate', 'partnership', 'venture', 'trade', 'commerce', 'export', 'import', 'market', 'industry', 'manufacturing', 'retail', 'wholesale', 'supply chain', 'franchise', 'merger', 'acquisition'],
-};
-
 function classifyCategory(title: string, content: string, mapping: Record<string, string[]>): NewsArticle['category'] {
   const text = `${title} ${content}`.toLowerCase();
   for (const [category, keywords] of Object.entries(mapping)) {
     if (keywords.some(k => text.includes(k.toLowerCase()))) return category as NewsArticle['category'];
   }
-  for (const [category, keywords] of Object.entries(GLOBAL_CATEGORY_KEYWORDS)) {
+  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (category === 'general') continue;
     if (keywords.some(k => text.includes(k))) return category as NewsArticle['category'];
   }
   return 'general';
-}
-
-function extractIndustryTags(title: string, content: string): string[] {
-  const text = `${title} ${content}`.toLowerCase();
-  const matched = new Set<string>();
-  for (const sector of SECTORS) {
-    if (text.includes(sector.toLowerCase())) { matched.add(sector); continue; }
-    const firstWord = sector.split(' ')[0].toLowerCase();
-    if (firstWord !== sector.toLowerCase() && text.includes(firstWord)) { matched.add(sector); continue; }
-    const synonyms = SECTOR_SYNONYMS[sector] || [];
-    if (synonyms.some(s => text.includes(s.toLowerCase()))) { matched.add(sector); continue; }
-  }
-  return Array.from(matched);
-}
-
-function generateId(url: string): string {
-  return crypto.createHash('md5').update(url).digest('hex');
 }
 
 // ── RSS scraping ────────────────────────────────────────────────────────────
@@ -488,7 +420,7 @@ async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
       const industryTags = extractIndustryTags(item.title, content);
 
       articles.push({
-        id: generateId(item.link),
+        id: generateContentId(item.link),
         title: item.title,
         summary: content.slice(0, 600),
         sourceUrl: item.link,
@@ -581,7 +513,7 @@ async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
           const industryTags = extractIndustryTags(title, '');
 
           articles.push({
-            id: generateId(cleanHref),
+            id: generateContentId(cleanHref),
             title,
             summary: '',
             sourceUrl: cleanHref,
@@ -764,7 +696,7 @@ export async function getLatestNews(options: {
   if (industry) {
     const sectorTags = INDUSTRY_TO_SECTOR[industry] || [industry];
     articles = articles.filter(a =>
-      (a.industryTags || []).some(t => sectorTags.some(s => s.toLowerCase() === t.toLowerCase()))
+      (a.industryTags || []).some(t => sectorTags.some((s: string) => s.toLowerCase() === t.toLowerCase()))
     );
   }
 
