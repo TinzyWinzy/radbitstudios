@@ -48,6 +48,7 @@ import { checkFeatureAccess, checkAndDecrementUsage } from "@/services/usage-ser
 import { createNotification } from "@/services/notifications/notifications-service";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { MarketSnapshotCard } from "@/components/market-snapshot-card";
 import { cacheDashboardData, getCachedDashboardData, watchNetworkStatus } from "@/services/offline";
 import { getCachedQuery, setCachedQuery, buildQueryKey } from "@/services/query-cache";
 import type { UpgradeInfo } from "@/services/feature-gate";
@@ -357,6 +358,9 @@ export default function DashboardPage() {
           <span>You&apos;re offline. Showing cached data where available. Insights and news may be stale.</span>
         </div>
       )}
+
+      {/* Market Snapshot */}
+      <MarketSnapshotCard />
 
       {/* Main Content: Assessment + Insights side by side */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
