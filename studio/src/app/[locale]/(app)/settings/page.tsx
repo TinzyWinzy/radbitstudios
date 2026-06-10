@@ -59,6 +59,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import Image from "next/image";
 import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER } from "@/lib/subscriptions";
+import type { SubscriptionPlanId } from "@/services/payment/subscription-engine";
 import { SubscriptionEngine } from "@/services/payment/subscription-engine";
 import { UpgradeModal } from "@/components/upgrade-modal";
 import type { UpgradeInfo } from "@/services/feature-gate";
@@ -109,6 +110,7 @@ export default function SettingsPage() {
       notifyTender: true,
       notifyNews: true,
       notifySystem: true,
+      notifyPush: false,
     });
     
     const [upgradeTriggered, setUpgradeTriggered] = useState(false);
@@ -142,7 +144,7 @@ export default function SettingsPage() {
         const upgradeTo = searchParams.get('upgradeTo');
         if (upgradeTo && user && !upgradeTriggered) {
           const plan = subscriptionPlans.find(p => p.name === upgradeTo);
-          if (plan && plan.price > 0 && plan.name !== (user as any).plan) {
+          if (plan && plan.price > 0 && plan.name !== user.plan) {
             setUpgradeTriggered(true);
             setActiveTab('account');
             setTimeout(() => handlePlanChange(plan), 500);
@@ -160,11 +162,11 @@ export default function SettingsPage() {
             setPhone(user.phone || '');
             setWhatsappOptIn(user.whatsappOptIn || false);
             setNotifyPrefs({
-              notifyAssessment: (user as any).notifyAssessment ?? true,
-              notifyInsights: (user as any).notifyInsights ?? true,
-              notifyTender: (user as any).notifyTender ?? true,
-              notifyNews: (user as any).notifyNews ?? true,
-              notifySystem: (user as any).notifySystem ?? true,
+              notifyAssessment: user.notifyAssessment ?? true,
+              notifyInsights: user.notifyInsights ?? true,
+              notifyTender: user.notifyTender ?? true,
+              notifyNews: user.notifyNews ?? true,
+              notifySystem: user.notifySystem ?? true,
             });
         }
     }, [user]);
@@ -265,8 +267,8 @@ export default function SettingsPage() {
                 historyData = querySnapshot.docs
                     .map(doc => ({ id: doc.id, ...doc.data() } as AssessmentHistory))
                     .sort((a, b) => {
-                        const aDate = (a as any).createdAt?.toDate?.() ?? new Date(0);
-                        const bDate = (b as any).createdAt?.toDate?.() ?? new Date(0);
+                        const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+                        const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
                         return bDate.getTime() - aDate.getTime();
                     });
                 setCachedQuery(cacheKey, historyData, 10 * 60 * 1000);
@@ -299,8 +301,8 @@ export default function SettingsPage() {
                 historyData = querySnapshot.docs
                     .map(doc => ({ id: doc.id, ...doc.data() } as GenerationHistory))
                     .sort((a, b) => {
-                        const aDate = (a as any).createdAt?.toDate?.() ?? new Date(0);
-                        const bDate = (b as any).createdAt?.toDate?.() ?? new Date(0);
+                        const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+                        const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
                         return bDate.getTime() - aDate.getTime();
                     });
                 setCachedQuery(cacheKey, historyData, 10 * 60 * 1000);
@@ -387,7 +389,7 @@ export default function SettingsPage() {
             const currency = user.currencyPreference || (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
             const result = await engine.createSubscription(
                 user.uid,
-                newPlan.name as any,
+                newPlan.name.toLowerCase().replace(/ /g, '_') as SubscriptionPlanId,
                 'monthly',
                 country,
                 currency
@@ -406,7 +408,7 @@ export default function SettingsPage() {
         } catch (error: unknown) {
             console.error("Error initiating payment:", error);
             setUpgradeInfo({
-                upgradeTo: newPlan.name as any,
+                upgradeTo: newPlan.name,
                 price: newPlan.price,
                 message: `Upgrade to ${newPlan.name} for $${newPlan.price}/mo.`,
                 feature: `${newPlan.name} Plan`,
@@ -479,8 +481,8 @@ export default function SettingsPage() {
         a.click();
         URL.revokeObjectURL(url);
         toast({ title: 'Data Exported', description: 'Your data has been downloaded.' });
-      } catch (err: any) {
-        toast({ title: 'Export Failed', description: err.message, variant: 'destructive' });
+      } catch (err: unknown) {
+        toast({ title: 'Export Failed', description: err instanceof Error ? err.message : String(err), variant: 'destructive' });
       } finally {
         setIsExporting(false);
       }
@@ -1007,8 +1009,8 @@ export default function SettingsPage() {
                   <div key={item.key} className="flex items-start gap-3 p-3 rounded-lg border">
                     <Checkbox
                       id={item.key}
-                      checked={(notifyPrefs as any)[item.key] ?? true}
-                      onCheckedChange={(checked) => setNotifyPrefs((prev: any) => ({ ...prev, [item.key]: checked === true }))}
+                      checked={notifyPrefs[item.key as keyof typeof notifyPrefs] ?? true}
+                      onCheckedChange={(checked) => setNotifyPrefs((prev) => ({ ...prev, [item.key]: checked === true }))}
                     />
                     <div>
                       <Label htmlFor={item.key} className="text-sm font-medium">{item.label}</Label>
@@ -1040,7 +1042,7 @@ export default function SettingsPage() {
                     <Checkbox
                       id="push-opt-in"
                       checked={notifyPrefs.notifyPush ?? false}
-                      onCheckedChange={(checked) => setNotifyPrefs((prev: any) => ({ ...prev, notifyPush: checked === true }))}
+                      onCheckedChange={(checked) => setNotifyPrefs((prev) => ({ ...prev, notifyPush: checked === true }))}
                     />
                     <div>
                       <Label htmlFor="push-opt-in" className="text-sm font-medium">{t('notifications.push')}</Label>

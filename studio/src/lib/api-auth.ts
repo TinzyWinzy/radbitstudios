@@ -1,8 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from 'firebase-admin/auth';
 import { adminApp } from '@/lib/firebase/firebase-admin';
+import * as jose from 'jose';
 
 const adminAuth = getAuth(adminApp);
+
+const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
+
+let jwks: jose.JWTVerifyGetKey | null = null;
+
+function getJWKS(): jose.JWTVerifyGetKey {
+  if (!jwks) {
+    jwks = jose.createRemoteJWKSet(
+      new URL('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'),
+    );
+  }
+  return jwks;
+}
+
+/**
+ * Verify a Firebase ID token using JWKS (edge-compatible, no admin SDK).
+ * Use this in middleware or routes that receive Bearer tokens in headers.
+ */
+export async function verifyIdToken(token: string): Promise<{ uid: string } | null> {
+  try {
+    const { payload } = await jose.jwtVerify(token, getJWKS(), {
+      issuer: `https://securetoken.google.com/${FIREBASE_PROJECT_ID}`,
+      audience: FIREBASE_PROJECT_ID,
+    });
+    return { uid: payload.sub as string };
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Verify the session cookie from a NextRequest and return the decoded user.

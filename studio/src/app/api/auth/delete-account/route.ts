@@ -1,23 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
-import * as jose from 'jose';
-
-const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
-
-async function verifyToken(token: string): Promise<{ uid: string } | null> {
-  try {
-    const JWKS = jose.createRemoteJWKSet(
-      new URL(`https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com`),
-    );
-    const { payload } = await jose.jwtVerify(token, JWKS, {
-      issuer: `https://securetoken.google.com/${FIREBASE_PROJECT_ID}`,
-      audience: FIREBASE_PROJECT_ID,
-    });
-    return { uid: payload.sub as string };
-  } catch {
-    return null;
-  }
-}
+import { verifyIdToken } from '@/lib/api-auth';
 
 const USER_COLLECTIONS = [
   'assessments',
@@ -38,8 +22,8 @@ const USER_COLLECTIONS = [
   'ai_semantic_cache',
 ];
 
-async function exportUserData(uid: string): Promise<Record<string, any>> {
-  const data: Record<string, any> = {
+async function exportUserData(uid: string): Promise<Record<string, unknown>> {
+  const data: Record<string, unknown> = {
     exportedAt: new Date().toISOString(),
     userId: uid,
   };
@@ -56,13 +40,13 @@ async function exportUserData(uid: string): Promise<Record<string, any>> {
   // Also export nested conversation threads/messages
   try {
     const convSnap = await adminDb.collection('conversations').where('participants', 'array-contains', uid).get();
-    const convData: any[] = [];
+    const convData: Array<Record<string, unknown>> = [];
     for (const convDoc of convSnap.docs) {
       const threadsSnap = await convDoc.ref.collection('threads').get();
       const threads = threadsSnap.docs.map(t => ({
         id: t.id,
         ...t.data(),
-        messages: [] as any[],
+        messages: [] as Array<Record<string, unknown>>,
       }));
       for (const thread of threads) {
         const msgsSnap = await convDoc.ref.collection('threads').doc(thread.id).collection('messages').get();
@@ -158,14 +142,16 @@ async function deleteUserData(uid: string): Promise<string[]> {
   return deleted;
 }
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export const POST = withIpRateLimit(
+  { maxRequests: 5, windowMs: 60 * 60 * 1000, keyPrefix: 'ratelimit:delete-account' },
+  async (req: NextRequest): Promise<NextResponse> => {
   try {
     const { idToken, exportOnly } = await req.json();
     if (!idToken) {
       return NextResponse.json({ error: 'Missing idToken' }, { status: 400 });
     }
 
-    const verified = await verifyToken(idToken);
+    const verified = await verifyIdToken(idToken);
     if (!verified) {
       return NextResponse.json({ error: 'Invalid or expired token' }, { status: 401 });
     }
@@ -198,4 +184,5 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.error('[DeleteAccount] Error:', error);
     return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
   }
-}
+},
+);

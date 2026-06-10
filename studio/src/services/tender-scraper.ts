@@ -328,8 +328,8 @@ async function scrapeTendersOnTime(): Promise<Tender[]> {
     if (results.length > 0) {
       console.log(`[TenderScraper] TendersOnTime: scraped ${results.length} tenders`);
     }
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TendersOnTime failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TendersOnTime failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -385,8 +385,8 @@ async function scrapeTendersInfo(): Promise<Tender[]> {
     if (results.length > 0) {
       console.log(`[TenderScraper] TendersInfo: scraped ${results.length} tenders`);
     }
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TendersInfo failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TendersInfo failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -426,8 +426,8 @@ async function scrapePRAZ(): Promise<Tender[]> {
     }
 
     console.log(`[TenderScraper] PRAZ: scraped ${results.length} tender links`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] PRAZ failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] PRAZ failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -478,8 +478,8 @@ async function scrapeIDBZ(): Promise<Tender[]> {
     if (results.length > 0) {
       console.log(`[TenderScraper] IDBZ: scraped ${results.length} procurement items`);
     }
-  } catch (e: any) {
-    console.warn(`[TenderScraper] IDBZ failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] IDBZ failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -538,8 +538,8 @@ async function scrapeUNDP(): Promise<Tender[]> {
     }
 
     console.log(`[TenderScraper] UNDP: scraped ${results.length} procurement entries`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] UNDP failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] UNDP failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -591,8 +591,8 @@ async function scrapeZIMRA(): Promise<Tender[]> {
     }
 
     console.log(`[TenderScraper] ZIMRA: ${results.length} tender entries`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] ZIMRA failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] ZIMRA failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -628,8 +628,8 @@ async function scrapeStanbicBank(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] Stanbic Bank: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] Stanbic Bank failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] Stanbic Bank failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -669,8 +669,8 @@ async function scrapeSADC(): Promise<Tender[]> {
     }
 
     console.log(`[TenderScraper] SADC: scraped ${results.length} procurement opportunities`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] SADC failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] SADC failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -753,8 +753,8 @@ async function scrapeSAeTenders(): Promise<Tender[]> {
     }
 
     console.log(`[TenderScraper] SA eTenders: scraped ${results.length} tenders`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] SA eTenders failed: ${e.message.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] SA eTenders failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   return results;
@@ -806,8 +806,8 @@ async function scrapeAfDB(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] AfDB: ${results.length} tenders`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] AfDB failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] AfDB failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -848,8 +848,8 @@ async function scrapeWorldBank(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] World Bank: ${results.length} tenders`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] World Bank failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] World Bank failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -890,8 +890,8 @@ async function scrapeUSAID(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] USAID: ${results.length} opportunities`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] USAID failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] USAID failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -928,8 +928,8 @@ async function scrapeCBZ(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] CBZ: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] CBZ failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] CBZ failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -966,8 +966,8 @@ async function scrapeEconet(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] Econet: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] Econet failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] Econet failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1004,8 +1004,8 @@ async function scrapeNetOne(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] NetOne: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] NetOne failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] NetOne failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1042,8 +1042,8 @@ async function scrapeTelOne(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] TelOne: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TelOne failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TelOne failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1080,8 +1080,8 @@ async function scrapeFBC(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] FBC: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] FBC failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] FBC failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1118,8 +1118,8 @@ async function scrapeNMB(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] NMB: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] NMB failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] NMB failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1156,8 +1156,8 @@ async function scrapeCABS(): Promise<Tender[]> {
     });
 
     console.log(`[TenderScraper] CABS: ${results.length} procurement items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] CABS failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] CABS failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1208,8 +1208,8 @@ async function scrapeTendersZimbabwe(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] TendersZimbabwe: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TendersZimbabwe failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TendersZimbabwe failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1266,8 +1266,8 @@ async function scrapeGlobalTenders(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] GlobalTenders: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] GlobalTenders failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] GlobalTenders failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1321,8 +1321,8 @@ async function scrapeOnlineTenders(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] OnlineTenders: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] OnlineTenders failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] OnlineTenders failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1372,8 +1372,8 @@ async function scrapeBidDetail(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] BidDetail: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] BidDetail failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] BidDetail failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1423,8 +1423,8 @@ async function scrapeTenderInfoOrg(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] TenderInfoOrg: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TenderInfoOrg failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TenderInfoOrg failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1464,8 +1464,8 @@ async function scrapeTenderLink(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] TenderLink: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TenderLink failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TenderLink failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1505,8 +1505,8 @@ async function scrapeETender(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] ETender: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] ETender failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] ETender failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1546,8 +1546,8 @@ async function scrapeTenderNoticeboard(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] TenderNoticeboard: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] TenderNoticeboard failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] TenderNoticeboard failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1588,8 +1588,8 @@ async function scrapeClassifieds(): Promise<Tender[]> {
     });
 
     if (results.length > 0) console.log(`[TenderScraper] Classifieds: ${results.length} items`);
-  } catch (e: any) {
-    console.warn(`[TenderScraper] Classifieds failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] Classifieds failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
   return results;
 }
@@ -1692,8 +1692,8 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, c
       console.log(`[TenderScraper] Entity scraper: ${entityTenders.length} tenders found`);
       await storeEntityTenders(entityTenders);
     }
-  } catch (e: any) {
-    console.warn(`[TenderScraper] Entity scraper failed: ${e.message?.slice(0, 100)}`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] Entity scraper failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
   }
 
   if (qualityTenders.length > 0) {
@@ -1725,10 +1725,10 @@ const [tot, ti, praz, idbz, undp, zimra, stanbic, sadc, saet, afdb, wb, usaid, c
       }).catch(e => console.warn('[TenderScraper] Score generation failed:', e));
 
       try { await saveLog('tenders', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
-    } catch (err: any) {
+    } catch (error: unknown) {
       results.errors = qualityTenders.length;
-      console.error('[TenderScraper] Write error:', err);
-      try { await saveLog('tenders', 0, 'error', err.message); } catch { /* saveLog failed, ignore */ }
+      console.error('[TenderScraper] Write error:', error);
+      try { await saveLog('tenders', 0, 'error', (error instanceof Error ? error.message : String(error))); } catch { /* saveLog failed, ignore */ }
     }
   }
 

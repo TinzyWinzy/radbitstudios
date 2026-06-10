@@ -5,6 +5,9 @@ import { searchRelevantContext } from './rag';
 import { buildRAGContext } from './rag';
 import { checkRateLimit, RateLimits } from '@/services/rate-limiter';
 import { withCircuitBreaker } from '@/lib/circuit-breaker';
+import { logger } from '@/lib/logger';
+
+const log = logger.child({ module: 'AIGateway' });
 
 export type TaskDifficulty = 'simple' | 'complex' | 'creative';
 
@@ -291,7 +294,7 @@ export class AIGateway {
       const userDoc = await adminDb.collection('users').doc(userId).get();
       if (!userDoc.exists) return null;
       const data = userDoc.data()!;
-      const planName: string = (data as any).plan || 'Free';
+      const planName: string = (data.plan as string) || 'Free';
       const tier = TIER_ORDER.indexOf(planName);
       return { tier: tier >= 0 ? tier : 0, planName };
     } catch (err) {
@@ -336,7 +339,7 @@ export class AIGateway {
         const userDoc = await transaction.get(userDocRef);
         if (!userDoc.exists) return { allowed: true };
 
-        const data = userDoc.data() as any;
+        const data = userDoc.data()!;
         const usage: { used?: number; limit?: number } = data.aiBudget || { used: 0, limit: 10 };
         const limit = usage.limit ?? 10;
         const used = usage.used ?? 0;
@@ -453,7 +456,7 @@ export class AIGateway {
         if (modelHasNoKey) break;
 
         if (attempt < MAX_RETRIES) {
-          console.warn(`AI call attempt ${attempt + 1} failed: ${lastError}, retrying...`);
+          log.warn(`AI call attempt ${attempt + 1} failed: ${lastError}, retrying...`);
           Sentry.captureException(error, {
             tags: { domain: 'ai-gateway', operation: 'callModel', attempt: String(attempt + 1), model: route.model, provider: route.provider },
             extra: { lastError, userId: request.userId },
@@ -528,7 +531,7 @@ export class AIGateway {
         resetTimeoutMs: 60000,
         successThreshold: 2,
         onStateChange: (name, from, to) => {
-          console.warn(`[AIGateway] Circuit ${name}: ${from} → ${to}`);
+          log.warn(`[AIGateway] Circuit ${name}: ${from} → ${to}`);
           Sentry.captureMessage(`AI circuit ${name}: ${from} → ${to}`, {
             level: to === 'open' ? 'warning' : 'info',
             tags: { domain: 'ai-gateway', circuit: name },
@@ -539,7 +542,7 @@ export class AIGateway {
       // If circuit is open, try fallback model within same provider
       const circuitState = (error as Error)?.message?.includes('Circuit');
       if (circuitState && fallbackModels[model]) {
-        console.warn(`[AIGateway] Circuit open for ${provider}, trying fallback model ${fallbackModels[model]}`);
+        log.warn(`[AIGateway] Circuit open for ${provider}, trying fallback model ${fallbackModels[model]}`);
         if (provider === 'gemini') return this.callGemini(fallbackModels[model], request);
         if (provider === 'openai') return this.callOpenAI(fallbackModels[model], request);
         if (provider === 'anthropic') return this.callAnthropic(fallbackModels[model], request);
@@ -555,7 +558,7 @@ export class AIGateway {
     const modelName = model.includes('/') ? model : `models/${model}`;
     const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;
 
-    const body: any = {
+    const body: Record<string, unknown> = {
       contents: [{ parts: [{ text: request.prompt }] }],
       generationConfig: {
         maxOutputTokens: request.maxTokens || 2048,
@@ -566,7 +569,7 @@ export class AIGateway {
       body.systemInstruction = { parts: [{ text: request.systemPrompt }] };
     }
     if (request.jsonMode) {
-      body.generationConfig.responseMimeType = 'application/json';
+      (body.generationConfig as Record<string, unknown>).responseMimeType = 'application/json';
     }
 
     const res = await fetchWithTimeout(url, {
@@ -586,7 +589,7 @@ export class AIGateway {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) throw new Error('OPENAI_API_KEY not set');
 
-    const body: any = {
+    const body: Record<string, unknown> = {
       model,
       messages: [
         ...(request.systemPrompt ? [{ role: 'system', content: request.systemPrompt }] : []),
@@ -598,7 +601,7 @@ export class AIGateway {
     if (request.jsonMode) {
       body.response_format = { type: 'json_object' };
       if (!request.systemPrompt) {
-        body.messages.unshift({ role: 'system', content: 'You are a helpful assistant that always responds with valid JSON.' });
+        (body.messages as Array<Record<string, unknown>>).unshift({ role: 'system', content: 'You are a helpful assistant that always responds with valid JSON.' });
       }
     }
 
@@ -617,7 +620,7 @@ export class AIGateway {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set');
 
-    const body: any = {
+    const body: Record<string, unknown> = {
       model,
       max_tokens: request.maxTokens || 2048,
       messages: [{ role: 'user', content: request.prompt }],

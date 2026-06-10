@@ -5,6 +5,7 @@ import { createContext, useState, useEffect, ReactNode, useCallback, useMemo, us
 import {
   onAuthStateChanged,
   User,
+  UserCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -25,10 +26,10 @@ interface AuthContextType {
   user: AppUser | null;
   loading: boolean;
   role: UserRole | null;
-  signUp: (email: string, pass: string, extraData?: Record<string, unknown>) => Promise<any>;
-  signIn: (email: string, pass: string) => Promise<any>;
-  signInWithGoogle: () => Promise<any>;
-  logout: () => Promise<any>;
+  signUp: (email: string, pass: string, extraData?: Record<string, unknown>) => Promise<UserCredential>;
+  signIn: (email: string, pass: string) => Promise<UserCredential>;
+  signInWithGoogle: () => Promise<UserCredential>;
+  logout: () => Promise<void>;
   refreshUserData: () => Promise<void>;
   deleteAccount: () => Promise<{ success: boolean; error?: string }>;
 }
@@ -37,9 +38,9 @@ export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   role: null,
-  signUp: async (_email: string, _pass: string, _extraData?: Record<string, unknown>) => {},
-  signIn: async () => {},
-  signInWithGoogle: async () => {},
+  signUp: async () => { throw new Error('AuthContext not initialized'); },
+  signIn: async () => { throw new Error('AuthContext not initialized'); },
+  signInWithGoogle: async () => { throw new Error('AuthContext not initialized'); },
   logout: async () => {},
   refreshUserData: async () => {},
   deleteAccount: async () => ({ success: false, error: 'Not initialized' }),
@@ -145,8 +146,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       for (const key in rawData) {
         if (Object.prototype.hasOwnProperty.call(rawData, key)) {
           const val = rawData[key];
-          if (val && typeof val === 'object' && typeof (val as any).toDate === 'function') {
-            cacheData[key] = (val as any).toDate().toISOString();
+          if (val && typeof val === 'object' && 'toDate' in val && typeof (val as { toDate: () => Date }).toDate === 'function') {
+            cacheData[key] = (val as { toDate: () => Date }).toDate().toISOString();
           } else {
             cacheData[key] = val;
           }

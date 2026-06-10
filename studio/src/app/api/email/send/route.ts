@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { verifySession } from '@/lib/api-auth';
 import { withRateLimit } from '@/services/api-rate-limit';
 import { RateLimits } from '@/services/rate-limiter';
+import { z } from 'zod';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM = 'Radbit SME Hub <hello@radbitstudios.co.zw>';
+
+const ALLOWED_RECIPIENTS = new Set([
+  'hello@radbitstudios.co.zw',
+  'support@radbitstudios.co.zw',
+]);
+
+const SendEmailSchema = z.object({
+  to: z.string().email(),
+  subject: z.string().min(1).max(200),
+  html: z.string().min(1).max(50000),
+});
 
 export const POST = withRateLimit(
   RateLimits.mutation,
@@ -15,14 +28,32 @@ export const POST = withRateLimit(
     return `ip:${ip}`;
   },
   async (req: NextRequest): Promise<NextResponse> => {
+  const user = await verifySession(req);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: 'Email service not configured' }, { status: 503 });
   }
 
   try {
-    const { to, subject, html } = await req.json();
-    if (!to || !subject || !html) {
-      return NextResponse.json({ error: 'Missing required fields: to, subject, html' }, { status: 400 });
+    const body = await req.json();
+    const validation = SendEmailSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: 'Invalid input', details: validation.error.flatten().fieldErrors },
+        { status: 400 },
+      );
+    }
+
+    const { to, subject, html } = validation.data;
+
+    if (!ALLOWED_RECIPIENTS.has(to)) {
+      return NextResponse.json(
+        { error: 'Recipient not allowed. Emails can only be sent to approved addresses.' },
+        { status: 403 },
+      );
     }
 
     const { data, error } = await resend.emails.send({

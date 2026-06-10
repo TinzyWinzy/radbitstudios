@@ -640,10 +640,10 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
       }).catch(e => logToFile(`Score generation failed: ${e}`));
 
       try { await saveLog('news', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
-    } catch (err: any) {
+    } catch (error: unknown) {
       results.errors = allArticles.length;
-      logToFile(`Write error: ${err.message}`);
-      try { await saveLog('news', 0, 'error', err.message); } catch { /* saveLog failed, ignore */ }
+      logToFile(`Write error: ${(error instanceof Error ? error.message : String(error))}`);
+      try { await saveLog('news', 0, 'error', (error instanceof Error ? error.message : String(error))); } catch { /* saveLog failed, ignore */ }
     }
   } else {
     logToFile('No articles to save');

@@ -1,26 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as jose from 'jose';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { DiasporaProfileSchema } from '@/lib/api-validation';
+import { verifyIdToken } from '@/lib/api-auth';
 
-const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
+const rlRead = { maxRequests: 60, windowMs: 60 * 1000, keyPrefix: 'ratelimit:diaspora-profile' };
+const rlWrite = { maxRequests: 20, windowMs: 60 * 1000, keyPrefix: 'ratelimit:diaspora-profile-write' };
 
-async function verifyToken(token: string): Promise<{ uid: string } | null> {
-  try {
-    const JWKS = jose.createRemoteJWKSet(
-      new URL('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'),
-    );
-    const { payload } = await jose.jwtVerify(token, JWKS, {
-      issuer: `https://securetoken.google.com/${FIREBASE_PROJECT_ID}`,
-      audience: FIREBASE_PROJECT_ID,
-    });
-    return { uid: payload.sub as string };
-  } catch {
-    return null;
-  }
-}
-
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export const GET = withIpRateLimit(rlRead, async (req: NextRequest): Promise<NextResponse> => {
   try {
     const authHeader = req.headers.get('authorization');
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -28,7 +15,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Missing authorization token' }, { status: 401 });
     }
 
-    const verified = await verifyToken(token);
+    const verified = await verifyIdToken(token);
     if (!verified) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
@@ -50,9 +37,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.error('[Diaspora Profile GET] Error:', error);
     return NextResponse.json({ error: 'Failed to load profile' }, { status: 500 });
   }
-}
+});
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export const POST = withIpRateLimit(rlWrite, async (req: NextRequest): Promise<NextResponse> => {
   try {
     const body = await req.json();
     const parsed = DiasporaProfileSchema.safeParse(body);
@@ -67,7 +54,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const { idToken, countryOfResidence, maxTicketSize, targetSectors } = parsed.data;
 
-    const verified = await verifyToken(idToken);
+    const verified = await verifyIdToken(idToken);
     if (!verified) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
@@ -87,4 +74,4 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.error('[Diaspora Profile POST] Error:', error);
     return NextResponse.json({ error: 'Failed to save profile' }, { status: 500 });
   }
-}
+});

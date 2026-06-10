@@ -1,31 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as jose from 'jose';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { verifyIdToken } from '@/lib/api-auth';
 
-const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
-
-async function verifyToken(token: string): Promise<{ uid: string } | null> {
-  try {
-    const JWKS = jose.createRemoteJWKSet(
-      new URL('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'),
-    );
-    const { payload } = await jose.jwtVerify(token, JWKS, {
-      issuer: `https://securetoken.google.com/${FIREBASE_PROJECT_ID}`,
-      audience: FIREBASE_PROJECT_ID,
-    });
-    return { uid: payload.sub as string };
-  } catch {
-    return null;
-  }
-}
-
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export const GET = withIpRateLimit(
+  { maxRequests: 30, windowMs: 60 * 1000, keyPrefix: 'ratelimit:diaspora-matches' },
+  async (req: NextRequest): Promise<NextResponse> => {
   try {
     const authHeader = req.headers.get('authorization');
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const verified = await verifyToken(token);
+    const verified = await verifyIdToken(token);
     if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
     const userDoc = await adminDb.collection('users').doc(verified.uid).get();
@@ -76,4 +62,5 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.error('[Diaspora Matches] Error:', error);
     return NextResponse.json({ error: 'Failed to load matches' }, { status: 500 });
   }
-}
+},
+);

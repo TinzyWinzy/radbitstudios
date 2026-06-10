@@ -71,12 +71,21 @@ export const POST = withIpRateLimit(
   },
 );
 
-export async function PATCH(req: NextRequest) {
-  const provider = req.headers.get('x-payment-provider') || 'stripe';
-  const { WebhookHandler } = await import('@/services/payment/webhook-handler');
-  const handler = new WebhookHandler();
-  const rawBody = await req.text();
-  const payload = JSON.parse(rawBody);
-  const result = await handler.handle(provider, payload);
-  return NextResponse.json(result);
-}
+export const PATCH = withIpRateLimit(
+  { maxRequests: 30, windowMs: 60 * 1000, keyPrefix: 'ratelimit:payments-webhook' },
+  async (req: NextRequest): Promise<NextResponse> => {
+    try {
+      const provider = req.headers.get('x-payment-provider') || 'stripe';
+      const { WebhookHandler } = await import('@/services/payment/webhook-handler');
+      const handler = new WebhookHandler();
+      const rawBody = await req.text();
+      const payload = JSON.parse(rawBody);
+      const result = await handler.handle(provider, payload);
+      return NextResponse.json(result);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Webhook processing failed';
+      console.error('[Payments] Webhook error:', message);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+  },
+);

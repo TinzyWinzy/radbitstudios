@@ -95,12 +95,13 @@ describe('Pattern B — JSON mode with parse/fallback', () => {
     expect(result.reason).toBe('Hate speech detected');
   });
 
-  it('moderateCommunityContent defaults safe on parse failure', async () => {
+  it('moderateCommunityContent defaults unsafe on parse failure', async () => {
     const { moderateCommunityContent } = await import('@/ai/flows/moderate-community-content');
     setMockContent('not valid json');
 
     const result = await moderateCommunityContent({ text: 'any text' });
-    expect(result.isSafe).toBe(true);
+    expect(result.isSafe).toBe(false);
+    expect(result.reason).toBe('Moderation service returned an invalid response');
   });
 
   it('generateExportAssessment returns parsed assessment', async () => {
@@ -331,9 +332,9 @@ describe('Gateway generates correct parameters for each flow', () => {
     expect(call?.jsonMode).toBe(true);
   });
 
-  it('moderate-community uses few tokens', async () => {
+  it('moderate-community uses appropriate tokens', async () => {
     const { moderateCommunityContent } = await import('@/ai/flows/moderate-community-content');
     setMockContent('x'); await moderateCommunityContent({ text: 'test' }).catch(() => {});
-    expect(getLastGenerateCall()?.maxTokens).toBe(128);
+    expect(getLastGenerateCall()?.maxTokens).toBe(512);
   });
 });

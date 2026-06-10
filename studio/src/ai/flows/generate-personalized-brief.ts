@@ -26,6 +26,7 @@ const PersonalizedBriefOutputSchema = z.object({
     whyRelevant: z.string(),
     howToApply: z.string(),
     deadline: z.string(),
+    sourceUrl: z.string().optional(),
   })),
   regulatoryAlert: z.string().optional(),
   summary: z.string(),

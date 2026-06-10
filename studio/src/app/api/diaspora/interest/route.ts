@@ -1,36 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as jose from 'jose';
+import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
-
-const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
-
-async function verifyToken(token: string): Promise<{ uid: string } | null> {
-  try {
-    const JWKS = jose.createRemoteJWKSet(
-      new URL('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'),
-    );
-    const { payload } = await jose.jwtVerify(token, JWKS, {
-      issuer: `https://securetoken.google.com/${FIREBASE_PROJECT_ID}`,
-      audience: FIREBASE_PROJECT_ID,
-    });
-    return { uid: payload.sub as string };
-  } catch {
-    return null;
-  }
-}
+import { verifyIdToken } from '@/lib/api-auth';
 
 function ensureDocId(uid: string, smeName: string): string {
   const enc = Buffer.from(`${uid}_${smeName}`).toString('base64').replace(/[/+=]/g, '_').slice(0, 80);
   return enc;
 }
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+const rlRead = { maxRequests: 60, windowMs: 60 * 1000, keyPrefix: 'ratelimit:diaspora-interest' };
+const rlWrite = { maxRequests: 20, windowMs: 60 * 1000, keyPrefix: 'ratelimit:diaspora-interest-write' };
+
+export const GET = withIpRateLimit(rlRead, async (req: NextRequest): Promise<NextResponse> => {
   try {
     const authHeader = req.headers.get('authorization');
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const verified = await verifyToken(token);
+    const verified = await verifyIdToken(token);
     if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
     const snap = await adminDb
@@ -50,16 +37,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     console.error('[Diaspora Interest GET] Error:', error);
     return NextResponse.json({ error: 'Failed to load interests' }, { status: 500 });
   }
-}
+});
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export const POST = withIpRateLimit(rlWrite, async (req: NextRequest): Promise<NextResponse> => {
   try {
     const { idToken, smeName, smeSector } = await req.json();
     if (!idToken || !smeName) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const verified = await verifyToken(idToken);
+    const verified = await verifyIdToken(idToken);
     if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
     const docId = ensureDocId(verified.uid, smeName);
@@ -82,4 +69,4 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.error('[Diaspora Interest POST] Error:', error);
     return NextResponse.json({ error: 'Failed to save interest' }, { status: 500 });
   }
-}
+});

@@ -53,6 +53,8 @@ import { getCachedQuery, setCachedQuery, buildQueryKey } from "@/services/query-
 import type { UpgradeInfo } from "@/services/feature-gate";
 import type { AppUser } from "@/types/user";
 import type { Project, ProjectTask } from "@/types/project";
+import type { PersonalizedBriefOutput } from "@/ai/flows/generate-personalized-brief";
+import type { AssessmentDoc } from "@/services/maturity";
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
@@ -107,7 +109,7 @@ export default function DashboardPage() {
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [assessmentData, setAssessmentData] = useState<AssessmentData | null>(null);
   const [assessmentHistory, setAssessmentHistory] = useState<{ date: string; score: number }[]>([]);
-  const [allAssessments, setAllAssessments] = useState<any[]>([]);
+  const [allAssessments, setAllAssessments] = useState<AssessmentDoc[]>([]);
   const [benchmarkData, setBenchmarkData] = useState<Array<{ category: string; benchmarkScore: number }>>([]);
   const [isLoadingAssessment, setIsLoadingAssessment] = useState(true);
   const [creditsExhausted, setCreditsExhausted] = useState(false);
@@ -207,9 +209,9 @@ export default function DashboardPage() {
       if (mounted) setIsLoadingAssessment(true);
       try {
         const cacheKey = buildQueryKey('assessments', 'userId', user.uid);
-        let docs: Record<string, unknown>[] | null = null;
+        let docs: AssessmentDoc[] | null = null;
 
-        const cached = await getCachedQuery<Record<string, unknown>[]>(cacheKey);
+        const cached = await getCachedQuery<AssessmentDoc[]>(cacheKey);
         if (cached) {
           docs = cached;
         } else {
@@ -218,20 +220,20 @@ export default function DashboardPage() {
             where("userId", "==", user.uid)
           );
           const querySnapshot = await withRetry(() => getDocs(q));
-          docs = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          docs = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() })) as AssessmentDoc[];
           setCachedQuery(cacheKey, docs, 10 * 60 * 1000);
         }
 
         const sorted = docs.sort((a, b) => {
-          const aDate = (a as any).createdAt?.toDate?.() ?? new Date(0);
-          const bDate = (b as any).createdAt?.toDate?.() ?? new Date(0);
+          const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+          const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
           return bDate.getTime() - aDate.getTime();
         });
         if (mounted) setAllAssessments(sorted);
         if (sorted.length > 0 && mounted) {
-          const latest = sorted[0] as any;
+          const latest = sorted[0];
           const categoryScores: { [key: string]: { totalScore: number; count: number } } = {};
-          latest.responses?.forEach((response: any) => {
+          (latest.responses as Array<{ category: string; score: number }> | undefined)?.forEach((response) => {
             if (!categoryScores[response.category]) {
               categoryScores[response.category] = { totalScore: 0, count: 0 };
             }
@@ -243,15 +245,14 @@ export default function DashboardPage() {
             score: (scores.totalScore / (scores.count * 4)) * 100,
           }));
           const rawSummary = latest.summary;
-          const aiSummary = typeof rawSummary === 'string' ? rawSummary : rawSummary?.summary || '';
+          const aiSummary = typeof rawSummary === 'string' ? rawSummary : '';
           if (mounted) setAssessmentData({ chartData, aiSummary });
 
           const history = sorted.map(doc => {
-            const d = doc as any;
-            const scores = d.responses as Array<{ score: number }>;
+            const scores = (doc.responses as Array<{ score: number }> | undefined) ?? [];
             const total = scores.reduce((sum, r) => sum + r.score, 0);
             const max = scores.length * 4;
-            const date = d.createdAt?.toDate?.() ?? new Date(0);
+            const date = (doc.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
             return {
               date: date.toLocaleDateString('en-ZA', { month: 'short', day: 'numeric' }),
               score: Math.round((total / max) * 100),
@@ -567,7 +568,7 @@ export default function DashboardPage() {
 }
 
 function NewsInsightsCard({ user }: { user: AppUser | null }) {
-  const [brief, setBrief] = useState<any>(null);
+  const [brief, setBrief] = useState<PersonalizedBriefOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -644,7 +645,7 @@ function NewsInsightsCard({ user }: { user: AppUser | null }) {
                   <Newspaper className="h-3 w-3 text-primary" />
                   Stories
                 </h4>
-                {(expanded ? brief.topStories : brief.topStories.slice(0, 2)).map((story: any, i: number) => (
+                {(expanded ? brief.topStories : brief.topStories.slice(0, 2)).map((story, i) => (
                   <div key={i} className="p-2.5 bg-card rounded-lg border border-border/50">
                     <p className="text-xs font-medium">{story.headline}</p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">{story.whyItMatters}</p>
@@ -661,7 +662,7 @@ function NewsInsightsCard({ user }: { user: AppUser | null }) {
                   <Briefcase className="h-3 w-3 text-primary" />
                   Tenders
                 </h4>
-                {(expanded ? brief.relevantTenders : brief.relevantTenders.slice(0, 2)).map((t: any, i: number) => (
+                {(expanded ? brief.relevantTenders : brief.relevantTenders.slice(0, 2)).map((t, i) => (
                   <div key={i} className="flex items-center justify-between p-2 bg-card rounded-lg border border-border/50">
                     <div className="min-w-0">
                       <p className="text-xs font-medium truncate">{t.title}</p>
