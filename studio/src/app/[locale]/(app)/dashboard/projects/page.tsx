@@ -1,46 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectProgress } from "@/components/project-progress";
 import { ArrowLeft, FolderOpen } from "lucide-react";
 import Link from "next/link";
-import type { Project, ProjectTask } from "@/types/project";
+import { useProjects } from "@/hooks/use-projects";
 
 export default function MyProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [projectTasks, setProjectTasks] = useState<Record<string, ProjectTask[]>>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  async function fetchProjects() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/projects");
-      const json = await res.json();
-      if (json.projects) {
-        setProjects(json.projects);
-        const tasksPromises = json.projects.map((p: Project) =>
-          fetch(`/api/projects/${p.id}`).then(r => r.json()).catch(() => ({ tasks: [] }))
-        );
-        const tasksResults = await Promise.all(tasksPromises);
-        const tasksMap: Record<string, ProjectTask[]> = {};
-        json.projects.forEach((p: Project, i: number) => {
-          tasksMap[p.id] = tasksResults[i]?.tasks || [];
-        });
-        setProjectTasks(tasksMap);
-      }
-    } catch (e) {
-      console.error("[MyProjects] Failed:", e);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { projects, projectTasks, loading } = useProjects();
 
   return (
     <div className="space-y-6">

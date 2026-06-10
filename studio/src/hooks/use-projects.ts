@@ -1,21 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-
-interface Project {
-  id: string;
-  name: string;
-  status: string;
-  clientId: string;
-  [key: string]: unknown;
-}
-
-interface ProjectTask {
-  id: string;
-  projectId: string;
-  status: string;
-  [key: string]: unknown;
-}
+import type { Project, ProjectTask } from '@/types/project';
 
 interface UseProjectsReturn {
   projects: Project[];
@@ -32,11 +18,6 @@ export function useProjects(userId?: string): UseProjectsReturn {
   const [error, setError] = useState<string | null>(null);
 
   const fetchProjects = useCallback(async () => {
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
     setError(null);
 

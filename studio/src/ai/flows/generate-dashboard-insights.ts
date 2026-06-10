@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import {
   checkListQuality,
   TIP_QUALITY_THRESHOLDS,
@@ -20,7 +20,7 @@ const GenerateDashboardInsightsOutputSchema = z.object({
 });
 export type GenerateDashboardInsightsOutput = z.infer<typeof GenerateDashboardInsightsOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function generateDashboardInsights(input: GenerateDashboardInsightsInput): Promise<GenerateDashboardInsightsOutput> {
   const prompt = `Business Industry: ${input.industry}\nBusiness Description: ${input.businessDescription}`;

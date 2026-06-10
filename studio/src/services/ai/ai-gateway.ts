@@ -643,3 +643,5 @@ export class AIGateway {
     }
   }
 }
+
+export const aiGateway = new AIGateway();

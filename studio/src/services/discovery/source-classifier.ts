@@ -1,7 +1,7 @@
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import type { DiscoveredSource } from './source-crawler';
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export interface ClassifiedSource extends DiscoveredSource {
   relevanceScore: number;

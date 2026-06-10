@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 // ─── Shared Business Profile Builder ────────────────────────────────────────
 
@@ -49,7 +49,7 @@ export interface PersonaConfig {
   extraFields?: string[];
 }
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export function createPersonaChatbot(config: PersonaConfig) {
   return async function (input: PersonaInput): Promise<PersonaOutput> {

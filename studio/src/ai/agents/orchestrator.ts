@@ -1,4 +1,4 @@
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { type AIGateway, aiGateway } from '@/services/ai/ai-gateway';
 import { AGENT_REGISTRY, getAgent } from './registry';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export class Orchestrator {
   private listeners: ProgressListener[] = [];
 
   constructor() {
-    this.gateway = new AIGateway();
+    this.gateway = aiGateway;
   }
 
   onProgress(listener: ProgressListener): () => void {

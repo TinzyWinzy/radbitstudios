@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 const GenerateBusinessInsightInputSchema = z.object({
   businessDescription: z.string(),
@@ -16,7 +16,7 @@ const GenerateBusinessInsightOutputSchema = z.object({
 });
 export type GenerateBusinessInsightOutput = z.infer<typeof GenerateBusinessInsightOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 const SYSTEM_PROMPTS: Record<string, string> = {
   profile_generator: 'You are Tino. Write confident, professional one-paragraph company profiles for Zimbabwean SMEs. Include founder origin story and local impact. Max 120 words. Start with business name and tagline.',

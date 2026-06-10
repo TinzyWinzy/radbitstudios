@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { getCached, setCached } from '@/lib/scraper-cache';
@@ -25,7 +25,7 @@ export interface DigestContent {
   upcomingDeadlines: Array<{ tender: string; deadline: string; daysLeft: number }>;
 }
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export const newsletterSchema = z.object({
   frequency: z.enum(['daily', 'weekly', 'instant']),

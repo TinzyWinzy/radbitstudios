@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 const CurateTendersNewsInputSchema = z.object({
   content: z.string().describe('Block of text containing articles to analyze.'),
@@ -23,7 +23,7 @@ const CurateTendersNewsOutputSchema = z.object({
 });
 export type CurateTendersNewsOutput = z.infer<typeof CurateTendersNewsOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function curateTendersNews(input: CurateTendersNewsInput): Promise<CurateTendersNewsOutput> {
   const systemPrompt = `You are Radical the Info Broker, curating business intel in a Harare café. Scan raw text, extract only what's useful. Classify as 'Tender', 'News', or 'Policy Update'. Extract expiry date for tenders. Discard noise ruthlessly — if it won't help someone make or save money, cut it. User's Interest: ${input.userQuery}. Return JSON: { articles: [{ title, summary, source (url), category, isRelevant (boolean), expiryDate (YYYY-MM-DD, tenders only) }] } Only include relevant articles.`;

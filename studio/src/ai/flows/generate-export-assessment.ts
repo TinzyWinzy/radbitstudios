@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 const ExportAssessmentResponseSchema = z.object({
   question: z.string(),
@@ -29,7 +29,7 @@ const GenerateExportAssessmentOutputSchema = z.object({
 });
 export type GenerateExportAssessmentOutput = z.infer<typeof GenerateExportAssessmentOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function generateExportAssessment(input: GenerateExportAssessmentInput): Promise<GenerateExportAssessmentOutput> {
   const businessContext = [

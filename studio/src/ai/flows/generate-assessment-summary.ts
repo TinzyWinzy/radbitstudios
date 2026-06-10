@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import {
   checkTextQuality,
   SUMMARY_QUALITY_THRESHOLDS,
@@ -28,7 +28,7 @@ const GenerateAssessmentSummaryOutputSchema = z.object({
 });
 export type GenerateAssessmentSummaryOutput = z.infer<typeof GenerateAssessmentSummaryOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 function buildPrompt(input: GenerateAssessmentSummaryInput): { prompt: string; systemPrompt: string } {
   const assessmentData = input.responses.map(r =>

@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 const ModerateCommunityContentInputSchema = z.object({
   text: z.string().describe('The text content to be moderated.'),
@@ -14,7 +14,7 @@ const ModerateCommunityContentOutputSchema = z.object({
 });
 export type ModerateCommunityContentOutput = z.infer<typeof ModerateCommunityContentOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function moderateCommunityContent(input: ModerateCommunityContentInput): Promise<ModerateCommunityContentOutput> {
   const systemPrompt = `Determine if the text is safe for a community of Zimbabwean SME owners. Check: hate speech, harassment, dangerous content, sexually explicit material. Return JSON: {"isSafe": true} or {"isSafe": false, "reason": "..."} Only valid JSON.`;

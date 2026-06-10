@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import { searchRelevantContext } from '@/services/ai/rag.server';
 
 const InputSchema = z.object({
@@ -20,7 +20,7 @@ const OutputSchema = z.object({
 export type TaxCopilotInput = z.infer<typeof InputSchema>;
 export type TaxCopilotOutput = z.infer<typeof OutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function generateTaxAnswer(input: TaxCopilotInput): Promise<TaxCopilotOutput> {
   const validated = InputSchema.parse(input);

@@ -1,4 +1,4 @@
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { type AIGateway, aiGateway } from '@/services/ai/ai-gateway';
 import { getAgent, getToolsForAgent, builtInTools } from './registry';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -111,7 +111,7 @@ export class SubagentExecutor {
   private semaphore: Semaphore;
 
   constructor(config?: Partial<SubagentConfig>) {
-    this.gateway = new AIGateway();
+    this.gateway = aiGateway;
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.semaphore = new Semaphore(this.config.concurrency);
   }

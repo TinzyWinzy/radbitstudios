@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import { getNewsForUser } from '@/services/news-scraper';
 import { getTendersForUser } from '@/services/tender-scraper';
 
@@ -32,7 +32,7 @@ const PersonalizedBriefOutputSchema = z.object({
 });
 export type PersonalizedBriefOutput = z.infer<typeof PersonalizedBriefOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function generatePersonalizedBrief(input: PersonalizedBriefInput): Promise<PersonalizedBriefOutput> {
   const news = await getNewsForUser(input.userId);

@@ -25,6 +25,7 @@ export function setMockJsonResponse(data: Record<string, unknown>): void {
 
 export function setMockError(error: string): void {
   nextError = error;
+  nextResponse = { content: '' };
 }
 
 export function getGenerateCalls(): AIGatewayRequest[] {
@@ -72,7 +73,11 @@ export class MockAIGateway {
 }
 
 export function setupMockAIGateway(): void {
-  vi.mock('@/services/ai/ai-gateway', () => ({
-    AIGateway: MockAIGateway,
-  }));
+  vi.mock('@/services/ai/ai-gateway', () => {
+    const instance = new MockAIGateway();
+    return {
+      AIGateway: MockAIGateway,
+      aiGateway: instance,
+    };
+  });
 }

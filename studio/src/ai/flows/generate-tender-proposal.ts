@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 const TenderProposalInputSchema = z.object({
   tenderTitle: z.string(),
@@ -25,7 +25,7 @@ const TenderProposalOutputSchema = z.object({
 });
 export type TenderProposalOutput = z.infer<typeof TenderProposalOutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 export async function generateTenderProposal(input: TenderProposalInput): Promise<TenderProposalOutput> {
   const prompt = `Tender: ${input.tenderTitle}

@@ -1,8 +1,8 @@
 import { getOrCreateSession, addExchange, linkSessionToUser, setActiveFlow } from './session-store';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 const BASE_URL = 'https://graph.facebook.com/v21.0';
 
 async function sendWhatsAppMessage(to: string, text: string): Promise<boolean> {

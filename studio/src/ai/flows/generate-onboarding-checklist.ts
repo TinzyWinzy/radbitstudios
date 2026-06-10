@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { AIGateway } from '@/services/ai/ai-gateway';
+import { aiGateway } from '@/services/ai/ai-gateway';
 
 const InputSchema = z.object({
   audience: z.enum(['myself', 'my-business', 'not-sure']),
@@ -30,7 +30,7 @@ const OutputSchema = z.object({
 
 export type OnboardingChecklistOutput = z.infer<typeof OutputSchema>;
 
-const gateway = new AIGateway();
+const gateway = aiGateway;
 
 const FALLBACK: OnboardingChecklistOutput = {
   persona: 'sme',
