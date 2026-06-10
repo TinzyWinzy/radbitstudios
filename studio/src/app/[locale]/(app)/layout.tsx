@@ -32,10 +32,18 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 import {
   Home,
   FileText,
@@ -43,7 +51,6 @@ import {
   Users,
   Settings,
   LifeBuoy,
-  MessageCircle,
   Calculator,
   Send,
   Loader2,
@@ -53,8 +60,6 @@ import {
   Newspaper,
   FileCheck,
   Scale,
-  Bot,
-  FileSignature,
   TrendingUp,
   BadgeCheck,
   Sparkles,
@@ -62,6 +67,7 @@ import {
   Shield,
   ClipboardList,
   Kanban,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -160,24 +166,25 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const minTierForMessages = TIER_ORDER.indexOf('Growth');
     const showMessages = canViewMessages && userTierIndex >= minTierForMessages;
 
+    const showAiTools = true;
+    const canUsePraz = !isStaff;
+    const canUseExport = !isStaff;
+    const canUseInvestor = !isStaff;
+
     const menuItems = [
       { href: "/dashboard", label: "Dashboard", icon: <Home />, show: true },
       { href: "/dashboard/checklist", label: "Onboarding", icon: <ClipboardList />, show: true },
       { href: "/dashboard/projects", label: "My Projects", icon: <Kanban />, show: true },
       { href: "/assessment", label: "Assessment", icon: <FileText />, show: true },
-      { href: "/toolkit", label: "AI Toolkit", icon: <Wand2 />, show: true },
-      { href: "/bid-writer", label: "Bid Writer", icon: <FileSignature />, show: !isStaff },
-      { href: "/tax-copilot", label: "Tax Co-Pilot", icon: <Bot />, show: !isStaff },
       { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator />, show: true },
       { href: "/news", label: "Business News", icon: <Newspaper />, show: true },
       { href: "/tenders", label: "Tenders", icon: <Briefcase />, show: true },
-      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale />, show: !isStaff },
+      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale />, show: canUsePraz },
       { href: "/community", label: "Community", icon: <Users />, show: true },
       ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send />, show: true }] : []),
-      { href: "/mentor", label: "AI Mentor", icon: <MessageCircle />, show: true },
       { href: "/resources", label: "Resources", icon: <BookOpen />, show: true },
-      { href: "/export-assessment", label: "Export Assessment", icon: <FileCheck />, show: !isStaff },
-      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, show: !isStaff },
+      { href: "/export-assessment", label: "Export Assessment", icon: <FileCheck />, show: canUseExport },
+      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, show: canUseInvestor },
       ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog Manager", icon: <PenSquare />, show: true }] : []),
       ...(isAdmin ? [
         { href: "/dashboard/admin", label: "Admin Panel", icon: <Shield />, show: true },
@@ -217,6 +224,47 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
             ))}
+            {showAiTools && (
+              <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton tooltip={{ children: "AI Tools", side: "right" }}>
+                      <Wand2 />
+                      <span>AI Tools</span>
+                      <ChevronDown className="ml-auto h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/toolkit"}>
+                          <Link href="/toolkit">AI Toolkit</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                      {!isStaff && (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/bid-writer"}>
+                            <Link href="/bid-writer">Bid Writer</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      )}
+                      {!isStaff && (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive={pathname === "/tax-copilot"}>
+                            <Link href="/tax-copilot">Tax Co-Pilot</Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      )}
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton asChild isActive={pathname === "/mentor"}>
+                          <Link href="/mentor">AI Mentor</Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+            )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter className="relative">

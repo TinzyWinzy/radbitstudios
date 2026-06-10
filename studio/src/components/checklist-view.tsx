@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -123,10 +124,10 @@ export function ChecklistView() {
               Complete the onboarding form to generate a personalized checklist tailored to your needs.
             </p>
             <Button asChild>
-              <a href="/onboarding">
+              <Link href="/dashboard">
                 Take Onboarding
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
+              </Link>
             </Button>
           </div>
         </CardContent>

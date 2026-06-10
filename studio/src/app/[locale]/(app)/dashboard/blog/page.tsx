@@ -37,7 +37,7 @@ export default function AdminBlogPage() {
     );
   }
 
-  if (role !== 'admin') return null;
+  if (role !== 'admin' && role !== 'super_admin') return null;
 
   const togglePublish = async (id: string, current: boolean) => {
     await blogService.update(id, { published: !current });
