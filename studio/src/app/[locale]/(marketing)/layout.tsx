@@ -8,6 +8,7 @@ import { MagneticButton } from "@/components/magnetic-button";
 import { UserNav } from "@/components/user-nav";
 import { AuthContext } from "@/contexts/auth-context";
 import { RollingShapes } from "@/components/rolling-shapes";
+import { MarketingFooter } from "@/components/marketing-footer";
 import {
   Sheet,
   SheetContent,
@@ -246,6 +247,7 @@ export default function MarketingLayout({
       <main id="main-content" role="main" className="relative flex-1">
         {children}
       </main>
+      <MarketingFooter />
     </div>
   );
 }

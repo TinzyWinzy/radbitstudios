@@ -1,13 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Calendar } from "lucide-react";
+import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Globe, FileCheck, Target } from "lucide-react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
 import { TiltCard } from "@/components/tilt-card";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
-import { ChevronPattern } from "@/components/chevron-pattern";
 import { AdUnit } from "@/components/adsense";
 import { HeroBackground } from "@/components/hero-background";
 import dynamic from "next/dynamic";
@@ -39,16 +38,7 @@ function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-      <motion.div style={{ opacity, y, scale }} className="relative z-10 text-center sm:px-4 max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex sm:inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-foreground/20 bg-foreground/[0.07] text-xs sm:text-sm font-medium text-foreground/80 mb-8 text-left sm:text-center"
-        >
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          Digital sovereignty. Built for resilience in Zimbabwe.
-        </motion.div>
+      <motion.div style={{ opacity, y, scale }} className="relative z-10 text-center sm:px-4 max-w-5xl mx-auto">
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -56,18 +46,18 @@ function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-headline text-fluid-5xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
-          <span className="text-gradient">Build. Scale.</span>
+          <span className="text-gradient">Sovereign Digital Infrastructure</span>
           <br />
-          <span className="text-foreground/90">Own Your Future.</span>
+          <span className="text-foreground/90">for the African Enterprise.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed"
+          className="mt-8 text-base md:text-lg text-foreground/60 max-w-3xl mx-auto leading-relaxed"
         >
-          Beat forex volatility, navigate load-shedding, and win government contracts — AI-driven tools built for Zimbabwean entrepreneurs who refuse to wait. Own your data, own your growth, own your future.
+          From forex volatility to regulatory complexity, load-shedding to procurement fragmentation — Radbit delivers the integrated intelligence, automation, and compliance infrastructure that Zimbabwe&apos;s enterprises rely on.
         </motion.p>
 
         <motion.div
@@ -78,15 +68,12 @@ function HeroSection() {
         >
           <MagneticButton asChild size="default" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60 px-6">
             <Link href="/assessment">
-              Start Free Assessment
+              Begin Your Assessment
               <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
           </MagneticButton>
           <MagneticButton asChild size="default" variant="outline" className="font-headline text-sm tracking-wider border border-primary/20 text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/40 px-6">
-            <Link href="/toolkit">Explore AI Toolkit</Link>
-          </MagneticButton>
-          <MagneticButton asChild size="default" variant="ghost" className="font-headline text-sm tracking-wider text-foreground/40 hover:text-foreground/70 hover:bg-foreground/[0.05] px-6">
-            <Link href="/tenders">See Sample Tender Alert</Link>
+            <Link href="/consultancy">Enterprise Solutions</Link>
           </MagneticButton>
         </motion.div>
 
@@ -94,11 +81,22 @@ function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-8 flex items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-foreground/50 flex-wrap"
+          className="mt-14 flex items-center justify-center gap-8 sm:gap-12 text-xs text-foreground/40"
         >
-          <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-primary" />No credit card</span>
-          <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-secondary" />Free tier available</span>
-          <span className="flex items-center gap-1.5"><div className="h-1.5 w-1.5 rounded-full bg-accent" />5 min assessment</span>
+          <div className="text-center">
+            <div className="font-headline text-sm font-bold text-foreground/70">5,000+</div>
+            <div className="mt-0.5">Enterprises Assessed</div>
+          </div>
+          <div className="w-px h-8 bg-foreground/10" />
+          <div className="text-center">
+            <div className="font-headline text-sm font-bold text-foreground/70">300+</div>
+            <div className="mt-0.5">Monthly Tenders Curated</div>
+          </div>
+          <div className="w-px h-8 bg-foreground/10" />
+          <div className="text-center">
+            <div className="font-headline text-sm font-bold text-foreground/70">12+</div>
+            <div className="mt-0.5">Government Sources</div>
+          </div>
         </motion.div>
       </motion.div>
 
@@ -112,25 +110,113 @@ function HeroSection() {
   );
 }
 
-function DemoSection() {
+function ProblemSolutionSection() {
+  const problems = [
+    {
+      icon: <TrendingUp className="h-4 w-4" />,
+      title: "Forex Volatility",
+      body: "ZiG devaluation erodes margins daily. Your financial systems need real-time multi-currency intelligence, not quarterly reconciliations.",
+    },
+    {
+      icon: <Zap className="h-4 w-4" />,
+      title: "Operational Fragmentation",
+      body: "Load-shedding, disconnected tools, manual compliance — Zimbabwean enterprises operate in a uniquely hostile environment that off-the-shelf software wasn't built for.",
+    },
+    {
+      icon: <FileCheck className="h-4 w-4" />,
+      title: "Regulatory Gravity",
+      body: "PRAZ, ZIMRA, NSSA, RBZ, Labour Act — the compliance surface area expands every quarter. One misstep costs more than a fine.",
+    },
+  ];
+
+  const solutions = [
+    {
+      icon: <BarChart className="h-4 w-4" />,
+      title: "See the Full Picture",
+      body: "Radbit's digital assessment maps your entire operation — finance, compliance, procurement, digital maturity — and delivers a prioritised roadmap in 5 minutes.",
+    },
+    {
+      icon: <Globe className="h-4 w-4" />,
+      title: "Deploy Sovereign Infrastructure",
+      body: "AI agents, tender intelligence, compliance copilots — all running on infrastructure you control, encrypted and stored in Southern Africa.",
+    },
+    {
+      icon: <Target className="h-4 w-4" />,
+      title: "Execute with Confidence",
+      body: "From winning government tenders to automating ZIMRA submissions, every tool is purpose-built for Zimbabwe's regulatory and economic reality.",
+    },
+  ];
+
   return (
-    <section className="relative py-16 border-y border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
-      <div className="container max-w-3xl mx-auto text-center space-y-6">
-        <p className="text-xs tracking-[0.3em] text-primary uppercase font-headline">See Radbit in Action</p>
-        <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-          Book a free demo
-        </h2>
-        <p className="text-foreground/60 text-sm max-w-lg mx-auto leading-relaxed">
-          See how Radbit helps Zimbabwean SMEs find tenders, access AI insights, and grow with confidence. We&apos;ll walk you through the platform tailored to your industry.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-          <a
-            href="mailto:radbit@culturalcoder.co.zw?subject=Demo%20Request&body=Hi%2C%20I'd%20like%20to%20book%20a%20Radbit%20demo."
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-headline font-semibold text-sm hover:bg-primary/90 transition-colors"
+    <section className="relative py-20 md:py-28 border-y border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
+      <div className="container relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          className="text-center space-y-3 mb-16"
+        >
+          <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
+            The Problem Is <span className="text-gradient">Not a Lack of Tools</span>
+          </h2>
+          <p className="text-foreground/60 max-w-xl mx-auto text-base">
+            It&apos;s that every tool was built for a different market. Radbit was built for Zimbabwe.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto mb-16">
+          {problems.map((item) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="relative p-6 rounded-xl border border-red-900/30 bg-red-950/20"
+            >
+              <div className="w-9 h-9 rounded-lg bg-red-500/15 flex items-center justify-center text-red-400 mb-4">
+                {item.icon}
+              </div>
+              <h3 className="font-headline text-base font-bold text-foreground mb-2">{item.title}</h3>
+              <p className="text-sm text-foreground/50 leading-relaxed">{item.body}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="relative max-w-5xl mx-auto">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-px h-full bg-gradient-to-b from-primary/20 via-primary/10 to-transparent" />
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center space-y-3 mb-12"
           >
-            <Calendar className="h-4 w-4" />
-            Request a Demo
-          </a>
+            <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Radbit Delivers</span>
+            <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
+              A Platform. Not Another Tool.
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {solutions.map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                className="relative p-6 rounded-xl border border-foreground/10 bg-foreground/[0.03]"
+              >
+                <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center text-primary mb-4">
+                  {item.icon}
+                </div>
+                <h3 className="font-headline text-base font-bold text-foreground mb-2">{item.title}</h3>
+                <p className="text-sm text-foreground/50 leading-relaxed">{item.body}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -142,20 +228,20 @@ function HowItWorksSection() {
   const steps = [
     {
       icon: <BarChart className="h-4 w-4" />,
-      title: "Assess",
-      body: "5-minute readiness test. Know your baseline.",
+      title: "Diagnose",
+      body: "A 5-minute radar-chart analysis of your digital and operational maturity. Know your baseline across finance, compliance, procurement, and technology.",
       symbol: <Sankofa className="h-8 w-8 text-primary/20" />,
     },
     {
       icon: <Lightbulb className="h-4 w-4" />,
-      title: "Act",
-      body: "AI insights. Personalized roadmap. Real results.",
+      title: "Strategise",
+      body: "AI generates a prioritised roadmap calibrated to Zimbabwe's regulatory and economic environment — not generic benchmarks from another market.",
       symbol: <GyeNyame className="h-8 w-8 text-primary/20" />,
     },
     {
       icon: <TrendingUp className="h-4 w-4" />,
-      title: "Grow",
-      body: "Tenders, network, dashboard — your edge.",
+      title: "Execute",
+      body: "Deploy tender intelligence, compliance copilots, and AI agents — all on a sovereign platform that works during load-shedding and speaks your currency.",
       symbol: <Dwennimmen className="h-8 w-8 text-primary/20" />,
     },
   ];
@@ -169,9 +255,8 @@ function HowItWorksSection() {
           viewport={{ once: true, margin: "-80px" }}
           className="text-center space-y-3 mb-12"
         >
-          <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">How it works</span>
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-            3 Steps to <span className="text-gradient">Sovereignty</span>
+            Diagnose. Strategise. <span className="text-gradient">Execute.</span>
           </h2>
         </motion.div>
 
@@ -227,30 +312,26 @@ function FeaturesSection() {
   const features = [
     {
       icon: <BarChart className="h-4 w-4" />,
-      title: "Digital Readiness Assessment",
-      body: "5-minute radar-chart analysis of your digital maturity. Know your baseline, find your gaps, get a personalized roadmap.",
-      tags: ["Baseline", "Gaps", "Roadmap"],
+      title: "Enterprise Digital Assessment",
+      body: "A radar-chart analysis across finance, compliance, procurement, and technology — calibrated to Zimbabwe's regulatory environment. Know your baseline, find critical gaps, get an actionable roadmap.",
       href: "/assessment",
     },
     {
       icon: <Briefcase className="h-4 w-4" />,
-      title: "Tender Intelligence & PRAZ Compliance",
-      body: "AI-curated opportunities from 12+ government departments. Track deadlines, manage PRAZ documents, and submit with confidence.",
-      tags: ["Tenders", "PRAZ", "Alerts"],
+      title: "Tender & Procurement Intelligence",
+      body: "AI-curated opportunities from 12+ government departments and 8 state enterprises. Track deadlines in real time, manage PRAZ documents, and submit with confidence — from one dashboard.",
       href: "/tenders",
     },
     {
       icon: <Sparkles className="h-4 w-4" />,
-      title: "AI Agent Workforce",
-      body: "Deploy autonomous agents for logo design, content creation, financial projections, and customer comms — even during load-shedding.",
-      tags: ["Automation", "AI", "24/7"],
+      title: "AI Agent Infrastructure",
+      body: "Deploy autonomous agents for financial projections, content production, customer communications, and operational reporting — purpose-built for Zimbabwe's connectivity and currency realities.",
       href: "/toolkit",
     },
     {
       icon: <Shield className="h-4 w-4" />,
-      title: "Compliance & Regulatory Tools",
-      body: "ZIMRA tax copilot, PRAZ document manager, HR policy generator, and export coach — all Zimbabwe-specific.",
-      tags: ["ZIMRA", "PRAZ", "Labour Act"],
+      title: "Regulatory Command Centre",
+      body: "ZIMRA tax copilot, PRAZ compliance manager, NSSA submissions, Labour Act policy generator, and export readiness coach — every regulatory touchpoint unified in one sovereign platform.",
       href: "/toolkit",
     },
   ];
@@ -264,10 +345,12 @@ function FeaturesSection() {
           viewport={{ once: true, margin: "-80px" }}
           className="text-center space-y-3 mb-12"
         >
-          <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">What you get</span>
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-            Tools That <span className="text-gradient">Multiply</span> You
+            Four Capabilities. <span className="text-gradient">One Platform.</span>
           </h2>
+          <p className="text-foreground/60 max-w-lg mx-auto text-base">
+            Purpose-built for Zimbabwean enterprises — from Bulawayo manufacturing to Harare financial services.
+          </p>
         </motion.div>
 
         <motion.div
@@ -288,13 +371,6 @@ function FeaturesSection() {
                       </div>
                       <h3 className="font-headline text-xl font-bold text-foreground">{feature.title}</h3>
                       <p className="text-foreground/60 text-sm leading-relaxed">{feature.body}</p>
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {feature.tags.map(tag => (
-                          <span key={tag} className="px-2.5 py-1 text-xs font-medium rounded-full bg-foreground/[0.06] border border-foreground/10 text-foreground/50">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
                     </div>
                     <div className="absolute bottom-4 right-4 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 md:translate-x-2 md:group-hover:translate-x-0">
                       <ChevronRight className="h-4 w-4 text-primary" />
@@ -304,23 +380,6 @@ function FeaturesSection() {
               </TiltCard>
             </motion.div>
           ))}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-10"
-        >
-          <div className="flex flex-wrap gap-3 justify-center">
-            <MagneticButton asChild variant="outline" className="font-headline text-xs tracking-wider border border-primary/20 text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/40">
-              <Link href="/sign-in">Sign In</Link>
-            </MagneticButton>
-            <MagneticButton asChild className="font-headline text-xs tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60">
-              <Link href="/sign-up">Get Started <ArrowRight className="ml-1 h-3 w-3" /></Link>
-            </MagneticButton>
-          </div>
         </motion.div>
       </div>
     </section>
@@ -374,21 +433,21 @@ const caseStudies = [
     company: "Cultural Coder",
     url: "https://culturalcoder.co.zw",
     tagline: "Zimbabwean software studio building for local needs",
-    result: "Scaled from solo founder to 8-person team using Radbit insights",
+    result: "Scaled from solo founder to 8-person team, reduced compliance overhead by 40% using Radbit's regulatory command centre.",
     industry: "Technology",
   },
   {
     company: "Unikvilla",
     url: "https://unikvilla.co.zw",
     tagline: "Boutique lodging and accommodation in Zimbabwe",
-    result: "Doubled direct bookings through Radbit's digital marketing insights",
+    result: "Doubled direct bookings and automated 90% of guest communications through Radbit's AI agent infrastructure.",
     industry: "Hospitality & Tourism",
   },
   {
     company: "Nexus Agronomics",
     url: "https://nexusagronomics.co.zw",
     tagline: "Data-driven farming solutions for smallholder cooperatives",
-    result: "Accessed $50K in matched funding via Radbit's grant intelligence",
+    result: "Secured $50K in matched grant funding and won three government supply contracts via Radbit's tender intelligence.",
     industry: "Agri-tech",
   },
 ];
@@ -403,9 +462,8 @@ function CaseStudiesSection() {
           viewport={{ once: true, margin: "-60px" }}
           className="text-center space-y-3 mb-14"
         >
-          <p className="inline-block font-headline text-xs tracking-[0.3em] text-primary uppercase">Success Stories</p>
-          <h2 className="font-headline text-2xl md:text-4xl font-bold tracking-tight max-w-2xl mx-auto">
-            Zimbabwean businesses already winning with Radbit
+          <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter max-w-3xl mx-auto">
+            Enterprises Already <span className="text-gradient">Winning with Radbit</span>
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
@@ -422,9 +480,10 @@ function CaseStudiesSection() {
               className="group block p-6 rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:bg-foreground/[0.06] hover:border-primary/30 transition-all duration-300"
             >
               <div className="flex items-center gap-2 mb-3">
-                <span className="px-2 py-0.5 rounded text-[10px] font-headline font-semibold tracking-wider uppercase bg-primary/10 text-primary/80">
+                <span className="text-[10px] font-headline font-semibold tracking-wider uppercase text-muted-foreground/40">
                   {cs.industry}
                 </span>
+                <span className="h-px flex-1 bg-foreground/10" />
               </div>
               <h3 className="font-headline font-bold text-lg text-foreground group-hover:text-primary transition-colors mb-1">
                 {cs.company}
@@ -444,7 +503,7 @@ function CuratedBriefsSection() {
   const briefs = [
     {
       title: "Zimbabwe Budget 2026 Analysis",
-      summary: "Key takeaways for SMEs: tax relief on digital equipment, expanded MSME lending facilities, and new export incentives for agro-processors.",
+      summary: "Key takeaways for enterprises: tax relief on digital equipment, expanded MSME lending facilities, and new export incentives for agro-processors.",
       category: "Policy",
       action: "Review how the new digital equipment tax relief applies to your business.",
     },
@@ -462,10 +521,10 @@ function CuratedBriefsSection() {
     },
   ];
 
-  const categoryColors: Record<string, string> = {
-    Policy: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-    Tender: "bg-green-500/20 text-green-300 border-green-500/30",
-    "Market Intelligence": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+  const categoryIcons: Record<string, React.ReactNode> = {
+    Policy: <Shield className="h-3 w-3" />,
+    Tender: <Briefcase className="h-3 w-3" />,
+    "Market Intelligence": <TrendingUp className="h-3 w-3" />,
   };
 
   return (
@@ -477,7 +536,6 @@ function CuratedBriefsSection() {
           viewport={{ once: true, margin: "-60px" }}
           className="text-center space-y-3 mb-10"
         >
-          <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Curated Briefs</span>
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             Intelligence That <span className="text-gradient">Moves Your Business</span>
           </h2>
@@ -501,10 +559,9 @@ function CuratedBriefsSection() {
             >
               <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-b from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300" />
               <div className="relative rounded-xl border border-foreground/10 bg-foreground/[0.03] p-6 h-full flex flex-col group-hover:bg-foreground/[0.05] transition-colors duration-300">
-                <div className="mb-3">
-                  <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-full border ${categoryColors[brief.category] || 'bg-foreground/10 text-foreground/60 border-foreground/20'}`}>
-                    {brief.category}
-                  </span>
+                <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground/40 font-headline tracking-wider uppercase">
+                  {categoryIcons[brief.category]}
+                  <span>{brief.category}</span>
                 </div>
                 <h3 className="font-headline text-sm font-bold text-foreground/90 mb-2 leading-snug">
                   {brief.title}
@@ -615,12 +672,12 @@ function CTASection() {
           className="space-y-4"
         >
           <h2 className="font-headline text-fluid-5xl font-bold tracking-tighter text-foreground">
-            Your Next Move.
+            Ready to Build on
             <br />
-            <span className="text-gradient">Start Today.</span>
+            <span className="text-gradient">Sovereign Ground?</span>
           </h2>
           <p className="text-base md:text-lg text-foreground/60 max-w-lg mx-auto">
-            No card required. 5 minutes to your first insights.
+            Five minutes to your first assessment. No commitment. No generic dashboard.
           </p>
         </motion.div>
         <motion.div
@@ -631,82 +688,22 @@ function CTASection() {
         >
           <MagneticButton asChild size="lg" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 hover:border-primary/60 animate-glow-pulse px-8">
             <Link href="/assessment">
-              Start Free Assessment
+              Begin Your Assessment
               <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
           </MagneticButton>
         </motion.div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="text-xs text-foreground/30"
+        >
+          Enterprises in manufacturing, financial services, agri-tech, and professional services already use Radbit.
+        </motion.p>
       </div>
     </section>
-  );
-}
-
-function FooterSection() {
-  return (
-    <footer className="relative border-t border-foreground/10 bg-background/60">
-      <ChevronPattern variant="divider" direction="down" className="absolute -top-16 opacity-30" />
-      <div className="container pt-20 pb-12">
-        <div className="grid md:grid-cols-4 gap-8 md:gap-12">
-          <div className="md:col-span-1 space-y-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <span className="font-headline text-xl font-bold tracking-wide text-foreground">RADBIT</span>
-            </Link>
-            <p className="text-sm text-foreground/50 leading-relaxed">
-              Digital sovereignty for Zimbabwean enterprises.
-            </p>
-            <div className="flex gap-3">
-              <GyeNyame className="h-5 w-5 text-primary/40" />
-              <Dwennimmen className="h-5 w-5 text-primary/40" />
-              <Sankofa className="h-5 w-5 text-primary/40" />
-            </div>
-          </div>
-          {[
-            {
-              title: "Platform",
-              links: [
-                { href: "/assessment", label: "Assessment" },
-                { href: "/toolkit", label: "AI Toolkit" },
-                { href: "/community", label: "Community" },
-                { href: "/tenders", label: "Tenders" },
-              ],
-            },
-            {
-              title: "Company",
-              links: [
-                { href: "/pricing", label: "Pricing" },
-                { href: "/about", label: "About" },
-                { href: "/consultancy", label: "Consultancy" },
-                { href: "/privacy", label: "Privacy" },
-                { href: "/terms", label: "Terms" },
-              ],
-            },
-            {
-              title: "Resources",
-              links: [
-                { href: "/resources", label: "Guides & Tools" },
-              ],
-            },
-          ].map(group => (
-            <div key={group.title}>
-              <h3 className="font-headline text-sm font-bold tracking-wider mb-5 text-foreground/80">{group.title}</h3>
-              <ul className="space-y-3">
-                {group.links.map(link => (
-                  <li key={link.label}>
-                    <Link href={link.href} className="text-sm text-foreground/50 hover:text-foreground/90 transition-colors">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="mt-16 pt-8 border-t border-foreground/10 text-center text-sm text-foreground/40">
-          <p>&copy; {new Date().getFullYear()} Radbit. All rights reserved.</p>
-          <p className="mt-2 text-xs text-foreground/30">Your data is encrypted and stored in Southern Africa. We never share or sell your information.</p>
-        </div>
-      </div>
-    </footer>
   );
 }
 
@@ -718,7 +715,7 @@ export default function LandingPage() {
 
       <div className="relative z-10">
         <HeroSection />
-        <DemoSection />
+        <ProblemSolutionSection />
         <HowItWorksSection />
         <FeaturesSection />
         <MetricsSection />
@@ -729,7 +726,6 @@ export default function LandingPage() {
         </section>
         <PricingTeaser />
         <CTASection />
-        <FooterSection />
       </div>
     </div>
   );

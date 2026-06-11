@@ -593,7 +593,7 @@ export default function SolutionsPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-8"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              Technology solutions for every stage
+              enterprise technology & digital infrastructure
             </motion.div>
 
             <motion.h1
@@ -602,7 +602,7 @@ export default function SolutionsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              Build. Scale. Own Your Future.
+              Digital Infrastructure for the African Enterprise.
             </motion.h1>
 
             <motion.p
@@ -611,8 +611,7 @@ export default function SolutionsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              From your first website to full enterprise systems — Radbit Inc
-              delivers end-to-end technology solutions for African businesses.
+              From digital assessment to enterprise systems, AI agents to regulatory compliance — Radbit delivers integrated infrastructure purpose-built for Zimbabwean organisations.
             </motion.p>
 
             <motion.div

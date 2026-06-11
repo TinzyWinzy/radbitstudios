@@ -6,18 +6,18 @@ const baseUrl = process.env.FRONTEND_URL || "https://radbitstudios.co.zw";
 const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 
 export const metadata: Metadata = {
-  title: "Contact Us — Radbit",
-  description: "Get in touch with the Radbit team. Email hello@radbitstudios.co.zw or use the contact form.",
+  title: "Contact — Radbit",
+  description: "Reach the Radbit team. Enterprise digital infrastructure, AI agents, tender intelligence, and regulatory compliance for Zimbabwean organisations.",
   alternates: { canonical: "/contact" },
   openGraph: {
-    title: "Contact Us — Radbit",
-    description: "Get in touch with the Radbit team. Email hello@radbitstudios.co.zw or use the contact form.",
+    title: "Contact — Radbit",
+    description: "Reach the Radbit team. Enterprise digital infrastructure, AI agents, tender intelligence, and regulatory compliance for Zimbabwean organisations.",
     url: `${baseUrl}/contact`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Us — Radbit",
-    description: "Get in touch with the Radbit team. Email hello@radbitstudios.co.zw or use the contact form.",
+    title: "Contact — Radbit",
+    description: "Reach the Radbit team. Enterprise digital infrastructure, AI agents, tender intelligence, and regulatory compliance for Zimbabwean organisations.",
   },
 };
 

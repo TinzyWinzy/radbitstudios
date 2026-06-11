@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  CheckCircle2, ArrowRight, Zap, Sparkles, Globe, Server,
+  CheckCircle2, ArrowRight, Zap, Globe, Server,
   Shield, Brain, Palette, Code, Mail, MessageCircle,
 } from "lucide-react";
 import { subscriptionPlans } from "@/lib/subscriptions";
@@ -242,16 +242,11 @@ export default function PricingPage() {
     <div className="container max-w-6xl mx-auto py-8 md:py-12 px-4 md:px-6">
         {/* Hero */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium">
-            <Sparkles className="h-3.5 w-3.5" />
-            Technology solutions for every stage
-          </div>
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Build. Scale. Own Your Future.
+            Pricing for Digital Infrastructure.
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            From your first website to full enterprise systems — Radbit Inc delivers
-            end-to-end technology solutions for African businesses.
+            From a free AI platform to enterprise ERP systems and professional consultancy — Radbit delivers technology infrastructure built for Zimbabwean organisations.
           </p>
         </div>
 

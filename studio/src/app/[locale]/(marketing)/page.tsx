@@ -5,18 +5,18 @@ const baseUrl = process.env.FRONTEND_URL || "https://radbitstudios.co.zw";
 import PageClient from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Radbit — Digital Sovereignty for Zimbabwean Enterprises",
-  description: "AI-driven tools for Zimbabwean entrepreneurs. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agent workforce — built for local resilience.",
+  title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
+  description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Radbit — Digital Sovereignty for Zimbabwean Enterprises",
-    description: "AI-driven tools for Zimbabwean entrepreneurs. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agent workforce — built for local resilience.",
+    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
+    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
     url: `${baseUrl}/`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radbit — Digital Sovereignty for Zimbabwean Enterprises",
-    description: "AI-driven tools for Zimbabwean entrepreneurs. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agent workforce — built for local resilience.",
+    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
+    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
   },
 };
 

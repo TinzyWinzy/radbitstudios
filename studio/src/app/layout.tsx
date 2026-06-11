@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     'norton-safeweb': 'not applicable',
   },
   openGraph: {
-    title: "Radbit SME Hub — Build. Scale. Own Your Future.",
+    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
     description: "AI tools, assessments, community & tender intelligence for Zimbabwean entrepreneurs. Free to start.",
     url: SITE_URL,
     siteName: "Radbit SME Hub",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radbit SME Hub — Build. Scale. Own Your Future.",
+    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
     description: "AI tools, assessments, community & tender intelligence for Zimbabwean entrepreneurs.",
     site: "@radbitzw",
     creator: "@radbitzw",
