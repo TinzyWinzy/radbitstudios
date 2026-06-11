@@ -93,27 +93,7 @@ function HeroSection() {
           </MagneticButton>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="mt-16 flex items-center justify-center gap-6 sm:gap-12"
-        >
-          <div className="text-center">
-            <div className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">5,000+</div>
-            <div className="mt-0.5 text-xs sm:text-sm text-foreground/50 tracking-wide">Enterprises Assessed</div>
-          </div>
-          <div className="w-px h-8 bg-foreground/10" />
-          <div className="text-center">
-            <div className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">300+</div>
-            <div className="mt-0.5 text-xs sm:text-sm text-foreground/50 tracking-wide">Monthly Tenders Curated</div>
-          </div>
-          <div className="w-px h-8 bg-foreground/10" />
-          <div className="text-center">
-            <div className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">12+</div>
-            <div className="mt-0.5 text-xs sm:text-sm text-foreground/50 tracking-wide">Government Sources</div>
-          </div>
-        </motion.div>
+
       </motion.div>
 
       <motion.div
