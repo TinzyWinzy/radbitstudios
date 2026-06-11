@@ -40,62 +40,78 @@ function HeroSection() {
     <section ref={sectionRef} className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
       <motion.div style={{ opacity, y, scale }} className="relative z-10 text-center sm:px-4 max-w-5xl mx-auto">
 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-6"
+        >
+          <GyeNyame className="mx-auto h-10 w-10 text-primary/30" />
+        </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-headline text-fluid-5xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
-          <span className="text-gradient">Sovereign Digital Infrastructure</span>
+          <span className="text-gradient">Digital Infrastructure</span>
           <br />
-          <span className="text-foreground/90">for the African Enterprise.</span>
+          <span className="text-foreground/90">Built for Zimbabwean Enterprise.</span>
         </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.8, delay: 0.35 }}
+          className="mt-8 mx-auto w-16 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+        />
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-8 text-base md:text-lg text-foreground/60 max-w-3xl mx-auto leading-relaxed"
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-8 text-base md:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed"
         >
-          From forex volatility to regulatory complexity, load-shedding to procurement fragmentation — Radbit delivers the integrated intelligence, automation, and compliance infrastructure that Zimbabwe&apos;s enterprises rely on.
+          Intelligence, automation, and compliance — unified on a sovereign platform that understands Zimbabwe&apos;s regulatory and economic reality.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <MagneticButton asChild size="default" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60 px-6">
+          <MagneticButton asChild size="default" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25 font-headline text-sm tracking-wider px-8">
             <Link href="/assessment">
               Begin Your Assessment
-              <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
+              <ChevronRight className="ml-1.5 h-4 w-4" />
             </Link>
           </MagneticButton>
-          <MagneticButton asChild size="default" variant="outline" className="font-headline text-sm tracking-wider border border-primary/20 text-primary/60 hover:bg-primary/5 hover:text-primary hover:border-primary/40 px-6">
+          <MagneticButton asChild size="default" variant="outline" className="border-foreground/20 text-foreground/70 hover:bg-foreground/[0.05] hover:text-foreground font-headline text-sm tracking-wider px-8">
             <Link href="/consultancy">Enterprise Solutions</Link>
           </MagneticButton>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-14 flex items-center justify-center gap-8 sm:gap-12 text-xs text-foreground/40"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="mt-16 flex items-center justify-center gap-6 sm:gap-12"
         >
           <div className="text-center">
-            <div className="font-headline text-sm font-bold text-foreground/70">5,000+</div>
-            <div className="mt-0.5">Enterprises Assessed</div>
+            <div className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">5,000+</div>
+            <div className="mt-0.5 text-xs sm:text-sm text-foreground/50 tracking-wide">Enterprises Assessed</div>
           </div>
           <div className="w-px h-8 bg-foreground/10" />
           <div className="text-center">
-            <div className="font-headline text-sm font-bold text-foreground/70">300+</div>
-            <div className="mt-0.5">Monthly Tenders Curated</div>
+            <div className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">300+</div>
+            <div className="mt-0.5 text-xs sm:text-sm text-foreground/50 tracking-wide">Monthly Tenders Curated</div>
           </div>
           <div className="w-px h-8 bg-foreground/10" />
           <div className="text-center">
-            <div className="font-headline text-sm font-bold text-foreground/70">12+</div>
-            <div className="mt-0.5">Government Sources</div>
+            <div className="font-headline text-lg sm:text-xl font-bold tracking-tight text-foreground">12+</div>
+            <div className="mt-0.5 text-xs sm:text-sm text-foreground/50 tracking-wide">Government Sources</div>
           </div>
         </motion.div>
       </motion.div>
@@ -184,9 +200,6 @@ function ProblemSolutionSection() {
         </div>
 
         <div className="relative max-w-5xl mx-auto">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-px h-full bg-gradient-to-b from-primary/20 via-primary/10 to-transparent" />
-          </div>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
