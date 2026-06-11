@@ -71,7 +71,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-8 text-base md:text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed"
+          className="mt-8 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
           Intelligence, automation, and compliance — unified on a sovereign platform that understands Zimbabwe&apos;s regulatory and economic reality.
         </motion.p>
@@ -88,7 +88,7 @@ function HeroSection() {
               <ChevronRight className="ml-1.5 h-4 w-4" />
             </Link>
           </MagneticButton>
-          <MagneticButton asChild size="default" variant="outline" className="border-foreground/20 text-foreground/70 hover:bg-foreground/[0.05] hover:text-foreground font-headline text-sm tracking-wider px-8">
+          <MagneticButton asChild size="default" variant="outline" className="border-foreground/20 text-foreground/70 hover:bg-card hover:text-foreground font-headline text-sm tracking-wider px-8">
             <Link href="/consultancy">Enterprise Solutions</Link>
           </MagneticButton>
         </motion.div>
@@ -144,7 +144,7 @@ function ProblemSolutionSection() {
   ];
 
   return (
-    <section className="relative py-20 md:py-28 border-y border-foreground/10 bg-foreground/[0.02] content-visibility-auto">
+    <section className="relative py-20 md:py-28 border-y border-border bg-muted content-visibility-auto">
       <div className="container relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -155,7 +155,7 @@ function ProblemSolutionSection() {
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             The Problem Is <span className="text-gradient">Not a Lack of Tools</span>
           </h2>
-          <p className="text-foreground/60 max-w-xl mx-auto text-base">
+          <p className="text-muted-foreground max-w-xl mx-auto text-base">
             It&apos;s that every tool was built for a different market. Radbit was built for Zimbabwe.
           </p>
         </motion.div>
@@ -168,13 +168,13 @@ function ProblemSolutionSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="relative p-6 rounded-xl border border-red-900/30 bg-red-950/20"
+              className="relative p-6 rounded-xl border border-red-900/50 bg-red-950/30"
             >
               <div className="w-9 h-9 rounded-lg bg-red-500/15 flex items-center justify-center text-red-400 mb-4">
                 {item.icon}
               </div>
               <h3 className="font-headline text-base font-bold text-foreground mb-2">{item.title}</h3>
-              <p className="text-sm text-foreground/50 leading-relaxed">{item.body}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
             </motion.div>
           ))}
         </div>
@@ -200,13 +200,13 @@ function ProblemSolutionSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="relative p-6 rounded-xl border border-foreground/10 bg-foreground/[0.03]"
+                className="relative p-6 rounded-xl border border-border bg-card"
               >
                 <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center text-primary mb-4">
                   {item.icon}
                 </div>
                 <h3 className="font-headline text-base font-bold text-foreground mb-2">{item.title}</h3>
-                <p className="text-sm text-foreground/50 leading-relaxed">{item.body}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
               </motion.div>
             ))}
           </div>
@@ -258,13 +258,13 @@ function HowItWorksSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
-          className="grid md:grid-cols-3 gap-0 bg-foreground/[0.03] border border-foreground/10 rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
+          className="grid md:grid-cols-3 gap-0 bg-card border border-border rounded-2xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-border"
         >
           {steps.map((step, i) => (
             <motion.div
               key={step.title}
               variants={itemVariants}
-              className="relative group p-8 md:p-10 hover:bg-foreground/[0.02] transition-colors duration-300"
+              className="relative group p-8 md:p-10 hover:bg-muted transition-colors duration-300"
             >
               <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-30 transition-opacity duration-300">
                 {step.symbol}
@@ -277,7 +277,7 @@ function HowItWorksSection() {
                   <span className="font-headline text-xs tracking-[0.2em] text-primary/70">0{i + 1}</span>
                 </div>
                 <h3 className="font-headline text-xl font-bold text-foreground">{step.title}</h3>
-                <p className="text-foreground/60 text-sm leading-relaxed">{step.body}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{step.body}</p>
               </div>
             </motion.div>
           ))}
@@ -341,7 +341,7 @@ function FeaturesSection() {
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             Four Capabilities. <span className="text-gradient">One Platform.</span>
           </h2>
-          <p className="text-foreground/60 max-w-lg mx-auto text-base">
+          <p className="text-muted-foreground max-w-lg mx-auto text-base">
             Purpose-built for Zimbabwean enterprises — from Bulawayo manufacturing to Harare financial services.
           </p>
         </motion.div>
@@ -357,13 +357,13 @@ function FeaturesSection() {
             <motion.div key={feature.title} variants={itemVariants}>
               <TiltCard>
                 <Link href={feature.href}>
-                  <div className="group relative rounded-xl border border-foreground/10 bg-foreground/[0.03] p-8 hover:border-primary/30 transition-all duration-300 hover:bg-foreground/[0.05] h-full">
+                  <div className="group relative rounded-xl border border-border bg-card p-8 hover:border-primary/30 transition-all duration-300 hover:bg-card h-full">
                     <div className="relative z-10 space-y-5">
                       <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary">
                         {feature.icon}
                       </div>
                       <h3 className="font-headline text-xl font-bold text-foreground">{feature.title}</h3>
-                      <p className="text-foreground/60 text-sm leading-relaxed">{feature.body}</p>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{feature.body}</p>
                     </div>
                     <div className="absolute bottom-4 right-4 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 md:translate-x-2 md:group-hover:translate-x-0">
                       <ChevronRight className="h-4 w-4 text-primary" />
@@ -387,7 +387,7 @@ function MetricsSection() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          className="grid md:grid-cols-3 gap-0 bg-foreground/[0.03] border border-foreground/10 rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-white/10"
+          className="grid md:grid-cols-3 gap-0 bg-card border border-border rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-border"
         >
           {[
             { value: 5000, suffix: "+", label: "SMEs Assessed", sub: "Across all 10 provinces of Zimbabwe", icon: <Shield className="h-4 w-4 text-primary" /> },
@@ -400,18 +400,18 @@ function MetricsSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="p-8 md:p-10 text-center group hover:bg-foreground/[0.02] transition-colors duration-300"
+              className="p-8 md:p-10 text-center group hover:bg-muted transition-colors duration-300"
             >
               <div className="flex items-center justify-center gap-2 mb-3">
                 {metric.icon}
-                <span className="font-headline text-xs tracking-[0.2em] text-foreground/50 uppercase">Impact</span>
+                <span className="font-headline text-xs tracking-[0.2em] text-muted-foreground uppercase">Impact</span>
               </div>
               <div className="text-foreground">
                 <span className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter">
                   {metric.value}{metric.suffix}
                 </span>
               </div>
-              <p className="text-sm text-foreground/60 font-medium mt-2">{metric.label}</p>
+              <p className="text-sm text-muted-foreground font-medium mt-2">{metric.label}</p>
               <p className="text-xs text-foreground/40 mt-1 max-w-[180px] sm:max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
             </motion.div>
           ))}
@@ -470,7 +470,7 @@ function CaseStudiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="group block p-6 rounded-xl border border-foreground/10 bg-foreground/[0.03] hover:bg-foreground/[0.06] hover:border-primary/30 transition-all duration-300"
+              className="group block p-6 rounded-xl border border-border bg-card hover:bg-muted hover:border-primary/30 transition-all duration-300"
             >
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-[10px] font-headline font-semibold tracking-wider uppercase text-muted-foreground/40">
@@ -482,7 +482,7 @@ function CaseStudiesSection() {
                 {cs.company}
                 <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-200" />
               </h3>
-              <p className="text-sm text-foreground/50 mb-3">{cs.tagline}</p>
+              <p className="text-sm text-muted-foreground mb-3">{cs.tagline}</p>
               <p className="text-sm text-primary/90 font-medium">&ldquo;{cs.result}&rdquo;</p>
             </motion.a>
           ))}
@@ -532,7 +532,7 @@ function CuratedBriefsSection() {
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
             Intelligence That <span className="text-gradient">Moves Your Business</span>
           </h2>
-          <p className="text-foreground/60 max-w-lg mx-auto text-base">
+          <p className="text-muted-foreground max-w-lg mx-auto text-base">
             AI-curated news, tenders, and market insights tailored to your industry.
           </p>
         </motion.div>
@@ -551,7 +551,7 @@ function CuratedBriefsSection() {
               className="group relative"
             >
               <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-b from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 blur transition-opacity duration-300" />
-              <div className="relative rounded-xl border border-foreground/10 bg-foreground/[0.03] p-6 h-full flex flex-col group-hover:bg-foreground/[0.05] transition-colors duration-300">
+              <div className="relative rounded-xl border border-border bg-card p-6 h-full flex flex-col group-hover:bg-card transition-colors duration-300">
                 <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground/40 font-headline tracking-wider uppercase">
                   {categoryIcons[brief.category]}
                   <span>{brief.category}</span>
@@ -559,10 +559,10 @@ function CuratedBriefsSection() {
                 <h3 className="font-headline text-sm font-bold text-foreground/90 mb-2 leading-snug">
                   {brief.title}
                 </h3>
-                <p className="text-sm text-foreground/50 leading-relaxed flex-1">
+                <p className="text-sm text-muted-foreground leading-relaxed flex-1">
                   {brief.summary}
                 </p>
-                <div className="mt-4 pt-3 border-t border-foreground/10">
+                <div className="mt-4 pt-3 border-t border-border">
                   <p className="text-xs text-primary flex items-center gap-1.5">
                     <Zap className="h-3 w-3 shrink-0" />
                     {brief.action}
@@ -580,7 +580,7 @@ function CuratedBriefsSection() {
           transition={{ delay: 0.3 }}
           className="text-center mt-8"
         >
-          <p className="text-sm text-foreground/50 mb-4">Personalized briefs generated daily from live data sources.</p>
+          <p className="text-sm text-muted-foreground mb-4">Personalized briefs generated daily from live data sources.</p>
           <MagneticButton asChild size="default" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60">
             <Link href="/sign-up">
               Get Your First Brief <ArrowRight className="ml-1 h-3 w-3" />
@@ -649,7 +649,7 @@ function PricingTeaser() {
 
 function CTASection() {
   return (
-    <section className="relative py-20 md:py-28 overflow-hidden border-t border-foreground/10 content-visibility-auto">
+    <section className="relative py-20 md:py-28 overflow-hidden border-t border-border content-visibility-auto">
       <WaveField
         className="absolute inset-0 z-0 opacity-10"
         waveCount={1}
@@ -669,7 +669,7 @@ function CTASection() {
             <br />
             <span className="text-gradient">Sovereign Ground?</span>
           </h2>
-          <p className="text-base md:text-lg text-foreground/60 max-w-lg mx-auto">
+          <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto">
             Five minutes to your first assessment. No commitment. No generic dashboard.
           </p>
         </motion.div>

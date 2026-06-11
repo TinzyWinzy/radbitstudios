@@ -18,10 +18,10 @@ export function HeroBackground({ className }: HeroBackgroundProps) {
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 100% 60% at 50% 100%, hsl(40 95% 50% / 0.12), transparent 70%),
-            radial-gradient(ellipse 80% 50% at 20% 90%, hsl(145 40% 25% / 0.08), transparent 60%),
-            radial-gradient(ellipse 70% 60% at 80% 85%, hsl(40 80% 40% / 0.06), transparent 55%),
-            linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 50%, hsl(var(--background) / 0.95) 100%)
+            radial-gradient(ellipse 120% 50% at 50% 100%, hsl(18 85% 55% / 0.15), transparent 70%),
+            radial-gradient(ellipse 90% 40% at 30% 90%, hsl(180 35% 35% / 0.06), transparent 60%),
+            radial-gradient(ellipse 80% 50% at 70% 85%, hsl(25 80% 50% / 0.08), transparent 55%),
+            linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 40%, hsl(var(--background) / 0.95) 100%)
           `,
           backgroundSize: '200% 200%',
           backgroundAttachment: 'scroll',
