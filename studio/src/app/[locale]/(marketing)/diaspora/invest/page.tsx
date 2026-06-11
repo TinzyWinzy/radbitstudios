@@ -32,7 +32,7 @@ export default function InvestPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: "Invest in Zimbabwe from the Diaspora — Radbit SME Hub",
+            name: "Invest in Zimbabwe from the Diaspora — Radbit",
             description:
               "Browse PRAZ-verified Zimbabwean SMEs seeking investment. Filter by sector, readiness score, and revenue.",
             url: `${SITE_URL}/diaspora/invest`,

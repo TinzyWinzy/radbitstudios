@@ -24,9 +24,9 @@ export async function generateMetadata({
 
     const post = snap.docs[0].data();
     const title = post.title as string;
-    const description = (post.excerpt as string) || `Read ${title} on Radbit SME Hub.`;
+    const description = (post.excerpt as string) || `Read ${title} on Radbit.`;
     const imageUrl = (post.imageUrl as string) || undefined;
-    const authorName = (post.authorName as string) || "Radbit SME Hub";
+    const authorName = (post.authorName as string) || "Radbit";
     const publishedAt = post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString();
     const url = `${SITE_URL}/blog/${slug}`;
 
@@ -35,7 +35,7 @@ export async function generateMetadata({
       description,
       alternates: { canonical: `/blog/${slug}` },
       openGraph: {
-        title: `${title} | Radbit SME Hub`,
+        title: `${title} | Radbit`,
         description,
         url,
         type: "article",
@@ -45,7 +45,7 @@ export async function generateMetadata({
       },
       twitter: {
         card: "summary_large_image",
-        title: `${title} | Radbit SME Hub`,
+        title: `${title} | Radbit`,
         description,
         images: imageUrl ? [imageUrl] : [],
       },
@@ -82,7 +82,7 @@ export default async function BlogPostLayout({
         description: (post.excerpt as string) || '',
         url: `${SITE_URL}/blog/${params.slug}`,
         image: (post.imageUrl as string) || undefined,
-        authorName: (post.authorName as string) || "Radbit SME Hub",
+        authorName: (post.authorName as string) || "Radbit",
         publishedTime: post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString(),
       });
     }

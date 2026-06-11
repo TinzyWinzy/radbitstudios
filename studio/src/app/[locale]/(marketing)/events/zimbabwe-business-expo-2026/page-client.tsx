@@ -394,7 +394,7 @@ function LiveDemoSection() {
                 <div className="text-center space-y-3">
                   <Monitor className="h-12 w-12 text-amber-400 mx-auto" />
                   <p className="text-amber-300 font-headline font-bold text-lg">Booth #12</p>
-                  <p className="text-amber-400/60 text-xs">Radbit SME Hub</p>
+                  <p className="text-amber-400/60 text-xs">Radbit</p>
                 </div>
               </div>
             </div>
@@ -471,13 +471,6 @@ export default function ZimbabweBusinessExpoPage() {
       <RegistrationSection />
       <LiveDemoSection />
       <OfferSection />
-      <footer className="border-t border-foreground/10 py-8 text-center text-sm text-foreground/40">
-        <div className="container">
-          <p>
-            © {new Date().getFullYear()} Radbit. Official Technology Partner of Zimbabwe Business Expo 2026.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

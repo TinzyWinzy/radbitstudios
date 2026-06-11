@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Shield, Eye, Download, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Radbit SME Hub",
-  description: "How Radbit SME Hub collects, uses, and protects your personal data in compliance with POPIA, GDPR, and the Zimbabwe Cyber Act.",
+  title: "Privacy Policy — Radbit",
+  description: "How Radbit collects, uses, and protects your personal data. Privacy policy for the Radbit enterprise platform.",
   robots: { index: true, follow: true },
 };
 
@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
         <div className="container flex h-16 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Icons.logo className="size-6 shrink-0" />
-            <span className="font-semibold text-foreground">Radbit SME Hub</span>
+            <span className="font-semibold text-foreground">Radbit</span>
           </Link>
         </div>
       </header>
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Introduction</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Radbit SME Hub (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy.
+              Radbit (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) is committed to protecting your privacy.
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information
               when you use our platform, in compliance with the Zimbabwe Cyber and Data Protection Act
               (2021), the South African Protection of Personal Information Act (POPIA), and the

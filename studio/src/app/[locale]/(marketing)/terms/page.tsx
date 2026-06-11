@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Radbit SME Hub',
-  description: 'Terms and conditions for using Radbit SME Hub platform and services.',
+  title: 'Terms of Service — Radbit',
+  description: 'Terms and conditions for using the Radbit enterprise platform and services.',
   alternates: { canonical: '/terms' },
 };
 
@@ -17,7 +17,7 @@ export default function TermsPage() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">1. Acceptance of Terms</h2>
         <p>
-          By accessing or using Radbit SME Hub (&quot;the Service&quot;), you agree to be bound by these
+          By accessing or using Radbit (&quot;the Service&quot;), you agree to be bound by these
           Terms of Service. If you do not agree, do not use the Service.
         </p>
         <p>
@@ -29,7 +29,7 @@ export default function TermsPage() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">2. Description of Service</h2>
         <p>
-          Radbit SME Hub provides AI-powered business tools including a Digital Readiness Assessment,
+          Radbit provides AI-powered business tools including a Digital Readiness Assessment,
           AI content generation, tender matching, community forum, and related services (the &quot;Service&quot;).
           All services are provided &quot;as is&quot; and &quot;as available.&quot;
         </p>
@@ -101,7 +101,7 @@ export default function TermsPage() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">8. Limitation of Liability</h2>
         <p>
-          To the maximum extent permitted by law, Radbit SME Hub shall not be liable for any indirect,
+          To the maximum extent permitted by law, Radbit shall not be liable for any indirect,
           incidental, special, consequential, or punitive damages arising from your use of the Service.
           Our total liability is limited to the amount you have paid us in the 12 months preceding
           the claim.

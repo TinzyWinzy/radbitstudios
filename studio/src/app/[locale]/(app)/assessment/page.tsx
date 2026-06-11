@@ -64,7 +64,7 @@ export default function AssessmentPage() {
         console.error("[Assessment] save failed:", e);
       }
     },
-    pdfFilename: "Radbit_SME_Hub_Assessment_Report.pdf",
+    pdfFilename: "Radbit_Assessment_Report.pdf",
     whatsappDigest: true,
   });
 

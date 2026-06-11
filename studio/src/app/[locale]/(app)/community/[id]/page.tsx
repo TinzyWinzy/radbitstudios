@@ -74,7 +74,7 @@ export default function ThreadDetailPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    document.title = 'Community - Radbit SME Hub';
+    document.title = 'Community - Radbit';
   }, []);
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export default function ThreadDetailPage() {
                 content: data.content,
                 createdAt: data.createdAt,
             });
-            document.title = `${data.title} - Radbit SME Hub`;
+            document.title = `${data.title} - Radbit`;
         } else {
             notFound();
         }

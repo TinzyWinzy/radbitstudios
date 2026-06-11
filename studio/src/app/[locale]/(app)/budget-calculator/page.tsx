@@ -198,7 +198,7 @@ export default function BudgetCalculatorPage() {
   };
 
   const handleShare = () => {
-    const shareText = `*My Budget Summary from Radbit SME Hub:*\n\n- Total Income: $${totalIncome.toFixed(2)}\n- Total Expenses: $${totalExpenses.toFixed(2)}\n- *Net Balance: $${netBalance.toFixed(2)}*`;
+    const shareText = `*My Budget Summary from Radbit:*\n\n- Total Income: $${totalIncome.toFixed(2)}\n- Total Expenses: $${totalExpenses.toFixed(2)}\n- *Net Balance: $${netBalance.toFixed(2)}*`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };

@@ -4,8 +4,8 @@ import { ArrowRight, Zap } from "lucide-react";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 
 export const metadata: Metadata = {
-  title: "Use Cases — What You Can Do with Radbit | SME Tools Zimbabwe",
-  description: "Tender matching, digital assessments, PRAZ compliance, AI business tools — see how Radbit helps Zimbabwean SMEs automate and grow.",
+  title: "Use Cases — What You Can Do with Radbit",
+  description: "Tender matching, digital assessments, PRAZ compliance, AI tools — see how Radbit helps Zimbabwean organisations automate and grow.",
   alternates: { canonical: "/use-cases" },
 };
 

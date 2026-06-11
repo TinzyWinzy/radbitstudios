@@ -5,14 +5,14 @@ import { Rss } from "lucide-react";
 
 /* ── static metadata (server-rendered, indexable by crawlers) ── */
 export const metadata: Metadata = {
-  title: "Blog — Radbit SME Hub",
+  title: "Blog — Radbit",
   description:
-    "Insights on AI for business, tender opportunities, tax and compliance for Zimbabwean SMEs, SADC export, and digital sovereignty.",
+    "Enterprise AI, digital sovereignty, and business intelligence for Zimbabwean organisations. Insights on compliance, tenders, and technology infrastructure.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Blog — Radbit SME Hub",
+    title: "Blog — Radbit",
     description:
-      "Insights on AI for business, tender opportunities, tax and compliance for Zimbabwean SMEs.",
+      "Enterprise AI, digital sovereignty, and business intelligence for Zimbabwean organisations.",
     type: "website",
     url: "/blog",
   },

@@ -24,18 +24,19 @@ const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').rep
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Radbit SME Hub — AI Tools, Assessments & Tender Intelligence for Zimbabwean Enterprises",
-    template: "%s | Radbit SME Hub",
+    default: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
+    template: "%s | Radbit",
   },
   description:
-    "AI-powered business platform for Zimbabwean SMEs. Digital Readiness Assessment, AI toolkit, tender matching, community forum, and WhatsApp notifications. Free to start.",
+    "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
   keywords: [
-    "Zimbabwe SME", "small business Zimbabwe", "digital readiness assessment",
-    "AI business tools Zimbabwe", "tender matching Zimbabwe", "ZIMGS tenders",
-    "SADC export guide", "EcoCash business", "PACRA registration Zimbabwe",
-    "ZIMRA tax guide SMEs", "VAT calculator Zimbabwe", "business plan generator",
-    "SME community Zimbabwe", "AI mentor Zimbabwe", "radbit SME hub",
-    "PRAZ compliance Zimbabwe", "tender starter Zimbabwe", "government tenders Zimbabwe",
+    "Zimbabwe enterprise digital infrastructure", "Zimbabwe AI business tools",
+    "tender intelligence Zimbabwe", "PRAZ compliance Zimbabwe",
+    "digital readiness assessment Zimbabwe", "government tenders Zimbabwe",
+    "African enterprise platform", "Zimbabwe business software",
+    "ZIMRA tax compliance", "AI agents Zimbabwe",
+    "regulatory compliance Zimbabwe", "enterprise technology Zimbabwe",
+    "African digital sovereignty", "business intelligence Zimbabwe",
   ],
   alternates: {
     canonical: '/',
@@ -45,16 +46,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-    description: "AI tools, assessments, community & tender intelligence for Zimbabwean entrepreneurs. Free to start.",
+    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender matching, AI agents, PRAZ compliance.",
     url: SITE_URL,
-    siteName: "Radbit SME Hub",
+    siteName: "Radbit",
     locale: "en_ZW",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-    description: "AI tools, assessments, community & tender intelligence for Zimbabwean entrepreneurs.",
+    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises.",
     site: "@radbitzw",
     creator: "@radbitzw",
   },
@@ -72,7 +73,7 @@ export const metadata: Metadata = {
   verification: {
     google: 'XuoZg3JKm--RR2ak1v3OosORY7Gz0f_xJxxPAViBNfE',
   },
-  applicationName: "Radbit SME Hub",
+  applicationName: "Radbit",
   category: "business",
 };
 
@@ -96,7 +97,7 @@ export default async function RootLayout({
         <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="alternate" type="application/rss+xml" title="Radbit SME Hub Blog RSS Feed" href="/blog/feed.xml" />
+        <link rel="alternate" type="application/rss+xml" title="Radbit Blog RSS Feed" href="/blog/feed.xml" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://firestore.googleapis.com" />
         <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />

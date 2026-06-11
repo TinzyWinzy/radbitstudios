@@ -6,8 +6,8 @@ import { faqPageSchema } from "@/lib/seo";
 import { AdBanner } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
-  title: "FAQ — Radbit SME Hub",
-  description: "Frequently asked questions about Radbit SME Hub — pricing, features, compliance, and using the platform.",
+  title: "FAQ — Radbit",
+  description: "Frequently asked questions about Radbit — pricing, features, compliance, and using the enterprise platform.",
   alternates: { canonical: "/resources/faq" },
 };
 
@@ -51,7 +51,7 @@ export default async function FAQPage() {
 
       <header className="mb-12">
         <h1 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">Frequently Asked Questions</h1>
-        <p className="text-lg text-muted-foreground">Everything you need to know about Radbit SME Hub, your account, and pricing.</p>
+        <p className="text-lg text-muted-foreground">Everything you need to know about Radbit, your account, and pricing.</p>
       </header>
 
       <AdBanner slot="content-banner" className="mb-12" />

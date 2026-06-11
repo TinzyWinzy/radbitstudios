@@ -80,7 +80,7 @@ export function ReferralSection() {
   const handleShare = () => {
     if (!code) return;
     const url = buildReferralUrl("/sign-up", code);
-    const text = `Join me on Radbit SME Hub — the all-in-one platform for Zimbabwean businesses.\n\n${url}`;
+    const text = `Join me on Radbit — the all-in-one platform for Zimbabwean businesses.\n\n${url}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, "_blank");
   };

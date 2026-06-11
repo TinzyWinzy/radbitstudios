@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = 'Radbit SME Hub <hello@radbitstudios.co.zw>';
+const FROM = 'Radbit <hello@radbitstudios.co.zw>';
 
 const ALLOWED_RECIPIENTS = new Set([
   'hello@radbitstudios.co.zw',

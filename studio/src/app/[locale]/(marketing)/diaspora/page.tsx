@@ -32,13 +32,13 @@ export default function DiasporaPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
-            name: "Diaspora Hub — Radbit SME Hub",
+            name: "Diaspora Hub — Radbit",
             description:
               "AI-powered platform for Zimbabwean diaspora entrepreneurs to invest in SMEs, manage businesses remotely, and access tender alerts.",
             url: `${SITE_URL}/diaspora`,
             isPartOf: {
               "@type": "WebSite",
-              name: "Radbit SME Hub",
+              name: "Radbit",
               url: SITE_URL,
             },
           }),

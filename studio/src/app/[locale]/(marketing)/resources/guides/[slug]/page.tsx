@@ -45,11 +45,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     if (snap.empty) return { title: "Guide Not Found" };
     const guide = snap.docs[0].data() as GuideDoc;
     return {
-      title: `${guide.title} — Radbit SME Hub`,
+      title: `${guide.title} — Radbit`,
       description: guide.excerpt,
       alternates: { canonical: `/resources/guides/${guide.slug}` },
       openGraph: {
-        title: `${guide.title} — Radbit SME Hub`,
+        title: `${guide.title} — Radbit`,
         description: guide.excerpt,
         type: "article",
         url: `${F}/resources/guides/${guide.slug}`,
@@ -188,7 +188,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-8 text-center">
           <h3 className="font-headline text-xl font-bold mb-2">Need more help?</h3>
           <p className="text-muted-foreground mb-4">
-            Radbit SME Hub has more tools and resources to help your business grow.
+            Radbit has more tools and resources to help your business grow.
           </p>
           <Link
             href="/sign-up"

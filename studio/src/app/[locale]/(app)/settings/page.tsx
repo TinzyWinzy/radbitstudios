@@ -430,7 +430,7 @@ export default function SettingsPage() {
     }
     
     const handleShareBadge = () => {
-        const shareText = `I've earned the 'Digitally Growing' badge on the Radbit SME Hub! Check out the platform for tools and resources for Zimbabwean SMEs.`;
+        const shareText = `I've earned the 'Digitally Growing' badge on Radbit! Check out the platform for tools and resources for Zimbabwean SMEs.`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
         window.open(whatsappUrl, '_blank');
     };
@@ -964,7 +964,7 @@ export default function SettingsPage() {
               <div className="border-t border-border pt-4">
                 <p className="text-xs text-muted-foreground">
                   For questions about your data rights, contact{' '}
-                  <a href="mailto:privacy@radbitsmehub.co.zw" className="text-primary hover:underline">privacy@radbitsmehub.co.zw</a>.
+                  <a href="mailto:privacy@radbitstudios.co.zw" className="text-primary hover:underline">privacy@radbitstudios.co.zw</a>.
                   For POPIA enquiries, contact the Information Regulator (South Africa).
                   For Zimbabwe Cyber Act enquiries, contact POTRAZ.
                 </p>

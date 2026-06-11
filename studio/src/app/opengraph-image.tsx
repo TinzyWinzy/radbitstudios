@@ -1,11 +1,7 @@
-// /src/app/opengraph-image.tsx
-// Global OG image generator — used as fallback by Next.js for all pages
-// that don't have a page-specific opengraph-image.tsx next to them.
-
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Radbit SME Hub";
+export const alt = "Radbit — Sovereign Digital Infrastructure for African Enterprises";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -57,7 +53,7 @@ export default async function GlobalOgImage() {
             letterSpacing: "-0.02em",
           }}
         >
-          Radbit SME Hub
+          Radbit
         </h1>
         <p
           style={{
@@ -67,13 +63,13 @@ export default async function GlobalOgImage() {
             lineHeight: 1.4,
           }}
         >
-          AI-powered business tools for Zimbabwean enterprises
+          Sovereign digital infrastructure for the African enterprise
         </p>
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 16, fontWeight: 500 }}>
-          Build · Scale · Own Your Future
+          Intelligence · Automation · Compliance
         </span>
         <span style={{ color: "#1A8A7A", fontSize: 18, fontWeight: 700 }}>
           radbitstudios.co.zw

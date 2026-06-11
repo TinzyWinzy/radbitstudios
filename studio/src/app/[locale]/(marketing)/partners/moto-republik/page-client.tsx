@@ -54,7 +54,7 @@ function HeroSection() {
           className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
           Moto Republik <span className="text-muted-foreground/50">×</span>{" "}
-          <span className="text-gradient">Radbit SME Hub</span>
+          <span className="text-gradient">Radbit</span>
           <br />
           <span className="text-2xl sm:text-3xl md:text-4xl text-foreground/80">
             Creative Entrepreneurship Meets AI
@@ -309,13 +309,6 @@ export default function MotoRepublikPage() {
       <CreativeAIAgentsSection />
       <CreativeProcessSection />
       <OfferSection />
-      <footer className="border-t border-foreground/10 py-8 text-center text-sm text-foreground/40">
-        <div className="container">
-          <p>
-            © {new Date().getFullYear()} Radbit. Built in partnership with Moto Republik.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

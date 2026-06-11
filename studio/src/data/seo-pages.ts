@@ -244,7 +244,7 @@ export function industryServiceSchema(page: IndustryPage) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    provider: { '@type': 'Organization', name: 'Radbit SME Hub', url: SITE_URL },
+    provider: { '@type': 'Organization', name: 'Radbit', url: SITE_URL },
     name: page.h1,
     description: page.metaDescription,
     url: getPageUrl('industry', page.slug),

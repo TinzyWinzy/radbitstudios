@@ -36,7 +36,7 @@ export default function StartBusinessPage() {
             description:
               "A practical guide for Zimbabwean diaspora entrepreneurs: remote registration, compliance, tax, and AI-powered management tools.",
             url: `${SITE_URL}/diaspora/start-business`,
-            author: { "@type": "Organization", name: "Radbit SME Hub" },
+            author: { "@type": "Organization", name: "Radbit" },
           }),
         }}
       />

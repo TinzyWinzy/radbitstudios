@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Page Not Found — Radbit SME Hub",
+  title: "Page Not Found — Radbit",
   description:
-    "The page you are looking for does not exist or has been moved. Start a free digital readiness assessment or explore our resources.",
+    "The page you are looking for does not exist or has been moved. Explore our resources or start a digital readiness assessment.",
   robots: { index: false, follow: true },
 };
 

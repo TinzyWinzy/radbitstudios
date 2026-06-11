@@ -52,7 +52,7 @@ export class InvoiceService {
 
     return `
       <div style="font-family: Arial; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #33D6C2;">Radbit SME Hub</h2>
+        <h2 style="color: #33D6C2;">Radbit</h2>
         <h3>Tax Invoice</h3>
         <hr/>
         <p><strong>Invoice #:</strong> ${invoice.invoiceNumber}</p>

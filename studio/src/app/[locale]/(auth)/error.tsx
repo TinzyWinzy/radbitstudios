@@ -17,7 +17,7 @@ export default function AuthError({
       <div className="w-full max-w-md flex flex-col items-center gap-4 text-center">
         <Link href="/" className="flex items-center gap-2">
           <Icons.logo className="size-8 shrink-0" />
-          <span className="text-2xl font-semibold">Radbit SME Hub</span>
+          <span className="text-2xl font-semibold">Radbit</span>
         </Link>
         <h1 className="text-xl font-bold">Something went wrong</h1>
         <p className="text-muted-foreground">Please try again or go back.</p>

@@ -8,12 +8,12 @@ import { adminDb } from "@/lib/firebase/firebase-admin";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Free Business Resources for Zimbabwean SMEs — Guides, Tools & FAQs",
-  description: "Free guides on registering a business, ZIMRA tax, SADC exports, and more. Plus VAT calculator, business name generator, and AI tools for Zimbabwean entrepreneurs.",
+  title: "Business Resources — Guides, Tools & FAQs",
+  description: "Guides on business registration, ZIMRA tax, SADC exports, and more. Plus VAT calculator, business name generator, and AI tools for Zimbabwean organisations.",
   alternates: { canonical: "/resources" },
   openGraph: {
-    title: "Free Business Resources for Zimbabwean SMEs",
-    description: "Free guides, tools, and answers designed for the realities of running a business in Zimbabwe.",
+    title: "Business Resources for Zimbabwean Organisations",
+    description: "Guides, tools, and answers designed for the realities of running a business in Zimbabwe.",
     url: `${process.env.FRONTEND_URL || 'https://radbitstudios.co.zw'}/resources`,
   },
 };
@@ -158,7 +158,7 @@ export default async function ResourcesPage() {
               <h2 className="font-headline text-xl font-bold mb-2">Frequently Asked Questions</h2>
               <p className="text-muted-foreground mb-4">
                 Got questions? Our FAQ covers the most common questions about registering, taxes, payments,
-                and using Radbit SME Hub.
+                and using Radbit.
               </p>
               <Link
                 href="/resources/faq"

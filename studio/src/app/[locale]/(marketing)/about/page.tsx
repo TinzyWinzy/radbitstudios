@@ -127,7 +127,7 @@ export default function AboutPage() {
       <section className="space-y-6 pt-8 border-t border-foreground/10">
         <p className="text-foreground/40 text-sm">
           Have questions?{' '}
-          <a href="mailto:hello@radbitsmehub.co.zw" className="text-primary hover:underline">hello@radbitsmehub.co.zw</a>
+          <a href="mailto:hello@radbitstudios.co.zw" className="text-primary hover:underline">hello@radbitstudios.co.zw</a>
           {' '}&middot;{' '}
           <Link href="/contact" className="text-primary hover:underline">Contact page</Link>
         </p>

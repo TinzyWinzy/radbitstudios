@@ -142,7 +142,7 @@ export async function handleIncomingMessage(
 
   if (!session.userId) {
     await sendWhatsAppMessage(from,
-      'Welcome to Radbit SME Hub! 🇿🇼\n\n' +
+      'Welcome to Radbit! 🇿🇼\n\n' +
       'To get started, link your account:\n' +
       '  Link account: your@email.com\n\n' +
       'If you don\'t have an account yet, sign up at:\n' +

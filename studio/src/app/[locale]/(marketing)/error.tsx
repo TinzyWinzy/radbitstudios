@@ -22,7 +22,7 @@ export default function MarketingError({
         <div className="container flex h-14 items-center">
           <Link href="/" className="flex items-center gap-2 mr-6">
             <Icons.logo className="size-6 shrink-0" />
-            <span className="font-semibold text-foreground">Radbit SME Hub</span>
+            <span className="font-semibold text-foreground">Radbit</span>
           </Link>
         </div>
       </header>

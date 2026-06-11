@@ -7,11 +7,11 @@ import {
 import { subscriptionPlans } from "@/lib/subscriptions";
 
 export const metadata: Metadata = {
-  title: "Pricing — Radbit Inc",
-  description: "Technology solutions for every stage of your business. Web packages from $150, AI platform from free, ERP systems from $49/mo, and professional services from $500. Built for African SMEs.",
+  title: "Pricing — Radbit",
+  description: "Technology solutions for every stage of your business. Web packages from $150, AI platform from free, ERP systems from $49/mo, and professional services from $500. Built for African enterprises.",
   alternates: { canonical: "/pricing" },
   openGraph: {
-    title: "Pricing — Radbit Inc",
+    title: "Pricing — Radbit",
     description: "Web design, AI tools, ERP systems, and consulting — all priced for African businesses.",
     type: "website",
   },

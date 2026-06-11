@@ -155,7 +155,7 @@ export default function AiToolkitPage() {
 
   const handleShare = () => {
     if (!generatedContent) return;
-    const shareText = `*AI Toolkit Result from Radbit SME Hub:*\n\n${generatedContent}`;
+    const shareText = `*AI Toolkit Result from Radbit:*\n\n${generatedContent}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
   };

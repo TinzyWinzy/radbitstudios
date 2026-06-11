@@ -130,7 +130,7 @@ export default function ResourcesPage() {
               <h2 className="font-headline text-lg font-bold mb-2">Frequently Asked Questions</h2>
               <p className="text-sm text-muted-foreground mb-4">
                 Got questions? Our FAQ covers the most common questions about registering, taxes, payments,
-                and using Radbit SME Hub.
+                and using Radbit.
               </p>
               <Link
                 href="/resources/faq"

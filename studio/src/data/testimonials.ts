@@ -80,7 +80,7 @@ export function aggregateRatingSchema() {
     reviewCount: testimonials.length.toString(),
     itemReviewed: {
       '@type': 'Organization',
-      name: 'Radbit SME Hub',
+      name: 'Radbit',
     },
   };
 }
@@ -101,7 +101,7 @@ export function reviewSchema(testimonial: Testimonial) {
     reviewBody: testimonial.text,
     itemReviewed: {
       '@type': 'Organization',
-      name: 'Radbit SME Hub',
+      name: 'Radbit',
     },
   };
 }

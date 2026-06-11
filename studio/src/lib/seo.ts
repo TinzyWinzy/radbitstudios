@@ -17,7 +17,7 @@ export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Radbit SME Hub',
+    name: 'Radbit',
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-192x192.png`,
     description: 'AI-powered business platform for Zimbabwean entrepreneurs — readiness assessment, AI tools, tender matching, and community.',
@@ -51,7 +51,7 @@ export function websiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Radbit SME Hub',
+    name: 'Radbit',
     url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',
@@ -102,7 +102,7 @@ export function serviceSchema(overrides: {
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    provider: { '@type': 'Organization', name: 'Radbit SME Hub', url: SITE_URL },
+    provider: { '@type': 'Organization', name: 'Radbit', url: SITE_URL },
     name: overrides.name,
     description: overrides.description,
     url: overrides.url,
@@ -153,7 +153,7 @@ export function articleSchema(params: {
     author: { '@type': 'Person', name: params.authorName },
     publisher: {
       '@type': 'Organization',
-      name: 'Radbit SME Hub',
+      name: 'Radbit',
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/icons/icon-192x192.png` },
     },
     datePublished: params.publishedTime,
@@ -166,12 +166,12 @@ export function articleSchema(params: {
 /* ────────────────────────── Static FAQ dataset ──────────────────────── */
 export const FAQ_DATA = [
   {
-    question: 'What is Radbit SME Hub?',
-    answer: 'Radbit SME Hub is a digital platform that helps Zimbabwean small and medium enterprises assess their digital readiness, apply for tenders, use AI-powered business tools, and connect with other entrepreneurs.',
+    question: 'What is Radbit?',
+    answer: 'Radbit is a digital platform that helps Zimbabwean small and medium enterprises assess their digital readiness, apply for tenders, use AI-powered business tools, and connect with other entrepreneurs.',
   },
   {
-    question: 'How much does Radbit SME Hub cost?',
-    answer: 'Radbit SME Hub has a Free plan with basic features, a Growth plan at $5/month, and a Pro plan at $15/month. Upgrade or cancel anytime.',
+    question: 'How much does Radbit cost?',
+    answer: 'Radbit has a Free plan with basic features, a Growth plan at $5/month, and a Pro plan at $15/month. Upgrade or cancel anytime.',
   },
   {
     question: 'Do I need a credit card to sign up?',
@@ -182,7 +182,7 @@ export const FAQ_DATA = [
     answer: 'Zimbabwe: EcoCash and PayNow card payments. South Africa: PayFast. Global: Stripe card payments.',
   },
   {
-    question: 'Is Radbit SME Hub available in my language?',
+    question: 'Is Radbit available in my language?',
     answer: 'Currently available in English. Shona (chiShona), Ndebele (isiNdebele), and Portuguese support are in development.',
   },
   {
