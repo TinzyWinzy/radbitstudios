@@ -42,7 +42,7 @@ export default function TermsPage() {
           <li>You are responsible for maintaining the confidentiality of your account credentials</li>
           <li>You must provide accurate and complete information during registration</li>
           <li>You are responsible for all activity under your account</li>
-          <li>Notify us immediately of any unauthorized use: support@radbitstudios.co.zw</li>
+          <li>Notify us immediately of any unauthorized use: hanzohanic@gmail.com</li>
         </ul>
       </section>
 
@@ -143,8 +143,8 @@ export default function TermsPage() {
           For questions about these terms, contact:
         </p>
         <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
-          <li>Email: support@radbitstudios.co.zw</li>
-          <li>Legal: legal@radbitstudios.co.zw</li>
+          <li>Email: hanzohanic@gmail.com</li>
+          <li>Legal: hanzohanic@gmail.com</li>
         </ul>
       </section>
     </div>

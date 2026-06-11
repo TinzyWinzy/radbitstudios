@@ -358,7 +358,7 @@ export default function SettingsPage() {
             title: 'Contact Sales',
             description: 'Enterprise pricing is custom. Please contact our team to get started.',
           });
-          window.open('mailto:sales@radbit.co.zw?subject=Enterprise Plan Inquiry', '_blank');
+          window.open('mailto:hanzohanic@gmail.com?subject=Enterprise Plan Inquiry', '_blank');
           return;
         }
 
@@ -678,7 +678,7 @@ export default function SettingsPage() {
                   </div>
                   <Button
                     className="w-full"
-                    onClick={() => window.open('mailto:support@radbit.co.zw?subject=Priority Support Request', '_blank')}
+                    onClick={() => window.open('mailto:hanzohanic@gmail.com?subject=Priority Support Request', '_blank')}
                   >
                     <Headphones className="mr-2 h-4 w-4" />
                     Submit Support Request
@@ -706,7 +706,7 @@ export default function SettingsPage() {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => window.open('mailto:support@radbit.co.zw', '_blank')}
+                    onClick={() => window.open('mailto:hanzohanic@gmail.com', '_blank')}
                   >
                     <Headphones className="mr-2 h-4 w-4" />
                     Submit General Inquiry
@@ -964,7 +964,7 @@ export default function SettingsPage() {
               <div className="border-t border-border pt-4">
                 <p className="text-xs text-muted-foreground">
                   For questions about your data rights, contact{' '}
-                  <a href="mailto:privacy@radbitstudios.co.zw" className="text-primary hover:underline">privacy@radbitstudios.co.zw</a>.
+                  <a href="mailto:hanzohanic@gmail.com" className="text-primary hover:underline">hanzohanic@gmail.com</a>.
                   For POPIA enquiries, contact the Information Regulator (South Africa).
                   For Zimbabwe Cyber Act enquiries, contact POTRAZ.
                 </p>

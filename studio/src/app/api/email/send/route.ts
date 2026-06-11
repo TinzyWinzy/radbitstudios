@@ -7,11 +7,11 @@ import { z } from 'zod';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = 'Radbit <hello@radbitstudios.co.zw>';
+const FROM = 'Radbit <brandontinoz@gmail.com>';
 
 const ALLOWED_RECIPIENTS = new Set([
-  'hello@radbitstudios.co.zw',
-  'support@radbitstudios.co.zw',
+  'brandontinoz@gmail.com',
+  'hanzohanic@gmail.com',
 ]);
 
 const SendEmailSchema = z.object({

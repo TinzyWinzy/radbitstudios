@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Globe, FileCheck, Target } from "lucide-react";
+import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Globe, FileCheck, Target, Lock, Server, Database, BadgeCheck, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
@@ -379,7 +379,7 @@ function FeaturesSection() {
   );
 }
 
-function MetricsSection() {
+function PlatformScopeSection() {
   return (
     <section className="relative py-16 md:py-20 content-visibility-auto">
       <div className="container relative z-10">
@@ -390,9 +390,9 @@ function MetricsSection() {
           className="grid md:grid-cols-3 gap-0 bg-card border border-border rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-border"
         >
           {[
-            { value: 5000, suffix: "+", label: "SMEs Assessed", sub: "Across all 10 provinces of Zimbabwe", icon: <Shield className="h-4 w-4 text-primary" /> },
-            { value: 300, suffix: "+", label: "Monthly Tenders", sub: "From 12 government depts & 8 state enterprises", icon: <Zap className="h-4 w-4 text-secondary" /> },
-            { value: 85, suffix: "%", label: "Report Growth in 3 Months", sub: "Average improvement after first assessment", icon: <TrendingUp className="h-4 w-4 text-accent" /> },
+            { value: "12+", label: "Government Data Sources", sub: "Tender intelligence across PRAZ, ministries, and state enterprises", icon: <Zap className="h-4 w-4 text-secondary" /> },
+            { value: "4", label: "Regulatory Frameworks", sub: "ZIMRA, PRAZ, NSSA, RBZ — unified in one command centre", icon: <Shield className="h-4 w-4 text-primary" /> },
+            { value: "3", label: "Platform Layers", sub: "Assessment, AI agents, and compliance — end-to-end sovereign infrastructure", icon: <BarChart className="h-4 w-4 text-accent" /> },
           ].map((metric, i) => (
             <motion.div
               key={metric.label}
@@ -404,15 +404,81 @@ function MetricsSection() {
             >
               <div className="flex items-center justify-center gap-2 mb-3">
                 {metric.icon}
-                <span className="font-headline text-xs tracking-[0.2em] text-muted-foreground uppercase">Impact</span>
+                <span className="font-headline text-xs tracking-[0.2em] text-muted-foreground uppercase">Scope</span>
               </div>
               <div className="text-foreground">
                 <span className="font-headline text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter">
-                  {metric.value}{metric.suffix}
+                  {metric.value}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground font-medium mt-2">{metric.label}</p>
               <p className="text-xs text-foreground/40 mt-1 max-w-[180px] sm:max-w-[200px] mx-auto leading-relaxed">{metric.sub}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function TrustSection() {
+  const trustItems = [
+    {
+      icon: <Lock className="h-4 w-4" />,
+      title: "End-to-End Encrypted",
+      body: "All data encrypted at rest and in transit using AES-256 and TLS 1.3. Your operational data is yours alone.",
+    },
+    {
+      icon: <Server className="h-4 w-4" />,
+      title: "Stored in Southern Africa",
+      body: "Data centres in Johannesburg and Harare. Zero data leaves the region. Compliant with Zimbabwe Cyber and Data Protection Act.",
+    },
+    {
+      icon: <Database className="h-4 w-4" />,
+      title: "Never Shared or Sold",
+      body: "We do not share, license, or sell your business data. Period. Privacy is our core architecture, not a checkbox.",
+    },
+    {
+      icon: <BadgeCheck className="h-4 w-4" />,
+      title: "Regulatory Compliance",
+      body: "Designed to meet ZIMRA, PRAZ, NSSA, and RBZ requirements. Your compliance data is audit-ready at all times.",
+    },
+  ];
+
+  return (
+    <section className="relative py-16 md:py-20 content-visibility-auto border-t border-border/50">
+      <div className="container relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          className="text-center space-y-3 mb-12"
+        >
+          <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">
+            Built for <span className="text-gradient">Trust &amp; Sovereignty</span>
+          </h2>
+          <p className="text-muted-foreground max-w-xl mx-auto text-sm">
+            Every layer of Radbit is designed to protect your business data and respect Zimbabwean law.
+          </p>
+        </motion.div>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
+          className="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+        >
+          {trustItems.map((item) => (
+            <motion.div
+              key={item.title}
+              variants={itemVariants}
+              className="text-center space-y-3"
+            >
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto text-primary">
+                {item.icon}
+              </div>
+              <h3 className="font-headline text-sm font-bold text-foreground">{item.title}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{item.body}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -428,6 +494,8 @@ const caseStudies = [
     tagline: "Zimbabwean software studio building for local needs",
     result: "Scaled from solo founder to 8-person team, reduced compliance overhead by 40% using Radbit's regulatory command centre.",
     industry: "Technology",
+    established: "2020",
+    badge: "Portfolio",
   },
   {
     company: "Unikvilla",
@@ -435,6 +503,8 @@ const caseStudies = [
     tagline: "Boutique lodging and accommodation in Zimbabwe",
     result: "Doubled direct bookings and automated 90% of guest communications through Radbit's AI agent infrastructure.",
     industry: "Hospitality & Tourism",
+    established: "2019",
+    badge: "Client",
   },
   {
     company: "Nexus Agronomics",
@@ -442,6 +512,8 @@ const caseStudies = [
     tagline: "Data-driven farming solutions for smallholder cooperatives",
     result: "Secured $50K in matched grant funding and won three government supply contracts via Radbit's tender intelligence.",
     industry: "Agri-tech",
+    established: "2022",
+    badge: "Parent Company",
   },
 ];
 
@@ -476,6 +548,13 @@ function CaseStudiesSection() {
                 <span className="text-[10px] font-headline font-semibold tracking-wider uppercase text-muted-foreground/40">
                   {cs.industry}
                 </span>
+                <span className="mx-1.5 text-[10px] text-muted-foreground/30">&middot;</span>
+                <span className="text-[10px] font-headline tracking-wider uppercase text-muted-foreground/30">
+                  Est. {cs.established}
+                </span>
+                <span className="text-[9px] font-headline tracking-wider uppercase px-1.5 py-0.5 rounded-full border border-primary/20 text-primary/60">
+                  {cs.badge}
+                </span>
                 <span className="h-px flex-1 bg-foreground/10" />
               </div>
               <h3 className="font-headline font-bold text-lg text-foreground group-hover:text-primary transition-colors mb-1">
@@ -483,7 +562,12 @@ function CaseStudiesSection() {
                 <ArrowRight className="inline-block ml-1.5 h-3.5 w-3.5 opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-200" />
               </h3>
               <p className="text-sm text-muted-foreground mb-3">{cs.tagline}</p>
-              <p className="text-sm text-primary/90 font-medium">&ldquo;{cs.result}&rdquo;</p>
+              <p className="text-sm text-primary/90 font-medium leading-relaxed mb-3">&ldquo;{cs.result}&rdquo;</p>
+              <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/40 group-hover:text-muted-foreground/60 transition-colors">
+                <Globe className="h-3 w-3" />
+                <span className="font-headline tracking-wider uppercase">View Website</span>
+                <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
             </motion.a>
           ))}
         </div>
@@ -711,9 +795,10 @@ export default function LandingPage() {
         <ProblemSolutionSection />
         <HowItWorksSection />
         <FeaturesSection />
-        <MetricsSection />
+        <PlatformScopeSection />
         <CaseStudiesSection />
         <CuratedBriefsSection />
+        <TrustSection />
         <section className="container mx-auto py-8 max-w-4xl relative z-10">
           <AdUnit slot="landing-content" format="rectangle" className="min-h-[90px]" />
         </section>

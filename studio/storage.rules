@@ -7,7 +7,12 @@ service firebase.storage {
     }
 
     // Media library & blog images: authenticated admins can upload
-    match /{prefix=blog|media}/{fileName} {
+    match /media/{fileName} {
+      allow write: if request.auth != null
+        && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    match /blog/{fileName} {
       allow write: if request.auth != null
         && request.auth.token.role in ['admin', 'super_admin'];
     }

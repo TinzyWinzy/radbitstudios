@@ -31,6 +31,9 @@ import {
   TrendingUp,
   Database,
   Code2,
+  Lock,
+  CreditCard,
+  Phone,
 } from "lucide-react";
 import {
   Form,
@@ -597,12 +600,12 @@ export default function SolutionsPage() {
             </motion.div>
 
             <motion.h1
-              className="font-headline text-4xl md:text-6xl font-bold tracking-tight mb-6"
+              className="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-6"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              Digital Infrastructure for the African Enterprise.
+              Digital Infrastructure for the <span className="text-gradient">African Enterprise</span>.
             </motion.h1>
 
             <motion.p
@@ -1892,14 +1895,11 @@ export default function SolutionsPage() {
       {/* ─── Trust Signals ───────────────────────────────────────────────── */}
       <section className="border-t border-border py-8">
         <div className="container text-center">
-          <p className="text-sm text-muted-foreground">
-            Trusted by SMEs across Zimbabwe, South Africa, Botswana, and Zambia.
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 mt-4 text-xs text-muted-foreground">
-            <span>🔒 Secure Payments</span>
-            <span>💳 EcoCash · PayNow · Stripe · PayFast</span>
-            <span>🇿🇼 ZiG · USD · ZAR · BWP · ZMW</span>
-            <span>📞 24/7 Support</span>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-primary/60" /> Secure Payments</span>
+            <span className="inline-flex items-center gap-1.5"><CreditCard className="h-3.5 w-3.5 text-primary/60" /> EcoCash · PayNow · Stripe</span>
+            <span className="inline-flex items-center gap-1.5"><Globe className="h-3.5 w-3.5 text-primary/60" /> ZiG · USD · ZAR · BWP</span>
+            <span className="inline-flex items-center gap-1.5"><Phone className="h-3.5 w-3.5 text-primary/60" /> Support via WhatsApp &amp; Email</span>
           </div>
         </div>
       </section>
@@ -1922,7 +1922,7 @@ export default function SolutionsPage() {
               <Award className="w-12 h-12 text-primary mx-auto" />
             </motion.div>
             <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight mb-4">
-              Ready to Take the First Step?
+              Ready to Take the <span className="text-gradient">First Step</span>?
             </h2>
             <p className="text-muted-foreground mb-8">
               Whether you need a simple website, a full ERP system, or AI-powered
@@ -1941,7 +1941,7 @@ export default function SolutionsPage() {
                 </motion.a>
               </MagneticElement>
               <motion.a
-                href="https://wa.me/263771234567"
+                href="https://wa.me/263781334474"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-8 py-4 border border-border rounded-xl hover:bg-muted/50 transition-colors"

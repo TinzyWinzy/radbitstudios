@@ -34,7 +34,7 @@ export function organizationSchema() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer support',
-      email: 'hello@radbitstudios.co.zw',
+      email: 'hanzohanic@gmail.com',
     },
     sameAs: [
       'https://www.facebook.com/people/Radbit-Studios/61573716592102/',

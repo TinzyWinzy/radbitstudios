@@ -34,7 +34,7 @@ export default function ContactPage() {
       setEmail('');
       setMessage('');
     } catch {
-      toast({ title: 'Failed to send', description: 'Please email us directly at hello@radbitstudios.co.zw', variant: 'destructive' });
+      toast({ title: 'Failed to send', description: 'Please email us directly at hanzohanic@gmail.com', variant: 'destructive' });
     } finally {
       setSending(false);
     }
@@ -53,8 +53,8 @@ export default function ContactPage() {
             <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
             <div>
               <h3 className="font-semibold">Email</h3>
-              <p className="text-sm text-muted-foreground">hello@radbitstudios.co.zw</p>
-              <p className="text-sm text-muted-foreground">support@radbitstudios.co.zw</p>
+              <p className="text-sm text-muted-foreground">hanzohanic@gmail.com</p>
+              <p className="text-sm text-muted-foreground">hanzohanic@gmail.com</p>
             </div>
           </div>
         </div>

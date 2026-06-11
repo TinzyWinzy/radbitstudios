@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   CheckCircle2, ArrowRight, Zap, Globe, Server,
-  Shield, Brain, Palette, Code, Mail, MessageCircle,
+  Shield, Brain, Palette, Code, Mail, MessageCircle, Lock, CreditCard, Phone,
 } from "lucide-react";
 import { subscriptionPlans } from "@/lib/subscriptions";
 
@@ -242,8 +242,8 @@ export default function PricingPage() {
     <div className="container max-w-6xl mx-auto py-8 md:py-12 px-4 md:px-6">
         {/* Hero */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Pricing for Digital Infrastructure.
+          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+            Pricing for <span className="text-gradient">Digital Infrastructure</span>.
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
             From a free AI platform to enterprise ERP systems and professional consultancy — Radbit delivers technology infrastructure built for Zimbabwean organisations.
@@ -302,7 +302,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
                 <Link
-                  href={`mailto:consulting@radbitstudios.co.zw?subject=${encodeURIComponent(pkg.name + " Inquiry")}`}
+                  href={`mailto:hanzohanic@gmail.com?subject=${encodeURIComponent(pkg.name + " Inquiry")}`}
                   className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     pkg.popular
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -370,7 +370,7 @@ export default function PricingPage() {
                   href={plan.price === 0 && plan.name === "Free"
                     ? "/sign-up"
                     : plan.name === "Enterprise"
-                    ? "mailto:sales@radbitstudios.co.zw?subject=Enterprise%20Plan%20Inquiry"
+                    ? "mailto:hanzohanic@gmail.com?subject=Enterprise%20Plan%20Inquiry"
                     : `/sign-up?plan=${plan.name.toLowerCase().replace(/\s+/g, "_")}`}
                   className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     plan.name === "Growth" || plan.name === "Pro"
@@ -448,10 +448,10 @@ export default function PricingPage() {
                 </ul>
                 <Link
                   href={tier.price === null
-                    ? "mailto:consulting@radbitstudios.co.zw?subject=Custom%20ERP%20Inquiry"
+                    ? "mailto:hanzohanic@gmail.com?subject=Custom%20ERP%20Inquiry"
                     : tier.name === "ERP Enterprise"
-                    ? "mailto:sales@radbitstudios.co.zw?subject=ERP%20Enterprise%20Inquiry"
-                    : "mailto:consulting@radbitstudios.co.zw?subject=" + encodeURIComponent(tier.name + " Inquiry")}
+                    ? "mailto:hanzohanic@gmail.com?subject=ERP%20Enterprise%20Inquiry"
+                    : "mailto:hanzohanic@gmail.com?subject=" + encodeURIComponent(tier.name + " Inquiry")}
                   className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     tier.popular
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -507,7 +507,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
                 <Link
-                  href={`mailto:consulting@radbitstudios.co.zw?subject=${encodeURIComponent(svc.name + " Inquiry")}`}
+                  href={`mailto:hanzohanic@gmail.com?subject=${encodeURIComponent(svc.name + " Inquiry")}`}
                   className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-border/50 hover:bg-muted/50 transition-colors"
                 >
                   {svc.cta}
@@ -529,14 +529,14 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="mailto:consulting@radbitstudios.co.zw?subject=Free%20Consultation"
+              href="mailto:hanzohanic@gmail.com?subject=Free%20Consultation"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <Mail className="h-4 w-4" />
               Book Free Consultation
             </Link>
             <Link
-              href="https://wa.me/263771234567"
+              href="https://wa.me/263781334474"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium border border-border/50 hover:bg-muted/50 transition-colors"
@@ -596,14 +596,11 @@ export default function PricingPage() {
 
         {/* ─── Trust Signals ────────────────────────────────────────────── */}
         <section className="text-center pb-8">
-          <p className="text-sm text-muted-foreground">
-            Trusted by SMEs across Zimbabwe, South Africa, Botswana, and Zambia.
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 mt-4 text-xs text-muted-foreground">
-            <span>🔒 Secure Payments</span>
-            <span>💳 EcoCash · PayNow · Stripe · PayFast</span>
-            <span>🇿🇼 ZiG · USD · ZAR · BWP · ZMW</span>
-            <span>📞 24/7 Support</span>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-4 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Lock className="h-3.5 w-3.5 text-primary/60" /> Secure Payments</span>
+            <span className="inline-flex items-center gap-1.5"><CreditCard className="h-3.5 w-3.5 text-primary/60" /> EcoCash · PayNow · Stripe</span>
+            <span className="inline-flex items-center gap-1.5"><Globe className="h-3.5 w-3.5 text-primary/60" /> ZiG · USD · ZAR · BWP</span>
+            <span className="inline-flex items-center gap-1.5"><Phone className="h-3.5 w-3.5 text-primary/60" /> Support via WhatsApp &amp; Email</span>
           </div>
         </section>
     </div>

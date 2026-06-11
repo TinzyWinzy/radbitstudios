@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
+import { MapPin, Mail, Linkedin, Twitter, Facebook, Phone } from "lucide-react";
 
 export function MarketingFooter() {
   return (
@@ -17,7 +18,33 @@ export function MarketingFooter() {
             <p className="text-sm text-foreground/50 leading-relaxed">
               Digital sovereignty for Zimbabwean enterprises.
             </p>
-            <div className="flex gap-3">
+            <div className="space-y-2 text-xs text-foreground/40">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-3.5 w-3.5 text-primary/60" />
+                <span>9 Salcombe, Chadcomber, Harare</span>
+              </div>
+              <a href="tel:+263781334474" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Phone className="h-3.5 w-3.5 text-primary/60" />
+                +263 78 133 4474
+              </a>
+              <a href="mailto:hanzohanic@gmail.com" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Mail className="h-3.5 w-3.5 text-primary/60" />
+                hanzohanic@gmail.com
+              </a>
+              <a href="https://www.linkedin.com/company/radbitstudios" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Linkedin className="h-3.5 w-3.5 text-primary/60" />
+                /company/radbitstudios
+              </a>
+              <a href="https://x.com/RadbitStudios" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Twitter className="h-3.5 w-3.5 text-primary/60" />
+                @RadbitStudios
+              </a>
+              <a href="https://facebook.com/RadbitStudioGlobal" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                <Facebook className="h-3.5 w-3.5 text-primary/60" />
+                Radbit Studio Global
+              </a>
+            </div>
+            <div className="flex gap-3 pt-1">
               <GyeNyame className="h-5 w-5 text-primary/40" />
               <Dwennimmen className="h-5 w-5 text-primary/40" />
               <Sankofa className="h-5 w-5 text-primary/40" />

@@ -204,8 +204,8 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
               <Mail className="h-4 w-4" />
-              <a href="mailto:privacy@radbitstudios.co.zw" className="underline hover:text-foreground">
-                privacy@radbitstudios.co.zw
+              <a href="mailto:hanzohanic@gmail.com" className="underline hover:text-foreground">
+                hanzohanic@gmail.com
               </a>
             </div>
           </section>

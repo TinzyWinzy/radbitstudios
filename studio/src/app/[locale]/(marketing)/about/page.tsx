@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { Shield, Globe, Lock, Zap } from 'lucide-react';
+import { Shield, Globe, Lock, Zap, MapPin, Linkedin, Mail, Github, Twitter, Facebook, Phone } from 'lucide-react';
 import { AdBanner } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
@@ -125,12 +124,75 @@ export default function AboutPage() {
       </section>
 
       <section className="space-y-6 pt-8 border-t border-foreground/10">
-        <p className="text-foreground/40 text-sm">
-          Have questions?{' '}
-          <a href="mailto:hello@radbitstudios.co.zw" className="text-primary hover:underline">hello@radbitstudios.co.zw</a>
-          {' '}&middot;{' '}
-          <Link href="/contact" className="text-primary hover:underline">Contact page</Link>
-        </p>
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Founded By</h2>
+        <div className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-6 md:p-8 flex flex-col sm:flex-row gap-6 items-start">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 text-2xl font-bold text-white">
+            TT
+          </div>
+          <div className="space-y-3">
+            <div>
+              <h3 className="font-headline font-bold text-foreground text-lg">Tinotenda Tagarira</h3>
+              <p className="text-sm text-foreground/50">Founder &amp; Chief Executive Officer</p>
+            </div>
+            <p className="text-sm text-foreground/60 leading-relaxed">
+              Tinotenda is a Zimbabwean software engineer and systems architect with deep experience building
+              sovereign digital infrastructure for African markets. He founded Radbit to close the gap between
+              what enterprise software promises and what Zimbabwean businesses actually need — platforms that
+              account for multi-currency volatility, load-shedding resilience, mobile-money-first payments, and
+              the full surface area of local regulation.
+            </p>
+            <div className="flex gap-4 pt-1">
+              <a
+                href="https://www.linkedin.com/in/tinotenda-tagarira-2aa7ab220/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-primary transition-colors"
+              >
+                <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+              </a>
+              <a
+                href="https://github.com/tinzywinzy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-primary transition-colors"
+              >
+                <Github className="h-3.5 w-3.5" /> GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-6 pt-8 border-t border-foreground/10">
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Contact &amp; Presence</h2>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="flex items-start gap-3 text-sm text-foreground/60">
+            <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+            <span>9 Salcombe, Chadcomber<br />Harare, Zimbabwe</span>
+          </div>
+          <a href="tel:+263781334474" className="flex items-start gap-3 text-sm text-foreground/60 hover:text-primary transition-colors">
+            <Phone className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+            <span>+263 78 133 4474</span>
+          </a>
+          <a href="mailto:hanzohanic@gmail.com" className="flex items-start gap-3 text-sm text-foreground/60 hover:text-primary transition-colors">
+            <Mail className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+            <span>hanzohanic@gmail.com</span>
+          </a>
+        </div>
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/60">
+          <a href="https://x.com/RadbitStudios" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+            <Twitter className="h-4 w-4 text-primary shrink-0" />
+            @RadbitStudios
+          </a>
+          <a href="https://facebook.com/RadbitStudioGlobal" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+            <Facebook className="h-4 w-4 text-primary shrink-0" />
+            Radbit Studio Global
+          </a>
+          <a href="https://www.linkedin.com/company/radbitstudios" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+            <Linkedin className="h-4 w-4 text-primary shrink-0" />
+            linkedin.com/company/radbitstudios
+          </a>
+        </div>
       </section>
     </div>
   );

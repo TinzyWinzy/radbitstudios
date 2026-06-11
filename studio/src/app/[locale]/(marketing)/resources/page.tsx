@@ -69,8 +69,8 @@ export default async function ResourcesPage() {
           <BookOpen className="h-3.5 w-3.5" />
           Resources
         </span>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4">
-          Knowledge for Zimbabwean SMEs
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
+          Knowledge for <span className="text-gradient">Zimbabwean Enterprises</span>
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed">
           Free guides, tools, and answers designed for the realities of running a business in Zimbabwe.

@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-const FROM = 'Radbit <hello@radbitstudios.co.zw>';
+const FROM = 'Radbit <brandontinoz@gmail.com>';
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://radbitstudios.co.zw';
 const BRAND = '#1A8A7A';
 
