@@ -68,6 +68,8 @@ import {
   ClipboardList,
   Kanban,
   ChevronDown,
+  HelpCircle,
+  Image,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -187,6 +189,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, show: canUseInvestor },
       ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog Manager", icon: <PenSquare />, show: true }] : []),
       ...(isAdmin ? [
+        { href: "/dashboard/faq", label: "FAQ Manager", icon: <HelpCircle />, show: true },
+        { href: "/dashboard/guides", label: "Guides Manager", icon: <BookOpen />, show: true },
+        { href: "/dashboard/seo-pages", label: "SEO Pages", icon: <FileText />, show: true },
+        { href: "/dashboard/media", label: "Media Library", icon: <Image />, show: true },
         { href: "/dashboard/admin", label: "Admin Panel", icon: <Shield />, show: true },
       ] : []),
     ].filter(item => item.show);

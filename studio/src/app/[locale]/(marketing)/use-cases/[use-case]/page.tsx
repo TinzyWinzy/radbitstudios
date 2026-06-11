@@ -2,12 +2,38 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Zap } from "lucide-react";
-import { useCases, useCaseHowToSchema, getPageUrl, type UseCasePage } from "@/data/seo-pages";
+import { useCaseHowToSchema as caseHowToSchema, getPageUrl } from "@/data/seo-pages";
 import { breadcrumbSchema } from "@/lib/seo";
 import { AdBanner } from "@/components/ads/ad-banner";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 
-export function generateStaticParams() {
-  return useCases.map((p) => ({ 'use-case': p.slug }));
+interface SeoPageDoc {
+  type: string;
+  slug: string;
+  title: string;
+  metaDescription: string;
+  h1: string;
+  intro: string;
+  steps: { title: string; description: string }[];
+  benefits: string[];
+  cta: string;
+  keywords: string[];
+  published: boolean;
+}
+
+async function getPage(slug: string): Promise<SeoPageDoc | null> {
+  try {
+    const snap = await adminDb
+      .collection("seo_pages")
+      .where("slug", "==", slug)
+      .where("type", "==", "usecase")
+      .limit(1)
+      .get();
+    if (snap.empty) return null;
+    return snap.docs[0].data() as unknown as SeoPageDoc;
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
@@ -15,7 +41,7 @@ export async function generateMetadata({
 }: {
   params: { 'use-case': string };
 }): Promise<Metadata> {
-  const page = useCases.find((p) => p.slug === params['use-case']);
+  const page = await getPage(params['use-case']);
   if (!page) return { title: "Use Case Not Found" };
 
   return {
@@ -37,14 +63,14 @@ export async function generateMetadata({
   };
 }
 
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
-export default function UseCasePage({
+export default async function UseCasePage({
   params,
 }: {
   params: { 'use-case': string };
 }) {
-  const page = useCases.find((p) => p.slug === params['use-case']);
+  const page = await getPage(params['use-case']);
   if (!page) notFound();
 
   return (
@@ -53,7 +79,7 @@ export default function UseCasePage({
         type="application/ld+json"
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(useCaseHowToSchema(page)),
+          __html: JSON.stringify(caseHowToSchema(page)),
         }}
       />
       <script
@@ -68,7 +94,6 @@ export default function UseCasePage({
         }}
       />
 
-      {/* Hero */}
       <section className="container max-w-4xl py-16 md:py-24 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium mb-6">
           <Zap className="h-3.5 w-3.5" />
@@ -81,16 +106,10 @@ export default function UseCasePage({
           {page.intro}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/sign-up"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-          >
+          <Link href="/sign-up" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
             Get Started Free <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link
-            href="/assessment"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border font-medium hover:bg-muted transition-colors"
-          >
+          <Link href="/assessment" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border font-medium hover:bg-muted transition-colors">
             Take the Assessment
           </Link>
         </div>
@@ -98,7 +117,6 @@ export default function UseCasePage({
 
       <AdBanner slot="usecase-hero" className="container max-w-4xl mb-16" />
 
-      {/* How it works */}
       <section className="container max-w-4xl mb-10 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-2">How It Works</h2>
         <p className="text-muted-foreground mb-8">Get started in minutes, not days.</p>
@@ -117,7 +135,6 @@ export default function UseCasePage({
         </div>
       </section>
 
-      {/* Benefits */}
       <section className="container max-w-4xl mb-10 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-8">Why It Matters</h2>
         <div className="grid md:grid-cols-2 gap-4">
@@ -130,17 +147,13 @@ export default function UseCasePage({
         </div>
       </section>
 
-      {/* CTA */}
       <section className="container max-w-4xl mb-10 md:mb-20 text-center">
         <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-12">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">{page.cta}</h2>
           <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
             Join thousands of Zimbabwean entrepreneurs using Radbit to grow their businesses.
           </p>
-          <Link
-            href="/sign-up"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-          >
+          <Link href="/sign-up" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
             Sign Up Free <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
-import { useCases } from "@/data/seo-pages";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 
 export const metadata: Metadata = {
   title: "Use Cases — What You Can Do with Radbit | SME Tools Zimbabwe",
@@ -9,9 +9,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/use-cases" },
 };
 
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
-export default function UseCasesIndexPage() {
+export default async function UseCasesIndexPage() {
+  let pages: { slug: string; h1: string; metaDescription: string }[] = [];
+  try {
+    const snap = await adminDb.collection("seo_pages").where("type", "==", "usecase").where("published", "==", true).get();
+    pages = snap.docs.map(d => d.data() as any);
+  } catch {}
+
   return (
     <div className="container max-w-4xl py-8 md:py-16">
       <div className="text-center max-w-2xl mx-auto mb-8 md:mb-16">
@@ -29,7 +35,7 @@ export default function UseCasesIndexPage() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {useCases.map((page) => (
+        {pages.map((page) => (
           <Link
             key={page.slug}
             href={`/use-cases/${page.slug}`}

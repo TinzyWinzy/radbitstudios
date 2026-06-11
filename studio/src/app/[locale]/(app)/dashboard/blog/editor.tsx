@@ -9,6 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Eye } from "lucide-react";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
+import { VersionsDialog } from "@/components/editor/versions-dialog";
+import { saveVersion } from "@/services/version.service";
 
 interface Props {
   initial?: BlogPost;
@@ -22,11 +26,16 @@ export default function BlogEditor({ initial }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
+  const isLegacy = typeof initial?.content === 'string';
+  const initialJson = isLegacy || !initial?.content
+    ? null
+    : initial.content as Record<string, unknown>;
+
   const [form, setForm] = useState({
     title: initial?.title || '',
     slug: initial?.slug || '',
     excerpt: initial?.excerpt || '',
-    content: initial?.content || '',
+    content: initialJson,
     tags: initial?.tags?.join(', ') || '',
     published: initial?.published ?? false,
     authorName: initial?.authorName || 'Radbit',
@@ -48,16 +57,19 @@ export default function BlogEditor({ initial }: Props) {
         title: form.title,
         slug: form.slug || slugify(form.title),
         excerpt: form.excerpt,
-        content: form.content,
+        content: form.content || null,
         tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
         published: form.published,
         authorName: form.authorName || 'Radbit',
         imageUrl: form.imageUrl,
       };
       if (initial?.id) {
+        await saveVersion('blog_posts', initial.id, initial.authorName || 'Radbit').catch(() => {});
         await blogService.update(initial.id, data);
       } else {
-        await blogService.create(data);
+        const newId = await blogService.create(data);
+        // Save initial version for new posts
+        await saveVersion('blog_posts', newId, form.authorName || 'Radbit', 'Initial version').catch(() => {});
       }
       router.push('/dashboard/blog');
       router.refresh();
@@ -73,6 +85,14 @@ export default function BlogEditor({ initial }: Props) {
           {initial ? 'Edit Post' : 'New Post'}
         </h1>
         <div className="flex items-center gap-2">
+          {initial?.id && (
+            <VersionsDialog
+              collectionName="blog_posts"
+              docId={initial.id}
+              userId={initial.authorName || 'Radbit'}
+              onRestore={() => router.push('/dashboard/blog')}
+            />
+          )}
           <Button variant="outline" onClick={() => setPreview(!preview)}>
             <Eye className="mr-2 h-4 w-4" /> {preview ? 'Edit' : 'Preview'}
           </Button>
@@ -84,9 +104,9 @@ export default function BlogEditor({ initial }: Props) {
       </div>
 
       {preview ? (
-        <div className="prose prose-neutral dark:prose-invert max-w-none p-6 rounded-xl border border-border/50">
-          <h1 className="font-headline text-3xl font-bold">{form.title || 'Untitled'}</h1>
-          <div dangerouslySetInnerHTML={{ __html: simpleMarkdown(form.content) }} />
+        <div className="p-6 rounded-xl border border-border/50">
+          <h1 className="font-headline text-3xl font-bold mb-6">{form.title || 'Untitled'}</h1>
+          <RichTextRenderer content={form.content} />
         </div>
       ) : (
         <div className="space-y-6">
@@ -107,8 +127,17 @@ export default function BlogEditor({ initial }: Props) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="content">Content (markdown)</Label>
-            <Textarea id="content" rows={16} className="font-mono text-sm" value={form.content} onChange={e => update('content', e.target.value)} />
+            <Label>Content</Label>
+            <RichTextEditor
+              content={form.content}
+              onChange={(val) => setForm(prev => ({ ...prev, content: val }))}
+              placeholder="Start writing your blog post..."
+            />
+            {isLegacy && (
+              <p className="text-xs text-amber-500">
+                This post was created with the old markdown editor. Saving will convert it to the new rich text format.
+              </p>
+            )}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -138,28 +167,4 @@ export default function BlogEditor({ initial }: Props) {
       )}
     </div>
   );
-}
-
-function simpleMarkdown(md: string): string {
-  let html = md
-    .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" class="rounded-xl w-full my-6" />')
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-primary underline">$1</a>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
-    .replace(/^#### (.+)/gm, '<h4 class="font-headline text-lg font-semibold mt-4 mb-1">$1</h4>')
-    .replace(/^### (.+)/gm, '<h3 class="font-headline text-xl font-semibold mt-6 mb-2">$1</h3>')
-    .replace(/^## (.+)/gm, '<h2 class="font-headline text-2xl font-bold mt-8 mb-3">$1</h2>')
-    .replace(/^> (.+)/gm, '<blockquote class="border-l-4 border-primary/30 pl-4 italic my-4 text-muted-foreground">$1</blockquote>')
-    .replace(/^- (.+)/gm, '<li>$1</li>')
-    .replace(/^\d+\. (.+)/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, function(match: string) {
-      if (match.match(/^\d+\./)) {
-        return '<ol class="list-decimal pl-6 mb-4 space-y-1">' + match + '</ol>';
-      }
-      return '<ul class="list-disc pl-6 mb-4 space-y-1">' + match + '</ul>';
-    })
-    .replace(/---/g, '<hr class="my-8 border-border/50" />');
-  return html;
 }

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, FileText } from "lucide-react";
+import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { AdBanner } from "@/components/ads/ad-banner";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Free Business Resources for Zimbabwean SMEs — Guides, Tools & FAQs",
@@ -15,51 +17,6 @@ export const metadata: Metadata = {
     url: `${process.env.FRONTEND_URL || 'https://radbitstudios.co.zw'}/resources`,
   },
 };
-
-const guides = [
-  {
-    slug: "register-business-zimbabwe",
-    title: "Registering a Business in Zimbabwe",
-    excerpt: "A complete walkthrough of the company registration process — Deeds Office, PRAZ, ZIMRA, and local council licenses with actual costs and timelines.",
-    icon: <FileText className="h-6 w-6" />,
-    readTime: "15 min read",
-  },
-  {
-    slug: "zimra-tax-guide-smes",
-    title: "Tax in Zimbabwe for SMEs",
-    excerpt: "Everything you need to know about ZIMRA — taxes, filing deadlines, and common pitfalls every Zimbabwean SME owner should know.",
-    icon: <FileText className="h-6 w-6" />,
-    readTime: "15 min read",
-  },
-  {
-    slug: "ecocash-business-vs-personal",
-    title: "EcoCash Business vs Personal",
-    excerpt: "What the EcoCash Business upgrade actually changes — transaction limits, fees, compliance, and whether it's worth it for your SME.",
-    icon: <FileText className="h-6 w-6" />,
-    readTime: "10 min read",
-  },
-  {
-    slug: "sadc-export-guide",
-    title: "Exporting from Zimbabwe to SADC",
-    excerpt: "A practical walkthrough of exporting goods from Zimbabwe to SADC countries — documentation, duties, transport corridors, and common mistakes.",
-    icon: <FileText className="h-6 w-6" />,
-    readTime: "20 min read",
-  },
-  {
-    slug: "load-shedding-solutions-smes",
-    title: "Load-Shedding Solutions for SMEs",
-    excerpt: "Practical ways to keep your business running during power outages — from basic inverter setups to solar options without breaking the bank.",
-    icon: <FileText className="h-6 w-6" />,
-    readTime: "12 min read",
-  },
-  {
-    slug: "zim-business-planning",
-    title: "Business Planning in Zimbabwe",
-    excerpt: "How to build a business plan that works in Zimbabwe's unique economy — practical templates and local market insights.",
-    icon: <FileText className="h-6 w-6" />,
-    readTime: "12 min read",
-  },
-];
 
 const tools = [
   {
@@ -76,7 +33,27 @@ const tools = [
   },
 ];
 
-export default function ResourcesPage() {
+async function getGuides() {
+  try {
+    const snap = await adminDb.collection("guides").where("published", "==", true).orderBy("createdAt", "desc").get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch {
+    return [];
+  }
+}
+
+const iconMap: Record<string, React.ReactNode> = {};
+function getIcon(name: string) {
+  if (!iconMap[name]) {
+    const icons = LucideIcons as any;
+    const Icon = icons[name] || icons.FileText;
+    iconMap[name] = <Icon className="h-6 w-6" />;
+  }
+  return iconMap[name];
+}
+
+export default async function ResourcesPage() {
+  const guides = await getGuides();
   return (
     <div className="container py-8 md:py-16 max-w-5xl">
       {/* Breadcrumb */}
@@ -111,33 +88,35 @@ export default function ResourcesPage() {
           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">2,000+ words each</span>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          {guides.map((guide) => (
+          {(guides as any[]).map((guide) => {
+            const g = guide as { slug: string; title: string; excerpt: string; icon: string; readTime: string };
+            return (
             <Link
-              key={guide.slug}
-              href={`/resources/guides/${guide.slug}`}
+              key={g.slug}
+              href={`/resources/guides/${g.slug}`}
               className="group rounded-xl border border-border/50 bg-card/50 backdrop-blur-sm p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  {guide.icon}
+                  {getIcon(g.icon || 'FileText')}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-headline text-lg font-semibold mb-1 group-hover:text-primary transition-colors">
-                    {guide.title}
+                    {g.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                    {guide.excerpt}
+                    {g.excerpt}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{guide.readTime}</span>
+                    {g.readTime && <span className="text-xs text-muted-foreground">{g.readTime}</span>}
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all">
                       Read guide <ArrowRight className="h-3.5 w-3.5" />
                     </span>
                   </div>
                 </div>
               </div>
-            </Link>
-          ))}
+            </Link>);
+          })}
         </div>
       </section>
 

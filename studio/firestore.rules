@@ -127,13 +127,37 @@ service cloud.firestore {
     }
 
     // ─── BLOG POSTS ──────────────────────────────────────────────────────────
-    // Public read for published posts. Admin dashboard uses adminDb for writes.
-    // Client-side blog listing reads published posts with userId filter.
+    // Public read for published posts. Client-side blog listing reads published
+    // posts with get-by-id. Admin dashboard uses adminDb for writes.
     match /blog_posts/{postId} {
-      allow get: if request.auth != null;
+      allow get: if resource.data.published == true || request.auth != null;
       allow list: if request.auth != null;
-      allow create: if request.auth != null && (request.auth.token.role == 'admin' || request.auth.token.role == 'super_admin');
-      allow update, delete: if request.auth != null && (request.auth.token.role == 'admin' || request.auth.token.role == 'super_admin');
+      allow create: if request.auth != null && request.auth.token.role in ['admin', 'super_admin'];
+      allow update, delete: if request.auth != null && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    // ─── FAQ ITEMS ────────────────────────────────────────────────────────────
+    // Public read for published items. Admin dashboard manages content.
+    match /faq_items/{itemId} {
+      allow get: if resource.data.published == true || request.auth != null;
+      allow list: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    // ─── GUIDES ───────────────────────────────────────────────────────────────
+    // Public read for published guides. Admin dashboard manages content.
+    match /guides/{guideId} {
+      allow get: if resource.data.published == true || request.auth != null;
+      allow list: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    // ─── SEO PAGES ────────────────────────────────────────────────────────────
+    // Public read for published pages. Admin dashboard manages content.
+    match /seo_pages/{pageId} {
+      allow get: if resource.data.published == true || request.auth != null;
+      allow list: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.token.role in ['admin', 'super_admin'];
     }
 
     // ─── COMMUNITY THREADS ────────────────────────────────────────────────────

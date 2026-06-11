@@ -2,12 +2,39 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Building2, Wrench, AlertTriangle } from "lucide-react";
-import { industries, industryServiceSchema, getPageUrl, type IndustryPage } from "@/data/seo-pages";
+import { industryServiceSchema, getPageUrl } from "@/data/seo-pages";
 import { breadcrumbSchema } from "@/lib/seo";
 import { AdBanner } from "@/components/ads/ad-banner";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 
-export function generateStaticParams() {
-  return industries.map((p) => ({ industry: p.slug }));
+interface SeoPageDoc {
+  type: string;
+  slug: string;
+  title: string;
+  metaDescription: string;
+  h1: string;
+  intro: string;
+  problems: { title: string; description: string }[];
+  solutions: { title: string; description: string }[];
+  features: string[];
+  cta: string;
+  keywords: string[];
+  published: boolean;
+}
+
+async function getPage(slug: string): Promise<SeoPageDoc | null> {
+  try {
+    const snap = await adminDb
+      .collection("seo_pages")
+      .where("slug", "==", slug)
+      .where("type", "==", "industry")
+      .limit(1)
+      .get();
+    if (snap.empty) return null;
+    return snap.docs[0].data() as unknown as SeoPageDoc;
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
@@ -15,7 +42,7 @@ export async function generateMetadata({
 }: {
   params: { industry: string };
 }): Promise<Metadata> {
-  const page = industries.find((p) => p.slug === params.industry);
+  const page = await getPage(params.industry);
   if (!page) return { title: "Industry Not Found" };
 
   return {
@@ -37,14 +64,14 @@ export async function generateMetadata({
   };
 }
 
-export const revalidate = 86400; // Revalidate daily
+export const dynamic = "force-dynamic";
 
-export default function IndustryPage({
+export default async function IndustryPage({
   params,
 }: {
   params: { industry: string };
 }) {
-  const page = industries.find((p) => p.slug === params.industry);
+  const page = await getPage(params.industry);
   if (!page) notFound();
 
   return (
@@ -68,7 +95,6 @@ export default function IndustryPage({
         }}
       />
 
-      {/* Hero */}
       <section className="container max-w-4xl py-16 md:py-24 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium mb-6">
           <Building2 className="h-3.5 w-3.5" />
@@ -98,7 +124,6 @@ export default function IndustryPage({
 
       <AdBanner slot="industry-hero" className="container max-w-4xl mb-16" />
 
-      {/* Problems */}
       <section className="container max-w-4xl mb-12 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-2">The Challenges</h2>
         <p className="text-muted-foreground mb-8">Common pain points for {page.slug.replace(/-/g, ' ')} businesses in Zimbabwe.</p>
@@ -117,7 +142,6 @@ export default function IndustryPage({
         </div>
       </section>
 
-      {/* Solutions */}
       <section className="container max-w-4xl mb-12 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-2">How Radbit Helps</h2>
         <p className="text-muted-foreground mb-8">Purpose-built tools for your industry.</p>
@@ -136,7 +160,6 @@ export default function IndustryPage({
         </div>
       </section>
 
-      {/* Features */}
       <section className="container max-w-4xl mb-12 md:mb-20">
         <h2 className="font-headline text-2xl md:text-3xl font-bold mb-8">Key Features</h2>
         <div className="flex flex-wrap gap-3">
@@ -152,7 +175,6 @@ export default function IndustryPage({
         </div>
       </section>
 
-      {/* CTA */}
       <section className="container max-w-4xl mb-12 md:mb-20 text-center">
         <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 sm:p-8 md:p-12">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">{page.cta}</h2>

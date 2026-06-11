@@ -1,92 +1,67 @@
-import { MetadataRoute } from "next";
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
-import { industries, useCases } from "@/data/seo-pages";
+import type { MetadataRoute } from "next";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 
-const F =
-  (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
-
-async function getPublishedBlogSlugs(): Promise<string[]> {
-  try {
-    if (!getApps().length) {
-      const key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
-      if (key) initializeApp({ credential: cert(JSON.parse(key)) });
-      else initializeApp();
-    }
-    const db = getFirestore();
-    const snap = await db
-      .collection("blog_posts")
-      .where("published", "==", true)
-      .get();
-    return snap.docs.map((d) => d.data().slug).filter(Boolean);
-  } catch {
-    return [];
-  }
-}
+const SITE_URL = (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const slugs = await getPublishedBlogSlugs();
+  const lastMod = new Date().toISOString().split("T")[0];
 
-  const blogEntries: MetadataRoute.Sitemap = slugs.map((slug) => ({
-    url: `${F}/blog/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
-
-  const industryEntries: MetadataRoute.Sitemap = industries.map((page) => ({
-    url: `${F}/solutions/${page.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  const useCaseEntries: MetadataRoute.Sitemap = useCases.map((page) => ({
-    url: `${F}/use-cases/${page.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  return [
-    { url: `${F}/`, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
-    { url: `${F}/sign-in`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${F}/sign-up`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${F}/dashboard`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.2 },
-    { url: `${F}/assessment`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
-    { url: `${F}/ai-toolkit`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.4 },
-    { url: `${F}/tenders`, lastModified: new Date(), changeFrequency: "daily", priority: 0.5 },
-    { url: `${F}/community`, lastModified: new Date(), changeFrequency: "daily", priority: 0.4 },
-    { url: `${F}/mentor`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.4 },
-    { url: `${F}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    ...blogEntries,
-    { url: `${F}/resources`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${F}/resources/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${F}/resources/guides/register-business-zimbabwe`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${F}/resources/guides/zimra-tax-guide-smes`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${F}/resources/guides/sadc-export-guide`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${F}/resources/guides/ecocash-business-vs-personal`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/resources/guides/load-shedding-solutions-smes`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/resources/guides/zim-business-planning`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${F}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${F}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
-    { url: `${F}/privacy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${F}/terms`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${F}/resources/tools/vat-calculator`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/resources/tools/business-name-generator`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${F}/pricing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${F}/praz-compliance`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
-    { url: `${F}/solutions`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/use-cases`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/solutions/logistics-pharmacies`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/solutions/agri-tech-manufacturing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${F}/solutions/hospitality-studios`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    ...industryEntries,
-    ...useCaseEntries,
-    { url: `${F}/partners/techhub-harare`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${F}/partners/impact-hub`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${F}/partners/moto-republik`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${F}/events/zimbabwe-business-expo-2026`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
-    { url: `${F}/diaspora-matchmaking`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.6 },
+  const staticPages = [
+    { url: SITE_URL, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 1.0 },
+    { url: `${SITE_URL}/about`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${SITE_URL}/privacy`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.3 },
+    { url: `${SITE_URL}/terms`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.3 },
+    { url: `${SITE_URL}/resources`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: `${SITE_URL}/resources/faq`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/blog`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
+    { url: `${SITE_URL}/solutions`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/use-cases`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/sign-up`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/sign-in`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
   ];
+
+  let blogPosts: MetadataRoute.Sitemap = [];
+  try {
+    const blogSnap = await adminDb.collection("blog_posts").where("published", "==", true).get();
+    blogPosts = blogSnap.docs.map((d) => {
+      const post = d.data();
+      return {
+        url: `${SITE_URL}/blog/${post.slug}`,
+        lastModified: post.updatedAt?.toDate?.()?.toISOString?.().split("T")[0] || lastMod,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      };
+    });
+  } catch {}
+
+  let guides: MetadataRoute.Sitemap = [];
+  try {
+    const guideSnap = await adminDb.collection("guides").where("published", "==", true).get();
+    guides = guideSnap.docs.map((d) => {
+      const g = d.data();
+      return {
+        url: `${SITE_URL}/resources/guides/${g.slug}`,
+        lastModified: g.updatedAt?.toDate?.()?.toISOString?.().split("T")[0] || lastMod,
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
+      };
+    });
+  } catch {}
+
+  let seoPages: MetadataRoute.Sitemap = [];
+  try {
+    const seoSnap = await adminDb.collection("seo_pages").where("published", "==", true).get();
+    seoPages = seoSnap.docs.map((d) => {
+      const p = d.data();
+      const prefix = p.type === "industry" ? "solutions" : "use-cases";
+      return {
+        url: `${SITE_URL}/${prefix}/${p.slug}`,
+        lastModified: p.updatedAt?.toDate?.()?.toISOString?.().split("T")[0] || lastMod,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      };
+    });
+  } catch {}
+
+  return [...staticPages, ...blogPosts, ...guides, ...seoPages];
 }

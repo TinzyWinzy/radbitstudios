@@ -4,35 +4,49 @@ import {
   query, where, orderBy, limit, Timestamp, serverTimestamp,
 } from 'firebase/firestore';
 
-export interface BlogPost {
-  id?: string;
+export interface GuideStep {
+  icon: string;
   title: string;
+  body: string;
+}
+
+export interface GuideFaqItem {
+  q: string;
+  a: string;
+}
+
+export interface Guide {
+  id?: string;
   slug: string;
+  title: string;
   excerpt: string;
-  content: string | Record<string, unknown> | null;
-  tags: string[];
+  icon: string;
+  readTime: string;
+  category: string;
+  steps: GuideStep[];
+  tips: string[];
+  faq: GuideFaqItem[];
+  content: Record<string, unknown> | null;
   published: boolean;
-  authorName: string;
-  imageUrl?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
-const COLLECTION = 'blog_posts';
+const COLLECTION = 'guides';
 
-class BlogService {
-  async create(post: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+class GuideService {
+  async create(guide: Omit<Guide, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     const docRef = await addDoc(collection(db, COLLECTION), {
-      ...post,
+      ...guide,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
     return docRef.id;
   }
 
-  async update(id: string, post: Partial<Omit<BlogPost, 'id' | 'createdAt'>>): Promise<void> {
+  async update(id: string, guide: Partial<Omit<Guide, 'id' | 'createdAt'>>): Promise<void> {
     await updateDoc(doc(db, COLLECTION, id), {
-      ...post,
+      ...guide,
       updatedAt: serverTimestamp(),
     });
   }
@@ -41,35 +55,35 @@ class BlogService {
     await deleteDoc(doc(db, COLLECTION, id));
   }
 
-  async getById(id: string): Promise<BlogPost | null> {
+  async getById(id: string): Promise<Guide | null> {
     const snap = await getDoc(doc(db, COLLECTION, id));
     if (!snap.exists()) return null;
-    return { id: snap.id, ...snap.data() } as BlogPost;
+    return { id: snap.id, ...snap.data() } as Guide;
   }
 
-  async getBySlug(slug: string): Promise<BlogPost | null> {
+  async getBySlug(slug: string): Promise<Guide | null> {
     const q = query(collection(db, COLLECTION), where('slug', '==', slug), limit(1));
     const snap = await getDocs(q);
     if (snap.empty) return null;
     const d = snap.docs[0];
-    return { id: d.id, ...d.data() } as BlogPost;
+    return { id: d.id, ...d.data() } as Guide;
   }
 
-  async listAll(): Promise<BlogPost[]> {
+  async listAll(): Promise<Guide[]> {
     const q = query(collection(db, COLLECTION), orderBy('createdAt', 'desc'));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() } as BlogPost));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as Guide));
   }
 
-  async listPublished(): Promise<BlogPost[]> {
+  async listPublished(): Promise<Guide[]> {
     const q = query(
       collection(db, COLLECTION),
       where('published', '==', true),
       orderBy('createdAt', 'desc'),
     );
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() } as BlogPost));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() } as Guide));
   }
 }
 
-export const blogService = new BlogService();
+export const guideService = new GuideService();

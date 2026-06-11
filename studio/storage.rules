@@ -1,0 +1,20 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Public read for all files
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+
+    // Media library & blog images: authenticated admins can upload
+    match /{prefix=blog|media}/{fileName} {
+      allow write: if request.auth != null
+        && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    // Project uploads: authenticated users can upload to their own projects
+    match /projects/{projectId}/{fileName} {
+      allow write: if request.auth != null;
+    }
+  }
+}

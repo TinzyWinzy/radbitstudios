@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { InArticleAd } from "@/components/ads/in-article-ad";
 import { MatchedContent } from "@/components/ads/matched-content";
+import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 
 function splitContent(content: string): string[] {
   const parts = content.split(/(?=^#{2,3}\s)/m);
@@ -79,7 +80,7 @@ export default function BlogPostPage({
   if (loading) return null;
   if (error || !post) notFound();
 
-  const sections = splitContent(post.content);
+  const isRichText = post.content !== null && typeof post.content === 'object';
 
   return (
     <article className="container max-w-3xl py-8 md:py-16">
@@ -129,17 +130,21 @@ export default function BlogPostPage({
 
       <AdBanner />
 
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        {sections.map((section, i) => (
-          <div key={i}>
-            <div
-              className="[&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-headline [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4 [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1 [&_li]:text-muted-foreground [&_img]:rounded-xl [&_img]:w-full [&_hr]:border-border/50"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(section) }}
-            />
-            {i === 0 && <InArticleAd />}
-          </div>
-        ))}
-      </div>
+      {isRichText ? (
+        <RichTextRenderer content={post.content as Record<string, unknown>} />
+      ) : (
+        <div className="prose prose-neutral dark:prose-invert max-w-none">
+          {splitContent((post.content as string) || '').map((section, i) => (
+            <div key={i}>
+              <div
+                className="[&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-headline [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4 [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1 [&_li]:text-muted-foreground [&_img]:rounded-xl [&_img]:w-full [&_hr]:border-border/50"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(section) }}
+              />
+              {i === 0 && <InArticleAd />}
+            </div>
+          ))}
+        </div>
+      )}
 
       <MatchedContent />
 
