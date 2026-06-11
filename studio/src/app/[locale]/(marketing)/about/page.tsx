@@ -127,11 +127,11 @@ export default function AboutPage() {
         <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Founded By</h2>
         <div className="rounded-xl border border-foreground/10 bg-foreground/[0.03] p-6 md:p-8 flex flex-col sm:flex-row gap-6 items-start">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 text-2xl font-bold text-white">
-            TT
+            TD
           </div>
           <div className="space-y-3">
             <div>
-              <h3 className="font-headline font-bold text-foreground text-lg">Tinotenda Tagarira</h3>
+              <h3 className="font-headline font-bold text-foreground text-lg">Tinotenda Brandon Duma</h3>
               <p className="text-sm text-foreground/50">Founder &amp; Chief Executive Officer</p>
             </div>
             <p className="text-sm text-foreground/60 leading-relaxed">
@@ -143,7 +143,7 @@ export default function AboutPage() {
             </p>
             <div className="flex gap-4 pt-1">
               <a
-                href="https://www.linkedin.com/in/tinotenda-tagarira-2aa7ab220/"
+                href="https://www.linkedin.com/in/tinotenda-duma-735a9797/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-primary transition-colors"
@@ -151,7 +151,7 @@ export default function AboutPage() {
                 <Linkedin className="h-3.5 w-3.5" /> LinkedIn
               </a>
               <a
-                href="https://github.com/tinzywinzy"
+                href="https://github.com/TinzyWinzy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-primary transition-colors"
