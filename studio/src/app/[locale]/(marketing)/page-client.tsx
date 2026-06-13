@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react/no-unescaped-entities */
 
 import { useRef } from "react";
 import { ChevronRight, BarChart, TrendingUp, Briefcase, ArrowRight, Shield, Zap, Globe, Target, Lock, Server, Database, BadgeCheck, ExternalLink, Brain } from "lucide-react";
