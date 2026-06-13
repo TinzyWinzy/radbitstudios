@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Shield, ChevronRight, Clock, Eye, Zap } from 'lucide-react';
