@@ -1,5 +1,3 @@
-'use server';
-
 import { z } from 'zod';
 import { aiGateway } from '@/services/ai/ai-gateway';
 
