@@ -304,5 +304,21 @@ service cloud.firestore {
       allow create: if request.auth.token.role in ['admin', 'super_admin'];
       allow delete: if request.auth.token.role in ['admin', 'super_admin'];
     }
+
+    // ─── RETI: THREAT ASSESSMENTS ──────────────────────────────────────────
+    // Public read for published assessments (served via SSR, but allow direct reads).
+    // Admin-only write (generated server-side via cron/API).
+    match /threat_assessments/{slug} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    // ─── RETI: MONITOR SOURCES ─────────────────────────────────────────────
+    // Public read for listing source status. Admin-only write.
+    match /reti_monitor_sources/{docId} {
+      allow get, list: if true;
+      allow create, update, delete: if request.auth.token.role in ['admin', 'super_admin'];
+    }
   }
 }

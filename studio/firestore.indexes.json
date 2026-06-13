@@ -94,6 +94,14 @@
         { "fieldPath": "systemPrompt", "order": "ASCENDING" },
         { "fieldPath": "expiry", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "threat_assessments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "published", "order": "ASCENDING" },
+        { "fieldPath": "generatedAt", "order": "DESCENDING" }
+      ]
     }
   ]
 }

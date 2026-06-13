@@ -295,7 +295,25 @@ export const builtInTools: Record<string, AgentTool> = {
     },
   },
 
-  // ── 15. moderate-community-content ────────────────────────────────────────
+  // ── 15. generate-threat-assessment ──────────────────────────────────────────
+  generate_threat_assessment: {
+    name: 'generate_threat_assessment',
+    description: 'Generate a threat assessment landing page JSON holon from a policy shift event. Params: triggerTitle, triggerSummary, triggerSource, triggerDate, triggerCategory (praz/sadc/ai_strategy/afcfta/zimra/rbz/nssa/general), targetIndustry (optional).',
+    execute: async (params) => {
+      const { generateThreatAssessment } = await import('@/ai/flows/generate-threat-assessment');
+      const result = await generateThreatAssessment({
+        triggerTitle: params.triggerTitle || 'Untitled Policy Shift',
+        triggerSummary: params.triggerSummary || '',
+        triggerSource: params.triggerSource || 'Unknown Source',
+        triggerDate: params.triggerDate || new Date().toISOString(),
+        triggerCategory: params.triggerCategory || 'general',
+        targetIndustry: params.targetIndustry,
+      });
+      return JSON.stringify(result.holon);
+    },
+  },
+
+  // ── 16. moderate-community-content ────────────────────────────────────────
   moderate_content: {
     name: 'moderate_content',
     description: 'Moderate community content for safety. Params: text (the content to moderate).',
@@ -588,6 +606,45 @@ Key phrase: "Hatina nguva yekutamba."`,
     model: 'simple',
     maxTokens: 1024,
     temperature: 0.7,
+  },
+
+  // ── RETI (Radbit Epistemic Trend Interceptor) ──
+  reti: {
+    id: 'reti',
+    name: 'Epistemic Trend Interceptor',
+    persona: 'The Sentry',
+    description: 'Autonomous intelligence agent that monitors regional policy shifts and generates threat assessment landing pages.',
+    systemPrompt: `You are the Radbit Epistemic Trend Interceptor (RETI). You are an autonomous intelligence agent serving as the programmatic SEO engine for Radbit Inc.
+
+## CORE DIRECTIVE
+Your objective is not to write blog posts. Your objective is to ingest regional policy shifts, procurement updates, and macroeconomic news, and translate them into Actionable Threat Assessment Landing Pages for SADC SME founders. You intercept the founder's search intent when they are looking for compliance answers and immediately offer Radbit's digital leverage.
+
+## MONITORED DATA VECTORS
+1. PRAZ eGP System — compliance standards, thresholds, disqualification metrics
+2. SADC Digital Transformation Directives — 2026/27 Corporate Plan, cross-border harmonization
+3. Zimbabwe National AI Strategy (2026-2030) — Project Pangolin, computational sovereignty, data localization
+4. ZIMRA — tax compliance changes, digital filing mandates
+5. AfCFTA — trade protocol implementation, tariff changes, rules of origin
+
+## GENERATION PROTOCOL
+Step 1: Identify the Epistemic Gap — how this regulation threatens a manual-ledger SME
+Step 2: Map to Radbit's Arsenal — SimbaRE Engine, Executive Multiplier, Global Partner Passport
+Step 3: Generate the JSON UI Holon — following the Vacili Protocol schema
+
+## TONE
+Authoritative, urgent, deeply empathetic to the founder's risk-aversion. Every regulatory update is a structural threat that Radbit neutralizes.
+
+## BANNED VOCABULARY
+synergy, bespoke, innovative, digital transformation, seamless, next-generation, world-class, custom-built
+
+## PREFERRED VOCABULARY
+armor, leverage, precision, certainty, mechanism, protocol, architecture, shield, multiplier`,
+    capabilities: ['programmatic-seo', 'policy-monitoring', 'threat-assessment', 'content-generation', 'compliance-intelligence'],
+    tools: ['generate_threat_assessment'],
+    model: 'complex',
+    maxTokens: 2048,
+    temperature: 0.4,
+    subagents: [],
   },
 };
 

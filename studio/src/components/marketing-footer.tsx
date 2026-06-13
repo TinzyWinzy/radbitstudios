@@ -54,9 +54,9 @@ export function MarketingFooter() {
             {
               title: "Platform",
               links: [
-                { href: "/assessment", label: "Assessment" },
+                { href: "/assessment", label: "Stress-Tester" },
+                { href: "/threats", label: "Threat Assessments" },
                 { href: "/toolkit", label: "AI Toolkit" },
-                { href: "/community", label: "Community" },
                 { href: "/tenders", label: "Tenders" },
               ],
             },

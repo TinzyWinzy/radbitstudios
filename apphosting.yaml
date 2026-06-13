@@ -85,7 +85,7 @@ env:
   #     - RUNTIME
 
   # ── Cron job security ───────────────────────────────────────────────
-  # - variable: CRON_SECRET
-  #   secret: CRON_SECRET
-  #   availability:
-  #     - RUNTIME
+  - variable: CRON_SECRET
+    secret: CRON_SECRET
+    availability:
+      - RUNTIME

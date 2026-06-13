@@ -26,23 +26,25 @@ import {
   Briefcase,
   Users,
   Newspaper,
-  Handshake,
+  Shield,
   ArrowRight,
   LogIn,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/solutions", label: "Solutions", icon: Sparkles },
-  { href: "/assessment", label: "Assessment", icon: ClipboardCheck },
+  { href: "/solutions", label: "Leverage Menu", icon: Sparkles },
+  { href: "/solutions#diagnostic", label: "Stress-Tester", icon: ClipboardCheck },
   { href: "/toolkit", label: "AI Toolkit", icon: LayoutDashboard },
   { href: "/pricing", label: "Pricing", icon: CreditCard },
+  { href: "/about", label: "About", icon: Shield },
   { href: "/resources", label: "Resources", icon: BookOpen },
   { href: "/tenders", label: "Tenders", icon: Briefcase },
+  { href: "/threats", label: "Threats", icon: AlertTriangle },
   { href: "/community", label: "Community", icon: Users },
   { href: "/blog", label: "Blog", icon: Newspaper },
-  { href: "/consultancy", label: "Consultancy", icon: Handshake },
 ];
 
 export default function MarketingLayout({

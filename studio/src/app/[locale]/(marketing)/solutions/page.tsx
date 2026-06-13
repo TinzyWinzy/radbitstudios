@@ -316,17 +316,17 @@ const PROFESSIONAL_SERVICES = [
 
 const CONSULTANCY_SERVICES = [
   {
-    title: "Software Development",
+    title: "Custom Enterprise Architectures",
     description:
-      "Bespoke desktop, mobile, and web applications built for your exact business needs — from MVPs to enterprise platforms.",
+      "Vertex AI-powered microservice frameworks deployed on Firestore pipelines. Systems designed to absorb your specific operational complexity and enforce business rules at machine speed.",
     icon: Code2,
     color: "from-blue-500/20 to-cyan-500/20",
     iconColor: "text-blue-500",
   },
   {
-    title: "Cybersecurity Consultancy",
+    title: "Asset & Margin Protection",
     description:
-      "Protect your digital assets with security audits, threat assessment, compliance frameworks, and ongoing protection strategies.",
+      "Automated threat detection pipelines scanning infrastructure, supply chain, and compliance surface. Real-time alerts on margin erosion, regulatory drift, and operational anomalies before they compound.",
     icon: Shield,
     color: "from-red-500/20 to-orange-500/20",
     iconColor: "text-red-500",
@@ -334,7 +334,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Business Strategy",
     description:
-      "Data-driven growth roadmaps, market entry strategies, operational optimization, and digital transformation planning.",
+      "Data-driven growth roadmaps, market entry strategies, and operational optimization calibrated to SADC market volatility — not generic Western benchmarks.",
     icon: TrendingUp,
     color: "from-green-500/20 to-emerald-500/20",
     iconColor: "text-green-500",
@@ -342,23 +342,23 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Brand Management",
     description:
-      "Cultivate a powerful brand identity: visual systems, messaging frameworks, and market positioning for lasting impact.",
+      "Visual systems, messaging frameworks, and market positioning that convert institutional credibility into cross-border and government procurement leverage.",
     icon: Palette,
     color: "from-purple-500/20 to-pink-500/20",
     iconColor: "text-purple-500",
   },
   {
-    title: "ERP Systems",
+    title: "Operational Multipliers",
     description:
-      "Streamline operations with integrated enterprise resource planning: inventory, finance, HR, and supply chain in one system.",
+      "Digital shadow assistants enforcing delegation rules across inventory, invoicing, and logistics. Exception-only alerts mean you intervene only when the machine detects anomalies your protocols missed.",
     icon: Database,
     color: "from-amber-500/20 to-yellow-500/20",
     iconColor: "text-amber-500",
   },
   {
-    title: "AI, ML & Blockchain",
+    title: "Agentic System Automation",
     description:
-      "Harness emerging tech: predictive analytics, intelligent automation, smart contracts, and decentralized solutions.",
+      "Autonomous Vertex AI agents running RAG pipelines grounded in local parameters. Generating tenders, simulating compliance audits, reconciling ledgers, and producing institutional-grade documentation — unattended.",
     icon: Brain,
     color: "from-rose-500/20 to-pink-500/20",
     iconColor: "text-rose-500",
@@ -495,12 +495,6 @@ function getConsultancy(persona: Persona): typeof CONSULTANCY_SERVICES {
   return CONSULTANCY_SERVICES.slice(0, 3);
 }
 
-function getAssessmentUrl(persona: Persona): string {
-  if (persona === "enterprise") return "/assessment?type=enterprise";
-  if (persona === "individual") return "/assessment?type=individual";
-  return "/assessment";
-}
-
 // ─── Component ─────────────────────────────────────────────────────────────────
 
 export default function SolutionsPage() {
@@ -596,7 +590,7 @@ export default function SolutionsPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-8"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              enterprise technology & digital infrastructure
+              applied intelligence & structural armor
             </motion.div>
 
             <motion.h1
@@ -605,7 +599,7 @@ export default function SolutionsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              Digital Infrastructure for the <span className="text-gradient">African Enterprise</span>.
+              Operational Armor for the <span className="text-gradient">SADC Enterprise</span>.
             </motion.h1>
 
             <motion.p
@@ -614,7 +608,7 @@ export default function SolutionsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              From digital assessment to enterprise systems, AI agents to regulatory compliance — Radbit delivers integrated infrastructure purpose-built for Zimbabwean organisations.
+              Tender intelligence that bulletproofs your submissions. Executive multipliers that delegate without losing control. Global passports that unlock cross-border capital. Radbit delivers integrated armor for the SADC founder.
             </motion.p>
 
             <motion.div
@@ -1119,11 +1113,10 @@ export default function SolutionsPage() {
           <div className="container">
             <ScrollReveal className="text-center mb-8 md:mb-16">
               <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                What We Do
+                The Leverage Menu
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Comprehensive technology solutions tailored to the unique
-                challenges and opportunities of African businesses.
+                Outcome-based modules engineered for the SADC operational reality. Each holon is independently deployable, recursively nestable, and wired into a unified Firestore brain.
               </p>
             </ScrollReveal>
 
@@ -1324,14 +1317,13 @@ export default function SolutionsPage() {
                 whileHover={{ scale: 1.05 }}
               >
                 <Sparkles className="h-4 w-4" />
-                Start Your Journey
+                Deploy Your Armor
               </motion.div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                Tell Us About Your Project
+                Deploy Your Operational Armor
               </h2>
               <p className="text-muted-foreground">
-                We&apos;ll respond within 24 hours with a tailored roadmap and
-                pricing.
+                Tell us about your enterprise structure. We will return a tailored protection stack within 24 hours.
               </p>
             </ScrollReveal>
 
@@ -1662,11 +1654,11 @@ export default function SolutionsPage() {
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      <SelectItem value="software">
-                                        Software Development
+                                       <SelectItem value="enterprise-arch">
+                                        Custom Enterprise Architectures
                                       </SelectItem>
-                                      <SelectItem value="cybersecurity">
-                                        Cybersecurity
+                                      <SelectItem value="asset-protection">
+                                        Asset & Margin Protection
                                       </SelectItem>
                                       <SelectItem value="strategy">
                                         Business Strategy
@@ -1674,11 +1666,11 @@ export default function SolutionsPage() {
                                       <SelectItem value="brand">
                                         Brand Management
                                       </SelectItem>
-                                      <SelectItem value="erp">
-                                        ERP Systems
+                                      <SelectItem value="operational-multiplier">
+                                        Operational Multipliers
                                       </SelectItem>
-                                      <SelectItem value="ai">
-                                        AI / ML / Blockchain
+                                      <SelectItem value="agentic-auto">
+                                        Agentic System Automation
                                       </SelectItem>
                                       <SelectItem value="other">
                                         Other / Not Sure
@@ -1833,19 +1825,18 @@ export default function SolutionsPage() {
           <div className="container max-w-3xl text-center">
             <ScrollReveal>
               <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">
-                Not sure what you need?
+                Don&apos;t Know Your Exposure?
               </h2>
               <p className="text-muted-foreground max-w-lg mx-auto mb-8">
-                Take our free assessment to discover which solutions are right
-                for your business — no obligations.
+                Run the 3-minute Operational Stress-Tester. We will surface your critical failure points and prescribe the exact armor layer.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href={getAssessmentUrl(persona)}
+                  href="/solutions#diagnostic"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   <Target className="h-4 w-4" />
-                  Take Free Assessment
+                  Run Stress-Tester
                 </Link>
                 <motion.a
                   href="#contact"
@@ -1921,13 +1912,12 @@ export default function SolutionsPage() {
             >
               <Award className="w-12 h-12 text-primary mx-auto" />
             </motion.div>
-            <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight mb-4">
-              Ready to Take the <span className="text-gradient">First Step</span>?
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Whether you need a simple website, a full ERP system, or AI-powered
-              insights — we build it together.
-            </p>
+              <h2 className="font-headline text-2xl md:text-3xl font-bold tracking-tight mb-4">
+                Ready to <span className="text-gradient">Arm Your Enterprise</span>?
+              </h2>
+              <p className="text-muted-foreground mb-8">
+                Whether you need tender armor, executive multipliers, or a global partner passport — we deploy the stack together.
+              </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <MagneticElement intensity={0.2}>
                 <motion.a

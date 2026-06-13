@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { ChevronRight, BarChart, Lightbulb, TrendingUp, Briefcase, Sparkles, ArrowRight, Shield, Zap, Globe, FileCheck, Target, Lock, Server, Database, BadgeCheck, ExternalLink } from "lucide-react";
+import { ChevronRight, BarChart, TrendingUp, Briefcase, ArrowRight, Shield, Zap, Globe, Target, Lock, Server, Database, BadgeCheck, ExternalLink, Brain } from "lucide-react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/magnetic-button";
@@ -9,6 +9,7 @@ import { TiltCard } from "@/components/tilt-card";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { AdUnit } from "@/components/adsense";
 import { HeroBackground } from "@/components/hero-background";
+import { OperationalStressTester } from "@/components/operational-stress-tester";
 import dynamic from "next/dynamic";
 
 const WaveField = dynamic(() => import("@/components/wave-field").then(m => m.WaveField), { ssr: false });
@@ -37,7 +38,7 @@ function HeroSection() {
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.98]);
 
   return (
-    <section ref={sectionRef} className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       <motion.div style={{ opacity, y, scale }} className="relative z-10 text-center sm:px-4 max-w-5xl mx-auto">
 
         <motion.div
@@ -55,9 +56,9 @@ function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-headline text-fluid-5xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
-          <span className="text-gradient">Digital Infrastructure</span>
+          <span className="text-gradient">Digital Leverage</span>
           <br />
-          <span className="text-foreground/90">Built for Zimbabwean Enterprise.</span>
+          <span>Without Losing Control.</span>
         </motion.h1>
 
         <motion.div
@@ -73,7 +74,7 @@ function HeroSection() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-8 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          Intelligence, automation, and compliance — unified on a sovereign platform that understands Zimbabwe&apos;s regulatory and economic reality.
+          You cannot scale what you cannot safely delegate. Radbit arms SADC enterprises with automated intelligence that enforces your rules, bulletproofs your tenders, and opens cross-border capital — so you step back without losing tactical command.
         </motion.p>
 
         <motion.div
@@ -84,15 +85,25 @@ function HeroSection() {
         >
           <MagneticButton asChild size="default" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25 font-headline text-sm tracking-wider px-8">
             <Link href="/assessment">
-              Begin Your Assessment
+              Diagnose Your Operations
               <ChevronRight className="ml-1.5 h-4 w-4" />
             </Link>
           </MagneticButton>
           <MagneticButton asChild size="default" variant="outline" className="border-foreground/20 text-foreground/70 hover:bg-card hover:text-foreground font-headline text-sm tracking-wider px-8">
-            <Link href="/consultancy">Enterprise Solutions</Link>
+            <Link href="/solutions#diagnostic">Run the Stress-Tester</Link>
           </MagneticButton>
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground/50"
+        >
+          <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Tender Armor</span>
+          <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-primary/60" /> Operational Certainty</span>
+          <span className="flex items-center gap-1.5"><Globe className="h-3 w-3 text-primary/60" /> Market Protection</span>
+        </motion.div>
 
       </motion.div>
 
@@ -110,36 +121,36 @@ function ProblemSolutionSection() {
   const problems = [
     {
       icon: <TrendingUp className="h-4 w-4" />,
-      title: "Forex Volatility",
-      body: "ZiG devaluation erodes margins daily. Your financial systems need real-time multi-currency intelligence, not quarterly reconciliations.",
+      title: "The Founder Bottleneck",
+      body: "You cannot scale because you cannot safely delegate. Every decision, every approval, every compliance check runs through you. One absence — and the operation stalls or leaks.",
     },
     {
-      icon: <Zap className="h-4 w-4" />,
-      title: "Operational Fragmentation",
-      body: "Load-shedding, disconnected tools, manual compliance — Zimbabwean enterprises operate in a uniquely hostile environment that off-the-shelf software wasn't built for.",
+      icon: <Shield className="h-4 w-4" />,
+      title: "The Procurement Trap",
+      body: "Your enterprise has the capability to win government and state contracts. But microscopic compliance errors, missing PRAZ filings, or blind spots in award histories get you cut before evaluation.",
     },
     {
-      icon: <FileCheck className="h-4 w-4" />,
-      title: "Regulatory Gravity",
-      body: "PRAZ, ZIMRA, NSSA, RBZ, Labour Act — the compliance surface area expands every quarter. One misstep costs more than a fine.",
+      icon: <Globe className="h-4 w-4" />,
+      title: "The Trust Deficit",
+      body: "Cross-border buyers, diaspora investors, and AfCFTA partners require auditable, bank-grade operational histories. Fragmented paper records make you invisible to the capital pipeline.",
     },
   ];
 
   const solutions = [
     {
-      icon: <BarChart className="h-4 w-4" />,
-      title: "See the Full Picture",
-      body: "Radbit's digital assessment maps your entire operation — finance, compliance, procurement, digital maturity — and delivers a prioritised roadmap in 5 minutes.",
+      icon: <Shield className="h-4 w-4" />,
+      title: "Tender Intelligence & Compliance Shield",
+      body: "An automated pre-flight abort engine that simulates the procurement officer's disqualification process, flags structural gaps, and seals your bid. You arrive at evaluation bulletproof.",
     },
     {
-      icon: <Globe className="h-4 w-4" />,
-      title: "Deploy Sovereign Infrastructure",
-      body: "AI agents, tender intelligence, compliance copilots — all running on infrastructure you control, encrypted and stored in Southern Africa.",
+      icon: <Zap className="h-4 w-4" />,
+      title: "The Executive Multiplier",
+      body: "Autonomous digital shadows that enforce your exact business rules across inventory, invoices, and logistics. Real-time alerts the instant an operational anomaly occurs — not after losses compound.",
     },
     {
-      icon: <Target className="h-4 w-4" />,
-      title: "Execute with Confidence",
-      body: "From winning government tenders to automating ZIMRA submissions, every tool is purpose-built for Zimbabwe's regulatory and economic reality.",
+      icon: <Database className="h-4 w-4" />,
+      title: "The Global Partner Passport",
+      body: "Transform fragmented records into an immutable, verifiable track record on blockchain. The institutional credibility required to satisfy international suppliers, diaspora investors, and AfCFTA compliance.",
     },
   ];
 
@@ -153,10 +164,10 @@ function ProblemSolutionSection() {
           className="text-center space-y-3 mb-16"
         >
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-            The Problem Is <span className="text-gradient">Not a Lack of Tools</span>
+            You Don&apos;t Have a <span className="text-gradient">Tool Problem</span>
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-base">
-            It&apos;s that every tool was built for a different market. Radbit was built for Zimbabwe.
+            You have a trust, compliance, and delegation problem. Off-the-shelf software was built for stable markets. Radbit was built for the SADC reality.
           </p>
         </motion.div>
 
@@ -188,7 +199,7 @@ function ProblemSolutionSection() {
           >
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Radbit Delivers</span>
             <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-              A Platform. Not Another Tool.
+              Three Pillars of <span className="text-gradient">Operational Leverage</span>
             </h2>
           </motion.div>
 
@@ -220,21 +231,21 @@ function HowItWorksSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const steps = [
     {
-      icon: <BarChart className="h-4 w-4" />,
-      title: "Diagnose",
-      body: "A 5-minute radar-chart analysis of your digital and operational maturity. Know your baseline across finance, compliance, procurement, and technology.",
+      icon: <Shield className="h-4 w-4" />,
+      title: "Stress-Test",
+      body: "A 3-minute operational audit that maps your exposure across compliance gaps, delegation leaks, and cross-border friction points. Know exactly which pillar of your operation is hemorrhaging leverage.",
       symbol: <Sankofa className="h-8 w-8 text-primary/20" />,
     },
     {
-      icon: <Lightbulb className="h-4 w-4" />,
-      title: "Strategise",
-      body: "AI generates a prioritised roadmap calibrated to Zimbabwe's regulatory and economic environment — not generic benchmarks from another market.",
+      icon: <Target className="h-4 w-4" />,
+      title: "Armor",
+      body: "Our Vertex AI RAG engine calibrates a protection stack calibrated to your industry and failure profile — tender armor, executive multipliers, or the global partner passport. Deployed as modular Firestore holons.",
       symbol: <GyeNyame className="h-8 w-8 text-primary/20" />,
     },
     {
-      icon: <TrendingUp className="h-4 w-4" />,
-      title: "Execute",
-      body: "Deploy tender intelligence, compliance copilots, and AI agents — all on a sovereign platform that works during load-shedding and speaks your currency.",
+      icon: <Zap className="h-4 w-4" />,
+      title: "Delegate with Certainty",
+      body: "Your digital shadow runs the rules you set. Exception-only alerts reach you when the machine encounters something your protocols didn't cover. You step back. You don't lose control.",
       symbol: <Dwennimmen className="h-8 w-8 text-primary/20" />,
     },
   ];
@@ -249,7 +260,7 @@ function HowItWorksSection() {
           className="text-center space-y-3 mb-12"
         >
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-            Diagnose. Strategise. <span className="text-gradient">Execute.</span>
+            Stress-Test. Armor. <span className="text-gradient">Delegate.</span>
           </h2>
         </motion.div>
 
@@ -301,31 +312,59 @@ function HowItWorksSection() {
   );
 }
 
+function DiagnosticSection() {
+  return (
+    <section className="relative py-20 md:py-28 border-y border-border bg-muted/30 content-visibility-auto">
+      <div className="container relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          className="text-center space-y-3 mb-12"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-medium mb-2">
+            <Zap className="h-3 w-3" />
+            Interactive Diagnostic
+          </div>
+          <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
+            Three Minutes to Know Your <span className="text-gradient">Exact Exposure</span>
+          </h2>
+          <p className="text-muted-foreground max-w-lg mx-auto text-base">
+            Select your industry and your primary failure point. The machine will surface the specific armor layer
+            your enterprise needs — calibrated to SADC market conditions.
+          </p>
+        </motion.div>
+        <OperationalStressTester />
+      </div>
+    </section>
+  );
+}
+
 function FeaturesSection() {
   const features = [
     {
-      icon: <BarChart className="h-4 w-4" />,
-      title: "Enterprise Digital Assessment",
-      body: "A radar-chart analysis across finance, compliance, procurement, and technology — calibrated to Zimbabwe's regulatory environment. Know your baseline, find critical gaps, get an actionable roadmap.",
-      href: "/assessment",
-    },
-    {
-      icon: <Briefcase className="h-4 w-4" />,
-      title: "Tender & Procurement Intelligence",
-      body: "AI-curated opportunities from 12+ government departments and 8 state enterprises. Track deadlines in real time, manage PRAZ documents, and submit with confidence — from one dashboard.",
-      href: "/tenders",
-    },
-    {
-      icon: <Sparkles className="h-4 w-4" />,
-      title: "AI Agent Infrastructure",
-      body: "Deploy autonomous agents for financial projections, content production, customer communications, and operational reporting — purpose-built for Zimbabwe's connectivity and currency realities.",
-      href: "/toolkit",
-    },
-    {
       icon: <Shield className="h-4 w-4" />,
-      title: "Regulatory Command Centre",
-      body: "ZIMRA tax copilot, PRAZ compliance manager, NSSA submissions, Labour Act policy generator, and export readiness coach — every regulatory touchpoint unified in one sovereign platform.",
-      href: "/toolkit",
+      title: "Custom Enterprise Architectures",
+      body: "Vertex AI-powered microservice frameworks deployed on Firestore pipelines. No generic CMS. No bloated ERP. Systems designed to absorb your specific operational complexity and enforce your exact business rules at machine speed.",
+      href: "/solutions",
+    },
+    {
+      icon: <Lock className="h-4 w-4" />,
+      title: "Asset & Margin Protection",
+      body: "Automated threat detection pipelines scanning your infrastructure, supply chain, and compliance surface. Real-time alerts on margin erosion, regulatory drift, and operational anomalies — before they become losses.",
+      href: "/solutions",
+    },
+    {
+      icon: <Zap className="h-4 w-4" />,
+      title: "Operational Multipliers",
+      body: "Digital shadow assistants that enforce your delegation rules across inventory, invoices, and logistics. Exception-only alerts mean you intervene only when the machine detects something your protocols didn't anticipate.",
+      href: "/solutions",
+    },
+    {
+      icon: <Brain className="h-4 w-4" />,
+      title: "Agentic System Automation",
+      body: "Autonomous Vertex AI agents running RAG pipelines grounded in local market parameters. They generate tenders, simulate compliance audits, reconcile ledgers, and produce institutional-grade documentation — unattended.",
+      href: "/solutions",
     },
   ];
 
@@ -339,10 +378,10 @@ function FeaturesSection() {
           className="text-center space-y-3 mb-12"
         >
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-            Four Capabilities. <span className="text-gradient">One Platform.</span>
+            Four Layers of <span className="text-gradient">Operational Armor</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-base">
-            Purpose-built for Zimbabwean enterprises — from Bulawayo manufacturing to Harare financial services.
+            Each layer is a self-contained holon — hot-swappable, independently scalable, and wired into a unified Firestore brain.
           </p>
         </motion.div>
 
@@ -749,12 +788,12 @@ function CTASection() {
           className="space-y-4"
         >
           <h2 className="font-headline text-fluid-5xl font-bold tracking-tighter text-foreground">
-            Ready to Build on
+            Step Back Without
             <br />
-            <span className="text-gradient">Sovereign Ground?</span>
+            <span className="text-gradient">Losing Command.</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto">
-            Five minutes to your first assessment. No commitment. No generic dashboard.
+            Three minutes to your first stress-test. One deployment to bulletproof your operations. No generic dashboards. No rented developer hours.
           </p>
         </motion.div>
         <motion.div
@@ -765,7 +804,7 @@ function CTASection() {
         >
           <MagneticButton asChild size="lg" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 hover:border-primary/60 animate-glow-pulse px-8">
             <Link href="/assessment">
-              Begin Your Assessment
+              Deploy Your Armor
               <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
           </MagneticButton>
@@ -794,6 +833,7 @@ export default function LandingPage() {
         <HeroSection />
         <ProblemSolutionSection />
         <HowItWorksSection />
+        <DiagnosticSection />
         <FeaturesSection />
         <PlatformScopeSection />
         <CaseStudiesSection />

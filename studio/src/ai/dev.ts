@@ -17,3 +17,4 @@ import '@/ai/flows/generate-supplier-negotiator.ts';
 import '@/ai/flows/generate-export-coach.ts';
 import '@/ai/flows/generate-personalized-brief.ts';
 import '@/ai/flows/generate-onboarding-checklist.ts';
+import '@/ai/flows/generate-threat-assessment.ts';
