@@ -51,9 +51,9 @@ describe('DocumentUpload', () => {
       json: async () => ({ success: true, url: 'https://example.com/file.pdf', filename: 'file.pdf' }),
     });
 
-    render(React.createElement(DocumentUpload, { projectId: 'proj-1', onUploadComplete }));
+    const { container } = render(React.createElement(DocumentUpload, { projectId: 'proj-1', onUploadComplete }));
 
-    const input = screen.getByRole('textbox', { hidden: true }) as HTMLInputElement;
+    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
     const file = new File(['test'], 'test.pdf', { type: 'application/pdf' });
     Object.defineProperty(input, 'files', { value: [file] });
     fireEvent.change(input);

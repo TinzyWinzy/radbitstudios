@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { AuthContext } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Loader2, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Icons } from '@/components/icons';
+import { auth } from '@/lib/firebase/firebase';
 import { z } from 'zod';
 import { useUtm, getStoredUtm } from '@/hooks/use-utm';
 
@@ -32,7 +33,6 @@ export default function SignUpPage() {
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
 
   const { user, signUp, signInWithGoogle } = useContext(AuthContext);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const intentPlan = searchParams.get('plan');
@@ -47,7 +47,7 @@ export default function SignUpPage() {
     if (user) {
       const utm = getStoredUtm();
       if (utm.ref) {
-        user.getIdToken().then((idToken) => {
+        auth.currentUser?.getIdToken().then((idToken) => {
           const payload = JSON.stringify({ idToken, referralCode: utm.ref });
           navigator.sendBeacon('/api/referral/apply', new Blob([payload], { type: 'application/json' }));
         });
@@ -56,13 +56,24 @@ export default function SignUpPage() {
         sessionStorage.setItem('radbit_signup_plan', intentPlan);
       }
       const nextPlan = intentPlan || sessionStorage.getItem('radbit_signup_plan');
-      if (nextPlan) {
-        router.push(`/settings?tab=account&upgradeTo=${nextPlan.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`);
-      } else {
-        router.push('/dashboard');
-      }
+      const redirectTo = nextPlan
+        ? `/settings?tab=account&upgradeTo=${nextPlan.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}`
+        : '/dashboard';
+      const refreshCookie = async () => {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const token = await currentUser.getIdToken();
+          await fetch('/api/auth/refresh-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken: token }),
+          });
+        }
+        window.location.href = redirectTo;
+      };
+      refreshCookie();
     }
-  }, [user, router, intentPlan]);
+  }, [user, intentPlan]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
 import { AuthContext } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,7 +27,6 @@ export default function SignInPage() {
   const [isResetting, setIsResetting] = useState(false);
 
   const { user, signIn, signInWithGoogle } = useContext(AuthContext);
-  const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -42,17 +41,17 @@ export default function SignInPage() {
         const currentUser = auth.currentUser;
         if (currentUser) {
           const token = await currentUser.getIdToken();
-          await fetch('/api/auth/refresh-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken: token }),
-          });
-        }
-        router.push(redirectTo);
-      };
-      refreshCookie();
-    }
-  }, [user, router]);
+            await fetch('/api/auth/refresh-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ idToken: token }),
+            });
+          }
+          window.location.href = redirectTo;
+        };
+        refreshCookie();
+      }
+    }, [user]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

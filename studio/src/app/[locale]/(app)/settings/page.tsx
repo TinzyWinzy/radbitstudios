@@ -497,7 +497,7 @@ export default function SettingsPage() {
         </p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto md:grid md:grid-cols-10 [&>*]:shrink-0">
+        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 md:grid md:grid-cols-10 md:overflow-visible md:pb-0 md:gap-0 [&>*]:shrink-0">
           <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
           <TabsTrigger value="business">{t('tabs.business')}</TabsTrigger>
           <TabsTrigger value="account">{t('tabs.account')}</TabsTrigger>
@@ -539,14 +539,14 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                     <h3 className="text-lg font-semibold">{t('profile.badges')}</h3>
-                    <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/50">
-                        <Award className="h-10 w-10 text-yellow-500" />
-                        <div>
-                            <p className="font-semibold text-primary">{t('profile.digitallyGrowing')}</p>
+                    <div className="flex items-start gap-3 p-3 md:p-4 border rounded-lg bg-muted/50">
+                        <Award className="h-8 w-8 md:h-10 md:w-10 text-yellow-500 shrink-0" />
+                        <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-sm md:text-base text-primary">{t('profile.digitallyGrowing')}</p>
                             <p className="text-xs text-muted-foreground">{t('profile.badgeDescription')}</p>
                         </div>
-                        <Button variant="outline" size="sm" className="ml-auto" onClick={handleShareBadge}>
-                            <Share2 className="mr-2 h-4 w-4" />
+                        <Button variant="outline" size="sm" className="shrink-0 h-9 text-xs" onClick={handleShareBadge}>
+                            <Share2 className="mr-1.5 h-3.5 w-3.5" />
                             {t('profile.share')}
                         </Button>
                     </div>
@@ -598,34 +598,34 @@ export default function SettingsPage() {
                 Manage your subscription plan and billing details. Your credits reset when you change plans.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8">
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <CardContent className="space-y-6 p-4 md:p-6">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                     {subscriptionPlans.map((plan) => (
                         <Card key={plan.name} className={cn(
                             "flex flex-col",
                             plan.name === currentPlanName && "border-primary ring-2 ring-primary"
                         )}>
-                            <CardHeader>
-                                <CardTitle>{plan.name}</CardTitle>
-                                <CardDescription>{plan.description}</CardDescription>
+                            <CardHeader className="p-4 md:p-6">
+                                <CardTitle className="text-base md:text-lg">{plan.name}</CardTitle>
+                                <CardDescription className="text-xs md:text-sm">{plan.description}</CardDescription>
                             </CardHeader>
-                            <CardContent className="flex-1 space-y-4">
-                                <div>
-                                    <span className="text-4xl font-bold">${plan.price}</span>
-                                    <span className="text-muted-foreground">/month</span>
+                            <CardContent className="flex-1 space-y-3 p-4 md:p-6 pt-0 md:pt-0">
+                                <div className="flex items-baseline gap-1 flex-wrap">
+                                    <span className="text-3xl md:text-4xl font-bold">${plan.price}</span>
+                                    <span className="text-sm text-muted-foreground">/month</span>
                                 </div>
-                                <ul className="space-y-2 text-sm text-muted-foreground">
+                                <ul className="space-y-1.5 text-xs md:text-sm text-muted-foreground">
                                     {plan.features.map(feature => (
-                                        <li key={feature} className="flex items-center">
-                                            <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                                            {feature}
+                                        <li key={feature} className="flex items-start gap-2">
+                                            <CheckCircle className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
+                                            <span className="leading-snug">{feature}</span>
                                         </li>
                                     ))}
                                 </ul>
                             </CardContent>
-                            <CardFooter>
-                                <Button 
-                                    className="w-full"
+                            <CardFooter className="p-4 md:p-6 pt-0 md:pt-0">
+                                <Button
+                                    className="w-full h-11 text-sm"
                                     disabled={isChangingPlan || plan.name === currentPlanName}
                                     onClick={() => handlePlanChange(plan)}
                                 >
@@ -659,7 +659,7 @@ export default function SettingsPage() {
                       <p className="text-sm text-muted-foreground">Your requests are prioritized. Expected response within 4 hours.</p>
                     </div>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div className="flex flex-col items-center p-4 rounded-lg border bg-card text-center">
                       <Clock className="h-5 w-5 text-primary mb-2" />
                       <span className="text-sm font-medium">&lt; 4 hour response</span>
@@ -685,24 +685,24 @@ export default function SettingsPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 rounded-lg border border-muted">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-muted shrink-0">
-                      <Headphones className="size-5 text-muted-foreground" />
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-lg border border-muted">
+                      <div className="flex size-10 items-center justify-center rounded-full bg-muted shrink-0">
+                        <Headphones className="size-5 text-muted-foreground" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium">Priority Support</p>
+                        <p className="text-sm text-muted-foreground">Upgrade to Pro for dedicated support with guaranteed response times.</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full sm:w-auto sm:shrink-0 h-11 text-sm"
+                        onClick={() => setActiveTab('account')}
+                      >
+                        Upgrade to Pro
+                      </Button>
                     </div>
-                    <div>
-                      <p className="font-medium">Priority Support</p>
-                      <p className="text-sm text-muted-foreground">Upgrade to Pro for dedicated support with guaranteed response times.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="ml-auto shrink-0"
-                      onClick={() => setActiveTab('account')}
-                    >
-                      Upgrade to Pro
-                    </Button>
-                  </div>
                   <Button
                     variant="outline"
                     className="w-full"
@@ -719,7 +719,7 @@ export default function SettingsPage() {
         <TabsContent value="assessment-history">
             <Card>
                 <CardHeader>
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                         <div>
                             <CardTitle>Assessment History</CardTitle>
                             <CardDescription>
@@ -728,7 +728,7 @@ export default function SettingsPage() {
                         </div>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button variant="destructive" disabled={assessmentHistory.length === 0 || isDeleting}>
+                                <Button variant="destructive" disabled={assessmentHistory.length === 0 || isDeleting} className="h-11 text-sm w-full sm:w-auto">
                                     {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     <Trash2 className="mr-2 h-4 w-4"/>
                                     Clear History
@@ -784,7 +784,7 @@ export default function SettingsPage() {
          <TabsContent value="generation-history">
             <Card>
                 <CardHeader>
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                         <div>
                             <CardTitle>Generation History</CardTitle>
                             <CardDescription>
@@ -793,7 +793,7 @@ export default function SettingsPage() {
                         </div>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button variant="destructive" disabled={generationHistory.length === 0 || isDeleting}>
+                                <Button variant="destructive" disabled={generationHistory.length === 0 || isDeleting} className="h-11 text-sm w-full sm:w-auto">
                                     {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     <Trash2 className="mr-2 h-4 w-4"/>
                                     Clear History

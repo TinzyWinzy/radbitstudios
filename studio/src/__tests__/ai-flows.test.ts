@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
+  MockAIGateway,
   setupMockAIGateway,
   resetMock,
   setMockContent,
@@ -8,6 +9,12 @@ import {
   getGenerateCalls,
   getLastGenerateCall,
 } from '@/__tests__/helpers/mock-ai-gateway';
+
+const __aiMockInstance = new MockAIGateway();
+vi.mock('@/services/ai/ai-gateway', () => ({
+  AIGateway: MockAIGateway,
+  aiGateway: __aiMockInstance,
+}));
 
 setupMockAIGateway();
 

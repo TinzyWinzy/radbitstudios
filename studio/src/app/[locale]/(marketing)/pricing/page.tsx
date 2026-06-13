@@ -250,23 +250,24 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {/* Tabs — using anchor links for server component */}
+        {/* Section navigation */}
         <nav className="flex flex-wrap justify-center gap-2 mb-12 border-b border-border/50 pb-4" aria-label="Pricing categories">
           {TABS.map((tab) => (
-            <span
+            <a
               key={tab.id}
-              className="inline-flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors cursor-default"
+              href={`#${tab.id}`}
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
             >
               {tab.icon}
               {tab.label}
-            </span>
+            </a>
           ))}
         </nav>
 
         {/* ─── Web Packages ─────────────────────────────────────────────── */}
-        <section id="web" className="mb-10 md:mb-20 content-visibility-auto">
+        <section id="web" className="mb-10 md:mb-20 scroll-mt-20">
           <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">Web Packages</h2>
+            <h2 className="font-headline text-3xl font-bold mb-3">Web <span className="text-gradient">Packages</span></h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Professional websites and web applications, designed and built for the African market.
               All prices in USD.
@@ -321,26 +322,33 @@ export default function PricingPage() {
         </section>
 
         {/* ─── AI Platform (SaaS) ──────────────────────────────────────── */}
-        <section id="saas" className="mb-10 md:mb-20 content-visibility-auto">
+        <section id="saas" className="mb-10 md:mb-20 scroll-mt-20">
           <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">AI Platform</h2>
+            <h2 className="font-headline text-3xl font-bold mb-3">AI <span className="text-gradient">Platform</span></h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               AI-powered tools for assessments, tender intelligence, mentorship, and compliance — built
               for Zimbabwean SMEs.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {subscriptionPlans.map((plan) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {subscriptionPlans.map((plan) => {
+              const isHighlighted = plan.name === "Growth" || plan.name === "Tender Starter";
+              return (
               <div
                 key={plan.name}
                 className={`relative rounded-xl border p-6 flex flex-col ${
-                  plan.name === "Growth"
+                  isHighlighted
                     ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5"
                     : "border-border/50 bg-card/30"
                 }`}
               >
+                {plan.name === "Growth" && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium whitespace-nowrap">
+                    Most Popular
+                  </span>
+                )}
                 {plan.name === "Tender Starter" && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary/80 text-primary-foreground text-xs font-medium whitespace-nowrap">
                     Best for Tenders
                   </span>
                 )}
@@ -386,7 +394,8 @@ export default function PricingPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-            ))}
+            );
+            })}
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto mt-8">
             {[
@@ -402,10 +411,11 @@ export default function PricingPage() {
           </div>
         </section>
 
+        <hr className="border-border/50 mb-10 md:mb-20" />
         {/* ─── ERP Systems ─────────────────────────────────────────────── */}
-        <section id="erp" className="mb-10 md:mb-20 content-visibility-auto">
+        <section id="erp" className="mb-10 md:mb-20 scroll-mt-20">
           <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">ERP Systems</h2>
+            <h2 className="font-headline text-3xl font-bold mb-3">ERP <span className="text-gradient">Systems</span></h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Streamline operations with integrated accounting, inventory, HR, and CRM.
               ZIMRA FDMS compliant. All prices in USD.
@@ -470,10 +480,11 @@ export default function PricingPage() {
           </p>
         </section>
 
+        <hr className="border-border/50 mb-10 md:mb-20" />
         {/* ─── Professional Services ───────────────────────────────────── */}
-        <section id="services" className="mb-10 md:mb-20 content-visibility-auto">
+        <section id="services" className="mb-10 md:mb-20 scroll-mt-20">
           <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">Professional Services</h2>
+            <h2 className="font-headline text-3xl font-bold mb-3">Professional <span className="text-gradient">Services</span></h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Expert consultancy to protect, grow, and transform your business.
               Project-based or retainer pricing.
@@ -518,8 +529,9 @@ export default function PricingPage() {
           </div>
         </section>
 
+        <hr className="border-border/50 mb-10 md:mb-20" />
         {/* ─── CTA Section ─────────────────────────────────────────────── */}
-        <section className="mb-8 md:mb-16 rounded-2xl border border-border/50 bg-gradient-to-br from-primary/5 to-background p-8 md:p-12 text-center">
+        <section className="mb-8 md:mb-16 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-primary/[0.03] to-background p-8 md:p-12 text-center">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">
             Not sure what you need?
           </h2>

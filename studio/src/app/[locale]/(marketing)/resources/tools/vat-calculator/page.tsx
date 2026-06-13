@@ -28,7 +28,7 @@ export default function VatCalculatorPage() {
         </div>
         <div>
           <h1 className="font-headline text-3xl font-bold tracking-tight">VAT Calculator</h1>
-          <p className="text-muted-foreground">Zimbabwe &mdash; 15% standard VAT</p>
+          <p className="text-muted-foreground">Zimbabwe &mdash; 15% standard VAT (ZIMRA)</p>
         </div>
       </div>
 
@@ -51,11 +51,11 @@ export default function VatCalculatorPage() {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="rounded-lg bg-muted/50 p-4">
               <p className="text-muted-foreground mb-1">VAT (15%)</p>
-              <p className="text-xl font-bold">${vatAmount.toFixed(2)}</p>
+              <p className="text-xl font-bold">US${vatAmount.toFixed(2)}</p>
             </div>
             <div className="rounded-lg bg-primary/10 p-4">
               <p className="text-primary/70 text-sm mb-1">Total (incl. VAT)</p>
-              <p className="text-xl font-bold">${totalInclusive.toFixed(2)}</p>
+              <p className="text-xl font-bold">US${totalInclusive.toFixed(2)}</p>
             </div>
           </div>
         </div>
@@ -85,11 +85,11 @@ export default function VatCalculatorPage() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="rounded-lg bg-muted/50 p-4">
                 <p className="text-muted-foreground mb-1">Net Price (excl. VAT)</p>
-                <p className="text-xl font-bold">${netFromInclusive.toFixed(2)}</p>
+                <p className="text-xl font-bold">US${netFromInclusive.toFixed(2)}</p>
               </div>
               <div className="rounded-lg bg-muted/50 p-4">
                 <p className="text-muted-foreground mb-1">VAT Amount</p>
-                <p className="text-xl font-bold">${vatFromInclusive.toFixed(2)}</p>
+                <p className="text-xl font-bold">US${vatFromInclusive.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function VatCalculatorPage() {
       </div>
 
       <p className="text-xs text-muted-foreground mt-4 text-center">
-        Rate: 15% standard VAT per ZIMRA. Zero-rated goods (exports, unprocessed food/tobacco/alcohol) use a custom rate &mdash; consult your ZIMRA officer.
+        Rate: 15% standard VAT per ZIMRA. All amounts shown in US$. Zero-rated goods (exports, unprocessed food/tobacco/alcohol) use a custom rate &mdash; consult your ZIMRA officer.
       </p>
     </div>
   );

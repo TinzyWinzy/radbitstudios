@@ -535,7 +535,7 @@ export default function DashboardPage() {
             benchmarkData={benchmarkData}
           />
         ) : (
-          <Card className="lg:col-span-1 hidden lg:block">
+          <Card className="lg:col-span-1">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Business Maturity</CardTitle>
               <CardDescription className="text-xs">Your growth journey starts here.</CardDescription>

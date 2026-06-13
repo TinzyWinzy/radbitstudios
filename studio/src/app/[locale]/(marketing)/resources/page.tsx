@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles } from "lucide-react";
+import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { adminDb } from "@/lib/firebase/firebase-admin";
+import { breadcrumbSchema } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,14 @@ export const metadata: Metadata = {
   },
 };
 
+interface GuideItem {
+  slug: string;
+  title: string;
+  excerpt: string;
+  icon: string;
+  readTime: string;
+}
+
 const tools = [
   {
     slug: "vat-calculator",
@@ -31,31 +40,51 @@ const tools = [
     excerpt: "Get Shona, English, and bilingual business name suggestions tailored to your industry and values.",
     icon: <Wrench className="h-6 w-6" />,
   },
+  {
+    slug: "currency-exchange",
+    title: "Currency Exchange Rates",
+    excerpt: "Live exchange rates for SADC currencies and major global pairs — USD, ZAR, JPY, EUR, GBP, and more.",
+    icon: <ArrowRightLeft className="h-6 w-6" />,
+  },
 ];
 
-async function getGuides() {
+async function getGuides(): Promise<GuideItem[]> {
   try {
     const snap = await adminDb.collection("guides").where("published", "==", true).orderBy("createdAt", "desc").get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return snap.docs.map(d => {
+      const data = d.data();
+      return {
+        slug: data.slug as string,
+        title: data.title as string,
+        excerpt: data.excerpt as string,
+        icon: data.icon as string,
+        readTime: data.readTime as string,
+      };
+    });
   } catch {
     return [];
   }
 }
 
-const iconMap: Record<string, React.ReactNode> = {};
 function getIcon(name: string) {
-  if (!iconMap[name]) {
-    const icons = LucideIcons as any;
-    const Icon = icons[name] || icons.FileText;
-    iconMap[name] = <Icon className="h-6 w-6" />;
-  }
-  return iconMap[name];
+  const icons = LucideIcons as unknown as Record<string, React.ComponentType<{ className: string }>>;
+  const Icon = icons[name] || icons.FileText;
+  return <Icon className="h-6 w-6" />;
 }
 
 export default async function ResourcesPage() {
   const guides = await getGuides();
+  const breadcrumbJson = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Resources", url: "/resources" },
+  ]);
+
   return (
     <div className="container py-8 md:py-16 max-w-5xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJson) }}
+      />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link href="/" className="hover:text-foreground">Home</Link>
@@ -87,10 +116,14 @@ export default async function ResourcesPage() {
           <h2 className="font-headline text-2xl font-bold">Pillar Guides</h2>
           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">2,000+ words each</span>
         </div>
+        {guides.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border/50 bg-card/30 p-8 text-center">
+            <BookOpen className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground">Guides are being prepared. Check back soon.</p>
+          </div>
+        ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          {(guides as any[]).map((guide) => {
-            const g = guide as { slug: string; title: string; excerpt: string; icon: string; readTime: string };
-            return (
+          {guides.map((g) => (
             <Link
               key={g.slug}
               href={`/resources/guides/${g.slug}`}
@@ -115,9 +148,10 @@ export default async function ResourcesPage() {
                   </div>
                 </div>
               </div>
-            </Link>);
-          })}
+            </Link>
+          ))}
         </div>
+        )}
       </section>
 
       {/* Interactive Tools */}

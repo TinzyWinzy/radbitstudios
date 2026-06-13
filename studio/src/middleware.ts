@@ -113,6 +113,11 @@ export default async function middleware(request: NextRequest) {
   );
   response.headers.set('Content-Security-Policy', transitionalCsp);
 
+  // Auth pages should not appear in search results
+  if (pathname.startsWith('/sign-in') || pathname.startsWith('/sign-up')) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  }
+
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');

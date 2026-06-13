@@ -146,7 +146,7 @@ export default function AssessmentPage() {
                     <Loader2 className="h-8 w-8 animate-spin" />
                   </div>
                 ) : (
-                  <ChartContainer config={flow.chartConfig} className="aspect-square w-full max-h-[320px] sm:max-h-none" aria-label="Radar chart showing your assessment scores compared to SME average">
+                  <ChartContainer config={flow.chartConfig} className="aspect-square w-full max-w-full max-h-[280px] sm:max-h-[400px]" aria-label="Radar chart showing your assessment scores compared to SME average">
                     <ResponsiveContainer>
                       <RadarChart data={flow.chartData}>
                         <ChartTooltip content={<ChartTooltipContent />} />

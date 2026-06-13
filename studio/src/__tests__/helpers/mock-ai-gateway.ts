@@ -72,12 +72,12 @@ export class MockAIGateway {
   }
 }
 
+/**
+ * Call at top level of test files to mock @/services/ai/ai-gateway.
+ * Note: this must be called at the top level of the module (not inside test hooks)
+ * so that vitest can hoist the vi.mock call correctly.
+ */
 export function setupMockAIGateway(): void {
-  vi.mock('@/services/ai/ai-gateway', () => {
-    const instance = new MockAIGateway();
-    return {
-      AIGateway: MockAIGateway,
-      aiGateway: instance,
-    };
-  });
+  // state init only — the actual vi.mock call must be in the test file's top level
+  resetMock();
 }

@@ -45,41 +45,35 @@ vi.mock('@/components/ui/dropdown-menu', () => {
 const mockUser = { displayName: 'John Doe', email: 'john@example.com', photoURL: '' };
 const mockLogout = vi.fn().mockResolvedValue(undefined);
 
-vi.mock('@/contexts/auth-context', () => ({
-  AuthContext: {
-    Provider: ({ children, value }: { children: React.ReactNode; value: unknown }) =>
-      React.createElement('div', { 'data-testid': 'auth-provider' }, children),
-    Consumer: ({ children }: { children: (value: unknown) => React.ReactNode }) =>
-      children(mockUser),
-  },
-}));
+vi.mock('@/contexts/auth-context', () => {
+  const React = require('react');
+  const ctx = React.createContext<{ user: Record<string, string> | null; logout: () => Promise<void> }>(undefined as never);
+  return { AuthContext: ctx };
+});
 
-// Import after mocks
-const { UserNav } = require('@/components/user-nav') as typeof import('@/components/user-nav');
+import { AuthContext } from '@/contexts/auth-context';
+import { UserNav } from '@/components/user-nav';
 
 describe('UserNav', () => {
   it('renders user avatar with initials', () => {
-    // Mock useContext to return our user
-    const authContext = require('@/contexts/auth-context');
-    const originalConsumer = authContext.AuthContext.Consumer;
-    authContext.AuthContext.Consumer = ({ children }: { children: (value: unknown) => React.ReactNode }) =>
-      children({ user: mockUser, logout: mockLogout });
-
-    render(React.createElement(UserNav));
+    render(
+      React.createElement(
+        AuthContext.Provider,
+        { value: { user: mockUser, logout: mockLogout } },
+        React.createElement(UserNav)
+      )
+    );
     expect(screen.getByText('JD')).toBeTruthy();
-
-    authContext.AuthContext.Consumer = originalConsumer;
   });
 
   it('returns null when no user', () => {
-    const authContext = require('@/contexts/auth-context');
-    const originalConsumer = authContext.AuthContext.Consumer;
-    authContext.AuthContext.Consumer = ({ children }: { children: (value: unknown) => React.ReactNode }) =>
-      children({ user: null, logout: mockLogout });
-
-    const { container } = render(React.createElement(UserNav));
+    const { container } = render(
+      React.createElement(
+        AuthContext.Provider,
+        { value: { user: null, logout: mockLogout } },
+        React.createElement(UserNav)
+      )
+    );
     expect(container.innerHTML).toBe('');
-
-    authContext.AuthContext.Consumer = originalConsumer;
   });
 });

@@ -77,7 +77,7 @@ describe('UpgradeModal', () => {
       upgrade,
       onUpgrade: mockOnUpgrade,
     }));
-    fireEvent.click(screen.getByText(/Upgrade to Growth/));
+    fireEvent.click(screen.getAllByText(/Upgrade to Growth/)[1]);
     expect(mockOnUpgrade).toHaveBeenCalledOnce();
   });
 

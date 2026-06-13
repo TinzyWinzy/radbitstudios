@@ -34,7 +34,7 @@ vi.mock('lucide-react', () => ({
 describe('BottomNav', () => {
   it('renders all navigation items', () => {
     render(React.createElement(BottomNav));
-    expect(screen.getByText('Home')).toBeTruthy();
+    expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Tenders')).toBeTruthy();
     expect(screen.getByText('Toolkit')).toBeTruthy();
     expect(screen.getByText('Invest')).toBeTruthy();

@@ -56,6 +56,18 @@ export default async function FAQPage() {
 
       <AdBanner slot="content-banner" className="mb-12" />
 
+      {faqItems.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border/50 bg-card/30 p-8 text-center">
+          <HelpCircle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+          <p className="text-muted-foreground">No FAQs yet. Check back soon or ask the AI Mentor.</p>
+          <Link
+            href="/mentor"
+            className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary hover:underline"
+          >
+            Ask the AI Mentor <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+      ) : (
       <div className="flex flex-col gap-10">
         {Object.entries(grouped).map(([category, questions]) => (
           <section key={category}>
@@ -84,6 +96,7 @@ export default async function FAQPage() {
           </section>
         ))}
       </div>
+      )}
     </div>
   );
 }

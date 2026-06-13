@@ -196,9 +196,8 @@ describe('New Route Structure', () => {
     const fs = require('fs');
     const path = require('path');
     const solutionsDir = path.join(process.cwd(), 'src/app/[locale]/(marketing)/solutions');
-    expect(fs.existsSync(path.join(solutionsDir, 'logistics-pharmacies/page.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(solutionsDir, 'agri-tech-manufacturing/page.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(solutionsDir, 'hospitality-studios/page.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(solutionsDir, 'page.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(solutionsDir, '[industry]/page.tsx'))).toBe(true);
   });
 
   it('has partner pages directory structure', () => {

@@ -28,14 +28,18 @@ vi.mock('lucide-react', () => ({
 }));
 
 describe('MaturityOverview', () => {
+  const baseResponses = [
+    { score: 3, category: 'digitalPresence', question: 'Do you have a website?', answer: 'Yes' },
+    { score: 3, category: 'digitalPresence', question: 'Do you use social media?', answer: 'Yes' },
+    { score: 2, category: 'operations', question: 'Do you use accounting software?', answer: 'Sometimes' },
+    { score: 3, category: 'operations', question: 'Do you track inventory?', answer: 'Yes' },
+    { score: 2, category: 'strategy', question: 'Do you have a business plan?', answer: 'Draft' },
+  ];
+
   const baseAssessment: AssessmentDoc = {
     id: 'a1',
-    userId: 'u1',
-    answers: {},
-    overallScore: 65,
-    categoryScores: { digitalPresence: 70, operations: 60 },
-    completedAt: new Date('2026-01-15'),
-    createdAt: new Date('2026-01-15'),
+    responses: baseResponses,
+    createdAt: { toDate: () => new Date('2026-06-13') },
   };
 
   it('returns null when no profile', () => {
@@ -57,7 +61,7 @@ describe('MaturityOverview', () => {
       React.createElement(MaturityOverview, { assessments: [baseAssessment], hasProfile: true, benchmarkData: [] })
     );
     expect(screen.getByText('65')).toBeTruthy();
-    expect(screen.getByText('Building Momentum')).toBeTruthy();
+    expect(screen.getAllByText('Building Momentum')[0]).toBeTruthy();
   });
 
   it('renders benchmark comparison when provided', () => {
@@ -83,8 +87,16 @@ describe('MaturityOverview', () => {
 
   it('shows previous score when available', () => {
     const assessments: AssessmentDoc[] = [
-      { ...baseAssessment, overallScore: 65 },
-      { ...baseAssessment, id: 'a2', overallScore: 55 },
+      baseAssessment,
+      {
+        id: 'a2',
+        responses: [
+          { score: 2, category: 'digitalPresence', question: 'Do you have a website?', answer: 'No' },
+          { score: 2, category: 'operations', question: 'Do you use accounting software?', answer: 'No' },
+          { score: 1, category: 'strategy', question: 'Do you have a business plan?', answer: 'No' },
+        ],
+        createdAt: { toDate: () => new Date('2026-01-15') },
+      },
     ];
     render(
       React.createElement(MaturityOverview, { assessments, hasProfile: true, benchmarkData: [] })

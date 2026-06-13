@@ -243,7 +243,7 @@ export default function InvestorPortalPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="flex overflow-x-auto [&>*]:shrink-0">
+        <TabsList className="flex overflow-x-auto gap-1 pb-1 md:overflow-visible md:pb-0 [&>*]:shrink-0">
           <TabsTrigger value="profile" className="gap-2">
             <Globe className="h-4 w-4" />
             My Profile

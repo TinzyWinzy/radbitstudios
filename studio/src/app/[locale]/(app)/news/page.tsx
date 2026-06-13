@@ -289,7 +289,7 @@ export default function NewsPage() {
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Button variant="outline" size="sm" onClick={loadNews} disabled={isLoading} className="h-8 text-xs gap-1.5">
+              <Button variant="outline" size="sm" onClick={loadNews} disabled={isLoading} className="h-9 text-xs gap-1.5">
                 <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
                 Refresh
               </Button>
@@ -321,7 +321,7 @@ export default function NewsPage() {
                   variant={activeCategory === cat ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setActiveCategory(cat)}
-                  className="text-xs capitalize h-7"
+                  className="text-xs capitalize h-9"
                 >
                   {cat === 'all' ? 'All News' : CATEGORY_LABELS[cat]?.label || cat}
                 </Button>

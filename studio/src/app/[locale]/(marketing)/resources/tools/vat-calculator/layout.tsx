@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "VAT Calculator Zimbabwe — 15% VAT",
-  description:
-    "Free Zimbabwe VAT calculator. Calculate VAT-inclusive and VAT-exclusive prices at the 15% ZIMRA rate. Updated for 2026.",
+  title: "VAT Calculator Zimbabwe — Free ZIMRA 15% VAT Tool",
+  description: "Calculate VAT-inclusive and VAT-exclusive prices at the ZIMRA 15% rate. Free online VAT calculator for Zimbabwean businesses.",
   alternates: { canonical: "/resources/tools/vat-calculator" },
 };
 
-export default function VatCalculatorLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function VatCalculatorLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

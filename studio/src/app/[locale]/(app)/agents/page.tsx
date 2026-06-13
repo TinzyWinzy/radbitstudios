@@ -9,8 +9,11 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import {
-  Send, Loader2, Users, Sparkles, ChevronRight, Zap, Clock,
+  Send, Loader2, Users, Sparkles, ChevronRight, Zap, Clock, Menu,
 } from 'lucide-react';
+import {
+  Sheet, SheetContent, SheetTrigger, SheetTitle,
+} from '@/components/ui/sheet';
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
@@ -111,9 +114,57 @@ export default function AgentsPage() {
     }
   };
 
+  const AgentListContent = () => (
+    <div className="space-y-1">
+      {agentsLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <>
+          <button
+            onClick={() => setSelectedAgent(null)}
+            className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              selectedAgent === null
+                ? 'bg-primary text-primary-foreground'
+                : 'hover:bg-muted'
+            }`}
+          >
+            <div className="flex items-center gap-2 font-medium">
+              <Sparkles className="h-3.5 w-3.5" />
+              Orchestrator
+            </div>
+            <p className="text-xs opacity-70 mt-0.5">Auto-routes to specialists</p>
+          </button>
+          {agents.map(agent => (
+            <button
+              key={agent.id}
+              onClick={() => setSelectedAgent(agent.id)}
+              className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                selectedAgent === agent.id
+                  ? 'bg-primary text-primary-foreground'
+                  : 'hover:bg-muted'
+              }`}
+            >
+              <div className="font-medium">{agent.name}</div>
+              <p className="text-xs opacity-70 mt-0.5 line-clamp-1">{agent.persona}</p>
+              <div className="flex flex-wrap gap-1 mt-1.5">
+                {agent.capabilities.slice(0, 2).map(cap => (
+                  <Badge key={cap} variant="secondary" className="text-[10px] px-1.5 py-0">
+                    {cap}
+                  </Badge>
+                ))}
+              </div>
+            </button>
+          ))}
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-4">
-      {/* Agent Sidebar */}
+      {/* Agent Sidebar — desktop */}
       <aside className="w-72 shrink-0 hidden lg:block">
         <Card className="h-full flex flex-col">
           <CardHeader className="pb-3">
@@ -123,53 +174,31 @@ export default function AgentsPage() {
             </CardTitle>
             <CardDescription>Select a specialist or use the orchestrator</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 overflow-auto p-2">
-            {agentsLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-              </div>
-            ) : (
-              <div className="space-y-1">
-                <button
-                  onClick={() => setSelectedAgent(null)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                    selectedAgent === null
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-muted'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 font-medium">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Orchestrator
-                  </div>
-                  <p className="text-xs opacity-70 mt-0.5">Auto-routes to specialists</p>
-                </button>
-                {agents.map(agent => (
-                  <button
-                    key={agent.id}
-                    onClick={() => setSelectedAgent(agent.id)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                      selectedAgent === agent.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-muted'
-                    }`}
-                  >
-                    <div className="font-medium">{agent.name}</div>
-                    <p className="text-xs opacity-70 mt-0.5 line-clamp-1">{agent.persona}</p>
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {agent.capabilities.slice(0, 2).map(cap => (
-                        <Badge key={cap} variant="secondary" className="text-[10px] px-1.5 py-0">
-                          {cap}
-                        </Badge>
-                      ))}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </CardContent>
+          <AgentListContent />
         </Card>
       </aside>
+
+      {/* Agent Sidebar — mobile sheet */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed bottom-20 left-4 z-40 h-11 w-11 rounded-full shadow-lg lg:hidden"
+            aria-label="Select agent"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-72 pt-12">
+          <SheetTitle className="sr-only">AI Agents</SheetTitle>
+          <CardTitle className="flex items-center gap-2 text-base px-1 mb-4">
+            <Users className="h-4 w-4" />
+            AI Agents
+          </CardTitle>
+          <AgentListContent />
+        </SheetContent>
+      </Sheet>
 
       {/* Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
