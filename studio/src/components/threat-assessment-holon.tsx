@@ -13,6 +13,9 @@ import {
   Swords,
   Network,
   ScrollText,
+  Loader2,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react"
 import { MagneticButton } from "@/components/magnetic-button"
 import Link from "next/link"
@@ -35,6 +38,8 @@ interface ThreatHolonProps {
       widget_title: string
       prompt_text: string
       underlying_radbit_solution: string
+      diagnostic_route?: string
+      cta_text?: string
     }
     market_reality_copy: {
       paragraph_1: string
@@ -46,6 +51,19 @@ interface ThreatHolonProps {
       armor_layer: string
     }
   }
+}
+
+interface GapResult {
+  title: string
+  description: string
+  risk: string
+  radbit_solution: string
+}
+
+interface DiagnosisResult {
+  overall_verdict: string
+  gaps: GapResult[]
+  readiness_score: number
 }
 
 const RISK_COLORS: Record<string, { border: string; bg: string; text: string; label: string }> = {
@@ -70,6 +88,9 @@ const PILLAR_LABELS: Record<string, string> = {
 export function ThreatAssessmentHolon({ holon }: ThreatHolonProps) {
   const [showDiagnostic, setShowDiagnostic] = useState(false)
   const [userWorkflow, setUserWorkflow] = useState("")
+  const [diagnosing, setDiagnosing] = useState(false)
+  const [diagnosis, setDiagnosis] = useState<DiagnosisResult | null>(null)
+  const [diagnosisError, setDiagnosisError] = useState<string | null>(null)
   const riskConfig = RISK_COLORS[holon.metadata.risk_level] || RISK_COLORS.medium
 
   const PrimaryIcon = PILLAR_ICONS[holon.pillar_mapping?.primary_pillar || ""] || Shield
@@ -126,7 +147,13 @@ export function ThreatAssessmentHolon({ holon }: ThreatHolonProps) {
                 </Link>
               </MagneticButton>
               <button
-                onClick={() => setShowDiagnostic(!showDiagnostic)}
+                onClick={() => {
+                  setShowDiagnostic(!showDiagnostic)
+                  if (showDiagnostic) {
+                    setDiagnosis(null)
+                    setDiagnosisError(null)
+                  }
+                }}
                 className="px-6 py-2.5 rounded-xl border border-border/50 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors"
               >
                 {showDiagnostic ? "Hide Diagnostic" : "Run the Simulator"}
@@ -155,25 +182,138 @@ export function ThreatAssessmentHolon({ holon }: ThreatHolonProps) {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">{holon.diagnostic_widget.prompt_text}</p>
-              <textarea
-                value={userWorkflow}
-                onChange={(e) => setUserWorkflow(e.target.value)}
-                placeholder="Describe your current document management and compliance workflow..."
-                rows={3}
-                className="w-full rounded-lg border border-border/50 bg-muted/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
-              />
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground/50">
-                  <span className="text-primary/70">Radbit solution: </span>
-                  {holon.diagnostic_widget.underlying_radbit_solution}
-                </p>
-                <button
-                  disabled={!userWorkflow.trim()}
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                  Analyze Workflow
-                </button>
-              </div>
+              {!diagnosis && (
+                <>
+                  <textarea
+                    value={userWorkflow}
+                    onChange={(e) => setUserWorkflow(e.target.value)}
+                    placeholder="Describe your current document management and compliance workflow..."
+                    rows={3}
+                    className="w-full rounded-lg border border-border/50 bg-muted/30 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                  />
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground/50">
+                      <span className="text-primary/70">Radbit solution: </span>
+                      {holon.diagnostic_widget.underlying_radbit_solution}
+                    </p>
+                    <button
+                      onClick={async () => {
+                        setDiagnosing(true)
+                        setDiagnosisError(null)
+                        try {
+                          const res = await fetch('/api/reti/diagnose', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              workflowDescription: userWorkflow,
+                              holonContext: {
+                                trigger_event: holon.metadata.trigger_event,
+                                trigger_source: holon.metadata.trigger_source,
+                                target_keyword: holon.metadata.target_keyword,
+                                pillar_mapping: holon.pillar_mapping,
+                              },
+                            }),
+                          })
+                          if (!res.ok) {
+                            const err = await res.json()
+                            throw new Error(err.error || 'Diagnostic failed')
+                          }
+                          const data = await res.json()
+                          setDiagnosis(data.diagnosis)
+                        } catch (e) {
+                          setDiagnosisError(e instanceof Error ? e.message : 'Failed to analyze workflow')
+                        } finally {
+                          setDiagnosing(false)
+                        }
+                      }}
+                      disabled={!userWorkflow.trim() || diagnosing}
+                      className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {diagnosing ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          Analyzing...
+                        </span>
+                      ) : (
+                        'Analyze Workflow'
+                      )}
+                    </button>
+                  </div>
+                </>
+              )}
+              {diagnosis && (
+                <div className="space-y-4">
+                  <div className={`p-4 rounded-xl border ${
+                    diagnosis.readiness_score >= 70
+                      ? 'border-green-500/30 bg-green-950/20'
+                      : diagnosis.readiness_score >= 40
+                      ? 'border-yellow-500/30 bg-yellow-950/20'
+                      : 'border-red-500/30 bg-red-950/20'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground/60">Readiness Score</span>
+                      <span className={`text-2xl font-bold font-headline ${
+                        diagnosis.readiness_score >= 70
+                          ? 'text-green-400'
+                          : diagnosis.readiness_score >= 40
+                          ? 'text-yellow-400'
+                          : 'text-red-400'
+                      }`}>
+                        {diagnosis.readiness_score}%
+                      </span>
+                    </div>
+                    <p className="text-sm text-foreground/80">{diagnosis.overall_verdict}</p>
+                  </div>
+                  {diagnosis.gaps.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground/60">Critical Gaps Found</h4>
+                      {diagnosis.gaps.map((gap, i) => (
+                        <div key={i} className="p-4 rounded-xl border border-border/50 bg-card/20 space-y-2">
+                          <div className="flex items-start gap-2">
+                            <XCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{gap.title}</p>
+                              <p className="text-xs text-muted-foreground/70 mt-1">{gap.description}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2 pl-6">
+                            <AlertTriangle className="h-3.5 w-3.5 text-orange-400 shrink-0 mt-0.5" />
+                            <p className="text-xs text-orange-300/80">{gap.risk}</p>
+                          </div>
+                          <div className="flex items-start gap-2 pl-6">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-400 shrink-0 mt-0.5" />
+                            <p className="text-xs text-green-300/80">{gap.radbit_solution}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={() => {
+                        setDiagnosis(null)
+                        setUserWorkflow("")
+                      }}
+                      className="px-4 py-2 rounded-lg border border-border/50 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Run Again
+                    </button>
+                    <MagneticButton
+                      asChild
+                      size="default"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 font-headline text-sm"
+                    >
+                      <Link href={holon.diagnostic_widget.diagnostic_route || "/assessment"}>
+                        {holon.diagnostic_widget.cta_text || "Deploy This Armor"}
+                        <ArrowRight className="ml-1.5 h-4 w-4" />
+                      </Link>
+                    </MagneticButton>
+                  </div>
+                </div>
+              )}
+              {diagnosisError && (
+                <p className="text-xs text-red-400">{diagnosisError}</p>
+              )}
             </motion.div>
           </div>
         </section>

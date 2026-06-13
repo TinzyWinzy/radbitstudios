@@ -43,11 +43,17 @@ function extractRiskLevel(title: string, summary: string): ThreatAssessmentInput
   const text = `${title} ${summary}`.toLowerCase();
   if (text.includes('praz') || text.includes('egp') || text.includes('procurement')) return 'praz';
   if (text.includes('sadc') || text.includes('summit') || text.includes('cross-border')) return 'sadc';
-  if (text.includes('ai strategy') || text.includes('computational sovereignty') || text.includes('pangolin')) return 'ai_strategy';
+  if (text.includes('ai strategy') || text.includes('computational sovereignty') || text.includes('pangolin') || text.includes('mugove fund') || text.includes('innovation crucible') || text.includes('nzwisiso')) return 'ai_strategy';
   if (text.includes('afcfta') || text.includes('continental trade')) return 'afcfta';
   if (text.includes('zimra') || text.includes('tax') || text.includes('vat')) return 'zimra';
   if (text.includes('rbz') || text.includes('reserve bank') || text.includes('forex')) return 'rbz';
   if (text.includes('nssa')) return 'nssa';
+  if (text.includes('potraz') || text.includes('data protection') || text.includes('data controller') || text.includes('personal information') || text.includes('data breach') || text.includes('cyber and data')) return 'data_protection';
+  if (text.includes('zesa') || text.includes('load shedding') || text.includes('power outage') || text.includes('energy regulation') || text.includes('grid stability')) return 'energy_grid';
+  if (text.includes('mining') || text.includes('lithium') || text.includes('royalty') || text.includes('critical mineral') || text.includes('beneficiation') || text.includes('mine and minerals')) return 'mining';
+  if (text.includes('digital services tax') || text.includes('streaming tax') || text.includes('e-commerce regulation') || text.includes('digital regulation')) return 'digital_regulation';
+  if (text.includes('customs clearance') || text.includes('digital customs') || text.includes('certificate of origin') || text.includes('rules of origin')) return 'afcfta_customs';
+  if (text.includes('industrialisation') || text.includes('industrialization') || text.includes('regional value chain') || text.includes('manufacturing')) return 'sadc_industry';
   return 'general';
 }
 
@@ -100,6 +106,54 @@ export async function initializeMonitorSources(): Promise<MonitorSource[]> {
       lastChecked: null,
       active: true,
       keywords: ['AfCFTA', 'rules of origin', 'tariff', 'continental trade', 'market access', 'trade protocol'],
+    },
+    {
+      name: 'POTRAZ Data Protection',
+      feedUrl: 'https://www.potraz.gov.zw/feed/',
+      category: 'data_protection',
+      lastChecked: null,
+      active: true,
+      keywords: ['data protection', 'POTRAZ', 'data controller', 'license', 'DPO', 'data breach', 'personal information', 'privacy', 'Cyber and Data Protection Act', 'mandatory'],
+    },
+    {
+      name: 'ZESA / Energy Regulation',
+      feedUrl: 'https://www.zesa.co.zw/feed/',
+      category: 'energy_grid',
+      lastChecked: null,
+      active: true,
+      keywords: ['load shedding', 'power outage', 'ZESA', 'tariff', 'grid stability', 'energy regulation', 'electricity', 'generation', 'ZETDC'],
+    },
+    {
+      name: 'Chamber of Mines Zimbabwe',
+      feedUrl: 'https://www.chamines.co.zw/feed/',
+      category: 'mining',
+      lastChecked: null,
+      active: true,
+      keywords: ['mining', 'lithium', 'royalty', 'critical mineral', 'beneficiation', 'Mine and Minerals Act', 'exploration', 'mineral', 'mine'],
+    },
+    {
+      name: 'Zimbabwe Digital Regulation',
+      feedUrl: 'https://www.techzim.co.zw/feed/',
+      category: 'digital_regulation',
+      lastChecked: null,
+      active: true,
+      keywords: ['digital tax', 'streaming tax', 'e-commerce', 'regulation', 'digital services tax', 'social media tax', 'platform'],
+    },
+    {
+      name: 'AfCFTA Digital Customs',
+      feedUrl: 'https://www.tralac.org/rss/',
+      category: 'afcfta_customs',
+      lastChecked: null,
+      active: true,
+      keywords: ['digital customs', 'certificate of origin', 'customs clearance', 'rules of origin', 'trade platform', 'border digitization', 'cross-border'],
+    },
+    {
+      name: 'SADC Industrialisation',
+      feedUrl: 'https://www.sadc.int/latest-news/rss.xml',
+      category: 'sadc_industry',
+      lastChecked: null,
+      active: true,
+      keywords: ['industrialisation', 'industrialization', 'regional value chain', 'manufacturing', 'economic integration', 'industrial development', 'value addition'],
     },
   ];
 

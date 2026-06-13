@@ -41,10 +41,12 @@ export async function POST(req: NextRequest) {
 
     await adminDb.collection('threat_assessments').doc(slug).set(doc, { merge: true });
 
+    const isIntercept = result.holon.holon_type === 'intercept_page';
+
     return NextResponse.json({
       slug,
       holon: result.holon,
-      url: `/threats/${slug}`,
+      url: `/${isIntercept ? 'intelligence' : 'threats'}/${slug}`,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to generate threat assessment';

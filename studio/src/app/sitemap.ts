@@ -63,5 +63,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   } catch {}
 
-  return [...staticPages, ...blogPosts, ...guides, ...seoPages];
+  let threatAssessments: MetadataRoute.Sitemap = [];
+  try {
+    const taSnap = await adminDb.collection("threat_assessments").where("published", "==", true).get();
+    threatAssessments = taSnap.docs.map((d) => {
+      const ta = d.data();
+      const holon = ta.holon as { holon_type?: string } | undefined;
+      const isIntercept = holon?.holon_type === "intercept_page";
+      return {
+        url: `${SITE_URL}/${isIntercept ? "intelligence" : "threats"}/${d.id}`,
+        lastModified: ta.generatedAt?.toDate?.()?.toISOString?.().split("T")[0] || lastMod,
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      };
+    });
+  } catch {}
+
+  return [...staticPages, ...blogPosts, ...guides, ...seoPages, ...threatAssessments];
 }

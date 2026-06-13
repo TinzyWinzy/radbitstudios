@@ -17,7 +17,10 @@ interface ThreatDoc {
   riskLevel: string;
   generatedAt: { toDate: () => Date } | Date;
   viewCount: number;
-  holon?: { metadata?: { target_keyword?: string } };
+  holon?: {
+    holon_type?: string;
+    metadata?: { target_keyword?: string };
+  };
 }
 
 const RISK_STYLES: Record<string, { border: string; badge: string; dot: string }> = {
@@ -76,7 +79,7 @@ export default async function ThreatsListPage() {
             return (
               <Link
                 key={item.id}
-                href={`/threats/${item.id}`}
+                href={`/${item.holon?.holon_type === 'intercept_page' ? 'intelligence' : 'threats'}/${item.id}`}
                 className={`group block p-5 rounded-xl border ${style.border} bg-card/30 hover:bg-muted/30 transition-all duration-200`}
               >
                 <div className="flex items-start justify-between gap-4">
