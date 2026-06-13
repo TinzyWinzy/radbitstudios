@@ -35,7 +35,7 @@ const pillars = [
 
 export default function AboutPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-16">
+    <div className="container py-12 md:py-24 space-y-16 max-w-5xl">
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-medium mb-2">
           <Shield className="h-3 w-3" />

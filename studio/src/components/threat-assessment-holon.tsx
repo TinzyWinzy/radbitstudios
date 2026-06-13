@@ -62,9 +62,9 @@ const PILLAR_ICONS: Record<string, typeof Shield> = {
 }
 
 const PILLAR_LABELS: Record<string, string> = {
-  simbare_engine: "SimbaRE Engine (Tender Compliance Shield)",
-  executive_multiplier: "Executive Multiplier (Agentic ERP)",
-  global_passport: "Global Partner Passport (Blockchain Ledgers)",
+  simbare_engine: "Tender Intelligence & Compliance",
+  executive_multiplier: "Operations & Delegation Automation",
+  global_passport: "Verified Records & Cross-Border Credibility",
 }
 
 export function ThreatAssessmentHolon({ holon }: ThreatHolonProps) {

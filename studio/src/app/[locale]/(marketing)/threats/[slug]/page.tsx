@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 
   return {
-    title: `${holon?.hero_section?.h1_headline || 'Regulatory Threat Assessment'} | Radbit`,
-    description: holon?.hero_section?.sub_headline || 'Automated compliance threat assessment for SADC enterprises.',
+    title: `${holon?.hero_section?.h1_headline || 'Regulatory Alert'} | Radbit`,
+    description: holon?.hero_section?.sub_headline || 'Policy change analysis for SADC businesses.',
     alternates: { canonical: `/threats/${params.slug}` },
     robots: { index: true, follow: true },
   };
