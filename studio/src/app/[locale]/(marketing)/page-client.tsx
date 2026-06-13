@@ -74,7 +74,7 @@ function HeroSection() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-8 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          You cannot scale what you cannot safely delegate. Radbit arms SADC enterprises with automated intelligence that enforces your rules, bulletproofs your tenders, and opens cross-border capital — so you step back without losing tactical command.
+          You can't grow if you can't let go. Every tender, every compliance check, every cross-border deal runs through you right now. Radbit automates the parts that eat your time — so you can step back without worrying everything falls apart.
         </motion.p>
 
         <motion.div
@@ -233,19 +233,19 @@ function HowItWorksSection() {
     {
       icon: <Shield className="h-4 w-4" />,
       title: "Stress-Test",
-      body: "A 3-minute operational audit that maps your exposure across compliance gaps, delegation leaks, and cross-border friction points. Know exactly which pillar of your operation is hemorrhaging leverage.",
+      body: "A 3-minute check-up that shows you where your business is leaking — compliance gaps you didn't spot, tasks you shouldn't be doing yourself, opportunities you're missing because your records aren't credible.",
       symbol: <Sankofa className="h-8 w-8 text-primary/20" />,
     },
     {
       icon: <Target className="h-4 w-4" />,
       title: "Armor",
-      body: "Our Vertex AI RAG engine calibrates a protection stack calibrated to your industry and failure profile — tender armor, executive multipliers, or the global partner passport. Deployed as modular Firestore holons.",
+      body: "We build the exact system your operation needs — tender tracking that catches every compliance requirement, automations that enforce your business rules, or verified records that open cross-border deals. Each piece plugs into the next.",
       symbol: <GyeNyame className="h-8 w-8 text-primary/20" />,
     },
     {
       icon: <Zap className="h-4 w-4" />,
       title: "Delegate with Certainty",
-      body: "Your digital shadow runs the rules you set. Exception-only alerts reach you when the machine encounters something your protocols didn't cover. You step back. You don't lose control.",
+      body: "Your automated system runs the daily work exactly how you'd do it. You only hear from us when something doesn't match the rules you set. You focus on growing the business. We handle the rest.",
       symbol: <Dwennimmen className="h-8 w-8 text-primary/20" />,
     },
   ];
@@ -330,8 +330,7 @@ function DiagnosticSection() {
             Three Minutes to Know Your <span className="text-gradient">Exact Exposure</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-base">
-            Select your industry and your primary failure point. The machine will surface the specific armor layer
-            your enterprise needs — calibrated to SADC market conditions.
+            Tell us your industry and where it hurts — compliance, leaks, employee errors, or cross-border friction. We'll show you exactly what needs fixing.
           </p>
         </motion.div>
         <OperationalStressTester />
@@ -345,25 +344,25 @@ function FeaturesSection() {
     {
       icon: <Shield className="h-4 w-4" />,
       title: "Custom Enterprise Architectures",
-      body: "Vertex AI-powered microservice frameworks deployed on Firestore pipelines. No generic CMS. No bloated ERP. Systems designed to absorb your specific operational complexity and enforce your exact business rules at machine speed.",
+      body: "No generic templates. No bloated software built for someone else's market. Your system does exactly what your business needs — and nothing you don't.",
       href: "/solutions",
     },
     {
       icon: <Lock className="h-4 w-4" />,
       title: "Asset & Margin Protection",
-      body: "Automated threat detection pipelines scanning your infrastructure, supply chain, and compliance surface. Real-time alerts on margin erosion, regulatory drift, and operational anomalies — before they become losses.",
+      body: "We watch the margins, compliance deadlines, and operational risks you don't have time to track. You get alerted the moment something shifts — before it costs you money.",
       href: "/solutions",
     },
     {
       icon: <Zap className="h-4 w-4" />,
       title: "Operational Multipliers",
-      body: "Digital shadow assistants that enforce your delegation rules across inventory, invoices, and logistics. Exception-only alerts mean you intervene only when the machine detects something your protocols didn't anticipate.",
+      body: "Your business rules run automatically — inventory, invoices, logistics. You step in only when something unusual happens. Everything else runs on its own, exactly how you'd do it.",
       href: "/solutions",
     },
     {
       icon: <Brain className="h-4 w-4" />,
       title: "Agentic System Automation",
-      body: "Autonomous Vertex AI agents running RAG pipelines grounded in local market parameters. They generate tenders, simulate compliance audits, reconcile ledgers, and produce institutional-grade documentation — unattended.",
+      body: "Your system drafts tenders, runs compliance checks, reconciles accounts, and produces the institutional paperwork banks and partners demand — all without you at the keyboard.",
       href: "/solutions",
     },
   ];
@@ -378,10 +377,10 @@ function FeaturesSection() {
           className="text-center space-y-3 mb-12"
         >
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-            Four Layers of <span className="text-gradient">Operational Armor</span>
+            Four Ways We <span className="text-gradient">Protect Your Business</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-base">
-            Each layer is a self-contained holon — hot-swappable, independently scalable, and wired into a unified Firestore brain.
+            Each piece of the system works on its own and plugs into everything else. No bloat. No unused features. Just what moves your business forward.
           </p>
         </motion.div>
 

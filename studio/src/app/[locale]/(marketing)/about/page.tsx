@@ -4,11 +4,11 @@ import { AdBanner } from "@/components/ads/ad-banner";
 
 export const metadata: Metadata = {
   title: 'About — Radbit',
-  description: 'Applied intelligence firm arming SADC enterprises with structural armor: tender intelligence, executive multipliers, and global partner passports.',
+  description: 'We build operational systems for SADC businesses — compliance automation, tender intelligence, and verified records that unlock growth.',
   alternates: { canonical: '/about' },
   openGraph: {
     title: 'About Radbit',
-    description: 'Applied intelligence firm arming SADC enterprises with structural armor.',
+    description: 'We build operational systems for SADC businesses — compliance automation, tender intelligence, and verified records.',
     type: 'website',
   },
 };
@@ -18,18 +18,18 @@ export const revalidate = 3600;
 const pillars = [
   {
     icon: <Swords className="h-4 w-4" />,
-    title: 'Tender Intelligence (The Compliance Shield)',
-    body: 'An automated pre-flight abort engine that simulates the procurement officer\'s disqualification process, flags structural gaps, maps award histories, and seals your bid before evaluation.',
+    title: 'Tender Intelligence',
+    body: 'Automated compliance checks that catch what a procurement officer would flag — before you submit. No more losing bids on technicalities you could have fixed.',
   },
   {
     icon: <Network className="h-4 w-4" />,
     title: 'The Executive Multiplier',
-    body: 'Autonomous digital shadows that enforce the founder\'s exact business rules across inventory, invoices, and logistics. Exception-only alerts mean you delegate without losing micro-tactical control.',
+    body: 'Your business rules run automatically across inventory, invoices, and daily operations. You only hear about it when something doesn\'t match. You delegate without losing sleep.',
   },
   {
     icon: <ScrollText className="h-4 w-4" />,
     title: 'The Global Partner Passport',
-    body: 'Immutable, bank-grade transaction histories on blockchain. The institutional credibility that unlocks cross-border AfCFTA trade, diaspora investment, and international supply chains.',
+    body: 'Your transaction records become verified, tamper-proof histories on blockchain. The credibility international partners and diaspora investors need before they write a cheque.',
   },
 ];
 
@@ -39,31 +39,31 @@ export default function AboutPage() {
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-medium mb-2">
           <Shield className="h-3 w-3" />
-          Applied Intelligence — Not an Agency
+          We Build Systems — Not Just Websites
         </div>
         <h1 className="font-headline text-fluid-4xl font-bold tracking-tighter">
           Radbit Is Not a
           <br />
           <span className="text-foreground/80">Software Studio.</span>
           <br />
-          <span className="text-gradient">It Is Structural Armor.</span>
+          <span className="text-gradient">It Is Operational Infrastructure.</span>
         </h1>
         <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
-          We do not rent developer hours. We deploy intelligence pipelines that absorb market chaos — so SADC founders can delegate operations without forfeiting control.
+          We don't rent out developers by the hour. We build systems that handle the chaos of running a business in Zimbabwe — so you can delegate operations without losing control.
         </p>
       </div>
 
       <section className="space-y-6">
-        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">The Epistemology</h2>
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Why Radbit Exists</h2>
         <div className="space-y-4 text-foreground/60 leading-relaxed text-[15px] max-w-3xl">
           <p>
-            Zimbabwean enterprises operate under conditions that break conventional software. Currency regimes that rewrite margins twice a week. A regulatory surface area — PRAZ, ZIMRA, NSSA, RBZ, Labour Act — that expands faster than any compliance team can track. Infrastructure that punishes always-on architecture. And a low-trust environment where delegation feels like a liability, not leverage.
+            Running a business in Zimbabwe means dealing with things off-the-shelf software wasn't built for. The dollar changes value twice a week. New compliance rules keep showing up — PRAZ, ZIMRA, NSSA, the Labour Act — and they all demand different things. The internet is unreliable. And trusting someone else with critical operations feels like a risk most days.
           </p>
           <p>
-            The market assumption that &quot;better tools&quot; solve these problems is wrong. The problem is not a tool deficit. It is a <span className="text-foreground/80 font-medium">trust, compliance, and delegation architecture</span> problem.
+            The usual answer is "buy better software." That's wrong. The problem isn't the tools. It's that no single system was designed for this reality — currency instability, expanding regulation, and the constant fear that one mistake costs you a tender or an audit.
           </p>
           <p>
-            Radbit was built to absorb that complexity. Our platform replaces the need for the founder to personally verify every compliance filing, every tender submission, every operational handoff. The machine runs the protocols. The human directs tactical intent.
+            Radbit was built for that reality. It handles the compliance checks, the tender filings, the operational handoffs — so you don't have to personally verify every single thing. You set the rules. The system runs them.
           </p>
         </div>
       </section>
@@ -89,28 +89,28 @@ export default function AboutPage() {
       </section>
 
       <section className="space-y-6 py-10 px-6 rounded-2xl border border-border/50 bg-gradient-to-br from-primary/[0.03] via-transparent to-secondary/[0.03]">
-        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">The Technical Foundation</h2>
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">How It Works</h2>
         <div className="grid md:grid-cols-2 gap-6">
           {[
             {
               icon: <Zap className="h-4 w-4" />,
-              title: 'Firestore-Centric Architecture',
-              body: 'Every holon — hero, diagnostic, leverage menu — is a self-contained entity with localized state and execution rules. System state, diagnostic data, and CMS content live in Cloud Firestore for real-time, low-latency synchronization. No relational overhead. No disconnected backend.',
+              title: 'Everything Lives in One Place',
+              body: 'Your business data, compliance status, and system settings all live in a single real-time database. No spreadsheets. No sync issues. No guessing which version of a document is current.',
             },
             {
               icon: <Eye className="h-4 w-4" />,
-              title: 'Vertex AI + RAG Pipelines',
-              body: 'Interactivity driven by Google Cloud Vertex AI and Gemini models, grounded in local market parameters via tight RAG architecture. Every recommendation, every compliance flag, every tender simulation has a traceable chain of evidence.',
+              title: 'Smart Recommendations',
+              body: 'The system uses Google Vertex AI to analyze your specific situation — your industry, your compliance burden, your operational gaps. Every suggestion comes with a clear explanation of why it matters.',
             },
             {
               icon: <GanttChartSquare className="h-4 w-4" />,
-              title: 'Modular UI Holons',
-              body: 'Every page component is a self-contained entity with its own state, presentation logic, and execution rules. Hot-swappable, recursively nestable, independently scalable. The polar opposite of monolithic spaghetti.',
+              title: 'Modular by Design',
+              body: 'Each feature works independently. You only use what you need. Add more later without rebuilding anything. No unused features cluttering your dashboard.',
             },
             {
               icon: <Target className="h-4 w-4" />,
-              title: 'Holonic Protocol Architecture',
-              body: 'The Vacili Protocol governs interaction between holons — ensuring that replacing a diagnostic engine, a compliance module, or a tender pipeline does not cascade architectural rot through the rest of the system.',
+              title: 'Built to Last',
+              body: 'The system is designed so that adding new features or swapping out old ones doesn\'t break everything else. You grow without accumulating technical debt.',
             },
           ].map((item) => (
             <div key={item.title} className="space-y-2">
@@ -127,12 +127,12 @@ export default function AboutPage() {
       </section>
 
       <section className="space-y-6">
-        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Who It Serves</h2>
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Who This Is For</h2>
         <p className="text-foreground/60 leading-relaxed text-[15px] max-w-3xl">
-          Manufacturing owners in Bulawayo who need to delegate inventory without bleeding margins. Logistics operators in Harare who lose tenders on compliance technicalities. Agri-tech cooperatives in Mashonaland whose paper records make them invisible to diaspora capital. Professional services firms whose regulatory surface area exceeds their headcount.
+          Manufacturing owners in Bulawayo who need to delegate inventory without waking up to losses. Logistics operators in Harare who keep losing tenders on small compliance mistakes. Agri-tech cooperatives in Mashonaland whose paper records don't qualify for diaspora investment. Professional services firms dealing with more regulations than they have staff.
         </p>
         <p className="text-foreground/60 leading-relaxed text-[15px] max-w-3xl">
-          If your enterprise navigates the SADC market volatility and needs to scale without multiplying your personal operational surface area — Radbit was built for you.
+          If you run a business in the SADC region and you're stuck between wanting to grow and not being able to trust anyone else with the critical stuff — Radbit was built for you.
         </p>
       </section>
 
@@ -148,10 +148,10 @@ export default function AboutPage() {
               <p className="text-sm text-foreground/50">Founder &amp; Chief Executive Officer — Radbit Inc.</p>
             </div>
             <p className="text-sm text-foreground/60 leading-relaxed">
-              Tinotenda is a Zimbabwean systems architect and software engineer who observed firsthand that the gap between African enterprises and their global competitors is not capability — it is institutional credibility.
+              Tinotenda is a Zimbabwean software engineer who noticed something: African businesses don't lack talent or ambition. They lack the institutional records and systems that global competitors take for granted.
             </p>
             <p className="text-sm text-foreground/60 leading-relaxed">
-              He founded Radbit not to build another software agency, but to create an applied intelligence platform that arms local enterprises with the structural armor needed to compete with market giants. The platform encodes his thesis: that the machine must absorb the chaotic complexity of the market so the human founder needs only tactical intent.
+              He started Radbit because he was tired of seeing capable local enterprises lose tenders, miss opportunities, and stay invisible to capital — not because they weren't good enough, but because they didn't have the systems to prove it. The platform does the paperwork, the compliance, and the record-keeping so the founder can focus on actually building.
             </p>
             <div className="flex gap-4 pt-1">
               <a

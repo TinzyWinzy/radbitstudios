@@ -318,7 +318,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Custom Enterprise Architectures",
     description:
-      "Vertex AI-powered microservice frameworks deployed on Firestore pipelines. Systems designed to absorb your specific operational complexity and enforce business rules at machine speed.",
+      "Systems built for how your business actually works — not generic software you have to adapt to. Handles your specific workflows, compliance rules, and operational quirks.",
     icon: Code2,
     color: "from-blue-500/20 to-cyan-500/20",
     iconColor: "text-blue-500",
@@ -326,7 +326,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Asset & Margin Protection",
     description:
-      "Automated threat detection pipelines scanning infrastructure, supply chain, and compliance surface. Real-time alerts on margin erosion, regulatory drift, and operational anomalies before they compound.",
+      "We monitor the things that eat your margins — compliance fines, supply chain disruptions, operational leaks. You get alerts before problems cost you money.",
     icon: Shield,
     color: "from-red-500/20 to-orange-500/20",
     iconColor: "text-red-500",
@@ -334,7 +334,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Business Strategy",
     description:
-      "Data-driven growth roadmaps, market entry strategies, and operational optimization calibrated to SADC market volatility — not generic Western benchmarks.",
+      "Growth plans based on SADC realities, not Western textbooks. Market entry, operational improvements, and compliance roadmaps that work in this region.",
     icon: TrendingUp,
     color: "from-green-500/20 to-emerald-500/20",
     iconColor: "text-green-500",
@@ -342,7 +342,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Brand Management",
     description:
-      "Visual systems, messaging frameworks, and market positioning that convert institutional credibility into cross-border and government procurement leverage.",
+      "Visual identity, messaging, and market positioning that make your business look as credible as any global competitor — to partners, investors, and government buyers.",
     icon: Palette,
     color: "from-purple-500/20 to-pink-500/20",
     iconColor: "text-purple-500",
@@ -350,7 +350,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Operational Multipliers",
     description:
-      "Digital shadow assistants enforcing delegation rules across inventory, invoicing, and logistics. Exception-only alerts mean you intervene only when the machine detects anomalies your protocols missed.",
+      "Automate the daily tasks you shouldn't be doing yourself — inventory tracking, invoicing, compliance checks. You only step in when something unusual happens.",
     icon: Database,
     color: "from-amber-500/20 to-yellow-500/20",
     iconColor: "text-amber-500",
@@ -358,7 +358,7 @@ const CONSULTANCY_SERVICES = [
   {
     title: "Agentic System Automation",
     description:
-      "Autonomous Vertex AI agents running RAG pipelines grounded in local parameters. Generating tenders, simulating compliance audits, reconciling ledgers, and producing institutional-grade documentation — unattended.",
+      "Your system drafts tenders, runs compliance checks, reconciles ledgers, and produces the documentation partners demand — all on its own, in the background.",
     icon: Brain,
     color: "from-rose-500/20 to-pink-500/20",
     iconColor: "text-rose-500",
@@ -590,7 +590,7 @@ export default function SolutionsPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-8"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              applied intelligence & structural armor
+              operational systems for SADC businesses
             </motion.div>
 
             <motion.h1
@@ -599,7 +599,7 @@ export default function SolutionsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              Operational Armor for the <span className="text-gradient">SADC Enterprise</span>.
+              Systems That Work for <span className="text-gradient">SADC Businesses</span>.
             </motion.h1>
 
             <motion.p
@@ -608,7 +608,7 @@ export default function SolutionsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Tender intelligence that bulletproofs your submissions. Executive multipliers that delegate without losing control. Global passports that unlock cross-border capital. Radbit delivers integrated armor for the SADC founder.
+              We help you win tenders you'd normally lose on technicalities. Automate the daily operations that eat your time. And build the verified records you need to attract serious partners and investors.
             </motion.p>
 
             <motion.div
@@ -1113,10 +1113,10 @@ export default function SolutionsPage() {
           <div className="container">
             <ScrollReveal className="text-center mb-8 md:mb-16">
               <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                The Leverage Menu
+                What We Build
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Outcome-based modules engineered for the SADC operational reality. Each holon is independently deployable, recursively nestable, and wired into a unified Firestore brain.
+                Each solution works on its own or plugs into the others. Start with what you need most. Add more as you grow.
               </p>
             </ScrollReveal>
 
