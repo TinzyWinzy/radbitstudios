@@ -6,7 +6,8 @@ import { adminDb } from '@/lib/firebase/firebase-admin';
 
 export const metadata: Metadata = {
   title: 'Regulatory Threat Assessments | Radbit',
-  description: 'Real-time policy change monitoring for SADC businesses. Automated compliance alerts tracking PRAZ, ZIMRA, SADC, and regional regulatory updates.',
+  description:
+    'Real-time policy change monitoring for SADC businesses. Automated compliance alerts tracking PRAZ, ZIMRA, SADC, and regional regulatory updates.',
   alternates: { canonical: '/threats' },
 };
 
@@ -34,7 +35,8 @@ export default async function ThreatsListPage() {
   let assessments: ThreatDoc[] = [];
 
   try {
-    const snap = await adminDb.collection('threat_assessments')
+    const snap = await adminDb
+      .collection('threat_assessments')
       .where('published', '==', true)
       .orderBy('generatedAt', 'desc')
       .limit(50)
@@ -48,6 +50,29 @@ export default async function ThreatsListPage() {
     // Firestore unavailable
   }
 
+  // Auto-seed initial threat assessments if empty
+  if (assessments.length === 0) {
+    try {
+      const { initializeMonitorSources, checkForThreatEvents } = await import('@/services/reti-monitor');
+      await initializeMonitorSources();
+      await checkForThreatEvents();
+
+      const retry = await adminDb
+        .collection('threat_assessments')
+        .where('published', '==', true)
+        .orderBy('generatedAt', 'desc')
+        .limit(50)
+        .get();
+
+      assessments = retry.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as ThreatDoc[];
+    } catch {
+      // RETI seed failed, page will show empty state
+    }
+  }
+
   return (
     <div className="container py-12 md:py-24 space-y-10 max-w-5xl">
       <div className="space-y-4">
@@ -59,22 +84,27 @@ export default async function ThreatsListPage() {
           Regulatory Threat <span className="text-gradient">Assessments</span>
         </h1>
         <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
-          Radbit's monitoring system tracks PRAZ, SADC, ZIMRA, and other regional regulatory bodies for changes that affect your business. Each assessment shows what changed and what it means for you.
+          Radbit's monitoring system tracks PRAZ, SADC, ZIMRA, and other regional regulatory bodies for changes that
+          affect your business. Each assessment shows what changed and what it means for you.
         </p>
       </div>
 
       {assessments.length === 0 ? (
         <div className="text-center py-16 space-y-4">
           <Shield className="h-12 w-12 text-muted-foreground/20 mx-auto" />
-          <p className="text-muted-foreground/60">No threat assessments yet. Radbit is monitoring policy channels and will publish alerts as regulatory changes are detected.</p>
+          <p className="text-muted-foreground/60">
+            No threat assessments yet. Radbit is monitoring policy channels and will publish alerts as regulatory
+            changes are detected.
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {assessments.map((item) => {
+          {assessments.map(item => {
             const style = RISK_STYLES[item.riskLevel] || RISK_STYLES.medium;
-            const date = item.generatedAt && typeof item.generatedAt === 'object' && 'toDate' in item.generatedAt
-              ? item.generatedAt.toDate()
-              : new Date(item.generatedAt as Date);
+            const date =
+              item.generatedAt && typeof item.generatedAt === 'object' && 'toDate' in item.generatedAt
+                ? item.generatedAt.toDate()
+                : new Date(item.generatedAt as Date);
 
             return (
               <Link
@@ -85,13 +115,13 @@ export default async function ThreatsListPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="space-y-2 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider ${style.badge}`}>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider ${style.badge}`}
+                      >
                         <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
                         {item.riskLevel}
                       </span>
-                      <span className="text-[10px] text-muted-foreground/50 font-mono">
-                        {item.triggerSource}
-                      </span>
+                      <span className="text-[10px] text-muted-foreground/50 font-mono">{item.triggerSource}</span>
                     </div>
                     <h3 className="font-headline font-bold text-foreground group-hover:text-primary transition-colors">
                       {item.triggerEvent}

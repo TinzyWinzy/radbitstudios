@@ -23,10 +23,10 @@ export default function ContactPage() {
     }
     setSending(true);
     try {
-      const res = await fetch('https://formspree.io/f/xovqyezn', {
+      const res = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ fullName: name, workEmail: email, message }),
       });
       if (!res.ok) throw new Error('Failed to send');
       toast({ title: 'Message sent!', description: 'We will get back to you within 48 hours.' });
@@ -34,7 +34,11 @@ export default function ContactPage() {
       setEmail('');
       setMessage('');
     } catch {
-      toast({ title: 'Failed to send', description: 'Please email us directly at hanzohanic@gmail.com', variant: 'destructive' });
+      toast({
+        title: 'Failed to send',
+        description: 'Please email us directly at hanzohanic@gmail.com',
+        variant: 'destructive',
+      });
     } finally {
       setSending(false);
     }

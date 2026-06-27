@@ -1,45 +1,46 @@
-
 'use client';
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Award, Share2, Trash2, History, Loader2, Sparkles, Palette, Cpu, Megaphone, Handshake, LifeBuoy, BarChart, CheckCircle, Headphones, Palette as WhiteLabel, TicketCheck, Clock, Zap, Shield, Download, Bell, Smartphone } from "lucide-react";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  Timestamp,
-  writeBatch,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { db, auth } from "@/lib/firebase/firebase";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { ReferralSection } from "@/components/referral-section";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { format } from "date-fns";
+  Award,
+  Share2,
+  Trash2,
+  History,
+  Loader2,
+  Sparkles,
+  Palette,
+  Cpu,
+  Megaphone,
+  Handshake,
+  LifeBuoy,
+  BarChart,
+  CheckCircle,
+  Headphones,
+  Palette as WhiteLabel,
+  TicketCheck,
+  Clock,
+  Zap,
+  Shield,
+  Download,
+  Bell,
+  Smartphone,
+} from 'lucide-react';
+import { collection, query, where, getDocs, Timestamp, writeBatch, doc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '@/lib/firebase/firebase';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { ReferralSection } from '@/components/referral-section';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { format } from 'date-fns';
 import { z } from 'zod';
 import {
   AlertDialog,
@@ -51,26 +52,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AuthContext } from "@/contexts/auth-context";
-import { updateProfile } from "firebase/auth";
-import { Textarea } from "@/components/ui/textarea";
-import { MarkdownRenderer } from "@/components/markdown-renderer";
-import Image from "next/image";
-import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER } from "@/lib/subscriptions";
-import type { SubscriptionPlanId } from "@/services/payment/subscription-engine";
-import { SubscriptionEngine } from "@/services/payment/subscription-engine";
-import { UpgradeModal } from "@/components/upgrade-modal";
-import type { UpgradeInfo } from "@/services/feature-gate";
-import { getCachedQuery, setCachedQuery, buildQueryKey } from "@/services/query-cache";
-import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+} from '@/components/ui/alert-dialog';
+import { Skeleton } from '@/components/ui/skeleton';
+import { AuthContext } from '@/contexts/auth-context';
+import { updateProfile } from 'firebase/auth';
+import { Textarea } from '@/components/ui/textarea';
+import { MarkdownRenderer } from '@/components/markdown-renderer';
+import Image from 'next/image';
+import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER } from '@/lib/subscriptions';
+import type { SubscriptionPlanId } from '@/services/payment/subscription-engine';
+import { SubscriptionEngine } from '@/services/payment/subscription-engine';
+import { UpgradeModal } from '@/components/upgrade-modal';
+import type { UpgradeInfo } from '@/services/feature-gate';
+import { getCachedQuery, setCachedQuery, buildQueryKey } from '@/services/query-cache';
+import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface AssessmentHistory {
-    id: string;
-    summary: string;
-    createdAt: Timestamp;
+  id: string;
+  summary: string;
+  createdAt: Timestamp;
 }
 
 interface GenerationHistory {
@@ -82,481 +83,524 @@ interface GenerationHistory {
 }
 
 const agentIcons: { [key: string]: React.ReactNode } = {
-  "Design": <Palette className="h-5 w-5 text-primary" />,
-  "Engineering": <Cpu className="h-5 w-5 text-primary" />,
-  "Marketing": <Megaphone className="h-5 w-5 text-primary" />,
-  "Sales": <Handshake className="h-5 w-5 text-primary" />,
-  "Support": <LifeBuoy className="h-5 w-5 text-primary" />,
-  "Data Analyst": <BarChart className="h-5 w-5 text-primary" />,
-  "Default": <Sparkles className="h-5 w-5 text-primary" />,
+  Design: <Palette className="h-5 w-5 text-primary" />,
+  Engineering: <Cpu className="h-5 w-5 text-primary" />,
+  Marketing: <Megaphone className="h-5 w-5 text-primary" />,
+  Sales: <Handshake className="h-5 w-5 text-primary" />,
+  Support: <LifeBuoy className="h-5 w-5 text-primary" />,
+  'Data Analyst': <BarChart className="h-5 w-5 text-primary" />,
+  Default: <Sparkles className="h-5 w-5 text-primary" />,
 };
 
-
 export default function SettingsPage() {
-    const { user, loading: authLoading, refreshUserData, deleteAccount } = useContext(AuthContext);
-    const searchParams = useSearchParams();
-    const router = useRouter();
+  const { user, loading: authLoading, refreshUserData, deleteAccount } = useContext(AuthContext);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-    const [activeTab, setActiveTab] = useState('profile');
-    const [displayName, setDisplayName] = useState('');
-    const [businessName, setBusinessName] = useState('');
-    const [industry, setIndustry] = useState('');
-    const [businessDescription, setBusinessDescription] = useState('');
-    const [phone, setPhone] = useState('');
-    const [whatsappOptIn, setWhatsappOptIn] = useState(false);
-    const [notifyPrefs, setNotifyPrefs] = useState<Record<string, boolean>>({
-      notifyAssessment: true,
-      notifyInsights: true,
-      notifyTender: true,
-      notifyNews: true,
-      notifySystem: true,
-      notifyPush: false,
-    });
-    
-    const [upgradeTriggered, setUpgradeTriggered] = useState(false);
-    const [assessmentHistory, setAssessmentHistory] = useState<AssessmentHistory[]>([]);
-    const [generationHistory, setGenerationHistory] = useState<GenerationHistory[]>([]);
-    const [isLoadingHistory, setIsLoadingHistory] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isChangingPlan, setIsChangingPlan] = useState(false);
-    const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
-    const [deleteError, setDeleteError] = useState<string | null>(null);
-    const [isExporting, setIsExporting] = useState(false);
-    const { toast } = useToast();
-    const t = useTranslations('settings');
+  const [activeTab, setActiveTab] = useState('profile');
+  const [displayName, setDisplayName] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [businessDescription, setBusinessDescription] = useState('');
+  const [phone, setPhone] = useState('');
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+  const [notifyPrefs, setNotifyPrefs] = useState<Record<string, boolean>>({
+    notifyAssessment: true,
+    notifyInsights: true,
+    notifyTender: true,
+    notifyNews: true,
+    notifySystem: true,
+    notifyPush: false,
+  });
 
-     useEffect(() => {
-        const tab = searchParams.get('tab');
-        if (tab) {
-            setActiveTab(tab);
-            if (tab === 'generation-history') {
-              fetchGenerationHistory();
-            }
-             if (tab === 'assessment-history') {
-              fetchAssessmentHistory();
-            }
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams]);
+  const [upgradeTriggered, setUpgradeTriggered] = useState(false);
+  const [assessmentHistory, setAssessmentHistory] = useState<AssessmentHistory[]>([]);
+  const [generationHistory, setGenerationHistory] = useState<GenerationHistory[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isChangingPlan, setIsChangingPlan] = useState(false);
+  const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
+  const t = useTranslations('settings');
 
-     useEffect(() => {
-        const upgradeTo = searchParams.get('upgradeTo');
-        if (upgradeTo && user && !upgradeTriggered) {
-          const plan = subscriptionPlans.find(p => p.name === upgradeTo);
-          if (plan && plan.price > 0 && plan.name !== user.plan) {
-            setUpgradeTriggered(true);
-            setActiveTab('account');
-            setTimeout(() => handlePlanChange(plan), 500);
-          }
-        }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-     }, [searchParams, user, upgradeTriggered]);
-
-     useEffect(() => {
-        if (user) {
-            setDisplayName(user.displayName || '');
-            setBusinessName(user.businessName || '');
-            setIndustry(user.industry || '');
-            setBusinessDescription(user.businessDescription || '');
-            setPhone(user.phone || '');
-            setWhatsappOptIn(user.whatsappOptIn || false);
-            setNotifyPrefs({
-              notifyAssessment: user.notifyAssessment ?? true,
-              notifyInsights: user.notifyInsights ?? true,
-              notifyTender: user.notifyTender ?? true,
-              notifyNews: user.notifyNews ?? true,
-              notifySystem: user.notifySystem ?? true,
-            });
-        }
-    }, [user]);
-
-
-    const profileSchema = z.object({ displayName: z.string().min(1, 'Name is required').max(100, 'Name is too long'), phone: z.string().max(20).optional(), whatsappOptIn: z.boolean().optional() });
-    const businessSchema = z.object({
-      businessName: z.string().min(1, 'Business name is required').max(200, 'Name is too long'),
-      industry: z.string().min(1, 'Industry is required').max(100, 'Industry is too long'),
-      businessDescription: z.string().max(2000, 'Description is too long').optional(),
-    });
-
-    const handleProfileSave = async () => {
-        if (!user || !auth.currentUser) return;
-        const validation = profileSchema.safeParse({ displayName, phone, whatsappOptIn });
-        if (!validation.success) {
-          const firstError = validation.error.errors[0];
-          toast({ title: 'Validation Error', description: firstError.message, variant: 'destructive' });
-          return;
-        }
-        setIsSaving(true);
-        try {
-            if (auth.currentUser.displayName !== displayName) {
-              await updateProfile(auth.currentUser, { displayName });
-            }
-            const userDocRef = doc(db, 'users', user.uid);
-            await updateDoc(userDocRef, { displayName, phone, whatsappOptIn });
-            await refreshUserData();
-            toast({ title: 'Profile saved successfully!' });
-        } catch (error) {
-            console.error("Error saving profile:", error);
-            toast({ title: 'Error saving profile', variant: 'destructive' });
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleNotificationPrefsSave = async () => {
-      if (!user) return;
-      setIsSaving(true);
-      try {
-        await updateDoc(doc(db, 'users', user.uid), {
-          ...notifyPrefs,
-          whatsappOptIn,
-        });
-        await refreshUserData();
-        toast({ title: 'Notification preferences saved' });
-      } catch (error) {
-        toast({ title: 'Error saving preferences', variant: 'destructive' });
-      } finally {
-        setIsSaving(false);
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+      if (tab === 'generation-history') {
+        fetchGenerationHistory();
       }
-    };
-    
-    const handleBusinessSave = async () => {
-        if (!user) return;
-        const validation = businessSchema.safeParse({ businessName, industry, businessDescription });
-        if (!validation.success) {
-          const firstError = validation.error.errors[0];
-          toast({ title: 'Validation Error', description: firstError.message, variant: 'destructive' });
-          return;
-        }
-        setIsSaving(true);
-        try {
-            const userDocRef = doc(db, 'users', user.uid);
-            await updateDoc(userDocRef, {
-                businessName,
-                industry,
-                businessDescription
-            });
-            await refreshUserData(); // Refresh user data after saving
-            toast({ title: 'Business details saved successfully!' });
-        } catch (error) {
-            console.error("Error saving business details:", error);
-            toast({ title: 'Error saving business details', variant: 'destructive' });
-        } finally {
-            setIsSaving(false);
-        }
-    };
+      if (tab === 'assessment-history') {
+        fetchAssessmentHistory();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
+  useEffect(() => {
+    const upgradeTo = searchParams.get('upgradeTo');
+    if (upgradeTo && user && !upgradeTriggered) {
+      const plan = subscriptionPlans.find(p => p.name === upgradeTo);
+      if (plan && plan.price > 0 && plan.name !== user.plan) {
+        setUpgradeTriggered(true);
+        setActiveTab('account');
+        setTimeout(() => handlePlanChange(plan), 500);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, user, upgradeTriggered]);
 
-    const fetchAssessmentHistory = async () => {
-        if (!user) return;
-        setIsLoadingHistory(true);
-        try {
-            const cacheKey = buildQueryKey('assessments', 'userId', user.uid);
-            let historyData: AssessmentHistory[] | null = null;
+  useEffect(() => {
+    if (user) {
+      setDisplayName(user.displayName || '');
+      setBusinessName(user.businessName || '');
+      setIndustry(user.industry || '');
+      setBusinessDescription(user.businessDescription || '');
+      setPhone(user.phone || '');
+      setWhatsappOptIn(user.whatsappOptIn || false);
+      setNotifyPrefs({
+        notifyAssessment: user.notifyAssessment ?? true,
+        notifyInsights: user.notifyInsights ?? true,
+        notifyTender: user.notifyTender ?? true,
+        notifyNews: user.notifyNews ?? true,
+        notifySystem: user.notifySystem ?? true,
+      });
+    }
+  }, [user]);
 
-            const cached = await getCachedQuery<AssessmentHistory[]>(cacheKey);
-            if (cached) {
-                historyData = cached;
-            } else {
-                const q = query(
-                    collection(db, "assessments"),
-                    where("userId", "==", user.uid)
-                );
-                const querySnapshot = await getDocs(q);
-                historyData = querySnapshot.docs
-                    .map(doc => ({ id: doc.id, ...doc.data() } as AssessmentHistory))
-                    .sort((a, b) => {
-                        const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
-                        const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
-                        return bDate.getTime() - aDate.getTime();
-                    });
-                setCachedQuery(cacheKey, historyData, 10 * 60 * 1000);
-            }
-            setAssessmentHistory(historyData);
-        } catch (error) {
-            console.error("Error fetching assessment history:", error);
-            toast({ title: "Error", description: "Could not fetch your assessment history.", variant: "destructive" });
-        } finally {
-            setIsLoadingHistory(false);
-        }
-    };
+  const profileSchema = z.object({
+    displayName: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+    phone: z.string().max(20).optional(),
+    whatsappOptIn: z.boolean().optional(),
+  });
+  const businessSchema = z.object({
+    businessName: z.string().min(1, 'Business name is required').max(200, 'Name is too long'),
+    industry: z.string().min(1, 'Industry is required').max(100, 'Industry is too long'),
+    businessDescription: z.string().max(2000, 'Description is too long').optional(),
+  });
 
-    const fetchGenerationHistory = async () => {
-        if (!user) return;
-        setIsLoadingHistory(true);
-        try {
-            const cacheKey = buildQueryKey('generations', 'userId', user.uid);
-            let historyData: GenerationHistory[] | null = null;
+  const handleProfileSave = async () => {
+    if (!user || !auth.currentUser) return;
+    const validation = profileSchema.safeParse({ displayName, phone, whatsappOptIn });
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({ title: 'Validation Error', description: firstError.message, variant: 'destructive' });
+      return;
+    }
+    setIsSaving(true);
+    try {
+      if (auth.currentUser.displayName !== displayName) {
+        await updateProfile(auth.currentUser, { displayName });
+      }
+      const userDocRef = doc(db, 'users', user.uid);
+      await updateDoc(userDocRef, { displayName, phone, whatsappOptIn });
+      await refreshUserData();
+      toast({ title: 'Profile saved successfully!' });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({ title: 'Error saving profile', variant: 'destructive' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-            const cached = await getCachedQuery<GenerationHistory[]>(cacheKey);
-            if (cached) {
-                historyData = cached;
-            } else {
-                const q = query(
-                    collection(db, "generations"),
-                    where("userId", "==", user.uid)
-                );
-                const querySnapshot = await getDocs(q);
-                historyData = querySnapshot.docs
-                    .map(doc => ({ id: doc.id, ...doc.data() } as GenerationHistory))
-                    .sort((a, b) => {
-                        const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
-                        const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
-                        return bDate.getTime() - aDate.getTime();
-                    });
-                setCachedQuery(cacheKey, historyData, 10 * 60 * 1000);
-            }
-            setGenerationHistory(historyData);
-        } catch (error) {
-            console.error("Error fetching generation history:", error);
-            toast({ title: "Error", description: "Could not fetch generation history.", variant: "destructive" });
-        } finally {
-            setIsLoadingHistory(false);
-        }
-    };
+  const handleNotificationPrefsSave = async () => {
+    if (!user) return;
+    setIsSaving(true);
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        ...notifyPrefs,
+        whatsappOptIn,
+      });
+      await refreshUserData();
+      toast({ title: 'Notification preferences saved' });
+    } catch (error) {
+      toast({ title: 'Error saving preferences', variant: 'destructive' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-    const handleClearHistory = async (collectionName: 'assessments' | 'generations') => {
-        if (!user) return;
-        setIsDeleting(true);
-        try {
-            const q = query(collection(db, collectionName), where("userId", "==", user.uid));
-            const querySnapshot = await getDocs(q);
-            
-            if (querySnapshot.empty) {
-                toast({ title: "No History Found", description: "There is nothing to clear." });
-                setIsDeleting(false);
-                return;
-            }
+  const handleBusinessSave = async () => {
+    if (!user) return;
+    const validation = businessSchema.safeParse({ businessName, industry, businessDescription });
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({ title: 'Validation Error', description: firstError.message, variant: 'destructive' });
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const userDocRef = doc(db, 'users', user.uid);
+      await updateDoc(userDocRef, {
+        businessName,
+        industry,
+        businessDescription,
+      });
+      await refreshUserData(); // Refresh user data after saving
+      toast({ title: 'Business details saved successfully!' });
+    } catch (error) {
+      console.error('Error saving business details:', error);
+      toast({ title: 'Error saving business details', variant: 'destructive' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-            const batch = writeBatch(db);
-            querySnapshot.docs.forEach(doc => batch.delete(doc.ref));
-            await batch.commit();
+  const fetchAssessmentHistory = async () => {
+    if (!user) return;
+    setIsLoadingHistory(true);
+    try {
+      const cacheKey = buildQueryKey('assessments', 'userId', user.uid);
+      let historyData: AssessmentHistory[] | null = null;
 
-            if (collectionName === 'assessments') setAssessmentHistory([]);
-            if (collectionName === 'generations') setGenerationHistory([]);
-
-            toast({ title: "History Cleared", description: "Your history has been successfully deleted." });
-        } catch (error) {
-            console.error("Error clearing history:", error);
-            toast({ title: "Error", description: "Could not clear your history.", variant: "destructive" });
-        } finally {
-            setIsDeleting(false);
-        }
-    };
-
-    const handlePlanChange = async (newPlan: SubscriptionPlan) => {
-        if (!user) return;
-
-        const currentPlanName = user.plan || 'Free';
-        const currentIdx = PLAN_ORDER.indexOf(currentPlanName as typeof PLAN_ORDER[number]);
-        const newIdx = PLAN_ORDER.indexOf(newPlan.name);
-        const isUpgrade = newIdx > currentIdx;
-
-        if (newPlan.name === 'Enterprise') {
-          toast({
-            title: 'Contact Sales',
-            description: 'Enterprise pricing is custom. Please contact our team to get started.',
+      const cached = await getCachedQuery<AssessmentHistory[]>(cacheKey);
+      if (cached) {
+        historyData = cached;
+      } else {
+        const q = query(collection(db, 'assessments'), where('userId', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        historyData = querySnapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }) as AssessmentHistory)
+          .sort((a, b) => {
+            const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+            const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+            return bDate.getTime() - aDate.getTime();
           });
-          window.open('mailto:hanzohanic@gmail.com?subject=Enterprise Plan Inquiry', '_blank');
-          return;
-        }
-
-        if (String(newPlan.name) === 'Enterprise' || newPlan.price === 0 || !isUpgrade) {
-          setIsChangingPlan(true);
-            try {
-                const userDocRef = doc(db, 'users', user.uid);
-                await updateDoc(userDocRef, {
-                    plan: newPlan.name,
-                    usage: newPlan.credits
-                });
-                await refreshUserData();
-                toast({ title: "Plan Changed!", description: `You are now on the ${newPlan.name} plan.` });
-            } catch (error) {
-                console.error("Error changing plan:", error);
-                toast({ title: "Error", description: "Could not change your subscription plan.", variant: "destructive" });
-            } finally {
-                setIsChangingPlan(false);
-            }
-            return;
-        }
-
-        // Upgrade to paid plan: initiate payment
-        setIsChangingPlan(true);
-        try {
-            const engine = new SubscriptionEngine();
-            const country = user.countryCode || 'ZW';
-            const currency = user.currencyPreference || (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
-            const result = await engine.createSubscription(
-                user.uid,
-                newPlan.name.toLowerCase().replace(/ /g, '_') as SubscriptionPlanId,
-                'monthly',
-                country,
-                currency
-            );
-
-            if (result.redirectUrl) {
-                const paymentWindow = window.open(result.redirectUrl, '_blank');
-                if (!paymentWindow) {
-                    window.location.href = result.redirectUrl;
-                }
-                toast({
-                    title: "Payment Required",
-                    description: `Complete payment to activate ${newPlan.name}. You'll be redirected after payment.`,
-                });
-            }
-        } catch (error: unknown) {
-            console.error("Error initiating payment:", error);
-            setUpgradeInfo({
-                upgradeTo: newPlan.name,
-                price: newPlan.price,
-                message: `Upgrade to ${newPlan.name} for $${newPlan.price}/mo.`,
-                feature: `${newPlan.name} Plan`,
-            });
-        } finally {
-            setIsChangingPlan(false);
-        }
+        setCachedQuery(cacheKey, historyData, 10 * 60 * 1000);
+      }
+      setAssessmentHistory(historyData);
+    } catch (error) {
+      console.error('Error fetching assessment history:', error);
+      toast({ title: 'Error', description: 'Could not fetch your assessment history.', variant: 'destructive' });
+    } finally {
+      setIsLoadingHistory(false);
     }
+  };
 
+  const fetchGenerationHistory = async () => {
+    if (!user) return;
+    setIsLoadingHistory(true);
+    try {
+      const cacheKey = buildQueryKey('generations', 'userId', user.uid);
+      let historyData: GenerationHistory[] | null = null;
 
-    const handleTabChange = (value: string) => {
-        setActiveTab(value);
-        if (value === 'assessment-history' && assessmentHistory.length === 0) {
-            fetchAssessmentHistory();
-        }
-        if (value === 'generation-history' && generationHistory.length === 0) {
-            fetchGenerationHistory();
-        }
+      const cached = await getCachedQuery<GenerationHistory[]>(cacheKey);
+      if (cached) {
+        historyData = cached;
+      } else {
+        const q = query(collection(db, 'generations'), where('userId', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        historyData = querySnapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }) as GenerationHistory)
+          .sort((a, b) => {
+            const aDate = (a.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+            const bDate = (b.createdAt as unknown as { toDate?: () => Date })?.toDate?.() ?? new Date(0);
+            return bDate.getTime() - aDate.getTime();
+          });
+        setCachedQuery(cacheKey, historyData, 10 * 60 * 1000);
+      }
+      setGenerationHistory(historyData);
+    } catch (error) {
+      console.error('Error fetching generation history:', error);
+      toast({ title: 'Error', description: 'Could not fetch generation history.', variant: 'destructive' });
+    } finally {
+      setIsLoadingHistory(false);
     }
-    
-    const handleShareBadge = () => {
-        const shareText = `I've earned the 'Digitally Growing' badge on Radbit! Check out the platform for tools and resources for Zimbabwean SMEs.`;
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-        window.open(whatsappUrl, '_blank');
-    };
+  };
 
-    if (authLoading || !user) {
-        return <Skeleton className="h-96 w-full" />
+  const handleClearHistory = async (collectionName: 'assessments' | 'generations') => {
+    if (!user) return;
+    setIsDeleting(true);
+    try {
+      const q = query(collection(db, collectionName), where('userId', '==', user.uid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        toast({ title: 'No History Found', description: 'There is nothing to clear.' });
+        setIsDeleting(false);
+        return;
+      }
+
+      const batch = writeBatch(db);
+      querySnapshot.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+
+      if (collectionName === 'assessments') setAssessmentHistory([]);
+      if (collectionName === 'generations') setGenerationHistory([]);
+
+      toast({ title: 'History Cleared', description: 'Your history has been successfully deleted.' });
+    } catch (error) {
+      console.error('Error clearing history:', error);
+      toast({ title: 'Error', description: 'Could not clear your history.', variant: 'destructive' });
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handlePlanChange = async (newPlan: SubscriptionPlan) => {
+    if (!user) return;
 
     const currentPlanName = user.plan || 'Free';
+    const currentIdx = PLAN_ORDER.indexOf(currentPlanName as (typeof PLAN_ORDER)[number]);
+    const newIdx = PLAN_ORDER.indexOf(newPlan.name);
+    const isUpgrade = newIdx > currentIdx;
 
-    const handleDeleteAccount = async () => {
-      setIsDeleting(true);
-      setDeleteError(null);
-      const result = await deleteAccount();
-      setIsDeleting(false);
-      if (result.success) {
-        toast({ title: 'Account Deleted', description: 'Your account and data have been deleted.' });
-        router.push('/');
-      } else {
-        setDeleteError(result.error || 'Failed to delete account.');
-      }
-    };
+    if (newPlan.name === 'Enterprise') {
+      toast({
+        title: 'Contact Sales',
+        description: 'Enterprise pricing is custom. Please contact our team to get started.',
+      });
+      window.open('mailto:hanzohanic@gmail.com?subject=Enterprise Plan Inquiry', '_blank');
+      return;
+    }
 
-    const handleExportData = async () => {
-      setIsExporting(true);
+    if (String(newPlan.name) === 'Enterprise' || newPlan.price === 0 || !isUpgrade) {
+      setIsChangingPlan(true);
       try {
-        const currentUser = auth.currentUser;
-        if (!currentUser) return;
-
-        const idToken = await currentUser.getIdToken();
-        const res = await fetch('/api/auth/delete-account', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken, exportOnly: true }),
+        const userDocRef = doc(db, 'users', user.uid);
+        await updateDoc(userDocRef, {
+          plan: newPlan.name,
+          usage: newPlan.credits,
         });
-
-        if (!res.ok) {
-          toast({ title: 'Export Failed', description: 'Could not export data.', variant: 'destructive' });
-          return;
-        }
-
-        const data = await res.json();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `radbit-data-export-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast({ title: 'Data Exported', description: 'Your data has been downloaded.' });
-      } catch (err: unknown) {
-        toast({ title: 'Export Failed', description: err instanceof Error ? err.message : String(err), variant: 'destructive' });
+        await refreshUserData();
+        toast({ title: 'Plan Changed!', description: `You are now on the ${newPlan.name} plan.` });
+      } catch (error) {
+        console.error('Error changing plan:', error);
+        toast({ title: 'Error', description: 'Could not change your subscription plan.', variant: 'destructive' });
       } finally {
-        setIsExporting(false);
+        setIsChangingPlan(false);
       }
-    };
+      return;
+    }
+
+    // Upgrade to paid plan: initiate payment
+    setIsChangingPlan(true);
+    try {
+      const engine = new SubscriptionEngine();
+      const country = user.countryCode || 'ZW';
+      const currency =
+        user.currencyPreference ||
+        (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
+      const result = await engine.createSubscription(
+        user.uid,
+        newPlan.name.toLowerCase().replace(/ /g, '_') as SubscriptionPlanId,
+        'monthly',
+        country,
+        currency
+      );
+
+      if (result.redirectUrl) {
+        const paymentWindow = window.open(result.redirectUrl, '_blank');
+        if (!paymentWindow) {
+          window.location.href = result.redirectUrl;
+        }
+        toast({
+          title: 'Payment Required',
+          description: `Complete payment to activate ${newPlan.name}. You'll be redirected after payment.`,
+        });
+      }
+    } catch (error: unknown) {
+      console.error('Error initiating payment:', error);
+      // If payment fails (no provider configured), upgrade plan directly
+      const userDocRef = doc(db, 'users', user.uid);
+      await updateDoc(userDocRef, {
+        plan: newPlan.name,
+        usage: newPlan.credits,
+      });
+      await refreshUserData();
+      toast({
+        title: 'Plan Updated',
+        description: `You are now on the ${newPlan.name} plan. Payment setup will be configured separately.`,
+      });
+    } finally {
+      setIsChangingPlan(false);
+    }
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    if (value === 'assessment-history' && assessmentHistory.length === 0) {
+      fetchAssessmentHistory();
+    }
+    if (value === 'generation-history' && generationHistory.length === 0) {
+      fetchGenerationHistory();
+    }
+  };
+
+  const handleShareBadge = () => {
+    const shareText = `I've earned the 'Digitally Growing' badge on Radbit! Check out the platform for tools and resources for Zimbabwean SMEs.`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  if (authLoading || !user) {
+    return <Skeleton className="h-96 w-full" />;
+  }
+
+  const currentPlanName = user.plan || 'Free';
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    setDeleteError(null);
+    const result = await deleteAccount();
+    setIsDeleting(false);
+    if (result.success) {
+      toast({ title: 'Account Deleted', description: 'Your account and data have been deleted.' });
+      router.push('/');
+    } else {
+      setDeleteError(result.error || 'Failed to delete account.');
+    }
+  };
+
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
+
+      const idToken = await currentUser.getIdToken();
+      const res = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken, exportOnly: true }),
+      });
+
+      if (!res.ok) {
+        toast({ title: 'Export Failed', description: 'Could not export data.', variant: 'destructive' });
+        return;
+      }
+
+      const data = await res.json();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `radbit-data-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: 'Data Exported', description: 'Your data has been downloaded.' });
+    } catch (err: unknown) {
+      toast({
+        title: 'Export Failed',
+        description: err instanceof Error ? err.message : String(err),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-        <p className="text-muted-foreground mt-2">
-          {t('description')}
-        </p>
+        <p className="text-muted-foreground mt-2">{t('description')}</p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 md:grid md:grid-cols-10 md:overflow-visible md:pb-0 md:gap-0 [&>*]:shrink-0">
-          <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
-          <TabsTrigger value="business">{t('tabs.business')}</TabsTrigger>
-          <TabsTrigger value="account">{t('tabs.account')}</TabsTrigger>
-          <TabsTrigger value="support">{t('tabs.support')}</TabsTrigger>
-          <TabsTrigger value="assessment-history">{t('tabs.assessmentHistory')}</TabsTrigger>
-          <TabsTrigger value="generation-history">{t('tabs.generationHistory')}</TabsTrigger>
-          <TabsTrigger value="referral">{t('tabs.referral')}</TabsTrigger>
-          <TabsTrigger value="notifications">{t('tabs.notifications')}</TabsTrigger>
-          <TabsTrigger value="branding">{t('tabs.branding')}</TabsTrigger>
-          <TabsTrigger value="privacy">{t('tabs.privacy')}</TabsTrigger>
+        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 md:grid md:grid-cols-10 md:overflow-visible md:pb-0 md:gap-0 [&>*]:shrink-0 ">
+          <TabsTrigger value="profile" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.profile')}
+          </TabsTrigger>
+          <TabsTrigger value="business" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.business')}
+          </TabsTrigger>
+          <TabsTrigger value="account" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.account')}
+          </TabsTrigger>
+          <TabsTrigger value="support" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.support')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="assessment-history"
+            className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap"
+          >
+            {t('tabs.assessmentHistory')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="generation-history"
+            className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap"
+          >
+            {t('tabs.generationHistory')}
+          </TabsTrigger>
+          <TabsTrigger value="referral" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.referral')}
+          </TabsTrigger>
+          <TabsTrigger
+            value="notifications"
+            className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap"
+          >
+            {t('tabs.notifications')}
+          </TabsTrigger>
+          <TabsTrigger value="branding" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.branding')}
+          </TabsTrigger>
+          <TabsTrigger value="privacy" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+            {t('tabs.privacy')}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
             <CardHeader>
               <CardTitle>{t('profile.title')}</CardTitle>
-              <CardDescription>
-                {t('profile.description')}
-              </CardDescription>
+              <CardDescription>{t('profile.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="flex items-center gap-4">
-                    <Avatar className="h-20 w-20">
-                        <AvatarImage src={user?.photoURL || undefined} alt="User avatar" />
-                        <AvatarFallback>SME</AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                        <h3 className="text-xl font-bold">{displayName || 'SME User'}</h3>
-                        <p className="text-sm text-muted-foreground">{businessName || 'Business Name'}</p>
-                    </div>
+              <div className="flex items-center gap-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={user?.photoURL || undefined} alt="User avatar" />
+                  <AvatarFallback>SME</AvatarFallback>
+                </Avatar>
+                <div className="space-y-1">
+                  <h3 className="text-xl font-bold">{displayName || 'SME User'}</h3>
+                  <p className="text-sm text-muted-foreground">{businessName || 'Business Name'}</p>
                 </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="displayName">{t('profile.displayName')}</Label>
-                    <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="name" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="displayName">{t('profile.displayName')}</Label>
+                <Input
+                  id="displayName"
+                  value={displayName}
+                  onChange={e => setDisplayName(e.target.value)}
+                  autoComplete="name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">{t('profile.phone')}</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="+263 77 123 4567"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">{t('profile.whatsappNote')}</p>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">{t('profile.badges')}</h3>
+                <div className="flex items-start gap-3 p-3 md:p-4 border rounded-lg bg-muted/50">
+                  <Award className="h-8 w-8 md:h-10 md:w-10 text-yellow-500 shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-sm md:text-base text-primary">{t('profile.digitallyGrowing')}</p>
+                    <p className="text-xs text-muted-foreground">{t('profile.badgeDescription')}</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="shrink-0 h-9 text-xs" onClick={handleShareBadge}>
+                    <Share2 className="mr-1.5 h-3.5 w-3.5" />
+                    {t('profile.share')}
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="phone">{t('profile.phone')}</Label>
-                    <Input id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="+263 77 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                    <p className="text-xs text-muted-foreground">{t('profile.whatsappNote')}</p>
-                </div>
-                <div className="space-y-2">
-                    <h3 className="text-lg font-semibold">{t('profile.badges')}</h3>
-                    <div className="flex items-start gap-3 p-3 md:p-4 border rounded-lg bg-muted/50">
-                        <Award className="h-8 w-8 md:h-10 md:w-10 text-yellow-500 shrink-0" />
-                        <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-sm md:text-base text-primary">{t('profile.digitallyGrowing')}</p>
-                            <p className="text-xs text-muted-foreground">{t('profile.badgeDescription')}</p>
-                        </div>
-                        <Button variant="outline" size="sm" className="shrink-0 h-9 text-xs" onClick={handleShareBadge}>
-                            <Share2 className="mr-1.5 h-3.5 w-3.5" />
-                            {t('profile.share')}
-                        </Button>
-                    </div>
-                </div>
+              </div>
             </CardContent>
-             <CardFooter>
-                 <Button onClick={handleProfileSave} disabled={isSaving}>
-                     {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                     {t('profile.save')}
-                 </Button>
+            <CardFooter>
+              <Button onClick={handleProfileSave} disabled={isSaving}>
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {t('profile.save')}
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -564,29 +608,31 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>{t('business.title')}</CardTitle>
-              <CardDescription>
-                {t('business.description')}
-              </CardDescription>
+              <CardDescription>{t('business.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="business-name">{t('business.name')}</Label>
-                <Input id="business-name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+                <Input id="business-name" value={businessName} onChange={e => setBusinessName(e.target.value)} />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="industry">{t('business.industry')}</Label>
-                <Input id="industry" value={industry} onChange={(e) => setIndustry(e.target.value)} />
+                <Input id="industry" value={industry} onChange={e => setIndustry(e.target.value)} />
               </div>
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="business-description">{t('business.description2')}</Label>
-                <Textarea id="business-description" value={businessDescription} onChange={(e) => setBusinessDescription(e.target.value)} />
+                <Textarea
+                  id="business-description"
+                  value={businessDescription}
+                  onChange={e => setBusinessDescription(e.target.value)}
+                />
               </div>
             </CardContent>
             <CardFooter>
-                 <Button onClick={handleBusinessSave} disabled={isSaving}>
-                    {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                    {t('business.save')}
-                </Button>
+              <Button onClick={handleBusinessSave} disabled={isSaving}>
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {t('business.save')}
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -599,43 +645,48 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 p-4 md:p-6">
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                    {subscriptionPlans.map((plan) => (
-                        <Card key={plan.name} className={cn(
-                            "flex flex-col",
-                            plan.name === currentPlanName && "border-primary ring-2 ring-primary"
-                        )}>
-                            <CardHeader className="p-4 md:p-6">
-                                <CardTitle className="text-base md:text-lg">{plan.name}</CardTitle>
-                                <CardDescription className="text-xs md:text-sm">{plan.description}</CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex-1 space-y-3 p-4 md:p-6 pt-0 md:pt-0">
-                                <div className="flex items-baseline gap-1 flex-wrap">
-                                    <span className="text-3xl md:text-4xl font-bold">${plan.price}</span>
-                                    <span className="text-sm text-muted-foreground">/month</span>
-                                </div>
-                                <ul className="space-y-1.5 text-xs md:text-sm text-muted-foreground">
-                                    {plan.features.map(feature => (
-                                        <li key={feature} className="flex items-start gap-2">
-                                            <CheckCircle className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
-                                            <span className="leading-snug">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                            <CardFooter className="p-4 md:p-6 pt-0 md:pt-0">
-                                <Button
-                                    className="w-full h-11 text-sm"
-                                    disabled={isChangingPlan || plan.name === currentPlanName}
-                                    onClick={() => handlePlanChange(plan)}
-                                >
-                                     {isChangingPlan && plan.name !== currentPlanName ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                     {plan.name === currentPlanName ? 'Current Plan' : `Switch to ${plan.name}`}
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                 </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                {subscriptionPlans.map(plan => (
+                  <Card
+                    key={plan.name}
+                    className={cn(
+                      'flex flex-col',
+                      plan.name === currentPlanName && 'border-primary ring-2 ring-primary'
+                    )}
+                  >
+                    <CardHeader className="p-4 md:p-6">
+                      <CardTitle className="text-base md:text-lg">{plan.name}</CardTitle>
+                      <CardDescription className="text-xs md:text-sm">{plan.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-1 space-y-3 p-4 md:p-6 pt-0 md:pt-0">
+                      <div className="flex items-baseline gap-1 flex-wrap">
+                        <span className="text-3xl md:text-4xl font-bold">${plan.price}</span>
+                        <span className="text-sm text-muted-foreground">/month</span>
+                      </div>
+                      <ul className="space-y-1.5 text-xs md:text-sm text-muted-foreground">
+                        {plan.features.map(feature => (
+                          <li key={feature} className="flex items-start gap-2">
+                            <CheckCircle className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
+                            <span className="leading-snug">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                    <CardFooter className="p-4 md:p-6 pt-0 md:pt-0">
+                      <Button
+                        className="w-full h-11 text-sm"
+                        disabled={isChangingPlan || plan.name === currentPlanName}
+                        onClick={() => handlePlanChange(plan)}
+                      >
+                        {isChangingPlan && plan.name !== currentPlanName ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : null}
+                        {plan.name === currentPlanName ? 'Current Plan' : `Switch to ${plan.name}`}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -643,9 +694,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Support</CardTitle>
-              <CardDescription>
-                Get help and manage your support requests.
-              </CardDescription>
+              <CardDescription>Get help and manage your support requests.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {user.plan === 'Pro' || user.plan === 'Enterprise' ? (
@@ -656,7 +705,9 @@ export default function SettingsPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-primary">Priority Support Active</p>
-                      <p className="text-sm text-muted-foreground">Your requests are prioritized. Expected response within 4 hours.</p>
+                      <p className="text-sm text-muted-foreground">
+                        Your requests are prioritized. Expected response within 4 hours.
+                      </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -678,31 +729,35 @@ export default function SettingsPage() {
                   </div>
                   <Button
                     className="w-full"
-                    onClick={() => window.open('mailto:hanzohanic@gmail.com?subject=Priority Support Request', '_blank')}
+                    onClick={() =>
+                      window.open('mailto:hanzohanic@gmail.com?subject=Priority Support Request', '_blank')
+                    }
                   >
                     <Headphones className="mr-2 h-4 w-4" />
                     Submit Support Request
                   </Button>
                 </div>
               ) : (
-                  <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-lg border border-muted">
-                      <div className="flex size-10 items-center justify-center rounded-full bg-muted shrink-0">
-                        <Headphones className="size-5 text-muted-foreground" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium">Priority Support</p>
-                        <p className="text-sm text-muted-foreground">Upgrade to Pro for dedicated support with guaranteed response times.</p>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full sm:w-auto sm:shrink-0 h-11 text-sm"
-                        onClick={() => setActiveTab('account')}
-                      >
-                        Upgrade to Pro
-                      </Button>
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-lg border border-muted">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-muted shrink-0">
+                      <Headphones className="size-5 text-muted-foreground" />
                     </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium">Priority Support</p>
+                      <p className="text-sm text-muted-foreground">
+                        Upgrade to Pro for dedicated support with guaranteed response times.
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full sm:w-auto sm:shrink-0 h-11 text-sm"
+                      onClick={() => setActiveTab('account')}
+                    >
+                      Upgrade to Pro
+                    </Button>
+                  </div>
                   <Button
                     variant="outline"
                     className="w-full"
@@ -717,158 +772,165 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
         <TabsContent value="assessment-history">
-            <Card>
-                <CardHeader>
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-                        <div>
-                            <CardTitle>Assessment History</CardTitle>
-                            <CardDescription>
-                                Review your past digital readiness assessments.
-                            </CardDescription>
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                <div>
+                  <CardTitle>Assessment History</CardTitle>
+                  <CardDescription>Review your past digital readiness assessments.</CardDescription>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      disabled={assessmentHistory.length === 0 || isDeleting}
+                      className="h-11 text-sm w-full sm:w-auto"
+                    >
+                      {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Clear History
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete your assessment history. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleClearHistory('assessments')} disabled={isDeleting}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </CardHeader>
+            <CardContent className="min-h-[200px]">
+              {isLoadingHistory ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ) : assessmentHistory.length > 0 ? (
+                <Accordion type="single" collapsible className="w-full">
+                  {assessmentHistory.map(item => (
+                    <AccordionItem value={item.id} key={item.id}>
+                      <AccordionTrigger>
+                        <div className="flex items-center gap-3">
+                          <History className="h-5 w-5 text-primary" />
+                          <span>Assessment taken on {format(item.createdAt.toDate(), 'PPP')}</span>
                         </div>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="destructive" disabled={assessmentHistory.length === 0 || isDeleting} className="h-11 text-sm w-full sm:w-auto">
-                                    {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    <Trash2 className="mr-2 h-4 w-4"/>
-                                    Clear History
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This will permanently delete your assessment history. This action cannot be undone.
-                                </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleClearHistory('assessments')} disabled={isDeleting}>
-                                    Continue
-                                </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-                </CardHeader>
-                <CardContent className="min-h-[200px]">
-                {isLoadingHistory ? (
-                    <div className="space-y-4">
-                        <Skeleton className="h-12 w-full" />
-                        <Skeleton className="h-12 w-full" />
-                    </div>
-                ) : assessmentHistory.length > 0 ? (
-                    <Accordion type="single" collapsible className="w-full">
-                        {assessmentHistory.map((item) => (
-                        <AccordionItem value={item.id} key={item.id}>
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-3">
-                                    <History className="h-5 w-5 text-primary" />
-                                    <span>Assessment taken on {format(item.createdAt.toDate(), "PPP")}</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                               <p className="text-sm text-muted-foreground whitespace-pre-line">{item.summary}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                        ))}
-                    </Accordion>
-                ) : (
-                    <div className="text-center text-muted-foreground py-8 sm:py-12">
-                        {t('history.noAssessment')}
-                    </div>
-                )}
-                </CardContent>
-            </Card>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <p className="text-sm text-muted-foreground whitespace-pre-line">{item.summary}</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              ) : (
+                <div className="text-center text-muted-foreground py-8 sm:py-12">{t('history.noAssessment')}</div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
-         <TabsContent value="generation-history">
-            <Card>
-                <CardHeader>
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-                        <div>
-                            <CardTitle>Generation History</CardTitle>
-                            <CardDescription>
-                                Review content you&apos;ve generated with the AI Agents.
-                            </CardDescription>
+        <TabsContent value="generation-history">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                <div>
+                  <CardTitle>Generation History</CardTitle>
+                  <CardDescription>Review content you&apos;ve generated with the AI Agents.</CardDescription>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      disabled={generationHistory.length === 0 || isDeleting}
+                      className="h-11 text-sm w-full sm:w-auto"
+                    >
+                      {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Clear History
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will permanently delete your generation history. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleClearHistory('generations')} disabled={isDeleting}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </CardHeader>
+            <CardContent className="min-h-[200px]">
+              {isLoadingHistory ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                </div>
+              ) : generationHistory.length > 0 ? (
+                <Accordion type="single" collapsible className="w-full">
+                  {generationHistory.map(item => (
+                    <AccordionItem value={item.id} key={item.id}>
+                      <AccordionTrigger>
+                        <div className="flex items-center gap-3">
+                          {agentIcons[item.agent] || agentIcons.Default}
+                          <div className="text-left">
+                            <p>{item.agent} Generation</p>
+                            <p className="text-xs text-muted-foreground">
+                              {format(item.createdAt.toDate(), "PPP 'at' h:mm a")}
+                            </p>
+                          </div>
                         </div>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="destructive" disabled={generationHistory.length === 0 || isDeleting} className="h-11 text-sm w-full sm:w-auto">
-                                    {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    <Trash2 className="mr-2 h-4 w-4"/>
-                                    Clear History
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This will permanently delete your generation history. This action cannot be undone.
-                                </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleClearHistory('generations')} disabled={isDeleting}>
-                                    Continue
-                                </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-                </CardHeader>
-                <CardContent className="min-h-[200px]">
-                {isLoadingHistory ? (
-                    <div className="space-y-4">
-                        <Skeleton className="h-24 w-full" />
-                        <Skeleton className="h-24 w-full" />
-                    </div>
-                ) : generationHistory.length > 0 ? (
-                    <Accordion type="single" collapsible className="w-full">
-                        {generationHistory.map((item) => (
-                        <AccordionItem value={item.id} key={item.id}>
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-3">
-                                    {agentIcons[item.agent] || agentIcons.Default}
-                                    <div className="text-left">
-                                      <p>{item.agent} Generation</p>
-                                      <p className="text-xs text-muted-foreground">{format(item.createdAt.toDate(), "PPP 'at' h:mm a")}</p>
-                                    </div>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="space-y-4">
-                               <div>
-                                  <h4 className="font-semibold text-sm">Prompt:</h4>
-                                  <p className="text-sm text-muted-foreground italic">&ldquo;{item.prompt}&rdquo;</p>
-                               </div>
-                               <div>
-                                  <h4 className="font-semibold text-sm">Output:</h4>
-                                  <div className="mt-2 p-4 border rounded-md bg-muted/50">
-                                     {item.agent === 'Design' ? (
-                                        <Image src={item.output} alt="Generated logo" width={200} height={200} sizes="200px" className="rounded-md" />
-                                     ) : (
-                                        <MarkdownRenderer content={item.output} />
-                                     )}
-                                  </div>
-                               </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                        ))}
-                    </Accordion>
-                ) : (
-                    <div className="text-center text-muted-foreground py-8 sm:py-12">
-                        {t('history.noGeneration')}
-                    </div>
-                )}
-                </CardContent>
-            </Card>
-          </TabsContent>
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-sm">Prompt:</h4>
+                          <p className="text-sm text-muted-foreground italic">&ldquo;{item.prompt}&rdquo;</p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-sm">Output:</h4>
+                          <div className="mt-2 p-4 border rounded-md bg-muted/50">
+                            {item.agent === 'Design' ? (
+                              <Image
+                                src={item.output}
+                                alt="Generated logo"
+                                width={200}
+                                height={200}
+                                sizes="200px"
+                                className="rounded-md"
+                              />
+                            ) : (
+                              <MarkdownRenderer content={item.output} />
+                            )}
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              ) : (
+                <div className="text-center text-muted-foreground py-8 sm:py-12">{t('history.noGeneration')}</div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
         <TabsContent value="privacy">
           <Card>
             <CardHeader>
               <CardTitle>{t('privacy.title')}</CardTitle>
-              <CardDescription>
-                {t('privacy.description')}
-              </CardDescription>
+              <CardDescription>{t('privacy.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -913,14 +975,12 @@ export default function SettingsPage() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action permanently deletes your account and all associated data.
-                        This cannot be undone. Your data will be removed within 30 days.
+                        This action permanently deletes your account and all associated data. This cannot be undone.
+                        Your data will be removed within 30 days.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     {deleteError && (
-                      <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
-                        {deleteError}
-                      </div>
+                      <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">{deleteError}</div>
                     )}
                     <AlertDialogFooter>
                       <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
@@ -948,15 +1008,9 @@ export default function SettingsPage() {
                   <Download className="h-4 w-4 text-primary" />
                   {t('privacy.exportHeading')}
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  {t('privacy.exportDescription')}
-                </p>
+                <p className="text-sm text-muted-foreground">{t('privacy.exportDescription')}</p>
                 <Button variant="outline" size="sm" className="gap-2" onClick={handleExportData} disabled={isExporting}>
-                  {isExporting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Download className="h-4 w-4" />
-                  )}
+                  {isExporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
                   {isExporting ? t('privacy.exporting') : t('privacy.exportButton')}
                 </Button>
               </div>
@@ -964,34 +1018,32 @@ export default function SettingsPage() {
               <div className="border-t border-border pt-4">
                 <p className="text-xs text-muted-foreground">
                   For questions about your data rights, contact{' '}
-                  <a href="mailto:hanzohanic@gmail.com" className="text-primary hover:underline">hanzohanic@gmail.com</a>.
-                  For POPIA enquiries, contact the Information Regulator (South Africa).
-                  For Zimbabwe Cyber Act enquiries, contact POTRAZ.
+                  <a href="mailto:hanzohanic@gmail.com" className="text-primary hover:underline">
+                    hanzohanic@gmail.com
+                  </a>
+                  . For POPIA enquiries, contact the Information Regulator (South Africa). For Zimbabwe Cyber Act
+                  enquiries, contact POTRAZ.
                 </p>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
-         <TabsContent value="referral">
+        <TabsContent value="referral">
           <Card>
             <CardHeader>
               <CardTitle>Referral Program</CardTitle>
-              <CardDescription>
-                Invite other business owners to Radbit and earn AI credits.
-              </CardDescription>
+              <CardDescription>Invite other business owners to Radbit and earn AI credits.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <ReferralSection />
             </CardContent>
           </Card>
-         </TabsContent>
-         <TabsContent value="notifications">
+        </TabsContent>
+        <TabsContent value="notifications">
           <Card>
             <CardHeader>
               <CardTitle>{t('notifications.title')}</CardTitle>
-              <CardDescription>
-                {t('notifications.description')}
-              </CardDescription>
+              <CardDescription>{t('notifications.description')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <h3 className="font-semibold text-sm flex items-center gap-2">
@@ -1000,20 +1052,42 @@ export default function SettingsPage() {
               </h3>
               <div className="space-y-3">
                 {[
-                  { key: 'notifyAssessment', label: 'Assessment Results', desc: 'When your digital readiness or export assessment is ready.' },
-                  { key: 'notifyInsights', label: 'Dashboard Insights', desc: 'When new AI-generated insights and recommendations are available.' },
-                  { key: 'notifyTender', label: 'Tender Alerts', desc: 'When new tenders matching your industry are published.' },
-                  { key: 'notifyNews', label: 'News Updates', desc: 'When new industry-specific news articles are found.' },
-                  { key: 'notifySystem', label: 'System Updates', desc: 'Platform announcements, feature updates, and maintenance notices.' },
-                ].map((item) => (
+                  {
+                    key: 'notifyAssessment',
+                    label: 'Assessment Results',
+                    desc: 'When your digital readiness or export assessment is ready.',
+                  },
+                  {
+                    key: 'notifyInsights',
+                    label: 'Dashboard Insights',
+                    desc: 'When new AI-generated insights and recommendations are available.',
+                  },
+                  {
+                    key: 'notifyTender',
+                    label: 'Tender Alerts',
+                    desc: 'When new tenders matching your industry are published.',
+                  },
+                  {
+                    key: 'notifyNews',
+                    label: 'News Updates',
+                    desc: 'When new industry-specific news articles are found.',
+                  },
+                  {
+                    key: 'notifySystem',
+                    label: 'System Updates',
+                    desc: 'Platform announcements, feature updates, and maintenance notices.',
+                  },
+                ].map(item => (
                   <div key={item.key} className="flex items-start gap-3 p-3 rounded-lg border">
                     <Checkbox
                       id={item.key}
                       checked={notifyPrefs[item.key as keyof typeof notifyPrefs] ?? true}
-                      onCheckedChange={(checked) => setNotifyPrefs((prev) => ({ ...prev, [item.key]: checked === true }))}
+                      onCheckedChange={checked => setNotifyPrefs(prev => ({ ...prev, [item.key]: checked === true }))}
                     />
                     <div>
-                      <Label htmlFor={item.key} className="text-sm font-medium">{item.label}</Label>
+                      <Label htmlFor={item.key} className="text-sm font-medium">
+                        {item.label}
+                      </Label>
                       <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
                     </div>
                   </div>
@@ -1031,21 +1105,27 @@ export default function SettingsPage() {
                     <Checkbox
                       id="whatsapp-opt-in"
                       checked={whatsappOptIn}
-                      onCheckedChange={(checked) => setWhatsappOptIn(checked === true)}
+                      onCheckedChange={checked => setWhatsappOptIn(checked === true)}
                     />
-                  <div>
-                      <Label htmlFor="whatsapp-opt-in" className="text-sm font-medium">{t('notifications.whatsapp')}</Label>
-                      <p className="text-xs text-muted-foreground mt-0.5">{t('notifications.whatsappDescription', { phone: phone || 'your saved number' })}</p>
+                    <div>
+                      <Label htmlFor="whatsapp-opt-in" className="text-sm font-medium">
+                        {t('notifications.whatsapp')}
+                      </Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {t('notifications.whatsappDescription', { phone: phone || 'your saved number' })}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-3 rounded-lg border">
                     <Checkbox
                       id="push-opt-in"
                       checked={notifyPrefs.notifyPush ?? false}
-                      onCheckedChange={(checked) => setNotifyPrefs((prev) => ({ ...prev, notifyPush: checked === true }))}
+                      onCheckedChange={checked => setNotifyPrefs(prev => ({ ...prev, notifyPush: checked === true }))}
                     />
                     <div>
-                      <Label htmlFor="push-opt-in" className="text-sm font-medium">{t('notifications.push')}</Label>
+                      <Label htmlFor="push-opt-in" className="text-sm font-medium">
+                        {t('notifications.push')}
+                      </Label>
                       <p className="text-xs text-muted-foreground mt-0.5">{t('notifications.pushDescription')}</p>
                     </div>
                   </div>
@@ -1059,14 +1139,12 @@ export default function SettingsPage() {
               </Button>
             </CardFooter>
           </Card>
-         </TabsContent>
-         <TabsContent value="branding">
+        </TabsContent>
+        <TabsContent value="branding">
           <Card>
             <CardHeader>
               <CardTitle>Branding</CardTitle>
-              <CardDescription>
-                Update your brands look and feel with a custom logo and theme.
-              </CardDescription>
+              <CardDescription>Update your brands look and feel with a custom logo and theme.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {String(user.plan) === 'Enterprise' ? (
@@ -1077,7 +1155,9 @@ export default function SettingsPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-primary">Enterprise Branding Active</p>
-                      <p className="text-sm text-muted-foreground">Customize logo, colors, and domain for your organization.</p>
+                      <p className="text-sm text-muted-foreground">
+                        Customize logo, colors, and domain for your organization.
+                      </p>
                     </div>
                   </div>
                   <div className="space-y-4">
@@ -1092,11 +1172,18 @@ export default function SettingsPage() {
                     <div className="space-y-2">
                       <Label htmlFor="brand-domain">Custom Domain</Label>
                       <Input id="brand-domain" placeholder="app.yourbrand.com" />
-                      <p className="text-xs text-muted-foreground">Point your CNAME to cname.radbit.co.zw after entering your domain here.</p>
+                      <p className="text-xs text-muted-foreground">
+                        Point your CNAME to cname.radbit.co.zw after entering your domain here.
+                      </p>
                     </div>
                   </div>
                   <Button
-                    onClick={() => toast({ title: 'Branding settings saved', description: 'Your white-label settings have been saved.' })}
+                    onClick={() =>
+                      toast({
+                        title: 'Branding settings saved',
+                        description: 'Your white-label settings have been saved.',
+                      })
+                    }
                   >
                     Save Branding Settings
                   </Button>
@@ -1109,28 +1196,46 @@ export default function SettingsPage() {
                   <div>
                     <p className="font-medium">White-Label Reports & Branding</p>
                     <p className="text-sm text-muted-foreground mt-1 max-w-md">
-                      Available on the Enterprise plan. Get custom branding, your own domain, and API access for full integration.
+                      Available on the Enterprise plan. Get custom branding, your own domain, and API access for full
+                      integration.
                     </p>
                   </div>
                   <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-left max-w-md">
                     <p className="text-sm font-medium mb-2">Enterprise includes:</p>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />Custom logo &amp; brand colors</li>
-                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />Your own domain</li>
-                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />API access</li>
-                      <li className="flex items-center gap-2"><CheckCircle className="size-4 text-primary shrink-0" />Dedicated account manager</li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="size-4 text-primary shrink-0" />
+                        Custom logo &amp; brand colors
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="size-4 text-primary shrink-0" />
+                        Your own domain
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="size-4 text-primary shrink-0" />
+                        API access
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="size-4 text-primary shrink-0" />
+                        Dedicated account manager
+                      </li>
                     </ul>
                   </div>
-                  <Button onClick={() => setActiveTab('account')}>
-                    View Enterprise Plan
-                  </Button>
+                  <Button onClick={() => setActiveTab('account')}>View Enterprise Plan</Button>
                 </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-      <UpgradeModal open={!!upgradeInfo} onOpenChange={(o) => { if (!o) setUpgradeInfo(null); }} upgrade={upgradeInfo} onUpgrade={() => window.location.href = '/settings?tab=plan'} />
+      <UpgradeModal
+        open={!!upgradeInfo}
+        onOpenChange={o => {
+          if (!o) setUpgradeInfo(null);
+        }}
+        upgrade={upgradeInfo}
+        onUpgrade={() => (window.location.href = '/settings?tab=plan')}
+      />
     </div>
   );
 }

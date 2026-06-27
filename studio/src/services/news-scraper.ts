@@ -6,7 +6,12 @@ import { saveNews, loadNews, safeNewsFromDb, saveLog } from '@/lib/scraper-stora
 import { scoreBatch } from '@/services/scoring/content-scorer';
 import { saveScores, loadScores } from '@/services/scoring/scored-items-store';
 import { getActiveSources, recordSourceFetch } from '@/services/discovery/source-store';
-import { generateContentId, extractIndustryTags, INDUSTRY_TO_SECTOR, CATEGORY_KEYWORDS } from '@/lib/content-classification';
+import {
+  generateContentId,
+  extractIndustryTags,
+  INDUSTRY_TO_SECTOR,
+  CATEGORY_KEYWORDS,
+} from '@/lib/content-classification';
 import fs from 'fs';
 import path from 'path';
 import type { NewsArticle } from '@/types/news';
@@ -44,7 +49,21 @@ const FEEDS: FeedConfig[] = [
     region: 'Zimbabwe',
     type: 'rss',
     industryMapping: {
-      finance: ['Reserve Bank', 'bond', 'inflation', 'rtgs', 'usd', 'forex', 'deposit', 'loan', 'bank', 'zig', 'ZiG', 'RBZ', 'MPU'],
+      finance: [
+        'Reserve Bank',
+        'bond',
+        'inflation',
+        'rtgs',
+        'usd',
+        'forex',
+        'deposit',
+        'loan',
+        'bank',
+        'zig',
+        'ZiG',
+        'RBZ',
+        'MPU',
+      ],
       technology: ['ICT', 'EcoCash', 'TelOne', 'NetOne', 'data', 'internet', 'digital', 'mobile', 'fintech'],
       policy: ['government', 'minister', 'zimra', 'budget', 'policy', 'parliament', 'cabinet', 'president'],
       regulatory: ['ZERA', 'PRA', 'competition', 'licensing', 'regulation', 'court', 'licence', 'SI ', 'statutory'],
@@ -152,7 +171,22 @@ const FEEDS: FeedConfig[] = [
     region: 'Zimbabwe',
     type: 'html',
     industryMapping: {
-      technology: ['tech', 'ICT', 'internet', 'mobile', 'fintech', 'startup', 'software', 'AI', 'digital', 'Econet', 'NetOne', 'Telecel', 'Cassava', 'EcoCash'],
+      technology: [
+        'tech',
+        'ICT',
+        'internet',
+        'mobile',
+        'fintech',
+        'startup',
+        'software',
+        'AI',
+        'digital',
+        'Econet',
+        'NetOne',
+        'Telecel',
+        'Cassava',
+        'EcoCash',
+      ],
       finance: ['EcoCash', 'mobile money', 'fintech', 'banking', 'RBZ', 'digital payments'],
       business: ['SME', 'startup', 'entrepreneur', 'business'],
     },
@@ -362,13 +396,87 @@ const FEEDS: FeedConfig[] = [
   },
 ];
 
+// ── NewsAPI integration ─────────────────────────────────────────────────────
+const NEWSAPI_KEY = () => process.env.NEWSAPI_KEY || '';
+
+async function scrapeNewsApi(): Promise<NewsArticle[]> {
+  const key = NEWSAPI_KEY();
+  if (!key) return [];
+
+  const queries = [
+    { q: 'Zimbabwe business OR economy OR finance', category: 'business' },
+    { q: 'Africa trade OR AfCFTA OR SADC', category: 'business' },
+    { q: 'Zimbabwe technology OR startup OR fintech', category: 'technology' },
+    { q: 'Zimbabwe mining OR agriculture OR energy', category: 'business' },
+  ];
+
+  const articles: NewsArticle[] = [];
+  const seen = new Set<string>();
+
+  for (const query of queries) {
+    try {
+      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query.q)}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${key}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) continue;
+
+      const data = await res.json();
+      if (!data.articles?.length) continue;
+
+      for (const item of data.articles) {
+        if (!item.title || !item.url || seen.has(item.url)) continue;
+        seen.add(item.url);
+
+        const pubDate = item.publishedAt ? new Date(item.publishedAt) : new Date();
+        const ageHours = (Date.now() - pubDate.getTime()) / (1000 * 60 * 60);
+        if (ageHours > 168) continue;
+
+        articles.push({
+          id: generateContentId(item.url),
+          title: item.title,
+          summary: (item.description || '').slice(0, 600),
+          sourceUrl: item.url,
+          sourceName: item.source?.name || 'NewsAPI',
+          publishedAt: pubDate,
+          category: classifyCategory(item.title, item.description || '', {
+            finance: [
+              'economy',
+              'bank',
+              'inflation',
+              'currency',
+              'forex',
+              'investment',
+              'stock',
+              'market',
+              'trade',
+              'GDP',
+            ],
+            technology: ['tech', 'startup', 'AI', 'digital', 'fintech', 'software', 'innovation', 'cyber'],
+            policy: ['government', 'minister', 'parliament', 'policy', 'regulation', 'law', 'president', 'parliament'],
+            business: ['business', 'company', 'enterprise', 'SME', 'industry', 'corporate', 'entrepreneur'],
+            regulatory: ['court', 'licence', 'compliance', 'tax', 'audit', 'regulatory'],
+          }),
+          industryTags: extractIndustryTags(item.title, item.description || ''),
+          region: 'Africa',
+          processedAt: new Date(),
+          scrapedAt: new Date(),
+        });
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return articles;
+}
+
 // ── rss-parser with custom request headers ──────────────────────────────────
 const rssParser = new parser({
   timeout: 30000,
   requestOptions: {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+      Accept: 'application/rss+xml, application/xml, text/xml, */*',
     },
     timeout: 30000,
   },
@@ -448,8 +556,8 @@ async function scrapeRssFeed(feed: FeedConfig): Promise<NewsArticle[]> {
 const SITE_SELECTORS: Record<string, { container: string; title: string; link: string }> = {
   'Bulawayo24 News': { container: '.story', title: 'a', link: 'a' },
   'NewsDay Zimbabwe': { container: '.article-list article', title: 'h3 a', link: 'h3 a' },
-  'ZimLive': { container: '.post-title', title: 'a', link: 'a' },
-  'TechZim': { container: 'article', title: 'h2 a', link: 'h2 a' },
+  ZimLive: { container: '.post-title', title: 'a', link: 'a' },
+  TechZim: { container: 'article', title: 'h2 a', link: 'h2 a' },
   '263Chat': { container: '.entry-title', title: 'a', link: 'a' },
 };
 
@@ -482,8 +590,9 @@ async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
     const response = await axios.get(feed.url, {
       timeout: 20000,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       },
     });
 
@@ -495,9 +604,7 @@ async function scrapeHtmlFeed(feed: FeedConfig): Promise<NewsArticle[]> {
 
     // Use per-site selectors if available, fall back to generic
     const siteConfig = SITE_SELECTORS[feed.sourceName];
-    const selectors = siteConfig
-      ? [`${siteConfig.container} ${siteConfig.link}`]
-      : FALLBACK_SELECTORS;
+    const selectors = siteConfig ? [`${siteConfig.container} ${siteConfig.link}`] : FALLBACK_SELECTORS;
 
     for (const selector of selectors) {
       $(selector).each((_, el) => {
@@ -596,19 +703,47 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
       continue;
     }
 
-    allArticles.push(...articles.map(a => ({
-      id: a.id,
-      title: a.title,
-      summary: a.summary,
-      sourceUrl: a.sourceUrl,
-      sourceName: a.sourceName,
-      publishedAt: a.publishedAt,
-      category: a.category,
-      industryTags: a.industryTags,
-      region: a.region,
-    })));
+    allArticles.push(
+      ...articles.map(a => ({
+        id: a.id,
+        title: a.title,
+        summary: a.summary,
+        sourceUrl: a.sourceUrl,
+        sourceName: a.sourceName,
+        publishedAt: a.publishedAt,
+        category: a.category,
+        industryTags: a.industryTags,
+        region: a.region,
+      }))
+    );
     results.scraped += articles.length;
     if (feed._id) recordSourceFetch(feed._id, true).catch(e => logToFile(`recordSourceFetch failed: ${e}`));
+  }
+
+  // Supplement with NewsAPI
+  if (NEWSAPI_KEY()) {
+    try {
+      const newsApiArticles = await scrapeNewsApi();
+      if (newsApiArticles.length > 0) {
+        allArticles.push(
+          ...newsApiArticles.map(a => ({
+            id: a.id,
+            title: a.title,
+            summary: a.summary,
+            sourceUrl: a.sourceUrl,
+            sourceName: a.sourceName,
+            publishedAt: a.publishedAt,
+            category: a.category,
+            industryTags: a.industryTags,
+            region: a.region,
+          }))
+        );
+        results.scraped += newsApiArticles.length;
+        logToFile(`NewsAPI contributed ${newsApiArticles.length} articles`);
+      }
+    } catch (e) {
+      logToFile(`NewsAPI scrape failed: ${e}`);
+    }
   }
 
   if (allArticles.length > 0) {
@@ -619,66 +754,101 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
       logToFile(`Saved ${results.scraped} articles`);
 
       // Score newly saved articles (fire-and-forget)
-      scoreBatch(allArticles.map(a => ({
-        id: a.id,
-        title: a.title,
-        summary: a.summary || '',
-        sourceUrl: a.sourceUrl || '',
-        publishedAt: a.publishedAt || new Date(),
-        category: a.category,
-        type: 'news' as const,
-      }))).then(scored => {
-        saveScores(scored.map(s => ({
-          contentId: s.id,
-          contentType: 'news' as const,
-          impactScore: s.scores.impactScore,
-          urgencyScore: s.scores.urgencyScore,
-          confidenceScore: s.scores.confidenceScore,
-          reasoning: s.scores.reasoning,
-          scoredAt: new Date().toISOString(),
-        }))).catch(e => logToFile(`Score save failed: ${e}`));
-      }).catch(e => logToFile(`Score generation failed: ${e}`));
+      scoreBatch(
+        allArticles.map(a => ({
+          id: a.id,
+          title: a.title,
+          summary: a.summary || '',
+          sourceUrl: a.sourceUrl || '',
+          publishedAt: a.publishedAt || new Date(),
+          category: a.category,
+          type: 'news' as const,
+        }))
+      )
+        .then(scored => {
+          saveScores(
+            scored.map(s => ({
+              contentId: s.id,
+              contentType: 'news' as const,
+              impactScore: s.scores.impactScore,
+              urgencyScore: s.scores.urgencyScore,
+              confidenceScore: s.scores.confidenceScore,
+              reasoning: s.scores.reasoning,
+              scoredAt: new Date().toISOString(),
+            }))
+          ).catch(e => logToFile(`Score save failed: ${e}`));
+        })
+        .catch(e => logToFile(`Score generation failed: ${e}`));
 
-      try { await saveLog('news', results.scraped, 'success'); } catch { /* saveLog failed, ignore */ }
+      try {
+        await saveLog('news', results.scraped, 'success');
+      } catch {
+        /* saveLog failed, ignore */
+      }
     } catch (error: unknown) {
       results.errors = allArticles.length;
-      logToFile(`Write error: ${(error instanceof Error ? error.message : String(error))}`);
-      try { await saveLog('news', 0, 'error', (error instanceof Error ? error.message : String(error))); } catch { /* saveLog failed, ignore */ }
+      logToFile(`Write error: ${error instanceof Error ? error.message : String(error)}`);
+      try {
+        await saveLog('news', 0, 'error', error instanceof Error ? error.message : String(error));
+      } catch {
+        /* saveLog failed, ignore */
+      }
     }
   } else {
     logToFile('No articles to save');
   }
 
-  return { ...results, articles: allArticles.slice(0, 20).map(a => ({
-    id: a.id,
-    title: a.title,
-    summary: a.summary,
-    sourceUrl: a.sourceUrl,
-    sourceName: a.sourceName,
-    publishedAt: a.publishedAt,
-    category: a.category,
-    industryTags: a.industryTags,
-    region: a.region,
-  })) };
+  return {
+    ...results,
+    articles: allArticles.slice(0, 20).map(a => ({
+      id: a.id,
+      title: a.title,
+      summary: a.summary,
+      sourceUrl: a.sourceUrl,
+      sourceName: a.sourceName,
+      publishedAt: a.publishedAt,
+      category: a.category,
+      industryTags: a.industryTags,
+      region: a.region,
+    })),
+  };
 }
 
-export async function getLatestNews(options: {
-  limit?: number;
-  category?: NewsArticle['category'];
-  industry?: string;
-  region?: string;
-} = {}): Promise<NewsArticle[]> {
+export async function getLatestNews(
+  options: {
+    limit?: number;
+    category?: NewsArticle['category'];
+    industry?: string;
+    region?: string;
+  } = {}
+): Promise<NewsArticle[]> {
   const { limit: n = 50, category, industry, region } = options;
 
   const cacheKey = `news:list:${category || 'all'}:${industry || 'all'}:${region || 'all'}:${n}`;
   const cached = getCached<NewsArticle[]>(cacheKey);
   if (cached) return cached;
 
-  const records = await loadNews({
+  let records = await loadNews({
     limit: 200,
     category: category || undefined,
     region,
   });
+
+  // Auto-trigger scrape if database is empty
+  if (records.length === 0) {
+    try {
+      const result = await scrapeAllFeeds();
+      if (result.scraped > 0) {
+        records = await loadNews({
+          limit: 200,
+          category: category || undefined,
+          region,
+        });
+      }
+    } catch {
+      // Scrape failed, return empty
+    }
+  }
 
   let articles: NewsArticle[] = records.map(safeNewsFromDb);
 
@@ -711,14 +881,16 @@ export async function getNewsForUser(userId: string): Promise<NewsArticle[]> {
   if (cached) return cached;
 
   const records = await loadNews({ limit: 100 });
-  const articles = records
-    .map(safeNewsFromDb)
-    .slice(0, 15);
+  const articles = records.map(safeNewsFromDb).slice(0, 15);
 
   const scores = await loadScores(articles.map(a => a.id));
   for (const a of articles) {
     const s = scores.get(a.id);
-    if (s) { a.impactScore = s.impactScore; a.urgencyScore = s.urgencyScore; a.confidenceScore = s.confidenceScore; }
+    if (s) {
+      a.impactScore = s.impactScore;
+      a.urgencyScore = s.urgencyScore;
+      a.confidenceScore = s.confidenceScore;
+    }
   }
 
   setCached(cacheKey, articles, 10 * 60 * 1000);

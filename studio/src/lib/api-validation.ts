@@ -71,7 +71,7 @@ export const AnalyticsTrackSchema = z.object({
 
 export const CreateSubscriptionSchema = z.object({
   action: z.literal('create-subscription'),
-  plan: z.enum(['free', 'growth', 'pro', 'enterprise']),
+  plan: z.enum(['free', 'growth', 'tender_starter', 'pro', 'enterprise']),
   billingPeriod: z.enum(['monthly', 'quarterly', 'annual']),
   country: z.string().min(2).max(3),
   currency: z.string().min(3).max(3),
@@ -196,7 +196,9 @@ export function validateParams<T extends z.ZodType>(
   schema: T
 ): { success: true; data: z.infer<T> } | { success: false; response: NextResponse } {
   const params: Record<string, string> = {};
-  url.searchParams.forEach((value, key) => { params[key] = value; });
+  url.searchParams.forEach((value, key) => {
+    params[key] = value;
+  });
   const result = schema.safeParse(params);
   if (!result.success) {
     const errors = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
