@@ -61,7 +61,8 @@ async function getGuides(): Promise<GuideItem[]> {
         readTime: data.readTime as string,
       };
     });
-  } catch {
+  } catch (error) {
+    console.warn('[Resources Page] Failed to load guides:', error);
     return [];
   }
 }

@@ -79,23 +79,25 @@ export const POST = withIpRateLimit(
 
       const { fullName, workEmail, companyName, industry, serviceInterest, budgetRange, message, referralSource, audience, need, budget } = validation.data;
 
-      const pool = getPool();
-      const client = await pool.connect();
-
       let postgresId: string | null = null;
 
       try {
-        const result = await client.query(
-          `INSERT INTO leads (full_name, work_email, company_name, industry, service_interest, budget_range, message, referral_source)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-           RETURNING id`,
-          [fullName, workEmail, companyName || null, industry || null, serviceInterest || null, budgetRange || null, message || null, referralSource || null]
-        );
-        postgresId = result.rows[0]?.id || null;
+        const pool = getPool();
+        const client = await pool.connect();
+
+        try {
+          const result = await client.query(
+            `INSERT INTO leads (full_name, work_email, company_name, industry, service_interest, budget_range, message, referral_source)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+             RETURNING id`,
+            [fullName, workEmail, companyName || null, industry || null, serviceInterest || null, budgetRange || null, message || null, referralSource || null]
+          );
+          postgresId = result.rows[0]?.id || null;
+        } finally {
+          client.release();
+        }
       } catch (pgError) {
         console.warn('[Leads API] PostgreSQL insert failed (non-blocking):', pgError);
-      } finally {
-        client.release();
       }
 
       try {
