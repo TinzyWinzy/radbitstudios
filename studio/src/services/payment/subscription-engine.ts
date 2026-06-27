@@ -1,5 +1,7 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { normalizePlanName, normalizeSubscriptionPlanId, getPlanCredits } from '@/lib/subscriptions';
+import type { PlanName } from '@/types/user';
 import { PaymentOrchestrator } from './payment-orchestrator';
 import { InvoiceService } from './invoice.service';
 
@@ -10,7 +12,7 @@ export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled'
 export interface ActiveSubscription {
   id: string;
   userId: string;
-  plan: SubscriptionPlanId;
+  plan: PlanName;
   status: SubscriptionStatus;
   billingPeriod: BillingPeriod;
   currency?: string;
@@ -45,7 +47,8 @@ export class SubscriptionEngine {
     const userDoc = await getDoc(doc(db, 'users', userId));
     if (!userDoc.exists()) throw new Error('User not found');
 
-    const price = SUBSCRIPTION_PRICES[plan][billingPeriod];
+    const normalizedPlanName = normalizePlanName(plan);
+    const price = SUBSCRIPTION_PRICES[normalizeSubscriptionPlanId(plan)][billingPeriod];
     const discount = SUBSCRIPTION_DISCOUNTS[billingPeriod] || 0;
     const finalPrice = price * (1 - discount);
 
@@ -71,7 +74,7 @@ export class SubscriptionEngine {
     const subscription: ActiveSubscription = {
       id: payment.transactionId,
       userId,
-      plan,
+      plan: normalizedPlanName,
       status: 'active',
       billingPeriod,
       currency,
@@ -97,19 +100,17 @@ export class SubscriptionEngine {
     });
 
     // Update user's subscription plan in their profile
+    const planCredits = getPlanCredits(normalizedPlanName);
+    const usageUpdates = Object.entries(planCredits).reduce((acc, [key, value]) => {
+      acc[`usage.${key}.total`] = value.total;
+      acc[`usage.${key}.remaining`] = value.remaining;
+      return acc;
+    }, {} as Record<string, number>);
+
     await updateDoc(doc(db, 'users', userId), {
-      plan,
+      plan: normalizedPlanName,
       subscriptionId: payment.transactionId,
-      [`usage.assessmentSummary.total`]: plan === 'free' ? 1 : 999,
-      [`usage.assessmentSummary.remaining`]: plan === 'free' ? 1 : 999,
-      [`usage.templateGeneration.total`]: plan === 'free' ? 5 : 999,
-      [`usage.templateGeneration.remaining`]: plan === 'free' ? 5 : 999,
-      [`usage.mentorChat.total`]: plan === 'free' ? 10 : 999,
-      [`usage.mentorChat.remaining`]: plan === 'free' ? 10 : 999,
-      [`usage.dashboardInsights.total`]: 999,
-      [`usage.dashboardInsights.remaining`]: 999,
-      [`usage.tendersCuration.total`]: 999,
-      [`usage.tendersCuration.remaining`]: 999,
+      ...usageUpdates,
     });
 
     return { subscription, redirectUrl: payment.redirectUrl };
@@ -122,7 +123,7 @@ export class SubscriptionEngine {
 
     if (immediately) {
       await updateDoc(subRef, { status: 'canceled', updated: new Date() });
-      await updateDoc(doc(db, 'users', sub.data().userId), { plan: 'free' });
+      await updateDoc(doc(db, 'users', sub.data().userId), { plan: 'Free' });
     } else {
       await updateDoc(subRef, { cancelAtPeriodEnd: true, updated: new Date() });
     }
@@ -134,7 +135,7 @@ export class SubscriptionEngine {
     if (!sub.exists) return { success: false };
 
     const data = sub.data() as ActiveSubscription;
-    const price = SUBSCRIPTION_PRICES[data.plan][data.billingPeriod];
+    const price = SUBSCRIPTION_PRICES[normalizeSubscriptionPlanId(data.plan)][data.billingPeriod];
     const discount = SUBSCRIPTION_DISCOUNTS[data.billingPeriod] || 0;
     const finalPrice = price * (1 - discount);
 

@@ -1,6 +1,6 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, updateDoc, increment } from 'firebase/firestore';
-import { subscriptionPlans, PLAN_ORDER } from '@/lib/subscriptions';
+import { PLAN_ORDER, normalizePlanName, getPlanCredits } from '@/lib/subscriptions';
 import { usageWarningEmail, sendEmail } from '@/services/email-service';
 import { getCachedUser, setCachedUser, invalidateUserCache } from '@/services/user-cache';
 
@@ -11,11 +11,11 @@ export type { PlanName };
 export type FeatureName = 'logoGeneration' | 'assessmentSummary' | 'exportAssessment' | 'dashboardInsights' | 'tendersCuration' | 'tendersRegional' | 'mentorChat' | 'templateGeneration' | 'tenderProposal' | 'directMessages' | 'communityPostAnalytics' | 'prioritySupport' | 'whiteLabelAppearance' | 'taxCopilot' | 'prazCompliance' | 'multiAgentWorkflow';
 
 export function getTierLevel(plan: PlanName): number {
-  return PLAN_ORDER.indexOf(plan);
+  return PLAN_ORDER.indexOf(normalizePlanName(plan));
 }
 
 export function isTierAtLeast(userPlan: PlanName, requiredPlan: PlanName): boolean {
-  return PLAN_ORDER.indexOf(userPlan) >= PLAN_ORDER.indexOf(requiredPlan);
+  return PLAN_ORDER.indexOf(normalizePlanName(userPlan)) >= PLAN_ORDER.indexOf(normalizePlanName(requiredPlan));
 }
 
 interface CreditGate {
@@ -82,7 +82,7 @@ export async function getUserPlanData(userId: string): Promise<UserPlanData> {
   const cached = await getCachedUser(userId);
   if (cached && cached.plan) {
     return {
-      plan: (cached.plan as PlanName) || 'Free',
+      plan: normalizePlanName(cached.plan as string | undefined),
       usage: (cached.usage as Record<string, { remaining: number; total: number }>) || {},
       role: (cached.role as UserRole) ?? null,
     };
@@ -91,7 +91,7 @@ export async function getUserPlanData(userId: string): Promise<UserPlanData> {
   if (!userDoc.exists()) throw new Error('User not found');
   const data = userDoc.data();
   const result: UserPlanData = {
-    plan: (data.plan as PlanName) || 'Free',
+    plan: normalizePlanName(data.plan as string | undefined),
     usage: (data.usage as Record<string, { remaining: number; total: number }>) || {},
     role: (data.role as UserRole) ?? null,
   };
@@ -125,12 +125,14 @@ export async function checkFeatureAccess(userId: string, feature: FeatureName): 
 
   if (!gate) return { allowed: true, message: '' };
 
+  const normalizedPlan = normalizePlanName(plan);
+
   if (gate.type === 'tier') {
-    if (!isTierAtLeast(plan, gate.minTier)) {
+    if (!isTierAtLeast(normalizedPlan, gate.minTier)) {
       return {
         allowed: false,
         reason: 'insufficient_tier',
-        upgrade: getUpgradePath(plan, feature),
+        upgrade: getUpgradePath(normalizedPlan, feature),
         message: `${feature.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())} requires the ${gate.minTier} plan. Upgrade to unlock.`,
       };
     }
@@ -145,8 +147,8 @@ export async function checkFeatureAccess(userId: string, feature: FeatureName): 
       allowed: false,
       reason: 'insufficient_credits',
       remaining: 0,
-      upgrade: getUpgradePath(plan, feature),
-      message: `You've used all your ${feature.replace(/([A-Z])/g, ' $1').toLowerCase()} credits. ${UPGRADE_PATHS[plan].message}`,
+      upgrade: getUpgradePath(normalizedPlan, feature),
+      message: `You've used all your ${feature.replace(/([A-Z])/g, ' $1').toLowerCase()} credits. ${UPGRADE_PATHS[normalizedPlan].message}`,
     };
   }
 
@@ -171,12 +173,11 @@ export async function checkAndDecrementUsage(userId: string, feature: FeatureNam
       return { success: true, message: 'Super admin — no usage deducted.' };
     }
 
-    const plan = (userData.plan as PlanName) || 'Free';
+    const plan = normalizePlanName(userData.plan as string | undefined);
     const usage = userData.usage?.[gate.creditKey];
 
     if (!usage || usage.remaining === undefined) {
-      const planIndex = PLAN_ORDER.indexOf(plan);
-      const planCredits = planIndex < subscriptionPlans.length ? subscriptionPlans[planIndex]?.credits : null;
+      const planCredits = getPlanCredits(plan);
       const total = planCredits?.[gate.creditKey as keyof typeof planCredits]?.total ?? 999;
       await updateDoc(userDocRef, {
         [`usage.${gate.creditKey}.remaining`]: total - 1,

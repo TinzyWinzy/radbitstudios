@@ -59,8 +59,7 @@ import { updateProfile } from 'firebase/auth';
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
 import Image from 'next/image';
-import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER } from '@/lib/subscriptions';
-import type { SubscriptionPlanId } from '@/services/payment/subscription-engine';
+import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER, normalizePlanName, normalizeSubscriptionPlanId } from '@/lib/subscriptions';
 import { SubscriptionEngine } from '@/services/payment/subscription-engine';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import type { UpgradeInfo } from '@/services/feature-gate';
@@ -344,8 +343,8 @@ export default function SettingsPage() {
   const handlePlanChange = async (newPlan: SubscriptionPlan) => {
     if (!user) return;
 
-    const currentPlanName = user.plan || 'Free';
-    const currentIdx = PLAN_ORDER.indexOf(currentPlanName as (typeof PLAN_ORDER)[number]);
+    const currentPlanName = normalizePlanName(user.plan || 'Free');
+    const currentIdx = PLAN_ORDER.indexOf(currentPlanName);
     const newIdx = PLAN_ORDER.indexOf(newPlan.name);
     const isUpgrade = newIdx > currentIdx;
 
@@ -363,7 +362,7 @@ export default function SettingsPage() {
       try {
         const userDocRef = doc(db, 'users', user.uid);
         await updateDoc(userDocRef, {
-          plan: newPlan.name,
+          plan: normalizePlanName(newPlan.name),
           usage: newPlan.credits,
         });
         await refreshUserData();
@@ -387,7 +386,7 @@ export default function SettingsPage() {
         (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
       const result = await engine.createSubscription(
         user.uid,
-        newPlan.name.toLowerCase().replace(/ /g, '_') as SubscriptionPlanId,
+        normalizeSubscriptionPlanId(newPlan.name),
         'monthly',
         country,
         currency
@@ -408,7 +407,7 @@ export default function SettingsPage() {
       // If payment fails (no provider configured), upgrade plan directly
       const userDocRef = doc(db, 'users', user.uid);
       await updateDoc(userDocRef, {
-        plan: newPlan.name,
+        plan: normalizePlanName(newPlan.name),
         usage: newPlan.credits,
       });
       await refreshUserData();

@@ -5,6 +5,7 @@ import {
   getUpgradePath,
   type FeatureName,
 } from "@/services/feature-gate";
+import { normalizePlanName } from "@/lib/subscriptions";
 
 describe("getTierLevel", () => {
   it("returns 0 for Free", () => {
@@ -29,6 +30,12 @@ describe("getTierLevel", () => {
 });
 
 describe("isTierAtLeast", () => {
+  it("normalizes legacy plan values before comparison", () => {
+    expect(normalizePlanName("tender_starter")).toBe("Tender Starter");
+    expect(getTierLevel("tender_starter" as any)).toBe(2);
+    expect(isTierAtLeast("tender_starter" as any, "Growth")).toBe(true);
+  });
+
   it("Free is at least Free", () => {
     expect(isTierAtLeast("Free", "Free")).toBe(true);
   });

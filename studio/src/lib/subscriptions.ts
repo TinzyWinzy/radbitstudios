@@ -2,6 +2,44 @@
 export const PLAN_ORDER = ['Free', 'Growth', 'Tender Starter', 'Pro', 'Enterprise'] as const;
 export type PlanTier = typeof PLAN_ORDER[number];
 
+import type { PlanName } from '@/types/user';
+
+export function normalizePlanName(plan: string | null | undefined): PlanName {
+  const rawValue = (plan ?? 'Free').toString().trim();
+  const normalizedKey = rawValue.toLowerCase().replace(/[_\s]+/g, ' ');
+
+  const aliases: Record<string, PlanName> = {
+    'free': 'Free',
+    'growth': 'Growth',
+    'tender starter': 'Tender Starter',
+    'tender starter plan': 'Tender Starter',
+    'pro': 'Pro',
+    'enterprise': 'Enterprise',
+  };
+
+  return aliases[normalizedKey] ?? (PLAN_ORDER.includes(rawValue as PlanTier) ? (rawValue as PlanName) : 'Free');
+}
+
+export function normalizeSubscriptionPlanId(plan: string | null | undefined): 'free' | 'growth' | 'tender_starter' | 'pro' | 'enterprise' {
+  const normalized = normalizePlanName(plan);
+  switch (normalized) {
+    case 'Growth': return 'growth';
+    case 'Tender Starter': return 'tender_starter';
+    case 'Pro': return 'pro';
+    case 'Enterprise': return 'enterprise';
+    default: return 'free';
+  }
+}
+
+export function getPlanConfig(plan: string | null | undefined): SubscriptionPlan {
+  const normalizedPlan = normalizePlanName(plan);
+  return subscriptionPlans.find((candidate) => candidate.name === normalizedPlan) ?? subscriptionPlans[0];
+}
+
+export function getPlanCredits(plan: string | null | undefined) {
+  return getPlanConfig(plan).credits;
+}
+
 export interface SubscriptionPlan {
     name: PlanTier;
     price: number;

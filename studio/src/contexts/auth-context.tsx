@@ -15,7 +15,7 @@ import {
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase/firebase';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
-import { subscriptionPlans } from '@/lib/subscriptions';
+import { subscriptionPlans, normalizePlanName } from '@/lib/subscriptions';
 import type { UserRole } from '@/services/permissions';
 import type { AppUser } from '@/types/user';
 import { withRetry } from '@/lib/retry';
@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!mountedRef.current) return;
     if (userDoc.exists()) {
       const rawData = userDoc.data();
-      const mergedUser = { ...authUser, ...rawData } as AppUser;
+      const mergedUser = { ...authUser, ...rawData, plan: normalizePlanName(rawData.plan as string | undefined) } as AppUser;
       setUser(mergedUser);
       const docRole = rawData.role as UserRole | undefined;
       if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
