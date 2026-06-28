@@ -5,7 +5,7 @@ import { adminDb } from '@/lib/firebase/firebase-admin';
 const gateway = aiGateway;
 const BASE_URL = 'https://graph.facebook.com/v21.0';
 
-async function sendWhatsAppMessage(to: string, text: string): Promise<boolean> {
+export async function sendWhatsAppMessage(to: string, text: string): Promise<boolean> {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   if (!token || !phoneNumberId) return false;
