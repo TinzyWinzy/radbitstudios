@@ -84,6 +84,19 @@ env:
   #     - BUILD
   #     - RUNTIME
 
+  # ── Email — Resend ──────────────────────────────────────────────────
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # ── Database — Supabase PostgreSQL (optional; falls back to Firestore) ──
+  - variable: DATABASE_URL
+    secret: DATABASE_URL
+    availability:
+      - RUNTIME
+
   # ── Cron job security ───────────────────────────────────────────────
   - variable: CRON_SECRET
     secret: CRON_SECRET
