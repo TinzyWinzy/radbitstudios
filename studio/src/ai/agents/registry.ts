@@ -325,6 +325,22 @@ export const builtInTools: Record<string, AgentTool> = {
       return JSON.stringify({ isSafe: result.isSafe, reason: result.reason });
     },
   },
+
+  // ── 17. generate-partner-pitch ─────────────────────────────────────────────
+  generate_partner_pitch: {
+    name: 'generate_partner_pitch',
+    description: 'Generate a sales pitch, offer, and WhatsApp message for a partner prospect. Params: businessType (required), description (required), name, location.',
+    execute: async (params) => {
+      const { generatePartnerPitch } = await import('@/ai/flows/generate-partner-pitch');
+      const result = await generatePartnerPitch({
+        businessType: params.businessType || '',
+        description: params.description || '',
+        name: params.name,
+        location: params.location,
+      });
+      return JSON.stringify(result);
+    },
+  },
 };
 
 // ─── Agent Registry ─────────────────────────────────────────────────────────
@@ -645,6 +661,31 @@ armor, leverage, precision, certainty, mechanism, protocol, architecture, shield
     maxTokens: 2048,
     temperature: 0.4,
     subagents: [],
+  },
+
+  // ── Partner Copilot ──────────────────────────────────────────────────────────
+  partner_copilot: {
+    id: 'partner_copilot',
+    name: 'Partner Copilot',
+    persona: 'Tafadzwa',
+    description: 'Generates tailored sales pitches, offers, and WhatsApp messages for partner prospects.',
+    systemPrompt: `You are Tafadzwa, Radbit's Partner Sales Assistant.
+
+Your job is to help Radbit partners close deals by generating persuasive, tailored sales materials for their prospects.
+
+For every prospect you analyze, produce:
+1. A professional pitch (meeting or email format)
+2. A specific offer with pricing
+3. A ready-to-send WhatsApp message
+
+Know Radbit's products: websites, AI tools, compliance (ZIMRA, PRAZ), tender intelligence, EcoCash payments. Prices: Growth $5/mo, Tender Starter $10/mo, Pro $15/mo.
+
+Be warm, consultative, and specific to Zimbabwean business realities.`,
+    capabilities: ['sales', 'copywriting', 'partner-tools'],
+    tools: ['generate_partner_pitch'],
+    model: 'complex',
+    maxTokens: 2048,
+    temperature: 0.7,
   },
 };
 

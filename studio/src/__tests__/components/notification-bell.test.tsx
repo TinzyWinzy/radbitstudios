@@ -44,7 +44,7 @@ vi.mock('firebase/firestore', () => ({
   where: vi.fn(),
   orderBy: vi.fn(),
   limit: vi.fn(),
-  onSnapshot: vi.fn((q: unknown, callback: (snap: { docs: unknown[] }) => void) => {
+  onSnapshot: vi.fn((_q: unknown, callback: (snap: { docs: unknown[] }) => void) => {
     callback({ docs: [] });
     return vi.fn();
   }),

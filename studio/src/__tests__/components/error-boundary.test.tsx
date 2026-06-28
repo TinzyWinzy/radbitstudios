@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ErrorBoundary } from '@/components/error-boundary';
+import React from 'react';
 
 describe('ErrorBoundary', () => {
   const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -21,7 +22,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('renders default fallback on error', () => {
-    function Bomb() {
+    function Bomb(): React.ReactNode {
       throw new Error('Test error');
     }
     render(
@@ -34,7 +35,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('renders custom fallback when provided', () => {
-    function Bomb() {
+    function Bomb(): React.ReactNode {
       throw new Error('Test error');
     }
     render(

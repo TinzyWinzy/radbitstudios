@@ -6,8 +6,8 @@ import React from 'react';
 const mockToggleSidebar = vi.fn();
 
 vi.mock('next/link', () => ({
-  default: (props: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) =>
-    React.createElement('a', { href: props.href, ...props }, props.children),
+  default: ({ href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) =>
+    React.createElement('a', { href, ...props }, props.children),
 }));
 
 vi.mock('next/navigation', () => ({

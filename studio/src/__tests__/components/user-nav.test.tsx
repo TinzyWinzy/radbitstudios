@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 vi.mock('next/link', () => ({
-  default: (props: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) =>
-    React.createElement('a', { href: props.href, ...props }, props.children),
+  default: ({ href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) =>
+    React.createElement('a', { href, ...props }, props.children),
 }));
 
 vi.mock('next/navigation', () => ({
@@ -42,12 +42,14 @@ vi.mock('@/components/ui/dropdown-menu', () => {
   return { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger };
 });
 
-const mockUser = { displayName: 'John Doe', email: 'john@example.com', photoURL: '' };
+import type { AppUser } from '@/types/user';
+import type { AuthContextType } from '@/contexts/auth-context';
+
+const mockUser: Partial<AppUser> = { displayName: 'John Doe', email: 'john@example.com', photoURL: '' };
 const mockLogout = vi.fn().mockResolvedValue(undefined);
 
 vi.mock('@/contexts/auth-context', () => {
-  const React = require('react');
-  const ctx = React.createContext<{ user: Record<string, string> | null; logout: () => Promise<void> }>(undefined as never);
+  const ctx = React.createContext(undefined as unknown as AuthContextType);
   return { AuthContext: ctx };
 });
 
@@ -59,7 +61,7 @@ describe('UserNav', () => {
     render(
       React.createElement(
         AuthContext.Provider,
-        { value: { user: mockUser, logout: mockLogout } },
+        { value: { user: mockUser as AppUser, loading: false, role: null, logout: mockLogout, signUp: vi.fn(), signIn: vi.fn(), signInWithGoogle: vi.fn(), refreshUserData: vi.fn(), deleteAccount: vi.fn() } },
         React.createElement(UserNav)
       )
     );
@@ -70,7 +72,7 @@ describe('UserNav', () => {
     const { container } = render(
       React.createElement(
         AuthContext.Provider,
-        { value: { user: null, logout: mockLogout } },
+        { value: { user: null, loading: false, role: null, logout: mockLogout, signUp: vi.fn(), signIn: vi.fn(), signInWithGoogle: vi.fn(), refreshUserData: vi.fn(), deleteAccount: vi.fn() } },
         React.createElement(UserNav)
       )
     );

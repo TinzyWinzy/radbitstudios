@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   List, ListOrdered, Quote, Code, Heading2, Heading3,
-  Image, Link, Link2Off, Table as TableIcon, Undo, Redo,
+  Image as ImageIcon, Link, Link2Off, Table as TableIcon, Undo, Redo,
 } from "lucide-react";
 import { storage } from "@/lib/firebase/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -223,7 +223,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           };
           input.click();
         }} title="Insert image">
-          <Image className="h-4 w-4" />
+          <ImageIcon aria-hidden="true" className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton onClick={setLink} active={editor.isActive("link")} title="Link">
           <Link className="h-4 w-4" />

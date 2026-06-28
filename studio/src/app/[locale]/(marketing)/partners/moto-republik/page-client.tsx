@@ -5,7 +5,7 @@ import {
   Palette,
   PenTool,
   Megaphone,
-  Image,
+  Image as ImageIcon,
   FileText,
   ArrowRight,
   Gift,
@@ -86,7 +86,7 @@ function HeroSection() {
 function CreativeAIAgentsSection() {
   const agents = [
     {
-      icon: <Image className="h-5 w-5" />,
+      icon: <ImageIcon aria-hidden="true" className="h-5 w-5" />,
       title: "AI Graphic Design Agent",
       body: "Generate logos, social media graphics, flyers, and brand assets in seconds. Describe your vision — the agent delivers production-ready designs.",
       tag: "Design",

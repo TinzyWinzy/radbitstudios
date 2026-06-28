@@ -1,4 +1,3 @@
-import { vi } from 'vitest';
 import type { AIGatewayRequest, AIGatewayResponse } from '@/services/ai/ai-gateway';
 
 export type MockResponse = Partial<AIGatewayResponse>;

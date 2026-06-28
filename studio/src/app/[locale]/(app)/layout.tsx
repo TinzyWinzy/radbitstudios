@@ -69,7 +69,7 @@ import {
   Kanban,
   ChevronDown,
   HelpCircle,
-  Image,
+  Image as ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
@@ -192,7 +192,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         { href: "/dashboard/faq", label: "FAQ Manager", icon: <HelpCircle />, show: true },
         { href: "/dashboard/guides", label: "Guides Manager", icon: <BookOpen />, show: true },
         { href: "/dashboard/seo-pages", label: "SEO Pages", icon: <FileText />, show: true },
-        { href: "/dashboard/media", label: "Media Library", icon: <Image />, show: true },
+        { href: "/dashboard/media", label: "Media Library", icon: <ImageIcon aria-hidden="true" />, show: true },
         { href: "/dashboard/admin", label: "Admin Panel", icon: <Shield />, show: true },
       ] : []),
     ].filter(item => item.show);

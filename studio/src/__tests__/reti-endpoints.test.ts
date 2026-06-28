@@ -7,7 +7,7 @@ vi.mock('@/services/reti-monitor', () => ({
 }));
 
 vi.mock('@/ai/flows/generate-threat-assessment', async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = await importOriginal() as Record<string, unknown>;
   return {
     ...actual,
     generateThreatAssessment: vi.fn(),
@@ -29,13 +29,13 @@ function mockFirestoreGet<T>(value: T) {
 }
 
 const mockHolon = {
-  holon_type: 'threat_assessment_page',
+  holon_type: 'threat_assessment_page' as const,
   metadata: {
     target_keyword: 'PRAZ procurement threshold compliance',
     trigger_event: 'PRAZ Updates Threshold for SMEs',
     trigger_source: 'PRAZ Zimbabwe',
     generated_at: '2026-06-13T12:00:00.000Z',
-    risk_level: 'high',
+    risk_level: 'high' as const,
   },
   hero_section: {
     h1_headline: 'Is Your SME Ready for New PRAZ Procurement Thresholds?',

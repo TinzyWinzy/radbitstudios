@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import {
   Card, CardContent, CardHeader, CardTitle,
 } from '@/components/ui/card';
@@ -162,22 +162,21 @@ export default function TendersPage() {
   const [showRawData, setShowRawData] = useState(false);
   const [rawData, setRawData] = useState<any>(null);
 
-  const sectorMap: Record<string, string> = {
-    'Agriculture': 'Agriculture & Agribusiness',
-    'Manufacturing': 'Manufacturing',
-    'Technology': 'Information Technology',
-    'Financial Services': 'Financial Services',
-    'Healthcare': 'Healthcare',
-    'Education': 'Education & Training',
-    'Transport & Logistics': 'Transportation & Logistics',
-    'Construction': 'Construction & Engineering',
-    'Retail & Wholesale': 'Retail & Wholesale',
-    'Professional Services': 'Professional Services',
-  };
-
   const [mySectorOnly, setMySectorOnly] = useState(false);
 
-  const loadTenders = async (showRefresh = false) => {
+  const loadTenders = useCallback(async (showRefresh = false) => {
+    const sectorMap: Record<string, string> = {
+      'Agriculture': 'Agriculture & Agribusiness',
+      'Manufacturing': 'Manufacturing',
+      'Technology': 'Information Technology',
+      'Financial Services': 'Financial Services',
+      'Healthcare': 'Healthcare',
+      'Education': 'Education & Training',
+      'Transport & Logistics': 'Transportation & Logistics',
+      'Construction': 'Construction & Engineering',
+      'Retail & Wholesale': 'Retail & Wholesale',
+      'Professional Services': 'Professional Services',
+    };
     if (showRefresh) setIsRefreshing(true);
     setIsLoading(true);
     try {
@@ -219,11 +218,11 @@ export default function TendersPage() {
       setIsLoading(false);
       if (showRefresh) setIsRefreshing(false);
     }
-  };
+  }, [mySectorOnly, user]);
 
   useEffect(() => {
     loadTenders();
-  }, [mySectorOnly, user?.uid]);
+  }, [mySectorOnly, user?.uid, loadTenders]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

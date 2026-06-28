@@ -30,29 +30,29 @@ export function PushNotificationManager() {
     }
   };
 
-  const subscribe = async () => {
-    if (!user) return;
-    try {
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as any,
-      });
-      const subJson = sub.toJSON();
-      await updateDoc(doc(db, "users", user.uid), {
-        pushSubscription: subJson,
-      });
-      setSubscribed(true);
-    } catch {
-      // permission denied or failed
-    }
-  };
-
   useEffect(() => {
+    const subscribe = async () => {
+      if (!user) return;
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as any,
+        });
+        const subJson = sub.toJSON();
+        await updateDoc(doc(db, "users", user.uid), {
+          pushSubscription: subJson,
+        });
+        setSubscribed(true);
+      } catch {
+        // permission denied or failed
+      }
+    };
+
     if (permission === "granted" && !subscribed && user) {
       subscribe();
     }
-  }, [permission, subscribed, user, subscribe]);
+  }, [permission, subscribed, user]);
 
   return null;
 }

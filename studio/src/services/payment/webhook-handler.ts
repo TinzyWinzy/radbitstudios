@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { PayNowProvider } from './providers/paynow.provider';
 import { paymentConfirmationEmail, sendEmail } from '@/services/email-service';
+import { createCommissionOnPayment } from '@/services/commission-engine.service';
 
 export class WebhookHandler {
   async handle(provider: string, rawPayload: any): Promise<{ status: 'processed' | 'duplicate' | 'ignored'; eventId?: string }> {
@@ -94,17 +95,28 @@ export class WebhookHandler {
     });
 
     const subData = sub.data()!;
-    if (subData.userId) {
-      const userDoc = await adminDb.collection('users').doc(subData.userId).get();
-      const userData = userDoc.data();
-      if (userData?.email) {
-        const name = (userData.displayName || userData.email.split('@')[0] || 'there') as string;
-        const planName = (subData.plan || 'Growth') as string;
-        const price = subData.price || 5;
-        const { subject, html } = paymentConfirmationEmail(name, planName, price);
-        sendEmail(userData.email as string, subject, html).catch(() => {});
+      if (subData.userId) {
+        const userDoc = await adminDb.collection('users').doc(subData.userId).get();
+        const userData = userDoc.data();
+        if (userData?.email) {
+          const name = (userData.displayName || userData.email.split('@')[0] || 'there') as string;
+          const planName = (subData.plan || 'Growth') as string;
+          const price = subData.price || 5;
+          const { subject, html } = paymentConfirmationEmail(name, planName, price);
+          sendEmail(userData.email as string, subject, html).catch(() => {});
+        }
+
+        // Partner attribution — auto-create commission if user was referred
+        createCommissionOnPayment(
+          subData.userId,
+          subscriptionId,
+          subData.plan || 'Growth',
+          subData.price || 0,
+          subData.billingPeriod || 'monthly',
+        ).catch((err) => {
+          console.error('[WebhookHandler] Commission creation failed:', err);
+        });
       }
-    }
   }
 
   private async handlePaymentFailed(event: { data: any }): Promise<void> {

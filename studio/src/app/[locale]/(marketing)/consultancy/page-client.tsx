@@ -456,15 +456,7 @@ export function ConsultancyClient() {
               { name: "Indigenous Ingredients", url: "https://indigenousingredients.com", tag: "E-Commerce", desc: "Marketplace for indigenous ingredients and African superfoods." },
               { name: "Jewels by Alice", url: "https://jewelsbyalice.com", tag: "E-Commerce", desc: "Online jewellery store with product catalog and checkout." },
               { name: "Nexus Agronomics", url: "https://nexusagronomics.co.zw", tag: "Agri-Tech", desc: "Agri-tech MVP for farm management and crop analytics." },
-            ].map((site, i) => {
-              const gradients = [
-                "from-amber-500/20 to-orange-500/20",
-                "from-sky-500/20 to-blue-500/20",
-                "from-emerald-500/20 to-teal-500/20",
-                "from-rose-500/20 to-pink-500/20",
-                "from-violet-500/20 to-purple-500/20",
-                "from-cyan-500/20 to-indigo-500/20",
-              ];
+            ].map((site) => {
               return (
                 <StaggerItem key={site.name} direction="up">
                   <Card3D intensity={4}>

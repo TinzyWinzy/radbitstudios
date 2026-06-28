@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   UserPlus,
   ArrowRight,
+  Handshake,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
@@ -159,6 +160,41 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Partner Management */}
+      <Card className="border-primary/10">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Handshake className="h-4 w-4 text-primary" />
+            Partner Programme
+          </CardTitle>
+          <CardDescription className="text-xs">
+            Manage affiliates, commissions, and payouts
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 flex-wrap">
+            <a
+              href="/dashboard/admin/partners"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            >
+              View All Partners <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href="/dashboard/admin/partners?tab=pending-payouts"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-500 hover:underline"
+            >
+              Pending Payouts <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href="/dashboard/admin/partners?tab=commissions"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-500 hover:underline"
+            >
+              Approve Commissions <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_2fr_1fr]">
         {/* Left: Summary stats (visible on desktop, moved to top on mobile) */}

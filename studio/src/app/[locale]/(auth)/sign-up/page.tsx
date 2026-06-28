@@ -13,6 +13,7 @@ import { Icons } from '@/components/icons';
 import { auth } from '@/lib/firebase/firebase';
 import { z } from 'zod';
 import { useUtm, getStoredUtm } from '@/hooks/use-utm';
+import { useRefTracking, getAttributionRef } from '@/hooks/use-ref-tracking';
 
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -38,6 +39,7 @@ export default function SignUpPage() {
   const intentPlan = searchParams.get('plan');
 
   useUtm();
+  useRefTracking();
 
   useEffect(() => {
     document.title = 'Create Account — Radbit';
@@ -50,6 +52,15 @@ export default function SignUpPage() {
         auth.currentUser?.getIdToken().then((idToken) => {
           const payload = JSON.stringify({ idToken, referralCode: utm.ref });
           navigator.sendBeacon('/api/referral/apply', new Blob([payload], { type: 'application/json' }));
+        });
+      }
+
+      // Partner attribution — check 90-day cookie
+      const partnerRef = getAttributionRef();
+      if (partnerRef && partnerRef !== utm.ref) {
+        auth.currentUser?.getIdToken().then((idToken) => {
+          const payload = JSON.stringify({ idToken, refCode: partnerRef });
+          navigator.sendBeacon('/api/partner/attribute', new Blob([payload], { type: 'application/json' }));
         });
       }
       if (intentPlan) {

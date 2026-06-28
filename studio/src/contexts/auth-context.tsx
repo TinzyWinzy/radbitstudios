@@ -22,7 +22,7 @@ import { withRetry } from '@/lib/retry';
 import { welcomeEmail, sendEmail } from '@/services/email-service';
 import { getCachedUser, setCachedUser, invalidateUserCache } from '@/services/user-cache';
 
-interface AuthContextType {
+export interface AuthContextType {
   user: AppUser | null;
   loading: boolean;
   role: UserRole | null;
@@ -325,7 +325,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return { success: false, error: (error instanceof Error ? error.message : String(error)) || '' };
     }
-  }, [fetchAndSetUser]);
+  }, []);
 
   const value = useMemo(() => ({
     user,

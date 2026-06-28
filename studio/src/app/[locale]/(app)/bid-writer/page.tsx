@@ -36,7 +36,7 @@ export default function BidWriterPage() {
       if (appUser.businessName) setBusinessName(appUser.businessName);
       if (appUser.businessDescription) setBusinessDescription(appUser.businessDescription);
     }
-  }, [user?.uid]);
+  }, [user]);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();

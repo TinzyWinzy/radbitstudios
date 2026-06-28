@@ -172,7 +172,7 @@ export default function NewsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [user?.industry, user?.uid, myIndustryOnly]);
+  }, [user?.industry, user?.uid, myIndustryOnly, toast]);
 
   useEffect(() => {
     loadNews();

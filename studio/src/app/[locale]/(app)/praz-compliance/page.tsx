@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,12 +53,7 @@ export default function PrazCompliancePage() {
 
   const perpetualDocIds = new Set(['cert_incorporation', 'cr14', 'cr6']);
 
-  useEffect(() => {
-    if (!user) return;
-    loadProfile();
-  }, [user]);
-
-  async function loadProfile() {
+  const loadProfile = useCallback(async () => {
     if (!user) return;
     try {
       const res = await fetch(`/api/praz/profile?userId=${user.uid}`);
@@ -69,7 +64,12 @@ export default function PrazCompliancePage() {
       }
     } catch { /* no profile yet */ }
     setLoading(false);
-  }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    loadProfile();
+  }, [user, loadProfile]);
 
   function openUploadDialog(docType: DocumentId) {
     setDialogDocType(docType);

@@ -6,7 +6,7 @@ import { listMedia, deleteMedia, uploadMedia, type MediaItem } from "@/services/
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/contexts/auth-context";
 import {
-  Image, FileText, File, Trash2, Copy, Upload, Loader2, Check,
+  Image as ImageIcon, FileText, File, Trash2, Copy, Upload, Loader2, Check,
 } from "lucide-react";
 
 const ALLOWED_TYPES = [
@@ -134,7 +134,7 @@ export default function MediaPage() {
         </div>
       ) : items.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <Image className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <ImageIcon aria-hidden="true" className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <p className="text-lg mb-1">No media yet</p>
           <p className="text-sm">Upload images and PDFs to use in your content</p>
         </div>
