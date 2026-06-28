@@ -500,7 +500,7 @@ export default function SettingsPage() {
         <p className="text-muted-foreground mt-2">{t('description')}</p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 md:overflow-x-auto md:flex-wrap md:gap-1.5 [&>*]:shrink-0">
+        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 justify-start md:overflow-x-auto md:flex-wrap md:gap-1.5 [&>*]:shrink-0">
           <TabsTrigger value="profile" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.profile')}
           </TabsTrigger>
