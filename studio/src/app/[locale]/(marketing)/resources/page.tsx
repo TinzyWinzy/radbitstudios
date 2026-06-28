@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft, FileText, Building2, ReceiptText, Plane, Wallet, Zap, NotebookPen } from "lucide-react";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { breadcrumbSchema } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Business Resources — Guides, Tools & FAQs",
@@ -27,6 +27,16 @@ interface GuideItem {
   readTime: string;
 }
 
+const GUIDE_ICONS: Record<string, LucideIcon> = {
+  Building2,
+  ReceiptText,
+  Plane,
+  Wallet,
+  Zap,
+  NotebookPen,
+  FileText,
+};
+
 const tools = [
   {
     slug: "vat-calculator",
@@ -43,7 +53,7 @@ const tools = [
   {
     slug: "currency-exchange",
     title: "Currency Exchange Rates",
-    excerpt: "Live exchange rates for SADC currencies and major global pairs — USD, ZAR, JPY, EUR, GBP, and more.",
+    excerpt: "Live exchange rates for SADC currencies and major global pairs (USD, ZAR, JPY, EUR, GBP, and more).",
     icon: <ArrowRightLeft className="h-6 w-6" />,
   },
 ];
@@ -68,8 +78,7 @@ async function getGuides(): Promise<GuideItem[]> {
 }
 
 function getIcon(name: string) {
-  const icons = LucideIcons as unknown as Record<string, React.ComponentType<{ className: string }>>;
-  const Icon = icons[name] || icons.FileText;
+  const Icon = GUIDE_ICONS[name] || GUIDE_ICONS.FileText;
   return <Icon className="h-6 w-6" />;
 }
 
@@ -87,7 +96,7 @@ export default async function ResourcesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJson) }}
       />
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link href="/" className="hover:text-foreground">Home</Link>
         <span>/</span>
         <span className="text-foreground">Resources</span>
@@ -104,7 +113,6 @@ export default async function ResourcesPage() {
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed">
           Free guides, tools, and answers designed for the realities of running a business in Zimbabwe.
-          No jargon, no fluff — just what you need to move forward.
         </p>
       </div>
 
@@ -212,11 +220,11 @@ export default async function ResourcesPage() {
           Can&apos;t find what you&apos;re looking for?
         </p>
         <Link
-          href="/mentor"
+          href="/contact"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
         >
           <Sparkles className="h-4 w-4" />
-          Ask the AI Mentor
+          Get in Touch
         </Link>
       </div>
     </div>

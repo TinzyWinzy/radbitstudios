@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2, ArrowRight } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { howToSchema, breadcrumbSchema } from "@/lib/seo";
 import { FAQSchema } from "@/components/faq-schema";
@@ -30,8 +30,7 @@ interface GuideDoc {
 const F = (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
 
 function getIcon(name: string) {
-  const icons = LucideIcons as any;
-  const Icon = icons[name] || icons.FileText;
+  const Icon = (LucideIcons as any)[name] || LucideIcons.FileText;
   return <Icon className="h-5 w-5" />;
 }
 
@@ -60,7 +59,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function GuidePage({ params }: { params: { slug: string } }) {
   const snap = await adminDb

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/resources/faq" },
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 interface FaqItem {
   category: string;
@@ -24,13 +24,19 @@ interface FaqItem {
 }
 
 export default async function FAQPage() {
-  const snap = await adminDb
-    .collection("faq_items")
-    .orderBy("order", "asc")
-    .get();
+  let faqItems: any[] = [];
 
-  const allItems = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
-  const faqItems = allItems.filter(i => i.published);
+  try {
+    const snap = await adminDb
+      .collection("faq_items")
+      .orderBy("order", "asc")
+      .get();
+
+    const allItems = snap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+    faqItems = allItems.filter(i => i.published);
+  } catch (error) {
+    console.warn('[FAQ Page] Failed to load FAQs:', error);
+  }
 
   const grouped: Record<string, FaqItem[]> = {};
   for (const item of faqItems) {
@@ -61,10 +67,10 @@ export default async function FAQPage() {
           <HelpCircle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
           <p className="text-muted-foreground">No FAQs yet. Check back soon or ask the AI Mentor.</p>
           <Link
-            href="/mentor"
+            href="/sign-up"
             className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary hover:underline"
           >
-            Ask the AI Mentor <ArrowRight className="h-3 w-3" />
+            Get Started <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
       ) : (

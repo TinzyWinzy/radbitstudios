@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from 'next';
-import { Shield, Zap, Swords, Target, Network, MapPin, Linkedin, Mail, Github, Twitter, Facebook, Phone, ScrollText, Eye, GanttChartSquare } from 'lucide-react';
+import { Shield, Zap, Swords, Target, Network, MapPin, Linkedin, Mail, Twitter, Facebook, Phone, ScrollText, Eye, GanttChartSquare } from 'lucide-react';
 import { AdBanner } from "@/components/ads/ad-banner";
 import Link from 'next/link';
 
