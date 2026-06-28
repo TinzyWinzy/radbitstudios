@@ -7,22 +7,22 @@ import { InvoiceService } from '@/services/payment/invoice.service';
 import { SUBSCRIPTION_PRICES, type BillingPeriod } from '@/services/payment/subscription-engine';
 
 describe('PaymentOrchestrator', () => {
-  it('routes Zimbabwe USD payments to EcoCash', () => {
+  it('routes Zimbabwe USD payments to PayNow', () => {
     const orchestrator = new PaymentOrchestrator();
     const provider = orchestrator.getProvider('ZW', 'USD');
-    expect(provider.name).toBe('ecocash');
+    expect(provider.name).toBe('paynow');
   });
 
-  it('routes Zimbabwe ZIG payments to EcoCash', () => {
+  it('routes Zimbabwe ZIG payments to PayNow', () => {
     const orchestrator = new PaymentOrchestrator();
     const provider = orchestrator.getProvider('ZW', 'ZIG');
-    expect(provider.name).toBe('ecocash');
+    expect(provider.name).toBe('paynow');
   });
 
-  it('falls back to PayNow when EcoCash fails in ZW', () => {
+  it('falls back to Stripe for unsupported ZW currency', () => {
     const orchestrator = new PaymentOrchestrator();
-    const provider = orchestrator.getProvider('ZW', 'USD');
-    expect(['ecocash', 'paynow', 'stripe']).toContain(provider.name);
+    const provider = orchestrator.getProvider('ZW', 'ZAR');
+    expect(provider.name).toBe('stripe');
   });
 
   it('routes South Africa ZAR payments to PayFast', () => {

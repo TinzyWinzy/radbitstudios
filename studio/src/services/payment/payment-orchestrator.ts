@@ -20,7 +20,7 @@ export class PaymentOrchestrator {
 
   getProvider(country: string, currency: string): PaymentProvider {
     const priority: Record<string, string[]> = {
-      ZW: ['ecocash', 'paynow', 'stripe'],
+      ZW: ['paynow', 'stripe'],
       ZA: ['payfast', 'stripe'],
       ZM: ['stripe'],
       BW: ['stripe'],
