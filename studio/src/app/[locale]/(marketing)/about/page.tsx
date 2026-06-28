@@ -2,14 +2,15 @@
 import type { Metadata } from 'next';
 import { Shield, Zap, Swords, Target, Network, MapPin, Linkedin, Mail, Github, Twitter, Facebook, Phone, ScrollText, Eye, GanttChartSquare } from 'lucide-react';
 import { AdBanner } from "@/components/ads/ad-banner";
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'About — Radbit',
-  description: 'We build operational systems for SADC businesses — compliance automation, tender intelligence, and verified records that unlock growth.',
+  description: 'We build operational systems for SADC businesses. Compliance automation, tender intelligence, and verified records that unlock growth.',
   alternates: { canonical: '/about' },
   openGraph: {
     title: 'About Radbit',
-    description: 'We build operational systems for SADC businesses — compliance automation, tender intelligence, and verified records.',
+    description: 'Operational infrastructure for businesses in the SADC region. Compliance, tenders, and record-keeping in one system.',
     type: 'website',
   },
 };
@@ -20,12 +21,12 @@ const pillars = [
   {
     icon: <Swords className="h-4 w-4" />,
     title: 'Tender Intelligence',
-    body: 'Automated compliance checks that catch what a procurement officer would flag — before you submit. No more losing bids on technicalities you could have fixed.',
+    body: 'Automated compliance checks that catch what a procurement officer would flag before you submit. No more losing bids on technicalities you could have fixed.',
   },
   {
     icon: <Network className="h-4 w-4" />,
     title: 'The Executive Multiplier',
-    body: 'Your business rules run automatically across inventory, invoices, and daily operations. You only hear about it when something doesn\'t match. You delegate without losing sleep.',
+    body: 'Your business rules run automatically across inventory, invoices, and daily operations. You only hear about it when something does not match. You delegate without losing sleep.',
   },
   {
     icon: <ScrollText className="h-4 w-4" />,
@@ -40,7 +41,7 @@ export default function AboutPage() {
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-medium mb-2">
           <Shield className="h-3 w-3" />
-          We Build Systems — Not Just Websites
+          We Build Systems, Not Just Websites
         </div>
         <h1 className="font-headline text-fluid-4xl font-bold tracking-tighter">
           Radbit Is Not a
@@ -50,7 +51,8 @@ export default function AboutPage() {
           <span className="text-gradient">It Is Operational Infrastructure.</span>
         </h1>
         <p className="text-lg text-foreground/60 max-w-2xl leading-relaxed">
-          We don't rent out developers by the hour. We build systems that handle the chaos of running a business in Zimbabwe — so you can delegate operations without losing control.
+          We build systems that handle the chaos of running a business in Zimbabwe.
+          You set the rules. The system runs them.
         </p>
       </div>
 
@@ -58,13 +60,13 @@ export default function AboutPage() {
         <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Why Radbit Exists</h2>
         <div className="space-y-4 text-foreground/60 leading-relaxed text-[15px] max-w-3xl">
           <p>
-            Running a business in Zimbabwe means dealing with things off-the-shelf software wasn't built for. The dollar changes value twice a week. New compliance rules keep showing up — PRAZ, ZIMRA, NSSA, the Labour Act — and they all demand different things. The internet is unreliable. And trusting someone else with critical operations feels like a risk most days.
+            Running a business in Zimbabwe means dealing with things off-the-shelf software was not built for. The dollar changes value twice a week. New compliance rules keep showing up (PRAZ, ZIMRA, NSSA, the Labour Act) and they all demand different things. The internet is unreliable. Trusting someone else with critical operations feels like a risk most days.
           </p>
           <p>
-            The usual answer is "buy better software." That's wrong. The problem isn't the tools. It's that no single system was designed for this reality — currency instability, expanding regulation, and the constant fear that one mistake costs you a tender or an audit.
+            Off-the-shelf software was designed for stable economies with predictable regulation. That is not the SADC reality. The real problem is that no single system handles currency instability, expanding regulation, and the constant risk that one mistake costs you a tender or an audit.
           </p>
           <p>
-            Radbit was built for that reality. It handles the compliance checks, the tender filings, the operational handoffs — so you don't have to personally verify every single thing. You set the rules. The system runs them.
+            Radbit handles the compliance checks, the tender filings, and the operational handoffs. You set the rules. The system runs them.
           </p>
         </div>
       </section>
@@ -101,7 +103,7 @@ export default function AboutPage() {
             {
               icon: <Eye className="h-4 w-4" />,
               title: 'Smart Recommendations',
-              body: 'The system uses Google Vertex AI to analyze your specific situation — your industry, your compliance burden, your operational gaps. Every suggestion comes with a clear explanation of why it matters.',
+              body: 'The system uses Google Vertex AI to analyze your specific situation (your industry, your compliance burden, your operational gaps). Every suggestion comes with a clear explanation of why it matters.',
             },
             {
               icon: <GanttChartSquare className="h-4 w-4" />,
@@ -111,7 +113,7 @@ export default function AboutPage() {
             {
               icon: <Target className="h-4 w-4" />,
               title: 'Built to Last',
-              body: 'The system is designed so that adding new features or swapping out old ones doesn\'t break everything else. You grow without accumulating technical debt.',
+              body: 'The system is designed so that adding new features or swapping out old ones does not break everything else. You grow without accumulating technical debt.',
             },
           ].map((item) => (
             <div key={item.title} className="space-y-2">
@@ -130,10 +132,10 @@ export default function AboutPage() {
       <section className="space-y-6">
         <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Who This Is For</h2>
         <p className="text-foreground/60 leading-relaxed text-[15px] max-w-3xl">
-          Manufacturing owners in Bulawayo who need to delegate inventory without waking up to losses. Logistics operators in Harare who keep losing tenders on small compliance mistakes. Agri-tech cooperatives in Mashonaland whose paper records don't qualify for diaspora investment. Professional services firms dealing with more regulations than they have staff.
+          Manufacturing owners in Bulawayo who need to delegate inventory without waking up to losses. Logistics operators in Harare who keep losing tenders on small compliance mistakes. Agri-tech cooperatives in Mashonaland whose paper records do not qualify for diaspora investment. Professional services firms dealing with more regulations than they have staff.
         </p>
         <p className="text-foreground/60 leading-relaxed text-[15px] max-w-3xl">
-          If you run a business in the SADC region and you're stuck between wanting to grow and not being able to trust anyone else with the critical stuff — Radbit was built for you.
+          If you run a business in the SADC region and you are stuck between wanting to grow and not being able to trust anyone else with the critical stuff, Radbit was built for you.
         </p>
       </section>
 
@@ -146,38 +148,28 @@ export default function AboutPage() {
           <div className="space-y-3">
             <div>
               <h3 className="font-headline font-bold text-foreground text-lg">Tinotenda Brandon Duma</h3>
-              <p className="text-sm text-foreground/50">Founder &amp; Chief Executive Officer — Radbit Inc.</p>
+              <p className="text-sm text-foreground/50">Founder and Chief Executive Officer, Radbit Inc.</p>
             </div>
             <p className="text-sm text-foreground/60 leading-relaxed">
-              Tinotenda is a Zimbabwean software engineer who noticed something: African businesses don't lack talent or ambition. They lack the institutional records and systems that global competitors take for granted.
+              Tinotenda is a Zimbabwean software engineer who noticed that African businesses do not lack talent or ambition. They lack the institutional records and systems that global competitors take for granted.
             </p>
             <p className="text-sm text-foreground/60 leading-relaxed">
-              He started Radbit because he was tired of seeing capable local enterprises lose tenders, miss opportunities, and stay invisible to capital — not because they weren't good enough, but because they didn't have the systems to prove it. The platform does the paperwork, the compliance, and the record-keeping so the founder can focus on actually building.
+              He started Radbit after watching capable local enterprises lose tenders, miss opportunities, and stay invisible to capital. Not because they were not good enough, but because they did not have the systems to prove it. The platform does the paperwork, the compliance, and the record-keeping so the founder can focus on building.
             </p>
             <div className="flex gap-4 pt-1">
-              <a
-                href="https://www.linkedin.com/in/tinotenda-duma-735a9797/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-primary transition-colors"
+              <Link
+                href="/founders"
+                className="text-xs text-primary hover:underline font-medium"
               >
-                <Linkedin className="h-3.5 w-3.5" /> LinkedIn
-              </a>
-              <a
-                href="https://github.com/TinzyWinzy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-foreground/40 hover:text-primary transition-colors"
-              >
-                <Github className="h-3.5 w-3.5" /> GitHub
-              </a>
+                Full bio and background
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       <section className="space-y-6 pt-8 border-t border-foreground/10">
-        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Contact &amp; Presence</h2>
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Contact and Presence</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="flex items-start gap-3 text-sm text-foreground/60">
             <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />

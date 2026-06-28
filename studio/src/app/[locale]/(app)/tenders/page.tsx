@@ -22,6 +22,7 @@ import { checkFeatureAccess } from '@/services/feature-gate';
 import type { UpgradeInfo } from '@/services/feature-gate';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import { createNotification } from "@/services/notifications/notifications-service";
+import { useToast } from "@/hooks/use-toast";
 
 type Tender = {
   id: string;
@@ -150,6 +151,7 @@ function TenderCard({ tender, onBookmark }: { tender: Tender & { bookmarked?: bo
 
 export default function TendersPage() {
   const { user } = useContext(AuthContext);
+  const { toast } = useToast();
   const [tenders, setTenders] = useState<Tender[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -226,16 +228,29 @@ export default function TendersPage() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      // POST is the correct method — GET requires admin auth
-      const r = await fetch('/api/scraper/tenders', { method: 'POST' });
-      if (!r.ok) {
-        console.error('Tender scrape API error:', r.status);
-      } else {
+      const r = await fetch('/api/scraper/tenders?force=true', { method: 'POST' });
+      if (r.ok) {
         const d = await r.json();
         setRawData(d);
+        toast({
+          title: "Tenders refreshed",
+          description: `Scraped ${d.scraped} new tender${d.scraped === 1 ? '' : 's'}${d.errors > 0 ? ` (${d.errors} errors)` : ''}`,
+        });
+      } else {
+        console.error('Tender scrape API error:', r.status);
+        toast({
+          title: "Refresh failed",
+          description: `API returned ${r.status}. Try again later.`,
+          variant: "destructive",
+        });
       }
     } catch (e) {
       console.error('Failed to refresh tenders:', e);
+      toast({
+        title: "Refresh failed",
+        description: "Could not reach the server. Check your connection.",
+        variant: "destructive",
+      });
     }
     await loadTenders(true);
   };

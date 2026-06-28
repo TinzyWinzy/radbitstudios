@@ -46,6 +46,36 @@ const DEFAULT_LIMITS: Record<string, { maxRequests: number; window: string }> = 
   newsScrape: { maxRequests: 1, window: '4 h' },
 };
 
+function parseWindow(window: string): number {
+  const parts = window.split(' ');
+  const value = parseInt(parts[0] || '1', 10);
+  const unit = parts[1] || 's';
+  switch (unit) {
+    case 'ms': return value;
+    case 's': return value * 1000;
+    case 'm': return value * 60 * 1000;
+    case 'h': return value * 60 * 60 * 1000;
+    case 'd': return value * 24 * 60 * 60 * 1000;
+    default: return value * 1000;
+  }
+}
+
+const rateLimitStore = new Map<string, number[]>();
+
+function checkLocalRateLimit(key: string, maxRequests: number, windowMs: number): { allowed: boolean; remaining: number; resetIn: number } {
+  const now = Date.now();
+  const timestamps = rateLimitStore.get(key) || [];
+  const recent = timestamps.filter(t => now - t < windowMs);
+  const allowed = recent.length < maxRequests;
+  if (allowed) {
+    recent.push(now);
+    rateLimitStore.set(key, recent);
+  }
+  const remaining = Math.max(0, maxRequests - recent.length);
+  const resetIn = recent.length > 0 ? Math.ceil((windowMs - (now - recent[0])) / 1000) : 0;
+  return { allowed, remaining, resetIn };
+}
+
 export async function checkRateLimit(key: string, limitType = 'default'): Promise<{
   allowed: boolean;
   remaining: number;
@@ -57,11 +87,18 @@ export async function checkRateLimit(key: string, limitType = 'default'): Promis
     config.maxRequests,
     config.window,
   );
-  return {
-    allowed: result.allowed,
-    remaining: result.remaining,
-    resetIn: Math.ceil(result.reset / 1000),
-  };
+
+  // If Upstash is available (not no-op), use its result
+  if (result.allowed === false || result.remaining < 999) {
+    return {
+      allowed: result.allowed,
+      remaining: result.remaining,
+      resetIn: Math.ceil(result.reset / 1000),
+    };
+  }
+
+  // Fallback: in-memory rate limiting when Upstash Redis is not configured
+  return checkLocalRateLimit(key, config.maxRequests, parseWindow(config.window));
 }
 
 export async function withRateLimit<T>(

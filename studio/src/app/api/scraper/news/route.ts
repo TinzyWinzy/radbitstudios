@@ -6,8 +6,9 @@ import { verifySession } from '@/lib/api-auth';
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const expectedToken = process.env.CRON_SECRET || process.env.INTERNAL_API_KEY;
+  const user = await verifySession(request);
 
-  if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+  if (expectedToken && authHeader !== `Bearer ${expectedToken}` && !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

@@ -30,6 +30,27 @@ function logToFile(message: string) {
 
 export type { NewsArticle };
 
+const NEWS_FRESHNESS_WINDOW_MS = 1000 * 60 * 60 * 24 * 2; // 2 days
+
+let lastCompletedScrapeAt = 0;
+
+export function getLastCompletedScrapeAt(): number {
+  return lastCompletedScrapeAt;
+}
+
+export function shouldRefreshNewsData(records: Array<{ publishedAt?: Date | string | null }> = [], now = new Date()): boolean {
+  if (!records.length) return true;
+  const latest = records.reduce<Date | null>((latestDate, record) => {
+    const publishedAt = record.publishedAt ? new Date(record.publishedAt) : null;
+    if (!publishedAt || Number.isNaN(publishedAt.getTime())) return latestDate;
+    if (!latestDate || publishedAt > latestDate) return publishedAt;
+    return latestDate;
+  }, null);
+
+  if (!latest) return true;
+  return now.getTime() - latest.getTime() > NEWS_FRESHNESS_WINDOW_MS;
+}
+
 interface FeedConfig {
   url: string;
   sourceName: string;
@@ -798,6 +819,8 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
     logToFile('No articles to save');
   }
 
+  lastCompletedScrapeAt = Date.now();
+
   return {
     ...results,
     articles: allArticles.slice(0, 20).map(a => ({
@@ -834,8 +857,9 @@ export async function getLatestNews(
     region,
   });
 
-  // Auto-trigger scrape if database is empty
-  if (records.length === 0) {
+  const recentlyScraped = Date.now() - lastCompletedScrapeAt < 30_000;
+  const shouldRefresh = !recentlyScraped && shouldRefreshNewsData(records);
+  if (shouldRefresh) {
     try {
       const result = await scrapeAllFeeds();
       if (result.scraped > 0) {
@@ -846,7 +870,7 @@ export async function getLatestNews(
         });
       }
     } catch {
-      // Scrape failed, return empty
+      // Scrape failed, return the existing records if any
     }
   }
 

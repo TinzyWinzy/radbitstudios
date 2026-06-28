@@ -106,9 +106,35 @@ export default function NewsPage() {
   const [brief, setBrief] = useState<Awaited<ReturnType<typeof generatePersonalizedBrief>> | null>(null);
   const [myIndustryOnly, setMyIndustryOnly] = useState(false);
 
-  const loadNews = useCallback(async () => {
+  const loadNews = useCallback(async (forceRefresh = false) => {
     setIsLoading(true);
     try {
+      if (forceRefresh) {
+        try {
+          const r = await fetch('/api/scraper/news?force=true', { method: 'POST' });
+          if (r.ok) {
+            const data = await r.json();
+            toast({
+              title: "News refreshed",
+              description: `Scraped ${data.scraped} new article${data.scraped === 1 ? '' : 's'}${data.errors > 0 ? ` (${data.errors} errors)` : ''}`,
+            });
+          } else {
+            toast({
+              title: "Refresh failed",
+              description: `API returned ${r.status}. Try again later.`,
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          console.error('[News] Failed to refresh news:', error);
+          toast({
+            title: "Refresh failed",
+            description: "Could not reach the server. Check your connection.",
+            variant: "destructive",
+          });
+        }
+      }
+
       const opts: { limit: number; industry?: string } = { limit: 100 };
       if (myIndustryOnly && user?.industry) {
         opts.industry = user.industry;
@@ -289,7 +315,7 @@ export default function NewsPage() {
               />
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Button variant="outline" size="sm" onClick={loadNews} disabled={isLoading} className="h-9 text-xs gap-1.5">
+              <Button variant="outline" size="sm" onClick={() => loadNews(true)} disabled={isLoading} className="h-9 text-xs gap-1.5">
                 <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
                 Refresh
               </Button>
@@ -358,7 +384,7 @@ export default function NewsPage() {
                   <Button
                     variant="outline"
                     className="mt-4"
-                    onClick={loadNews}
+                    onClick={() => loadNews(true)}
                   >
                     <RefreshCw className="mr-2 h-3.5 w-3.5" />
                     Refresh

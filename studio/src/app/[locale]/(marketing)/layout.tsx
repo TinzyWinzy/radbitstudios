@@ -40,6 +40,7 @@ const navLinks = [
   { href: "/toolkit", label: "AI Toolkit", icon: LayoutDashboard },
   { href: "/pricing", label: "Pricing", icon: CreditCard },
   { href: "/about", label: "About", icon: Shield },
+  { href: "/founders", label: "Founders", icon: Users },
   { href: "/resources", label: "Resources", icon: BookOpen },
   { href: "/tenders", label: "Tenders", icon: Briefcase },
   { href: "/threats", label: "Threats", icon: AlertTriangle },

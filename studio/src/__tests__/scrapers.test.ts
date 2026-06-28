@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import crypto from 'crypto';
+import { shouldRefreshNewsData } from '@/services/news-scraper';
 
 const cache = new Map<string, { data: unknown; expiresAt: number }>();
 const getCached = <T>(key: string): T | null => {
@@ -52,6 +53,22 @@ describe('scraper-cache', () => {
     expect(stats.size).toBe(2);
     expect(stats.keys).toContain('a');
     expect(stats.keys).toContain('b');
+  });
+});
+
+describe('news-scraper: shouldRefreshNewsData', () => {
+  it('triggers a refresh when stored news is older than the freshness window', () => {
+    const now = new Date('2026-06-28T12:00:00.000Z');
+    const staleRecords = [{ publishedAt: new Date('2024-01-01T00:00:00.000Z') }];
+
+    expect(shouldRefreshNewsData(staleRecords, now)).toBe(true);
+  });
+
+  it('does not trigger a refresh when recent news already exists', () => {
+    const now = new Date('2026-06-28T12:00:00.000Z');
+    const freshRecords = [{ publishedAt: new Date('2026-06-27T10:00:00.000Z') }];
+
+    expect(shouldRefreshNewsData(freshRecords, now)).toBe(false);
   });
 });
 
