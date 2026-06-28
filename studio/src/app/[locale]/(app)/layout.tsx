@@ -289,9 +289,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton tooltip={{ children: "Support", side: "right" }}>
-                <LifeBuoy />
-                <span>Support</span>
+              <SidebarMenuButton asChild tooltip={{ children: "Support", side: "right" }}>
+                <a href="mailto:hello@radbitstudios.co.zw">
+                  <LifeBuoy />
+                  <span>Support</span>
+                </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

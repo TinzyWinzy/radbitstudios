@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useContext, useCallback } from "react";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { listMedia, deleteMedia, uploadMedia, type MediaItem } from "@/services/media.service";
-import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
 import {
-  Image as ImageIcon, FileText, File, Trash2, Copy, Upload, Loader2, Check,
+  ArrowLeft, Image as ImageIcon, FileText, File, Trash2, Copy, Upload, Loader2, Check,
 } from "lucide-react";
 
 const ALLOWED_TYPES = [
@@ -21,6 +23,7 @@ export default function MediaPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<MediaItem | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -50,21 +53,27 @@ export default function MediaPage() {
     }
     setUploading(true);
     try {
-      await uploadMedia(file);
-      await load();
+      const item = await uploadMedia(file);
+      setItems(prev => [item, ...prev]);
     } catch (err) {
       console.error("Upload failed:", err);
     }
     setUploading(false);
   };
 
-  const handleDelete = async (item: MediaItem) => {
-    if (!confirm(`Delete "${item.name}"?`)) return;
+  const handleDelete = (item: MediaItem) => {
+    setDeleteTarget(item);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await deleteMedia(item.fullPath);
-      setItems(prev => prev.filter(i => i.fullPath !== item.fullPath));
+      await deleteMedia(deleteTarget.fullPath);
+      setItems(prev => prev.filter(i => i.fullPath !== deleteTarget.fullPath));
+      setDeleteTarget(null);
     } catch (err) {
       console.error("Delete failed:", err);
+      setDeleteTarget(null);
     }
   };
 
@@ -100,14 +109,19 @@ export default function MediaPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/dashboard">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
         <div>
           <h1 className="font-headline text-2xl font-bold">Media Library</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Uploaded images and documents
           </p>
         </div>
-        <div className="relative">
+        <div className="ml-auto relative">
           <Button disabled={uploading} className="relative">
             {uploading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -202,6 +216,14 @@ export default function MediaPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title="Delete File"
+        description={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+        onConfirm={executeDelete}
+      />
     </div>
   );
 }

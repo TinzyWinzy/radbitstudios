@@ -24,8 +24,7 @@ export default function EditBlogPostPage() {
       setPost(p);
       setLoading(false);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postId, role]);
+  }, [postId, role, router]);
 
   if (loading) {
     return (

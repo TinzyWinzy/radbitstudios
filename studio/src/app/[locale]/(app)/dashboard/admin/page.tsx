@@ -3,12 +3,13 @@
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "@/contexts/auth-context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminProjectCard } from "@/components/admin-project-card";
 import {
-  Shield,
+  ArrowLeft, Shield,
   Users,
   Briefcase,
   ClipboardList,
@@ -18,6 +19,7 @@ import {
   ArrowRight,
   Handshake,
 } from "lucide-react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import type { Project } from "@/types/project";
@@ -83,14 +85,21 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Shield className="h-6 w-6 text-primary" />
-          Admin Panel
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Client pipeline and project management for {user?.displayName || "Admin"}.
-        </p>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/dashboard">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="font-headline text-2xl font-bold flex items-center gap-2">
+            <Shield className="h-6 w-6 text-primary" />
+            Admin Panel
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Client pipeline and project management for {user?.displayName || "Admin"}.
+          </p>
+        </div>
       </div>
 
       <motion.div

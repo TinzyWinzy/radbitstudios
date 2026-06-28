@@ -11,8 +11,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { Commission, Payout } from "@/types/partner";
 import {
-  Handshake, AlertTriangle, CheckCircle2, Loader2, ArrowUpRight,
+  ArrowLeft, Handshake, AlertTriangle, CheckCircle2, Loader2, ArrowUpRight,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -31,8 +32,8 @@ interface PartnerWithData {
   createdAt?: { toDate?: () => Date } | Date;
   pendingCommissionTotal: number;
   approvedCommissionTotal: number;
-  commissions: any[];
-  payouts: any[];
+  commissions: Commission[];
+  payouts: Payout[];
 }
 
 export default function AdminPartnersPage() {
@@ -78,7 +79,7 @@ export default function AdminPartnersPage() {
       if (!res.ok) throw new Error(data.error || "Action failed");
       toast({ title: "Success", description: `${action} completed.` });
       loadPartners();
-    } catch (err: unknown) {
+    } catch (err) {
       toast({
         title: "Error",
         description: err instanceof Error ? err.message : String(err),
@@ -119,12 +120,19 @@ export default function AdminPartnersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Handshake className="h-6 w-6 text-primary" />
-          Partner Management
-        </h1>
-        <p className="text-muted-foreground mt-1">Manage affiliates, commissions, and payouts.</p>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/dashboard/admin">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="font-headline text-2xl font-bold flex items-center gap-2">
+            <Handshake className="h-6 w-6 text-primary" />
+            Partner Management
+          </h1>
+          <p className="text-muted-foreground mt-1">Manage affiliates, commissions, and payouts.</p>
+        </div>
       </div>
 
       <Tabs defaultValue={defaultTab}>

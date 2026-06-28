@@ -4,15 +4,17 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { guideService, type Guide } from "@/services/guide.service";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Edit, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/contexts/auth-context";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 export default function AdminGuidesPage() {
   const { role } = useContext(AuthContext);
   const router = useRouter();
   const [guides, setGuides] = useState<Guide[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     if (role !== 'admin' && role !== 'super_admin') {
@@ -38,21 +40,31 @@ export default function AdminGuidesPage() {
 
   if (role !== 'admin' && role !== 'super_admin') return null;
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Delete "${title}"?`)) return;
-    await guideService.delete(id);
+  const handleDelete = (id: string, title: string) => {
+    setDeleteTarget({ id, label: title });
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTarget) return;
+    await guideService.delete(deleteTarget.id);
+    setDeleteTarget(null);
     const all = await guideService.listAll();
     setGuides(all);
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/dashboard">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
         <div>
           <h1 className="font-headline text-2xl font-bold">Guides Manager</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage guide content</p>
         </div>
-        <Button asChild>
+        <Button asChild className="ml-auto">
           <Link href="/dashboard/guides/new">
             <Plus className="mr-2 h-4 w-4" /> New Guide
           </Link>
@@ -109,6 +121,14 @@ export default function AdminGuidesPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title="Delete Guide"
+        description={`Are you sure you want to delete "${deleteTarget?.label}"? This action cannot be undone.`}
+        onConfirm={executeDelete}
+      />
     </div>
   );
 }

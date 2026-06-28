@@ -13,8 +13,7 @@ export default function NewBlogPostPage() {
     if (role !== 'admin' && role !== 'super_admin') {
       router.push('/dashboard');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [role]);
+  }, [role, router]);
 
   if (role !== 'admin' && role !== 'super_admin') {
     return (

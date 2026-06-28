@@ -321,7 +321,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="font-headline text-2xl font-bold">
             Welcome, {user?.displayName?.split(' ')[0] || 'Entrepreneur'}!
           </h1>
           <p className="text-muted-foreground text-sm mt-1">

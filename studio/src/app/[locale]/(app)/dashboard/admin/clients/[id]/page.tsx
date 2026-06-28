@@ -56,11 +56,10 @@ export default function ClientDetailPage() {
 
   const fetchProjects = useCallback(async () => {
     try {
-      const res = await fetch("/api/projects");
+      const res = await fetch(`/api/projects?clientId=${id}`);
       if (res.ok) {
         const data = await res.json();
-        const all = Array.isArray(data) ? data : data.projects ?? [];
-        const clientProjects = all.filter((p: Project) => p.clientId === id);
+        const clientProjects: Project[] = data.projects ?? [];
         setProjects(clientProjects);
         if (clientProjects.length > 0) {
           const first = clientProjects[0];

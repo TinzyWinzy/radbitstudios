@@ -4,15 +4,17 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { faqService, type FaqItem } from "@/services/faq.service";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Edit, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/contexts/auth-context";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 export default function AdminFaqPage() {
   const { role } = useContext(AuthContext);
   const router = useRouter();
   const [items, setItems] = useState<FaqItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
 
   useEffect(() => {
     if (role !== 'admin' && role !== 'super_admin') {
@@ -38,9 +40,14 @@ export default function AdminFaqPage() {
 
   if (role !== 'admin' && role !== 'super_admin') return null;
 
-  const handleDelete = async (id: string, question: string) => {
-    if (!confirm(`Delete "${question}"?`)) return;
-    await faqService.delete(id);
+  const handleDelete = (id: string, question: string) => {
+    setDeleteTarget({ id, label: question });
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTarget) return;
+    await faqService.delete(deleteTarget.id);
+    setDeleteTarget(null);
     const all = await faqService.listAll();
     setItems(all);
   };
@@ -54,12 +61,17 @@ export default function AdminFaqPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/dashboard">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
         <div>
           <h1 className="font-headline text-2xl font-bold">FAQ Manager</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage frequently asked questions</p>
         </div>
-        <Button asChild>
+        <Button asChild className="ml-auto">
           <Link href="/dashboard/faq/new">
             <Plus className="mr-2 h-4 w-4" /> New FAQ
           </Link>
@@ -122,6 +134,14 @@ export default function AdminFaqPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+        title="Delete FAQ"
+        description={`Are you sure you want to delete "${deleteTarget?.label}"? This action cannot be undone.`}
+        onConfirm={executeDelete}
+      />
     </div>
   );
 }
