@@ -10,8 +10,8 @@ import { collection, query, where, getDocs, limit as fbLimit } from 'firebase/fi
 import { sendEmail } from '@/services/email-service';
 import { sendWhatsAppMessage } from '@/services/whatsapp/whatsapp-handler';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'hello@radbitstudios.co.zw';
-const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || '263782712529';
+const ADMIN_EMAILS = ['brandontinoz@gmail.com', 'hanzohanic@gmail.com'];
+const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || '263781334474';
 
 function getPool(): Pool | null {
   if (!process.env.DATABASE_URL) return null;
@@ -161,12 +161,14 @@ export const POST = withIpRateLimit(
       // 2. Try PostgreSQL (non-blocking fallback)
       const postgresId = await tryInsertLead(leadData);
 
-      // 3. Notify admin via email
-      sendEmail(
-        ADMIN_EMAIL,
-        `New lead: ${fullName}`,
-        leadEmailHtml({ ...leadData, fullName, workEmail }),
-      ).catch(() => {});
+      // 3. Notify admins via email
+      for (const email of ADMIN_EMAILS) {
+        sendEmail(
+          email,
+          `New lead: ${fullName}`,
+          leadEmailHtml({ ...leadData, fullName, workEmail }),
+        ).catch(() => {});
+      }
 
       // 4. Notify admin via WhatsApp
       sendWhatsAppMessage(
