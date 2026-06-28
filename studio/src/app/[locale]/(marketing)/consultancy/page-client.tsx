@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
 import {
   Code2, Shield, TrendingUp, Palette, Database, Brain,
-  Globe, Boxes, Zap, Clock, Rocket, Target, Award,
+  Globe, Boxes, Zap, Clock, Rocket, Target, Award, ExternalLink,
 } from "lucide-react";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/animations/scroll-reveal";
 import { Card3D, MagneticElement } from "@/components/animations/interactive-cards";
@@ -433,6 +433,71 @@ export function ConsultancyClient() {
               ))}
             </StaggerContainer>
           </div>
+        </div>
+      </section>
+
+      {/* Portfolio */}
+      <section className="py-12 md:py-20 border-t border-border content-visibility-auto">
+        <div className="container">
+          <ScrollReveal className="text-center mb-8 md:mb-16">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
+              Our Work
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Real websites and applications we have built for businesses across Africa.
+            </p>
+          </ScrollReveal>
+
+          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" staggerDelay={0.08}>
+            {[
+              { name: "Unik Villa", url: "https://unikvilla.co.zw", tag: "Hospitality", desc: "Boutique lodge website with booking and gallery." },
+              { name: "City View Guesthouse", url: "https://www.cityviewguesthouse.co.zw", tag: "Hospitality", desc: "Guesthouse site with online reservations and room tours." },
+              { name: "Cultural Coder", url: "https://culturalcoder.co.zw", tag: "Brand / Dev", desc: "Personal brand site showcasing software engineering portfolio." },
+              { name: "Indigenous Ingredients", url: "https://indigenousingredients.com", tag: "E-Commerce", desc: "Marketplace for indigenous ingredients and African superfoods." },
+              { name: "Jewels by Alice", url: "https://jewelsbyalice.com", tag: "E-Commerce", desc: "Online jewellery store with product catalog and checkout." },
+              { name: "Nexus Agronomics", url: "https://nexusagronomics.co.zw", tag: "Agri-Tech", desc: "Agri-tech MVP for farm management and crop analytics." },
+            ].map((site, i) => {
+              const gradients = [
+                "from-amber-500/20 to-orange-500/20",
+                "from-sky-500/20 to-blue-500/20",
+                "from-emerald-500/20 to-teal-500/20",
+                "from-rose-500/20 to-pink-500/20",
+                "from-violet-500/20 to-purple-500/20",
+                "from-cyan-500/20 to-indigo-500/20",
+              ];
+              return (
+                <StaggerItem key={site.name} direction="up">
+                  <Card3D intensity={4}>
+                    <a
+                      href={site.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block p-5 rounded-2xl border border-border bg-gradient-to-br from-card to-muted/30 hover:border-primary/30 transition-all duration-300 h-full"
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                          <Globe className="size-4 text-primary" />
+                        </div>
+                        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                          {site.tag}
+                        </span>
+                      </div>
+                      <h3 className="font-headline font-semibold text-base mb-1.5 group-hover:text-primary transition-colors">
+                        {site.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                        {site.desc}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-primary">
+                        Visit site
+                        <ExternalLink className="size-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </div>
+                    </a>
+                  </Card3D>
+                </StaggerItem>
+              );
+            })}
+          </StaggerContainer>
         </div>
       </section>
 
