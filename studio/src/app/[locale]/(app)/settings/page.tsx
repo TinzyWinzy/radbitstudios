@@ -500,44 +500,44 @@ export default function SettingsPage() {
         <p className="text-muted-foreground mt-2">{t('description')}</p>
       </div>
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 md:grid md:grid-cols-10 md:overflow-visible md:pb-0 md:gap-0 [&>*]:shrink-0 ">
-          <TabsTrigger value="profile" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+        <TabsList className="flex w-full overflow-x-auto gap-1 pb-1 md:overflow-x-auto md:flex-wrap md:gap-1.5 [&>*]:shrink-0">
+          <TabsTrigger value="profile" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.profile')}
           </TabsTrigger>
-          <TabsTrigger value="business" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+          <TabsTrigger value="business" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.business')}
           </TabsTrigger>
-          <TabsTrigger value="account" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+          <TabsTrigger value="account" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.account')}
           </TabsTrigger>
-          <TabsTrigger value="support" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+          <TabsTrigger value="support" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.support')}
           </TabsTrigger>
           <TabsTrigger
             value="assessment-history"
-            className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap"
+            className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap"
           >
             {t('tabs.assessmentHistory')}
           </TabsTrigger>
           <TabsTrigger
             value="generation-history"
-            className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap"
+            className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap"
           >
             {t('tabs.generationHistory')}
           </TabsTrigger>
-          <TabsTrigger value="referral" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+          <TabsTrigger value="referral" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.referral')}
           </TabsTrigger>
           <TabsTrigger
             value="notifications"
-            className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap"
+            className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap"
           >
             {t('tabs.notifications')}
           </TabsTrigger>
-          <TabsTrigger value="branding" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+          <TabsTrigger value="branding" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.branding')}
           </TabsTrigger>
-          <TabsTrigger value="privacy" className="text-xs md:text-sm px-3 md:px-4 py-2 md:py-1.5 whitespace-nowrap">
+          <TabsTrigger value="privacy" className="text-xs md:text-sm px-2.5 md:px-3 py-2 whitespace-nowrap">
             {t('tabs.privacy')}
           </TabsTrigger>
         </TabsList>
