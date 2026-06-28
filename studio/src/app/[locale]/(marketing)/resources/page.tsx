@@ -72,7 +72,7 @@ async function getGuides(): Promise<GuideItem[]> {
       };
     });
   } catch (error) {
-    console.warn('[Resources Page] Failed to load guides:', error);
+    console.error('[Resources Page] Admin SDK failed to load guides — check IAM permissions or service account:', error);
     return [];
   }
 }

@@ -145,10 +145,10 @@ service cloud.firestore {
     }
 
     // ─── GUIDES ───────────────────────────────────────────────────────────────
-    // Public read for published guides. Admin dashboard manages content.
+    // Public read/list for published guides. Admin dashboard manages content.
     match /guides/{guideId} {
       allow get: if resource.data.published == true || request.auth != null;
-      allow list: if request.auth != null;
+      allow list: if resource.data.published == true || request.auth != null;
       allow create, update, delete: if request.auth != null && request.auth.token.role in ['admin', 'super_admin'];
     }
 
