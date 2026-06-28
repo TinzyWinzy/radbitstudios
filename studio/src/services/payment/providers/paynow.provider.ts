@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import type { PaymentProvider, PaymentRequest, PaymentResponse } from './provider.interface';
 
 export class PayNowProvider implements PaymentProvider {
@@ -17,10 +18,15 @@ export class PayNowProvider implements PaymentProvider {
     return process.env.PAYNOW_AUTH_EMAIL || '';
   }
 
+  private computeHash(values: string[]): string {
+    const str = values.join('') + this.integrationKey;
+    return crypto.createHash('sha512').update(str, 'utf8').digest('hex').toUpperCase();
+  }
+
   async initiatePayment(request: PaymentRequest): Promise<PaymentResponse> {
     const { amount, description, reference, returnUrl, notifyUrl } = request;
 
-    const payload = new URLSearchParams({
+    const fields: Record<string, string> = {
       id: this.integrationId,
       reference,
       amount: amount.toFixed(2),
@@ -28,7 +34,13 @@ export class PayNowProvider implements PaymentProvider {
       returnurl: returnUrl || `${process.env.FRONTEND_URL}/settings`,
       resulturl: notifyUrl || `${process.env.FRONTEND_URL}/api/webhooks/paynow`,
       ...(this.authEmail ? { authemail: this.authEmail } : {}),
-    });
+      status: 'Message',
+    };
+
+    const hash = this.computeHash(Object.values(fields));
+    fields.hash = hash;
+
+    const payload = new URLSearchParams(fields);
 
     try {
       const response = await fetch('https://www.paynow.co.zw/interface/initiatetransaction', {
@@ -83,16 +95,18 @@ export class PayNowProvider implements PaymentProvider {
 
   async refundPayment(transactionId: string, amount?: number): Promise<PaymentResponse> {
     try {
-      const payload = new URLSearchParams({
+      const fields: Record<string, string> = {
         id: this.integrationId,
         reference: transactionId,
         ...(amount ? { amount: amount.toFixed(2) } : {}),
-      });
+      };
+      const hash = this.computeHash(Object.values(fields));
+      fields.hash = hash;
 
       const response = await fetch('https://www.paynow.co.zw/interface/refund', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: payload.toString(),
+        body: new URLSearchParams(fields).toString(),
       });
 
       const text = await response.text();
@@ -112,10 +126,13 @@ export class PayNowProvider implements PaymentProvider {
   }
 
   verifyITNHash(payload: Record<string, string>): boolean {
-    const fields = ['reference', 'paynowreference', 'amount', 'status', 'pollurl', 'additionalinfo', 'authemail'];
-    const values = fields.map(f => payload[f] || '').join('');
-    const crypto = require('crypto');
-    const computed = crypto.createHash('md5').update(values + this.integrationKey).digest('hex').toUpperCase();
+    const values: string[] = [];
+    for (const key of Object.keys(payload)) {
+      if (key.toLowerCase() !== 'hash') {
+        values.push(payload[key] || '');
+      }
+    }
+    const computed = this.computeHash(values);
     return computed === (payload.hash || '').toUpperCase();
   }
 }
