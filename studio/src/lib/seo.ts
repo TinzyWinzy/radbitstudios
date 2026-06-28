@@ -34,7 +34,8 @@ export function organizationSchema() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer support',
-      email: 'hanzohanic@gmail.com',
+      email: 'hello@radbitstudios.co.zw',
+      telephone: '+263786344899',
     },
     sameAs: [
       'https://www.facebook.com/people/Radbit-Studios/61573716592102/',
@@ -62,6 +63,50 @@ export function websiteSchema() {
       queryInput: 'required name=search_term_string',
     },
     inLanguage: 'en',
+  };
+}
+
+/* ──────────────────────── LocalBusiness (Harare) ───────────────────── */
+export function localBusinessSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${SITE_URL}/#localbusiness`,
+    name: 'Radbit',
+    url: SITE_URL,
+    logo: `${SITE_URL}/icons/icon-192x192.png`,
+    image: `${SITE_URL}/opengraph-image.png`,
+    description: 'AI-powered digital infrastructure platform for Zimbabwean SMEs — readiness assessment, AI tools, tender matching, PRAZ compliance.',
+    foundingDate: '2025',
+    email: 'hello@radbitstudios.co.zw',
+    telephone: '+263786344899',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Harare',
+      addressRegion: 'Harare',
+      addressCountry: 'ZW',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: -17.8252,
+      longitude: 31.0335,
+    },
+    areaServed: [
+      { '@type': 'Country', name: 'Zimbabwe' },
+      { '@type': 'Country', name: 'South Africa' },
+      { '@type': 'Country', name: 'Botswana' },
+      { '@type': 'Country', name: 'Zambia' },
+    ],
+    opens: 'Mo-Fr 08:00-17:00',
+    priceRange: '$$',
+    knowsLanguage: ['en', 'sn', 'nd', 'pt'],
+    sameAs: [
+      'https://www.facebook.com/people/Radbit-Studios/61573716592102/',
+      'https://x.com/radbitzw',
+      'https://www.linkedin.com/company/radbit-studios/',
+      'https://www.instagram.com/radbitstudios/',
+      'https://wa.me/263786344899',
+    ],
   };
 }
 

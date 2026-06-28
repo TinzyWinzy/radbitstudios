@@ -5,18 +5,17 @@ const baseUrl = process.env.FRONTEND_URL || "https://radbitstudios.co.zw";
 import PageClient from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-  description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
-  alternates: { canonical: "/" },
+  title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
+  description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises. No monthly fees.",
   openGraph: {
-    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
+    title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
+    description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises.",
     url: `${baseUrl}/`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
+    title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
+    description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises.",
   },
 };
 

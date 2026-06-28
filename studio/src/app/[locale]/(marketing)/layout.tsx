@@ -6,6 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { MagneticButton } from "@/components/magnetic-button";
 import { UserNav } from "@/components/user-nav";
+import { Breadcrumbs } from "@/components/seo-breadcrumbs";
 import { AuthContext } from "@/contexts/auth-context";
 import { RollingShapes } from "@/components/rolling-shapes";
 import { MarketingFooter } from "@/components/marketing-footer";
@@ -248,6 +249,7 @@ export default function MarketingLayout({
         </div>
       </header>
       <main id="main-content" role="main" className="relative flex-1">
+        <Breadcrumbs />
         {children}
       </main>
       <MarketingFooter />

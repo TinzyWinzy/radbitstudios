@@ -2,11 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { getLocale } from 'next-intl/server';
-import { organizationSchema, websiteSchema, faqPageSchema, FAQ_DATA } from "@/lib/seo";
+import { organizationSchema, websiteSchema, localBusinessSchema, faqPageSchema, FAQ_DATA } from "@/lib/seo";
 import { aggregateRatingSchema } from "@/data/testimonials";
 import { CookieBanner } from "@/components/cookie-banner";
 import { GA4Script } from "@/components/analytics/ga4";
 import { DeviceProvider } from "@/contexts/device-context";
+import { SEOLinks } from "@/components/seo-links";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,11 +25,11 @@ const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').rep
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
+    default: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
     template: "%s | Radbit",
   },
   description:
-    "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender intelligence, PRAZ compliance, AI agents — purpose-built for local realities.",
+    "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises. No monthly fees.",
   keywords: [
     "Zimbabwe enterprise digital infrastructure", "Zimbabwe AI business tools",
     "tender intelligence Zimbabwe", "PRAZ compliance Zimbabwe",
@@ -38,15 +39,12 @@ export const metadata: Metadata = {
     "regulatory compliance Zimbabwe", "enterprise technology Zimbabwe",
     "African digital sovereignty", "business intelligence Zimbabwe",
   ],
-  alternates: {
-    canonical: '/',
-  },
   other: {
     'norton-safeweb': 'not applicable',
   },
   openGraph: {
-    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises. Digital readiness assessment, tender matching, AI agents, PRAZ compliance.",
+    title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
+    description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises.",
     url: SITE_URL,
     siteName: "Radbit",
     locale: "en_ZW",
@@ -54,8 +52,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radbit — Sovereign Digital Infrastructure for African Enterprises",
-    description: "Integrated intelligence, automation, and compliance infrastructure for Zimbabwean enterprises.",
+    title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
+    description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools — purpose-built for African enterprises.",
     site: "@radbitzw",
     creator: "@radbitzw",
   },
@@ -107,6 +105,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+        <SEOLinks />
         <GA4Script />
         <script
           async
@@ -119,6 +118,8 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }} />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
+        <script type="application/ld+json" suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }} />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema()) }} />
       </head>

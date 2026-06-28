@@ -59,7 +59,7 @@ function HeroSection() {
         >
           <span className="text-gradient">Digital Leverage</span>
           <br />
-          <span>Without Losing Control.</span>
+          <span>For Zimbabwean SMEs.</span>
         </motion.h1>
 
         <motion.div
@@ -76,6 +76,15 @@ function HeroSection() {
           className="mt-8 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
           You can't grow if you can't let go. Every tender, every compliance check, every cross-border deal runs through you right now. Radbit automates the parts that eat your time — so you can step back without worrying everything falls apart.
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-4 text-sm text-muted-foreground/60 max-w-xl mx-auto italic"
+        >
+          Radbit is Zimbabwe's sovereign AI platform — purpose-built for African SMEs. No monthly subscriptions. No data leaving the continent.
         </motion.p>
 
         <motion.div

@@ -122,6 +122,9 @@ export default async function middleware(request: NextRequest) {
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
+  // Expose the pathname for dynamic canonical/hreflang in root layout
+  response.headers.set('x-pathname', pathname);
+
   return response;
 }
 
