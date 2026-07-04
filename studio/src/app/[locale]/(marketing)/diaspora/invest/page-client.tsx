@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Handshake, Shield, BarChart, Globe, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Handshake, Shield, BarChart, Globe, CheckCircle2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const sectors = [
@@ -89,8 +89,17 @@ export function InvestPage() {
               Every SME on our platform has a <strong>live operational snapshot</strong> showing their compliance status (PRAZ, ZIMRA, NSSA), revenue trajectory, tender history, and digital readiness score. This is not self-reported data &mdash; Radbit verifies each business through document review, compliance database checks, and ongoing monitoring.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Investment opportunities span agriculture, technology, manufacturing, healthcare, real estate, and tourism. Minimum investment thresholds vary by sector and business stage, from seed-stage capital requirements to growth-equity rounds for established enterprises.
-            </p>
+              Investment opportunities span agriculture, technology, manufacturing, healthcare, real estate, and tourism — all sectors recognised by <strong>ZIDA (Zimbabwe Investment and Development Agency)</strong>. Special Economic Zone (SEZ) incentives apply for qualifying investments, including tax holidays and duty-free imports. </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Through ZIDA&apos;s framework, investors can own up to 100% of businesses via the General Investment License. Radbit helps you navigate the full path from diaspora capital to compliant Zimbabwean investment — from due diligence through operational monitoring. </p>
+          </div>
+          <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground justify-center">
+            <a href="/resources/tools/zida-invest" className="inline-flex items-center gap-1.5 text-primary hover:underline">
+              <ExternalLink size={12} /> ZIDA Invest Guide
+            </a>
+            <a href="https://zidainvest.com/zida-diy-investor-licensing-portal/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-primary hover:underline">
+              <ExternalLink size={12} /> ZIDA DIY Portal
+            </a>
           </div>
         </div>
       </section>

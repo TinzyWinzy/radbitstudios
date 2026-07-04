@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft, FileText, Building2, ReceiptText, Plane, Wallet, Zap, NotebookPen, Banknote } from "lucide-react";
+import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft, FileText, Building2, ReceiptText, Plane, Wallet, Zap, NotebookPen, Banknote, Shield } from "lucide-react";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { breadcrumbSchema } from "@/lib/seo";
@@ -67,6 +67,12 @@ const tools = [
     title: "Fiscal Device Compliance",
     excerpt: "ZIMRA fiscal device requirements explained: FDG API, VAT thresholds, penalties, and how to stay compliant without hardware.",
     icon: <ReceiptText className="h-6 w-6" />,
+  },
+  {
+    slug: "zida-invest",
+    title: "ZIDA Invest Guide",
+    excerpt: "Zimbabwe Investment and Development Agency guide: investment pathways, key sectors, SEZ incentives, and how to invest with confidence.",
+    icon: <Shield className="h-6 w-6" />,
   },
 ];
 

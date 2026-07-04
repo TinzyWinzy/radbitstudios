@@ -119,6 +119,39 @@ async function main() {
     '2025 Sector Performance Report', 'sector_performance', 'Sector Performance Report'
   );
 
+  // ZIDA website content (scraped pages)
+  const zidaContent = [
+    { file: 'zida_invest.txt', source: 'ZIDA Invest Hub', category: 'zida_investment' },
+    { file: 'zida_grow.txt', source: 'ZIDA Grow', category: 'zida_investment' },
+    { file: 'zida_agriculture.txt', source: 'ZIDA Agriculture Sector', category: 'zida_investment' },
+    { file: 'zida_tourism.txt', source: 'ZIDA Tourism Sector', category: 'zida_investment' },
+    { file: 'zida_mining.txt', source: 'ZIDA Mining Sector', category: 'zida_investment' },
+    { file: 'zida_energy.txt', source: 'ZIDA Energy Sector', category: 'zida_investment' },
+    { file: 'zida_doing_business.txt', source: 'ZIDA Doing Business in Zimbabwe', category: 'zida_investment' },
+  ];
+
+  for (const zc of zidaContent) {
+    const zidaPath = resolve(__dirname, `../database/${zc.file}`);
+    try {
+      const text = readFileSync(zidaPath, 'utf-8');
+      console.log(`\nIndexing ${zc.source}...`);
+      const sections = chunkBySections(text);
+      const indexed = await indexSections(sections, zc.source, zc.category);
+      console.log(`  ${zc.source}: ${indexed} chunks`);
+      total += indexed;
+    } catch (err) {
+      console.error(`  ✗ Skipping ${zc.file}: ${err.message}`);
+    }
+  }
+
+  // ZIDA Quarterly Report (if placed in project root)
+  const zidaReportPath = resolve(__dirname, '../../ZIDA QUARTERLY REPORT Q1 2026.pdf');
+  try {
+    total += await indexPdf(zidaReportPath, 'ZIDA Quarterly Report Q1 2026', 'zida_investment', 'ZIDA Q1 2026 Report');
+  } catch {
+    console.log('  (ZIDA Quarterly Report PDF not found — will index when available)');
+  }
+
   console.log(`\nDone. Total indexed: ${total} chunks.`);
 }
 

@@ -58,6 +58,7 @@ function extractRiskLevel(title: string, summary: string): ThreatAssessmentInput
   if (text.includes('constitution') || text.includes('constitutional court') || text.includes('declaration of rights') || text.includes('fundamental rights') || text.includes('chapter 2') || text.includes('chapter 4') || text.includes('rule of law') || text.includes('human rights commission') || text.includes('anti-corruption') || text.includes('ZEC') || text.includes('independent commission')) return 'constitutional';
   if (text.includes('fiscal device') || text.includes('fiscalisation') || text.includes('FDG') || text.includes('fiscal day') || text.includes('zimra receipt') || text.includes('e-invoicing') || text.includes('tax clearance') || text.includes('digital tax') || text.includes('presumptive tax')) return 'zimra_fiscal';
   if ((text.includes('zig') || text.includes('zimbabwe gold') || text.includes('exchange rate') || text.includes('currency')) && (text.includes('rbz') || text.includes('reserve bank') || text.includes('monetary policy') || text.includes('forex'))) return 'rbz_currency';
+  if (text.includes('zida') || text.includes('investment licence') || text.includes('foreign direct investment') || text.includes('SEZ') || text.includes('special economic zone') || text.includes('general investment license') || text.includes('public private partnership') || text.includes('investor') || text.includes('mining investment') || text.includes('fdi')) return 'zida_investment';
   return 'general';
 }
 
@@ -190,6 +191,14 @@ export async function initializeMonitorSources(): Promise<MonitorSource[]> {
       lastChecked: null,
       active: true,
       keywords: ['ZiG', 'Zimbabwe Gold', 'exchange rate', 'monetary policy', 'currency reform', 'RBZ directive', 'forex', 'foreign currency', 'reserve bank', 'interest rate', 'inflation', 'money supply', 'digital currency', 'mobile money', 'RTGS', 'bond note', 'ZWL', 'ZiG rate', 'gold-backed', 'repatriation', 'export proceeds', 'surrender requirement', 'banking', 'microfinance', 'lending rate', 'deposit rate', 'Treasury bill', 'open market operation', 'statutory reserve'],
+    },
+    {
+      name: 'ZIDA Investment & Development',
+      feedUrl: 'https://zidainvest.com/feed/',
+      category: 'zida_investment',
+      lastChecked: null,
+      active: true,
+      keywords: ['ZIDA', 'investment licence', 'FDI', 'foreign direct investment', 'SEZ', 'Special Economic Zone', 'Invest in Zimbabwe', 'General Investment License', 'Public Private Partnership', 'PPP', 'investor', 'mining investment', 'agriculture investment', 'tourism investment', 'energy sector', 'renewable energy', 'IPP', 'Independent Power Producer', 'diaspora investment', 'Manhize', 'steel plant', 'lithium', 'PGM', 'platinum', 'gold', 'investment opportunity', 'ZIDA Act', 'one stop shop', 'investor services'],
     },
   ];
 
