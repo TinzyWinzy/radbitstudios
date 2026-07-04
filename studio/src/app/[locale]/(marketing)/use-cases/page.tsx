@@ -34,6 +34,18 @@ export default async function UseCasesIndexPage() {
         </p>
       </div>
 
+      <div className="mb-10 max-w-3xl mx-auto space-y-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          Zimbabwean SMEs face a unique set of challenges: inconsistent power supply, volatile currency markets, complex multi-agency compliance requirements, and limited access to traditional business intelligence. Radbit&apos;s platform is built from the ground up to address these realities &mdash; not as a generic SaaS tool, but as a purpose-engineered operating system for the Zimbabwean enterprise.
+        </p>
+        <p>
+          Each use case below represents a specific workflow that Zimbabwean businesses can automate or streamline through Radbit. From matching tenders published by PRAZ and line ministries to conducting digital readiness assessments aligned with the National Development Strategy, these tools are designed to reduce the operational drag that holds SMEs back.
+        </p>
+        <p>
+          Click through any use case to see how the platform works, what data it draws on, and what outcomes you can expect. If you&apos;re unsure which applies to your business, the <Link href="/assessment" className="text-primary hover:underline">free digital readiness assessment</Link> is a good place to start &mdash; it takes 10 minutes and generates a custom report with actionable recommendations.
+        </p>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-6">
         {pages.map((page) => (
           <Link

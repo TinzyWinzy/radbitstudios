@@ -61,9 +61,9 @@ export function InvestPage() {
       </section>
 
       <section className="py-12 md:py-16">
-        <div className="container px-4 max-w-2xl mx-auto">
+        <div className="container px-4 max-w-4xl mx-auto">
           <h2 className="text-center font-headline text-2xl font-bold mb-8">Why Invest Through Radbit</h2>
-          <div className="space-y-4">
+          <div className="space-y-4 mb-12">
             {benefits.map((b) => (
               <div key={b.text} className="flex items-start gap-3 p-3 rounded-lg border border-border/50 bg-card">
                 <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary shrink-0 mt-0.5">
@@ -72,6 +72,19 @@ export function InvestPage() {
                 <p className="text-sm">{b.text}</p>
               </div>
             ))}
+          </div>
+
+          <div className="rounded-xl border border-border/50 bg-muted/30 p-6 md:p-8 space-y-4">
+            <h3 className="font-headline font-semibold text-lg">How Diaspora Investment Works</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Zimbabwe&apos;s diaspora sends over US$1.5 billion annually in remittances, yet most of this flows to family support rather than productive enterprise. Radbit&apos;s investment marketplace bridges that gap by connecting diaspora capital with vetted, PRAZ-compliant Zimbabwean SMEs that are ready to scale.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Every SME on our platform has completed a digital readiness assessment, providing you with transparency on their operational maturity, compliance status, and revenue trajectory. Our mutual-interest matching means you only connect when both parties are serious &mdash; no cold outreach, no wasted time.
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Investment opportunities span agriculture, technology, manufacturing, healthcare, real estate, and tourism. Minimum investment thresholds vary by sector and business stage, from seed-stage capital requirements to growth-equity rounds for established enterprises.
+            </p>
           </div>
         </div>
       </section>

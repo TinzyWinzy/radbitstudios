@@ -54,6 +54,8 @@ function extractRiskLevel(title: string, summary: string): ThreatAssessmentInput
   if (text.includes('digital services tax') || text.includes('streaming tax') || text.includes('e-commerce regulation') || text.includes('digital regulation')) return 'digital_regulation';
   if (text.includes('customs clearance') || text.includes('digital customs') || text.includes('certificate of origin') || text.includes('rules of origin')) return 'afcfta_customs';
   if (text.includes('industrialisation') || text.includes('industrialization') || text.includes('regional value chain') || text.includes('manufacturing')) return 'sadc_industry';
+  if (text.includes('nds2') || text.includes('national development strategy') || text.includes('vision 2030') || text.includes('education 5.0') || text.includes('upper middle income') || text.includes('innovation hub') || text.includes('industrial park') || text.includes('special economic zone') || text.includes('devolution') || text.includes('rural industrialization')) return 'nds2';
+  if (text.includes('constitution') || text.includes('constitutional court') || text.includes('declaration of rights') || text.includes('fundamental rights') || text.includes('chapter 2') || text.includes('chapter 4') || text.includes('rule of law') || text.includes('human rights commission') || text.includes('anti-corruption') || text.includes('ZEC') || text.includes('independent commission')) return 'constitutional';
   return 'general';
 }
 
@@ -154,6 +156,22 @@ export async function initializeMonitorSources(): Promise<MonitorSource[]> {
       lastChecked: null,
       active: true,
       keywords: ['industrialisation', 'industrialization', 'regional value chain', 'manufacturing', 'economic integration', 'industrial development', 'value addition'],
+    },
+    {
+      name: 'NDS2 Implementation Monitor',
+      feedUrl: 'https://www.theopc.gov.zw/feed/',
+      category: 'nds2',
+      lastChecked: null,
+      active: true,
+      keywords: ['NDS2', 'National Development Strategy', 'Vision 2030', 'upper middle income', 'SME development', 'MSME', 'devolution', 'digital economy', 'Education 5.0', 'innovation hub', 'industrial park', 'value chain', 'beneficiation', 'special economic zone', 'youth employment', 'diaspora engagement', 'public procurement', 'e-government', 'productive economy', 'inclusive growth', 'rural industrialization'],
+    },
+    {
+      name: 'Constitution of Zimbabwe Compliance',
+      feedUrl: 'https://www.veritaszim.net/rss/',
+      category: 'constitutional',
+      lastChecked: null,
+      active: true,
+      keywords: ['Constitution', 'constitutional', 'Declaration of Rights', 'fundamental rights', 'human rights', 'Constitutional Court', 'Supreme Court', 'rule of law', 'Chapter 2', 'national objectives', 'Chapter 4', 'Chapter 17', 'procurement', 'Parliament', 'legislative', 'amendment', 'Public Service', 'independent commission', 'Zimbabwe Human Rights Commission', 'Anti-Corruption Commission', 'Zimbabwe Electoral Commission', 'devolution', 'Chapter 14', 'local government', 'provincial council'],
     },
   ];
 

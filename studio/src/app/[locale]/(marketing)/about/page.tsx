@@ -17,6 +17,18 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600;
 
+const constitutionReference = {
+  development: 'Section 13 of the Constitution mandates the State to promote private initiative, foster commercial enterprises, and empower Zimbabwean citizens. Radbit operationalises this mandate at the SME level.',
+  procurement: 'Section 315 enshrines transparency, competition, and cost-effectiveness in public procurement. Our tender intelligence and PRAZ compliance tools help SMEs meet these standards.',
+  devolution: 'Chapter 14 establishes the devolution framework, empowering provincial and local government. Radbit helps businesses engage at every tier.',
+};
+
+const nds2Reference = {
+  sme: 'NDS2 targets MSME formalisation and growth through digital adoption, access to finance, and value chain integration as pillars of the Vision 2030 upper-middle-income target.',
+  digital: 'Chapter 7 prioritises digital economy adoption as a productivity multiplier across all sectors. Radbit\'s AI platform aligns with this national strategy.',
+  procurement: 'NDS2 mandates digital transformation of public procurement (e-GP) to improve transparency and SME participation. Our tender intelligence engine supports this transition.',
+};
+
 const pillars = [
   {
     icon: <Swords className="h-4 w-4" />,
@@ -164,6 +176,36 @@ export default function AboutPage() {
                 Full bio and background
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-6 pt-8 border-t border-foreground/10">
+        <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">Constitutional & National Mandate</h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="rounded-xl border border-border/50 bg-muted/30 p-5 space-y-3">
+            <h3 className="font-headline font-semibold text-sm flex items-center gap-2">
+              <Shield className="h-4 w-4 text-primary" />
+              Constitution of Zimbabwe
+            </h3>
+            <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed">
+              <li><strong className="text-foreground">Section 13 (National Development):</strong> The State must promote private initiative, foster industrial and commercial enterprises, and empower Zimbabwean citizens. Radbit builds the digital infrastructure to make this possible at SME scale.</li>
+              <li><strong className="text-foreground">Section 64 (Freedom of Trade):</strong> Every person has the right to choose and practise their profession, trade, or occupation freely. Radbit lowers the barriers to formal participation in the economy.</li>
+              <li><strong className="text-foreground">Section 315 (Public Procurement):</strong> Government contracts must be awarded transparently, competitively, and cost-effectively. Our tender intelligence engine helps SMEs compete on these terms.</li>
+              <li><strong className="text-foreground">Chapter 14 (Devolution):</strong> Governmental powers are devolved to provincial and local tiers. Radbit helps businesses navigate and engage at every level.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-border/50 bg-muted/30 p-5 space-y-3">
+            <h3 className="font-headline font-semibold text-sm flex items-center gap-2">
+              <Target className="h-4 w-4 text-primary" />
+              National Development Strategy 2 (2026&ndash;2030)
+            </h3>
+            <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed">
+              <li><strong className="text-foreground">Vision 2030:</strong> NDS2 targets an empowered upper-middle-income society. SME formalisation, digital adoption, and value chain integration are the primary levers.</li>
+              <li><strong className="text-foreground">Chapter 7 (Digital Economy):</strong> Adoption of digital technologies across sectors is identified as a critical productivity multiplier. Radbit&apos;s AI platform aligns directly with this national strategic priority.</li>
+              <li><strong className="text-foreground">Chapter 4 (Inclusive Growth):</strong> MSME development, youth entrepreneurship, and diaspora engagement are prioritised as drivers of structural transformation.</li>
+              <li><strong className="text-foreground">Public Procurement Reform:</strong> NDS2 mandates the digital transformation of procurement systems (e-GP) to improve transparency, efficiency, and SME participation. Radbit&apos;s tender intelligence and compliance tools support this transition.</li>
+            </ul>
           </div>
         </div>
       </section>

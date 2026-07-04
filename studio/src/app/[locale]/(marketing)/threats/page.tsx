@@ -87,6 +87,9 @@ export default async function ThreatsListPage() {
           Radbit's monitoring system tracks PRAZ, SADC, ZIMRA, and other regional regulatory bodies for changes that
           affect your business. Each assessment shows what changed and what it means for you.
         </p>
+        <p className="text-sm text-foreground/50 max-w-2xl leading-relaxed">
+          Zimbabwe&apos;s regulatory landscape is dynamic. The Procurement Regulatory Authority of Zimbabwe (PRAZ) publishes revised procurement thresholds and procedures, ZIMRA updates tax administration guidelines quarterly, SADC issues trade protocols affecting cross-border goods, and line ministries release sector-specific policies with little advance notice. Radbit&apos;s RETI (Regulatory Early Threat Intelligence) engine monitors gazettes, official publications, and government portals around the clock &mdash; analysing each instrument for relevance to Zimbabwean SMEs and issuing a risk-rated assessment within hours of publication. Each entry below represents a detected regulatory event, with our analysis of its potential impact on your compliance obligations, tender eligibility, or operational requirements.
+        </p>
       </div>
 
       {assessments.length === 0 ? (

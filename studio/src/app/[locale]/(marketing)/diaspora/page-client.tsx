@@ -109,8 +109,23 @@ export function DiasporaLanding() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* Why the Diaspora Matters */}
       <section className="py-16 md:py-20">
+        <div className="container px-4 max-w-4xl mx-auto space-y-6">
+          <h2 className="text-center font-headline text-3xl font-bold">
+            Why the Diaspora Matters for Zimbabwe&apos;s Growth
+          </h2>
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center">
+            Zimbabweans abroad represent one of the country&apos;s most powerful economic assets. Beyond the US$1.5 billion in annual remittances, the diaspora holds expertise in global supply chains, technology, finance, and professional services that can accelerate SME development back home. Our platform turns that potential into action &mdash; connecting you with verified businesses, real-time market intelligence, and the tools to manage operations across time zones.
+          </p>
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center">
+            Whether you want to invest in an agri-processing start-up, help a family member formalise their business, or launch your own Zimbabwe-registered company from abroad, Radbit provides the infrastructure to do it with confidence. Every SME on our platform is PRAZ-compliant and carries a verified digital readiness score &mdash; so you know exactly what you&apos;re stepping into before you commit.
+          </p>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-16 md:py-20 bg-muted/30">
         <div className="container px-4 max-w-4xl mx-auto">
           <h2 className="text-center font-headline text-3xl font-bold mb-12">
             How It Works

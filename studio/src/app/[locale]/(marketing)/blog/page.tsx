@@ -58,9 +58,14 @@ export default function BlogPage() {
           <Rss className="size-5" />
         </Link>
       </div>
-      <p className="text-muted-foreground mb-6 md:mb-12 max-w-lg">
-        Thoughts on digital sovereignty, AI, and building for Zimbabwe.
-      </p>
+      <div className="mb-6 md:mb-12 max-w-prose space-y-3">
+        <p className="text-muted-foreground">
+          Thoughts on digital sovereignty, AI, and building for Zimbabwe.
+        </p>
+        <p className="text-sm text-muted-foreground/70 leading-relaxed">
+          Radbit&apos;s blog covers the intersection of enterprise technology, regulatory compliance, and SME growth in Zimbabwe and across the SADC region. We publish guides on tender preparation, PRAZ compliance workflows, ZIMRA tax updates, diaspora investment mechanics, and practical case studies from Zimbabwean businesses navigating digital transformation. Topics draw on real operator experience &mdash; not theory &mdash; and are written for business owners, compliance officers, and technology practitioners working within Zimbabwe&apos;s economic environment.
+        </p>
+      </div>
 
       <BlogList />
     </div>
