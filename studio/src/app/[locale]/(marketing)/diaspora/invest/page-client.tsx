@@ -14,7 +14,7 @@ const sectors = [
 ];
 
 const benefits = [
-  { icon: <Shield className="h-4 w-4" />, text: "PRAZ-verified compliance documentation" },
+  { icon: <Shield className="h-4 w-4" />, text: "Verified by Radbit — real-time operational snapshot of every SME" },
   { icon: <BarChart className="h-4 w-4" />, text: "Digital readiness scores for every SME" },
   { icon: <Globe className="h-4 w-4" />, text: "Invest from anywhere — UK, SA, USA, Australia" },
   { icon: <CheckCircle2 className="h-4 w-4" />, text: "Mutual-interest matching — only connect when both parties say yes" },
@@ -75,12 +75,18 @@ export function InvestPage() {
           </div>
 
           <div className="rounded-xl border border-border/50 bg-muted/30 p-6 md:p-8 space-y-4">
-            <h3 className="font-headline font-semibold text-lg">How Diaspora Investment Works</h3>
+            <div className="flex items-center gap-2 p-3 rounded-lg border border-primary/20 bg-primary/5 mb-3">
+              <Shield className="h-5 w-5 text-primary shrink-0" />
+              <div>
+                <p className="font-semibold text-sm">Every SME is <strong>Verified by Radbit</strong></p>
+                <p className="text-xs text-muted-foreground">Compliance, revenue, and operations independently verified &mdash; not self-reported</p>
+              </div>
+            </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Zimbabwe&apos;s diaspora sends over US$1.5 billion annually in remittances, yet most of this flows to family support rather than productive enterprise. Radbit&apos;s investment marketplace bridges that gap by connecting diaspora capital with vetted, PRAZ-compliant Zimbabwean SMEs that are ready to scale.
+              Zimbabwe&apos;s diaspora sends over US$1.5 billion annually in remittances, yet most flows to family support rather than productive enterprise. Radbit&apos;s investment marketplace bridges that gap by connecting diaspora capital with vetted Zimbabwean SMEs that are ready to scale.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Every SME on our platform has completed a digital readiness assessment, providing you with transparency on their operational maturity, compliance status, and revenue trajectory. Our mutual-interest matching means you only connect when both parties are serious &mdash; no cold outreach, no wasted time.
+              Every SME on our platform has a <strong>live operational snapshot</strong> showing their compliance status (PRAZ, ZIMRA, NSSA), revenue trajectory, tender history, and digital readiness score. This is not self-reported data &mdash; Radbit verifies each business through document review, compliance database checks, and ongoing monitoring.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Investment opportunities span agriculture, technology, manufacturing, healthcare, real estate, and tourism. Minimum investment thresholds vary by sector and business stage, from seed-stage capital requirements to growth-equity rounds for established enterprises.

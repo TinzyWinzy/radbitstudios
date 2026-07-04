@@ -113,6 +113,7 @@ function HeroSection() {
           <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Tender Armor</span>
           <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-primary/60" /> Operational Certainty</span>
           <span className="flex items-center gap-1.5"><Globe className="h-3 w-3 text-primary/60" /> Market Protection</span>
+          <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Verified by Radbit</span>
         </motion.div>
 
       </motion.div>

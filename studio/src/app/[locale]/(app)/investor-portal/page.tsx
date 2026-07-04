@@ -16,10 +16,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Globe, Sprout, Building2, Cpu, Factory, Stethoscope, Plane,
-  Search, Handshake, Loader2, Check, ShieldCheck,
+  Search, Handshake, Loader2, Check, ShieldCheck, Shield, Award,
 } from "lucide-react";
 import { AuthContext } from "@/contexts/auth-context";
 import type { AppUser } from "@/types/user";
+import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 
 const SECTORS = [
@@ -379,10 +380,16 @@ export default function InvestorPortalPage() {
                         <CardTitle className="text-base">{sme.name}</CardTitle>
                         <CardDescription>{sme.sector} • {sme.revenue}</CardDescription>
                       </div>
-                      <Badge variant={sme.prazStatus === 'Verified' ? 'default' : 'outline'}>
-                        {sme.prazStatus === 'Verified' ? <ShieldCheck className="h-3 w-3 mr-1" /> : null}
-                        {sme.prazStatus}
-                      </Badge>
+                      <div className="flex flex-col items-end gap-1">
+                        <Badge variant={sme.prazStatus === 'Verified' ? 'default' : 'outline'}>
+                          {sme.prazStatus === 'Verified' ? <ShieldCheck className="h-3 w-3 mr-1" /> : null}
+                          {sme.prazStatus}
+                        </Badge>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full border border-primary/20 bg-primary/5 text-primary">
+                          <Shield size={8} />
+                          Verified by Radbit
+                        </span>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -435,14 +442,29 @@ export default function InvestorPortalPage() {
                 <div className="space-y-3">
                   {matches.map((m, i) => (
                     <div key={i} className="flex items-center justify-between p-3 rounded-lg border">
-                      <div>
-                        <p className="font-medium">{m.name}</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium truncate">{m.name}</p>
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full border border-primary/20 bg-primary/5 text-primary shrink-0">
+                            <Shield size={8} />
+                            Verified
+                          </span>
+                        </div>
                         <p className="text-xs text-muted-foreground">{m.sector}</p>
                       </div>
-                      <Badge variant={m.status === 'Matched' ? 'default' : 'outline'}>
-                        {m.status === 'Matched' && <Check className="h-3 w-3 mr-1" />}
-                        {m.status}
-                      </Badge>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {m.status === 'Matched' && (
+                          <Button variant="outline" size="sm" className="text-xs h-8" asChild>
+                            <Link href={`/investor-portal?snapshot=${encodeURIComponent(m.name)}`}>
+                              View Snapshot
+                            </Link>
+                          </Button>
+                        )}
+                        <Badge variant={m.status === 'Matched' ? 'default' : 'outline'}>
+                          {m.status === 'Matched' && <Check className="h-3 w-3 mr-1" />}
+                          {m.status}
+                        </Badge>
+                      </div>
                     </div>
                   ))}
                 </div>
