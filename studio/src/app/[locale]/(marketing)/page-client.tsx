@@ -724,6 +724,64 @@ function CuratedBriefsSection() {
   );
 }
 
+function EssentialSection() {
+  const essentials = [
+    {
+      icon: Shield,
+      title: "Fiscal Device Compliance",
+      desc: "ZIMRA mandates fiscal devices for all VAT-registered businesses (turnover > US$40,000). Radbit's FDG API integration keeps you compliant without hardware costs.",
+      badge: "LEGAL MANDATE",
+      href: "/api/fiscal",
+    },
+    {
+      icon: TrendingUp,
+      title: "ZiG Currency Intelligence",
+      desc: "Navigate Zimbabwe's dual-currency economy with real-time ZiG rates, PAYE tax tables, and automatic tax obligation conversion between USD and ZiG.",
+      badge: "DAILY TOOL",
+      href: "/api/zig",
+    },
+    {
+      icon: Target,
+      title: "NDS2 & Constitutional Alignment",
+      desc: "Align your strategy with Zimbabwe's National Development Strategy and Constitutional provisions — essential for government tenders and regulatory compliance.",
+      badge: "TENDER READY",
+      href: "/about",
+    },
+  ];
+
+  return (
+    <section className="container py-16 relative z-10">
+      <div className="text-center mb-10">
+        <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-3">
+          Why Radbit is Essential
+        </h2>
+        <p className="text-muted-foreground max-w-xl mx-auto">
+          Not just helpful — required. Zimbabwean law and regulation make these tools indispensable for your business.
+        </p>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {essentials.map((item) => (
+          <div
+            key={item.title}
+            className="group relative rounded-xl border bg-card p-6 transition-all hover:shadow-lg hover:border-primary/50"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded">
+                {item.badge}
+              </span>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+              <item.icon className="h-5 w-5 text-primary" />
+            </div>
+            <h3 className="font-headline text-lg font-semibold mb-2">{item.title}</h3>
+            <p className="text-sm text-muted-foreground">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function PricingTeaser() {
   return (
     <section className="container py-16 relative z-10">
@@ -851,6 +909,7 @@ export default function LandingPage() {
         <section className="container mx-auto py-8 max-w-4xl relative z-10">
           <AdUnit slot="landing-content" format="rectangle" className="min-h-[90px]" />
         </section>
+        <EssentialSection />
         <PricingTeaser />
         <CTASection />
       </div>

@@ -6,7 +6,7 @@ export const ThreatAssessmentInputSchema = z.object({
   triggerSummary: z.string().describe('Summary of what changed and when'),
   triggerSource: z.string().describe('Source name (PRAZ, SADC, Zimbabwe AI Strategy, etc.)'),
   triggerDate: z.string().describe('Date of the trigger event'),
-  triggerCategory: z.enum(['praz', 'sadc', 'ai_strategy', 'afcfta', 'zimra', 'rbz', 'nssa', 'general', 'data_protection', 'energy_grid', 'mining', 'digital_regulation', 'afcfta_customs', 'sadc_industry', 'nds2', 'constitutional']),
+  triggerCategory: z.enum(['praz', 'sadc', 'ai_strategy', 'afcfta', 'zimra', 'rbz', 'nssa', 'general', 'data_protection', 'energy_grid', 'mining', 'digital_regulation', 'afcfta_customs', 'sadc_industry', 'nds2', 'constitutional', 'zimra_fiscal', 'rbz_currency']),
   targetIndustry: z.string().optional().describe('Specific SADC industry affected, if any'),
 });
 export type ThreatAssessmentInput = z.infer<typeof ThreatAssessmentInputSchema>;

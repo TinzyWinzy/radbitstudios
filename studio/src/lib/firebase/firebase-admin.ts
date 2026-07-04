@@ -1,5 +1,6 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 
 function initAdmin() {
   if (getApps().length > 0) return getApps()[0];
@@ -11,12 +12,11 @@ function initAdmin() {
     });
   }
 
-  // Falls back to GOOGLE_APPLICATION_CREDENTIALS or ADC
-  // (works on Cloud Run / Firebase App Hosting without extra config)
   return initializeApp();
 }
 
 const adminApp = initAdmin();
 const adminDb = getFirestore(adminApp);
+const adminAuth = getAuth(adminApp);
 
-export { adminApp, adminDb };
+export { adminApp, adminDb, adminAuth };

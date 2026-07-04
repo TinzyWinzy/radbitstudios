@@ -4,3 +4,11 @@ firebase-debug.log
 
 service-account.json
 *.service-account.json
+
+# PDFs (large binary files)
+*.pdf
+
+# Extracted PDF text (generated)
+database/*_extract.txt
+database/constitution_excerpts.txt
+database/nds2_*.txt

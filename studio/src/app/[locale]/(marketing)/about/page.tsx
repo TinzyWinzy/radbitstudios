@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from 'next';
-import { Shield, Zap, Swords, Target, Network, MapPin, Linkedin, Mail, Twitter, Facebook, Phone, ScrollText, Eye, GanttChartSquare } from 'lucide-react';
+import { Shield, Zap, Swords, Target, Network, MapPin, Linkedin, Mail, Twitter, Facebook, Phone, ScrollText, Eye, GanttChartSquare, ReceiptText, Banknote } from 'lucide-react';
 import { AdBanner } from "@/components/ads/ad-banner";
 import Link from 'next/link';
 
@@ -44,6 +44,16 @@ const pillars = [
     icon: <ScrollText className="h-4 w-4" />,
     title: 'The Global Partner Passport',
     body: 'Your transaction records become verified, tamper-proof histories on blockchain. The credibility international partners and diaspora investors need before they write a cheque.',
+  },
+  {
+    icon: <ReceiptText className="h-4 w-4" />,
+    title: 'Fiscal & Currency Compliance',
+    body: 'Mandatory ZIMRA fiscal device integration for VAT-registered businesses and real-time ZiG currency tools. Stay compliant without hardware or spreadsheets.',
+  },
+  {
+    icon: <Banknote className="h-4 w-4" />,
+    title: 'ZiG Currency Intelligence',
+    body: 'Live ZiG exchange rates, automatic tax obligation conversion, and PAYE tax tables. Navigate Zimbabwe\'s dual-currency economy with confidence.',
   },
 ];
 

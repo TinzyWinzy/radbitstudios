@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft, FileText, Building2, ReceiptText, Plane, Wallet, Zap, NotebookPen } from "lucide-react";
+import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRightLeft, FileText, Building2, ReceiptText, Plane, Wallet, Zap, NotebookPen, Banknote } from "lucide-react";
 import { AdBanner } from "@/components/ads/ad-banner";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { breadcrumbSchema } from "@/lib/seo";
@@ -55,6 +55,18 @@ const tools = [
     title: "Currency Exchange Rates",
     excerpt: "Live exchange rates for SADC currencies and major global pairs (USD, ZAR, JPY, EUR, GBP, and more).",
     icon: <ArrowRightLeft className="h-6 w-6" />,
+  },
+  {
+    slug: "zig-faq",
+    title: "ZiG Currency FAQ",
+    excerpt: "Everything about the Zimbabwe Gold (ZiG) transition: tax compliance, PAYE tables, dual-currency accounting, and ZIMRA requirements.",
+    icon: <Banknote className="h-6 w-6" />,
+  },
+  {
+    slug: "fiscal-compliance",
+    title: "Fiscal Device Compliance",
+    excerpt: "ZIMRA fiscal device requirements explained: FDG API, VAT thresholds, penalties, and how to stay compliant without hardware.",
+    icon: <ReceiptText className="h-6 w-6" />,
   },
 ];
 

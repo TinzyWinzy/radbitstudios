@@ -70,29 +70,56 @@ async function indexSections(sections, source, category) {
   return indexed;
 }
 
+async function indexPdf(pdfPath, source, category, label) {
+  console.log(`\nExtracting ${label}...`);
+  try {
+    const text = await extractPdfText(pdfPath);
+    const sections = chunkBySections(text);
+    console.log(`  ${sections.length} chunks (${text.length} chars)`);
+    console.log(`\nIndexing ${label} into RAG...`);
+    const indexed = await indexSections(sections, source, category);
+    console.log(`  ${label}: ${indexed} indexed`);
+    return indexed;
+  } catch (err) {
+    console.error(`  ✗ Failed to index ${label}: ${err.message}`);
+    return 0;
+  }
+}
+
 async function main() {
-  const constitutionPath = resolve(__dirname, '../../Constitution Consolidated (2023).pdf');
-  const nds2Path = resolve(__dirname, '../../National Development Strategy 2 (NDS2) 2026-2030.pdf');
+  let total = 0;
 
-  console.log('Extracting Constitution text...');
-  const constitutionText = await extractPdfText(constitutionPath);
-  const constitutionSections = chunkBySections(constitutionText);
-  console.log(`  ${constitutionSections.length} chunks (${constitutionText.length} chars)`);
+  total += await indexPdf(
+    resolve(__dirname, '../../Constitution Consolidated (2023).pdf'),
+    'Constitution of Zimbabwe (2023)', 'constitution', 'Constitution'
+  );
 
-  console.log('\nExtracting NDS2 text...');
-  const nds2Text = await extractPdfText(nds2Path);
-  const nds2Sections = chunkBySections(nds2Text);
-  console.log(`  ${nds2Sections.length} chunks (${nds2Text.length} chars)`);
+  total += await indexPdf(
+    resolve(__dirname, '../../National Development Strategy 2 (NDS2) 2026-2030.pdf'),
+    'National Development Strategy 2 (2026-2030)', 'nds2', 'NDS2'
+  );
 
-  console.log('\nIndexing Constitution into RAG...');
-  const constitutionIndexed = await indexSections(constitutionSections, 'Constitution of Zimbabwe (2023)', 'constitution');
+  total += await indexPdf(
+    resolve(__dirname, '../../ZiG Transactions FAQs_.pdf'),
+    'ZiG Transactions FAQs', 'zig_currency', 'ZiG FAQs'
+  );
 
-  console.log('\nIndexing NDS2 into RAG...');
-  const nds2Indexed = await indexSections(nds2Sections, 'National Development Strategy 2 (2026-2030)', 'nds2');
+  total += await indexPdf(
+    resolve(__dirname, '../../Fiscal Device Gateway API v7.2 - clients.pdf'),
+    'Fiscal Device Gateway API v7.2', 'fiscal_device', 'Fiscal Device API'
+  );
 
-  console.log(`\nDone. Indexed ${constitutionIndexed + nds2Indexed} total chunks.`);
-  console.log(`  Constitution: ${constitutionIndexed}`);
-  console.log(`  NDS2: ${nds2Indexed}`);
+  total += await indexPdf(
+    resolve(__dirname, '../../Lcensed agents for 2026_.pdf'),
+    'Licensed Agents 2026', 'licensed_agents', 'Licensed Agents'
+  );
+
+  total += await indexPdf(
+    resolve(__dirname, '../../2025-1st-Quarter-Abridged-Sector-Performance-Report-HMed.pdf'),
+    '2025 Sector Performance Report', 'sector_performance', 'Sector Performance Report'
+  );
+
+  console.log(`\nDone. Total indexed: ${total} chunks.`);
 }
 
 main().catch(console.error);
