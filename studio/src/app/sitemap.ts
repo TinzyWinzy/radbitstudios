@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 
+export const dynamic = 'force-dynamic';
+
 const SITE_URL = (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").replace(/\/$/, "");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
