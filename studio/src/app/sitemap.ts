@@ -18,8 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/blog`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
     { url: `${SITE_URL}/solutions`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
     { url: `${SITE_URL}/use-cases`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${SITE_URL}/sign-up`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
-    { url: `${SITE_URL}/sign-in`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+
   ];
 
   let blogPosts: MetadataRoute.Sitemap = [];

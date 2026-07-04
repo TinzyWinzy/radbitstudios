@@ -31,7 +31,7 @@ export default function NotFound() {
         <nav className="flex flex-wrap gap-3 justify-center">
           {[
             { href: '/assessment',       label: 'Free Assessment' },
-            { href: '/ai-toolkit',       label: 'AI Toolkit' },
+            { href: '/toolkit',          label: 'AI Toolkit' },
             { href: '/resources',        label: 'Resources' },
             { href: '/blog',             label: 'Blog' },
             { href: '/tenders',          label: 'Tenders' },
