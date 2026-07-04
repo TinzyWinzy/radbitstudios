@@ -16,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Globe, Sprout, Building2, Cpu, Factory, Stethoscope, Plane,
-  Search, Handshake, Loader2, Check, ShieldCheck, Shield, Award,
+  Search, Handshake, Loader2, Check, ShieldCheck, Shield,
 } from "lucide-react";
 import { AuthContext } from "@/contexts/auth-context";
 import type { AppUser } from "@/types/user";

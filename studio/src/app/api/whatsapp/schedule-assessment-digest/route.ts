@@ -46,8 +46,9 @@ export const POST = withIpRateLimit(
     );
 
     return NextResponse.json({ queued: true, queueId, estimatedDelivery: new Date(Date.now() + 30 * 60 * 1000).toISOString() });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 },
 );

@@ -6,7 +6,8 @@ import { partnerService } from '@/services/partner.service';
 
 export const GET = async (req: NextRequest) => {
   try {
-    const token = req.nextUrl.searchParams.get('token');
+    const authHeader = req.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
     if (!token) {
       return NextResponse.json({ tiers: TIERS });
     }
@@ -34,13 +35,15 @@ export const GET = async (req: NextRequest) => {
 
 export const PATCH = async (req: NextRequest) => {
   try {
-    const { idToken, partnerId, tier } = await req.json();
+    const authHeader = req.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    const { partnerId, tier } = await req.json();
 
-    if (!idToken || !partnerId || !tier) {
+    if (!token || !partnerId || !tier) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
     }
 
-    const decoded = await getAuth(adminApp).verifyIdToken(idToken);
+    const decoded = await getAuth(adminApp).verifyIdToken(token);
     const userDoc = await adminDb.collection('users').doc(decoded.uid).get();
     if (userDoc.data()?.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });

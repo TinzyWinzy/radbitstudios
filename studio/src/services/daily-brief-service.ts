@@ -1,6 +1,6 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
-import { generateDigestForUser, getUserSubscription } from '@/services/newsletter-service';
+import { generateDigestForUser } from '@/services/newsletter-service';
 import { enqueueOutboundMessage } from '@/services/whatsapp/outbound-queue';
 
 const BRIEF_SUBSCRIPTIONS = 'whatsapp_briefs';

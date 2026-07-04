@@ -7,45 +7,50 @@ import { REQUIRED_DOCUMENTS } from '@/services/praz-types';
 export const GET = withIpRateLimit(
   { maxRequests: 60, windowMs: 60 * 1000, keyPrefix: 'ratelimit:praz-profile' },
   async (req: NextRequest) => {
-  const user = await verifySession(req);
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const userId = user.uid;
-
-  const snap = await adminDb.collection('praz_documents')
-    .where('userId', '==', userId)
-    .get();
-
-  const documents: Record<string, any> = {};
-  for (const doc of REQUIRED_DOCUMENTS) {
-    documents[doc.id] = null;
-  }
-
-  for (const d of snap.docs) {
-    const data = d.data();
-    const expiresAt = data.expiresAt?.toDate() || null;
-    let status = 'valid';
-    if (!data.uploadedAt) {
-      status = 'missing';
-    } else if (expiresAt) {
-      const daysUntilExpiry = (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
-      if (daysUntilExpiry < 0) status = 'expired';
-      else if (daysUntilExpiry < 30) status = 'expiring_soon';
+  try {
+    const user = await verifySession(req);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    documents[data.docType] = {
-      docType: data.docType,
-      fileName: data.fileName,
-      uploadedAt: data.uploadedAt?.toDate()?.toISOString() || new Date().toISOString(),
-      expiresAt: expiresAt?.toISOString() || null,
-      status,
-    };
+
+    const userId = user.uid;
+
+    const snap = await adminDb.collection('praz_documents')
+      .where('userId', '==', userId)
+      .get();
+
+    const documents: Record<string, any> = {};
+    for (const doc of REQUIRED_DOCUMENTS) {
+      documents[doc.id] = null;
+    }
+
+    for (const d of snap.docs) {
+      const data = d.data();
+      const expiresAt = data.expiresAt?.toDate() || null;
+      let status = 'valid';
+      if (!data.uploadedAt) {
+        status = 'missing';
+      } else if (expiresAt) {
+        const daysUntilExpiry = (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+        if (daysUntilExpiry < 0) status = 'expired';
+        else if (daysUntilExpiry < 30) status = 'expiring_soon';
+      }
+      documents[data.docType] = {
+        docType: data.docType,
+        fileName: data.fileName,
+        uploadedAt: data.uploadedAt?.toDate()?.toISOString() || new Date().toISOString(),
+        expiresAt: expiresAt?.toISOString() || null,
+        status,
+      };
+    }
+
+    const uploadedCount = Object.values(documents).filter(Boolean).length;
+    const readinessScore = Math.round((uploadedCount / REQUIRED_DOCUMENTS.length) * 100);
+
+    return NextResponse.json({ documents, readinessScore, companyName: '', registrationNumber: '' });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const uploadedCount = Object.values(documents).filter(Boolean).length;
-  const readinessScore = Math.round((uploadedCount / REQUIRED_DOCUMENTS.length) * 100);
-
-  return NextResponse.json({ documents, readinessScore, companyName: '', registrationNumber: '' });
 },
 );

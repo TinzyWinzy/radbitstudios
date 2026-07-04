@@ -9,9 +9,10 @@ export const GET = withIpRateLimit(
   { maxRequests: 30, windowMs: 60 * 1000, keyPrefix: 'ratelimit:partner-commission-list' },
   async (req: NextRequest) => {
     try {
-      const idToken = req.nextUrl.searchParams.get('token');
+      const authHeader = req.headers.get('authorization');
+      const idToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
       if (!idToken) {
-        return NextResponse.json({ error: 'Missing token param' }, { status: 401 });
+        return NextResponse.json({ error: 'Missing Authorization header' }, { status: 401 });
       }
 
       const decoded = await getAuth(adminApp).verifyIdToken(idToken);

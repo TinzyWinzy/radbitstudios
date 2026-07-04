@@ -17,18 +17,6 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600;
 
-const constitutionReference = {
-  development: 'Section 13 of the Constitution mandates the State to promote private initiative, foster commercial enterprises, and empower Zimbabwean citizens. Radbit operationalises this mandate at the SME level.',
-  procurement: 'Section 315 enshrines transparency, competition, and cost-effectiveness in public procurement. Our tender intelligence and PRAZ compliance tools help SMEs meet these standards.',
-  devolution: 'Chapter 14 establishes the devolution framework, empowering provincial and local government. Radbit helps businesses engage at every tier.',
-};
-
-const nds2Reference = {
-  sme: 'NDS2 targets MSME formalisation and growth through digital adoption, access to finance, and value chain integration as pillars of the Vision 2030 upper-middle-income target.',
-  digital: 'Chapter 7 prioritises digital economy adoption as a productivity multiplier across all sectors. Radbit\'s AI platform aligns with this national strategy.',
-  procurement: 'NDS2 mandates digital transformation of public procurement (e-GP) to improve transparency and SME participation. Our tender intelligence engine supports this transition.',
-};
-
 const pillars = [
   {
     icon: <Swords className="h-4 w-4" />,

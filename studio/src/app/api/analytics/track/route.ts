@@ -31,8 +31,9 @@ export const POST = withRateLimit(
 
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
-    console.error('[Analytics] Track error:', error instanceof Error ? error.message : error);
-    return NextResponse.json({ ok: true });
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[Analytics] Track error:', message);
+    return NextResponse.json({ error: message, ok: false }, { status: 500 });
   }
 },
 );

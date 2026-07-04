@@ -3,32 +3,42 @@ import { verifyIdToken } from '@/lib/api-auth';
 import { submitVerificationRequest, getVerificationStatus } from '@/services/diaspora-verification';
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const verified = await verifyIdToken(token);
-  if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    const verified = await verifyIdToken(token);
+    if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
-  const status = await getVerificationStatus(verified.uid);
-  return NextResponse.json({ verification: status });
+    const status = await getVerificationStatus(verified.uid);
+    return NextResponse.json({ verification: status });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const authHeader = request.headers.get('authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const verified = await verifyIdToken(token);
-  if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    const verified = await verifyIdToken(token);
+    if (!verified) return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
 
-  const body = await request.json();
-  const { businessName, documents } = body;
+    const body = await request.json();
+    const { businessName, documents } = body;
 
-  if (!businessName || !documents || !Array.isArray(documents)) {
-    return NextResponse.json({ error: 'businessName and documents[] required' }, { status: 400 });
+    if (!businessName || !documents || !Array.isArray(documents)) {
+      return NextResponse.json({ error: 'businessName and documents[] required' }, { status: 400 });
+    }
+
+    const result = await submitVerificationRequest(verified.uid, businessName, documents);
+    return NextResponse.json(result, { status: result.success ? 201 : 409 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const result = await submitVerificationRequest(verified.uid, businessName, documents);
-  return NextResponse.json(result, { status: result.success ? 201 : 409 });
 }

@@ -1,5 +1,4 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
-import type { FirebaseFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { logger } from '@/lib/logger';
@@ -27,7 +26,7 @@ function loadAllAgents(): Omit<LicensedAgent, 'licenseYear'>[] {
     const data = JSON.parse(readFileSync(jsonPath, 'utf-8'));
     return data.agents || [];
   } catch (err) {
-    log.warn('Could not load agents-data.json, using empty seed', err);
+    log.warn('Could not load agents-data.json, using empty seed');
     return [];
   }
 }
@@ -76,16 +75,18 @@ export async function seedAgents(): Promise<number> {
   return count;
 }
 
+type CollectionRef = ReturnType<typeof adminDb.collection>;
+
 export async function searchAgents(searchTerm?: string, location?: string): Promise<LicensedAgent[]> {
   try {
-    let query: FirebaseFirestore.Query = adminDb.collection(AGENTS_COLLECTION);
+    let query: CollectionRef = adminDb.collection(AGENTS_COLLECTION);
 
     if (location && location !== 'All') {
-      query = query.where('location', '==', location);
+      query = query.where('location', '==', location) as CollectionRef;
     }
 
     const snap = await query.limit(50).get();
-    let agents = snap.docs.map(d => ({ ...d.data(), id: d.id } as LicensedAgent & { id: string }));
+    let agents = snap.docs.map((d: typeof snap.docs[number]) => ({ ...d.data(), id: d.id } as LicensedAgent & { id: string }));
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase();

@@ -60,8 +60,9 @@ export const GET = withRateLimit(
 
     return NextResponse.json({ benchmark });
   } catch (error: unknown) {
-    console.error('[Benchmark API] Error:', error instanceof Error ? error.message : error);
-    return NextResponse.json({ benchmark: [] });
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[Benchmark API] Error:', message);
+    return NextResponse.json({ error: message, benchmark: [] }, { status: 500 });
   }
 },
 );

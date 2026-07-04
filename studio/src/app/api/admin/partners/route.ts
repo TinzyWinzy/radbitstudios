@@ -19,38 +19,53 @@ async function verifyAdmin(token: string): Promise<string | null> {
   }
 }
 
+function getToken(req: NextRequest): string | null {
+  const auth = req.headers.get('authorization');
+  if (auth?.startsWith('Bearer ')) return auth.slice(7);
+  return null;
+}
+
 export const GET = async (req: NextRequest) => {
-  const token = req.nextUrl.searchParams.get('token');
-  if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 401 });
+  try {
+    const token = getToken(req);
+    if (!token) return NextResponse.json({ error: 'Missing Authorization header' }, { status: 401 });
 
-  const uid = await verifyAdmin(token);
-  if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    const uid = await verifyAdmin(token);
+    if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-  const partners = await partnerService.listAll();
+    const partners = await partnerService.listAll();
 
-  const enriched = await Promise.all(
-    partners.map(async (p) => {
-      const commissions = await commissionService.getByPartner(p.id!);
-      const payouts = await payoutService.getByPartner(p.id!);
-      return {
-        ...p,
-        commissions,
-        payouts,
-        pendingCommissionTotal: commissions.filter(c => c.status === 'pending').reduce((s, c) => s + c.amount, 0),
-        approvedCommissionTotal: commissions.filter(c => c.status === 'approved').reduce((s, c) => s + c.amount, 0),
-      };
-    })
-  );
+    const enriched = await Promise.all(
+      partners.map(async (p) => {
+        const commissions = await commissionService.getByPartner(p.id!);
+        const payouts = await payoutService.getByPartner(p.id!);
+        return {
+          ...p,
+          commissions,
+          payouts,
+          pendingCommissionTotal: commissions.filter(c => c.status === 'pending').reduce((s, c) => s + c.amount, 0),
+          approvedCommissionTotal: commissions.filter(c => c.status === 'approved').reduce((s, c) => s + c.amount, 0),
+        };
+      })
+    );
 
-  return NextResponse.json({ partners: enriched });
+    return NextResponse.json({ partners: enriched });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 };
 
 export const POST = async (req: NextRequest) => {
-  const { idToken, action, payload } = await req.json();
-  if (!idToken) return NextResponse.json({ error: 'Missing idToken' }, { status: 401 });
+  try {
+    const token = getToken(req);
+    if (!token) return NextResponse.json({ error: 'Missing Authorization header' }, { status: 401 });
 
-  const uid = await verifyAdmin(idToken);
-  if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    const uid = await verifyAdmin(token);
+    if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+
+    const { action, payload } = await req.json();
+    if (!action) return NextResponse.json({ error: 'Missing action' }, { status: 400 });
 
   switch (action) {
     case 'approve-commission': {
@@ -73,5 +88,9 @@ export const POST = async (req: NextRequest) => {
     }
     default:
       return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
+  }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 };

@@ -59,6 +59,7 @@ function extractRiskLevel(title: string, summary: string): ThreatAssessmentInput
   if (text.includes('fiscal device') || text.includes('fiscalisation') || text.includes('FDG') || text.includes('fiscal day') || text.includes('zimra receipt') || text.includes('e-invoicing') || text.includes('tax clearance') || text.includes('digital tax') || text.includes('presumptive tax')) return 'zimra_fiscal';
   if ((text.includes('zig') || text.includes('zimbabwe gold') || text.includes('exchange rate') || text.includes('currency')) && (text.includes('rbz') || text.includes('reserve bank') || text.includes('monetary policy') || text.includes('forex'))) return 'rbz_currency';
   if (text.includes('zida') || text.includes('investment licence') || text.includes('foreign direct investment') || text.includes('SEZ') || text.includes('special economic zone') || text.includes('general investment license') || text.includes('public private partnership') || text.includes('investor') || text.includes('mining investment') || text.includes('fdi')) return 'zida_investment';
+  if (text.includes('afdb') || text.includes('african development bank') || text.includes('african development fund') || text.includes('development finance') || text.includes('continental free trade') || text.includes('Africa infrastructure') || text.includes('agenda 2063') || text.includes('regional integration') || text.includes('climate finance') || text.includes('green growth')) return 'afdb_development';
   return 'general';
 }
 
@@ -199,6 +200,14 @@ export async function initializeMonitorSources(): Promise<MonitorSource[]> {
       lastChecked: null,
       active: true,
       keywords: ['ZIDA', 'investment licence', 'FDI', 'foreign direct investment', 'SEZ', 'Special Economic Zone', 'Invest in Zimbabwe', 'General Investment License', 'Public Private Partnership', 'PPP', 'investor', 'mining investment', 'agriculture investment', 'tourism investment', 'energy sector', 'renewable energy', 'IPP', 'Independent Power Producer', 'diaspora investment', 'Manhize', 'steel plant', 'lithium', 'PGM', 'platinum', 'gold', 'investment opportunity', 'ZIDA Act', 'one stop shop', 'investor services'],
+    },
+    {
+      name: 'AfDB African Development Bank',
+      feedUrl: 'https://www.afdb.org/en/rss-feeds',
+      category: 'afdb_development',
+      lastChecked: null,
+      active: true,
+      keywords: ['AfDB', 'African Development Bank', 'African Development Fund', 'ADF', 'development finance', 'infrastructure', 'infrastructure investment', 'regional integration', 'energy access', 'transport corridor', 'agriculture transformation', 'industrialisation', 'private sector development', 'SME finance', 'trade finance', 'special drawing rights', 'SDR', 'climate finance', 'green growth', 'multilateral', 'Africa infrastructure', 'PPP', 'project preparation', 'NEPAD', 'African Union', 'Agenda 2063', 'sovereign lending', 'non-sovereign', 'equity investment', 'guarantee'],
     },
   ];
 

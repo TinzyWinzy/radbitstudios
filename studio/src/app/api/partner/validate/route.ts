@@ -37,12 +37,17 @@ export const POST = withIpRateLimit(
 export const GET = withIpRateLimit(
   { maxRequests: 30, windowMs: 60 * 1000, keyPrefix: 'ratelimit:partner-validate' },
   async (req: NextRequest): Promise<NextResponse> => {
-  const code = req.nextUrl.searchParams.get('code');
-  if (!code) {
-    return NextResponse.json({ error: 'Missing code parameter' }, { status: 400 });
-  }
+  try {
+    const code = req.nextUrl.searchParams.get('code');
+    if (!code) {
+      return NextResponse.json({ error: 'Missing code parameter' }, { status: 400 });
+    }
 
-  const result = await referralService.validatePartnerCode(code);
-  return NextResponse.json(result);
+    const result = await referralService.validatePartnerCode(code);
+    return NextResponse.json(result);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 },
 );

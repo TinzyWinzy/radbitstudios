@@ -65,10 +65,28 @@ const ZIMRA_KNOWLEDGE = [
     category: "afcfta",
     source: "AfCFTA Agreement",
   },
+  {
+    title: "ZIMRA Tenders 2026",
+    content: "ZIMRA publishes tenders across multiple categories including security services, IT equipment, marine, aviation, branding, events, insurance, promotional materials, fire safety, PPE, transport, and automotive services. Active 2026 tenders include: NCB 12/2026 Supply and Delivery of a Brand New Boat; NCB 21/2026 Intelligent Flight Batteries and Battery Stations; NCB 08/2026 Security Services; NCB 07/2026 Fire Extinguisher Servicing; NCB 06/2026 PPE Supply and Delivery; NCB 05/2026 ZITF Promotional Materials; NCB 04/2026 ZITF Stand Design and Commissioning; and Disposal of Goods by Informal Tender. Carryover tenders from 2025 include IT equipment, branding, SAP consulting, insurance, vehicle services, and agricultural show stand design. All tender documents available as PDF downloads from www.zimra.co.zw/tenders.",
+    category: "zimra-tenders",
+    source: "ZIMRA Tenders Portal",
+  },
+  {
+    title: "ZIMRA Public Notices 2026 - Key Compliance Deadlines",
+    content: "ZIMRA public notices for 2026 (PN 21 to PN 39) cover critical compliance deadlines. Key dates: VAT and Digital Services Withholding Tax Returns due 10 June 2026 (PN 34). Returns and Payments due 5th of each month (PN 33, 27, 22). VAT Returns and Payments due 10th of each month (PN 23, 28). Income Tax Returns (ITF12C) for the tax year ended 31 December 2025 have an extended deadline per PN 26. Excise Special Surtax Returns have multiple due dates (PN 21, 29, 31, 36, 39). Other important notices: PN 37 - New FDMS Support Emails per Region; PN 35 - Confirmation of Customs Clearance Details for Motor Vehicles Before Purchase; PN 32 - Forfeiture of Unclaimed Funds; PN 25 - Voluntary Disclosure program; PN 24 - Obligations to account for tax on payments to non-residents; PN 30 - WhatsApp Number Change; Notice of 9th ZIMRA Annual General Meeting on 19 June 2026; and Notice on Repatriation of Zimbabweans.",
+    category: "zimra-public-notices",
+    source: "ZIMRA Public Notices",
+  },
+  {
+    title: "ZIDA Q1 2026 Quarterly Report",
+    content: "The Zimbabwe Investment and Development Agency (ZIDA) Q1 2026 report covers: 146 new licences issued (US$723.74m projected value), total licensed value US$1,924.68m (up 62% QoQ). Domestic Direct Investment surged 2,406% to US$102.38m. Licence renewals up 53%. Capital structure: 46% equipment imports, 25% foreign cash, 22% foreign loans. Energy was highest value sector; Mining had most licences. Fee reductions under SI 17/2026 (GI) and SI 18/2026 (SEZ): GI Licence $5,000->$4,000, SEZ Designation $50,000->$25,000, Developer Permit $10,000->$1,000, SEZ Operator $20,000->$10,000, Investor Licence $10,000->$4,000. BKPO Framework launched: 15% flat CIT, duty-free capital goods, youth employment tax credit. PPP Guidelines approved by Cabinet. 162 investors engaged with US$1.413bn committed. New prospectus projects: Hunyani Estates Solar, Eagle Heights Victoria Falls. MOUs signed with WFP (agriculture PPPs) and UNDP (SDG investment mapping). Regulatory changes: Cotton Finance (SI 23), Tobacco Finance (SI 24), Luggage Ware duty suspension (SI 30), Printing & Packaging (SI 31), Electrical Manufacturers (SI 32), Pipelines Amendment Act.",
+    category: "zida-quarterly",
+    source: "ZIDA Q1 2026 Report",
+  },
 ];
 
 async function main() {
-  console.log('Seeding ZIMRA knowledge base...\n');
+  console.log('Seeding knowledge base (ZIMRA + ZIDA + regulatory)...\n');
 
   for (const doc of ZIMRA_KNOWLEDGE) {
     try {

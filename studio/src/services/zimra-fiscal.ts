@@ -3,8 +3,6 @@ import { logger } from '@/lib/logger';
 
 const log = logger.child({ module: 'ZIMRAFiscal' });
 
-const FDG_BASE_URL = process.env.ZIMRA_FDG_API_URL || 'https://fdg.zimra.co.zw/api/v1';
-
 interface FiscalDeviceRegistration {
   taxpayerId: string;
   deviceId: string;

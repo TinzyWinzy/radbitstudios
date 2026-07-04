@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Shield, ArrowRight, ExternalLink, AlertTriangle, CheckCircle, FileText, Receipt, Download } from 'lucide-react';
+import { ArrowRight, AlertTriangle, CheckCircle, Receipt } from 'lucide-react';
 import { getFiscalThresholds, getFiscalComplianceGuide } from '@/services/zimra-fiscal';
 
 export const metadata: Metadata = {
@@ -17,6 +17,14 @@ export const metadata: Metadata = {
 export default function FiscalCompliancePage() {
   const thresholds = getFiscalThresholds();
   const guide = getFiscalComplianceGuide();
+
+  const thresholdEntries = [
+    { category: 'VAT Registration Turnover', threshold: `US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}` },
+    { category: 'Fiscal Device Mandatory Turnover', threshold: `US$${thresholds.fiscalDeviceMandatoryTurnoverUsd.toLocaleString()}` },
+    { category: 'Quarterly Filing Turnover', threshold: `US$${thresholds.quarterlyFilingTurnoverUsd.toLocaleString()}` },
+    { category: 'Late Submission Penalty', threshold: `US$${thresholds.penaltyLateSubmissionUsd}` },
+    { category: 'Non-Compliance Penalty', threshold: `US$${thresholds.penaltyNonComplianceUsd}` },
+  ];
 
   return (
     <div className="container max-w-3xl py-16">
@@ -50,7 +58,7 @@ export default function FiscalCompliancePage() {
         <div className="rounded-xl border border-border/50 bg-card/30 p-4 md:p-6">
           <h3 className="font-headline font-semibold text-sm mb-3">VAT Registration Thresholds</h3>
           <div className="space-y-2 text-sm">
-            {thresholds.map((t, i) => (
+            {thresholdEntries.map((t, i) => (
               <div key={i} className="flex items-center justify-between py-2 border-b border-border/30 last:border-0">
                 <span className="text-muted-foreground">{t.category}</span>
                 <span className="font-medium">{t.threshold}</span>
@@ -69,8 +77,7 @@ export default function FiscalCompliancePage() {
                 {i + 1}
               </div>
               <div>
-                <h3 className="font-headline font-semibold text-sm mb-1">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step}</p>
               </div>
             </li>
           ))}

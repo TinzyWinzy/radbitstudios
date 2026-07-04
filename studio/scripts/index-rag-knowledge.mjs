@@ -131,7 +131,7 @@ async function main() {
   ];
 
   for (const zc of zidaContent) {
-    const zidaPath = resolve(__dirname, `../database/${zc.file}`);
+    const zidaPath = resolve(__dirname, `../../database/${zc.file}`);
     try {
       const text = readFileSync(zidaPath, 'utf-8');
       console.log(`\nIndexing ${zc.source}...`);
@@ -150,6 +150,48 @@ async function main() {
     total += await indexPdf(zidaReportPath, 'ZIDA Quarterly Report Q1 2026', 'zida_investment', 'ZIDA Q1 2026 Report');
   } catch {
     console.log('  (ZIDA Quarterly Report PDF not found — will index when available)');
+  }
+
+  // Tourism Destination of Zimbabwe
+  const tdozPath = resolve(__dirname, '../../TDoZ_2018_web-Copy.compressed1.pdf');
+  try {
+    total += await indexPdf(tdozPath, 'Tourism Destination of Zimbabwe', 'tourism', 'Tourism Destination of Zimbabwe');
+  } catch {
+    console.log('  (Tourism Destination PDF not found — will index when available)');
+  }
+
+  // Taxman Corner - Tax Invoice Management
+  const taxInvoicePath = resolve(__dirname, '../../Taxman Corner-Tax Invoice management.pdf');
+  try {
+    total += await indexPdf(taxInvoicePath, 'Taxman Corner - Tax Invoice Management', 'tax_compliance', 'Tax Invoice Management');
+  } catch {
+    console.log('  (Tax Invoice Management PDF not found — will index when available)');
+  }
+
+  // ZIMRA Tenders & Public Notices (text file)
+  const zimraTendersPath = resolve(__dirname, '../../database/zimra_tenders_public_notices_2026.txt');
+  try {
+    const text = readFileSync(zimraTendersPath, 'utf-8');
+    console.log(`\nIndexing ZIMRA Tenders & Public Notices...`);
+    const sections = chunkBySections(text);
+    const indexed = await indexSections(sections, 'ZIMRA Tenders & Public Notices', 'zimra_tenders');
+    console.log(`  ZIMRA Tenders & Public Notices: ${indexed} chunks`);
+    total += indexed;
+  } catch (err) {
+    console.error(`  ✗ Skipping zimra_tenders_public_notices_2026.txt: ${err.message}`);
+  }
+
+  // ZIDA Q1 2026 Report Summary (text file)
+  const zidaSummaryPath = resolve(__dirname, '../../database/zida_q1_2026_report_summary.txt');
+  try {
+    const text = readFileSync(zidaSummaryPath, 'utf-8');
+    console.log(`\nIndexing ZIDA Q1 2026 Report Summary...`);
+    const sections = chunkBySections(text);
+    const indexed = await indexSections(sections, 'ZIDA Q1 2026 Report Summary', 'zida_investment');
+    console.log(`  ZIDA Q1 2026 Report Summary: ${indexed} chunks`);
+    total += indexed;
+  } catch (err) {
+    console.error(`  ✗ Skipping zida_q1_2026_report_summary.txt: ${err.message}`);
   }
 
   console.log(`\nDone. Total indexed: ${total} chunks.`);

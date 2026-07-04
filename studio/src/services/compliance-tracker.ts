@@ -61,8 +61,6 @@ export async function checkExpiringCertificates(): Promise<{
 }> {
   const now = Date.now();
   const thirtyDays = new Date(now + 30 * 24 * 60 * 60 * 1000);
-  const fourteenDays = new Date(now + 14 * 24 * 60 * 60 * 1000);
-  const sevenDays = new Date(now + 7 * 24 * 60 * 60 * 1000);
 
   const snap = await adminDb
     .collection(CERTIFICATES_COLLECTION)
@@ -74,7 +72,7 @@ export async function checkExpiringCertificates(): Promise<{
 
   for (const doc of snap.docs) {
     const cert = doc.data() as ComplianceCertificate;
-    const expiryTime = cert.expiryDate instanceof Date ? cert.expiryDate.getTime() : cert.expiryDate.toDate().getTime();
+    const expiryTime = cert.expiryDate instanceof Date ? cert.expiryDate.getTime() : new Date(cert.expiryDate as unknown as string).getTime();
     const daysLeft = Math.ceil((expiryTime - now) / (24 * 60 * 60 * 1000));
 
     if (daysLeft <= 0) {
