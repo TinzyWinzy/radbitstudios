@@ -298,7 +298,7 @@ export const builtInTools: Record<string, AgentTool> = {
   // ── 15. generate-threat-assessment ──────────────────────────────────────────
   generate_threat_assessment: {
     name: 'generate_threat_assessment',
-    description: 'Generate a threat assessment landing page JSON holon from a policy shift event. Params: triggerTitle, triggerSummary, triggerSource, triggerDate, triggerCategory (praz/sadc/ai_strategy/afcfta/zimra/rbz/nssa/general), targetIndustry (optional).',
+    description: 'Generate a threat assessment landing page JSON holon from a policy shift event. Params: triggerTitle, triggerSummary, triggerSource, triggerDate, triggerCategory (praz/sadc/ai_strategy/afcfta/zimra/rbz/nssa/general/data_protection/energy_grid/mining/digital_regulation/afcfta_customs/sadc_industry/nds2/constitutional/zimra_fiscal/rbz_currency/zida_investment/afdb_development), targetIndustry (optional).',
     execute: async (params) => {
       const { generateThreatAssessment } = await import('@/ai/flows/generate-threat-assessment');
       const result = await generateThreatAssessment({

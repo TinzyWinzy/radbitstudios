@@ -6,7 +6,7 @@ export const ThreatAssessmentInputSchema = z.object({
   triggerSummary: z.string().describe('Summary of what changed and when'),
   triggerSource: z.string().describe('Source name (PRAZ, SADC, Zimbabwe AI Strategy, etc.)'),
   triggerDate: z.string().describe('Date of the trigger event'),
-  triggerCategory: z.enum(['praz', 'sadc', 'ai_strategy', 'afcfta', 'zimra', 'rbz', 'nssa', 'general', 'data_protection', 'energy_grid', 'mining', 'digital_regulation', 'afcfta_customs', 'sadc_industry', 'nds2', 'constitutional', 'zimra_fiscal', 'rbz_currency', 'zida_investment']),
+  triggerCategory: z.enum(['praz', 'sadc', 'ai_strategy', 'afcfta', 'zimra', 'rbz', 'nssa', 'general', 'data_protection', 'energy_grid', 'mining', 'digital_regulation', 'afcfta_customs', 'sadc_industry', 'nds2', 'constitutional', 'zimra_fiscal', 'rbz_currency', 'zida_investment', 'afdb_development']),
   targetIndustry: z.string().optional().describe('Specific SADC industry affected, if any'),
 });
 export type ThreatAssessmentInput = z.infer<typeof ThreatAssessmentInputSchema>;
@@ -96,6 +96,7 @@ const CATEGORY_INSTRUCTIONS: Record<string, string> = {
   digital_regulation: `The user is monitoring Zimbabwe's digital regulation landscape, including the new 15% digital services tax, e-commerce regulations, and platform compliance requirements. The pain point is that digital taxation creates accounting complexity that manual systems cannot handle.`,
   afcfta_customs: `The user is tracking the AfCFTA digital customs platform rollout, rules of origin implementation, and cross-border trade digitization. SMEs without digitized documentation workflows face exclusion from the 6-hour clearance times that digitized competitors will enjoy.`,
   sadc_industry: `The user is monitoring SADC's industrialization strategy and regional value chain development. The pain point is that Zimbabwean SMEs risk being relegated to raw material suppliers unless they integrate into regional digital supply chains.`,
+  afdb_development: `The user is tracking African Development Bank programs, development finance initiatives, and regional infrastructure projects. SMEs risk missing funding opportunities and cross-border integration if they lack institutional-grade documentation and financial transparency.`,
 };
 
 const PILLAR_MAPPING: Record<string, { primary: string; secondary: string; armor: string }> = {
@@ -113,6 +114,7 @@ const PILLAR_MAPPING: Record<string, { primary: string; secondary: string; armor
   digital_regulation: { primary: 'executive_multiplier', secondary: 'simbare_engine', armor: 'Operational Multipliers + Tax Compliance Shield' },
   afcfta_customs: { primary: 'global_passport', secondary: 'simbare_engine', armor: 'Global Partner Passport + Digital Customs SDK' },
   sadc_industry: { primary: 'global_passport', secondary: 'executive_multiplier', armor: 'Regional Value Chain Integrator + Trade Intelligence Suite' },
+  afdb_development: { primary: 'global_passport', secondary: 'executive_multiplier', armor: 'Global Partner Passport + Development Finance Intelligence Suite' },
 };
 
 const INTERCEPT_CATEGORIES = new Set(['afcfta_customs', 'sadc_industry', 'digital_regulation', 'energy_grid']);
