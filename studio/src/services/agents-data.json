@@ -1,0 +1,5964 @@
+{
+  "metadata": {
+    "total": 466,
+    "generatedAt": "2026-07-04T14:06:22.925Z",
+    "source": "ZIMRA Licensed Agents 2026"
+  },
+  "agents": [
+    {
+      "bpNumber": "200124894",
+      "name": "CLASSROYAL ENTERPRISES",
+      "f64Number": "R3",
+      "physicalAddress": "155 Wellington Rd, Beitbridge",
+      "email": "classroyal@gmail.com",
+      "contactNumber": "775816334",
+      "location": "Beitbridge",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200283926",
+      "name": "VALCHAM INVESTMENTS",
+      "f64Number": "R2",
+      "physicalAddress": "21038 Darwendale Dam View Norton",
+      "email": "valentinemanagementpl@gmail.com",
+      "contactNumber": "772999615",
+      "location": "Norton",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200025978",
+      "name": "CLOVER CARGO INTERNATIONAL",
+      "f64Number": "R5",
+      "physicalAddress": "108 Nelson Mandela, Harare",
+      "email": "emugugu@clovercargo.co.zw",
+      "contactNumber": "242703838",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200335385",
+      "name": "PARLADDIE AGENCIES",
+      "f64Number": "R6",
+      "physicalAddress": "1177 DULIBADZIMO TOWN Beitbridge",
+      "email": "ladgamanya@gmail.com",
+      "contactNumber": "771210815",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200002876",
+      "name": "LARKCON ENTERPRISES",
+      "f64Number": "R4",
+      "physicalAddress": "1 Suite 1 Murandy Square West Highlands, Harare",
+      "email": "chrisbrice2704@gmail.com",
+      "contactNumber": "772725725",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200153126",
+      "name": "Palent Freight Services",
+      "f64Number": "R34",
+      "physicalAddress": "Office 11 Milidi Complex Beitbridge",
+      "email": "fundai.marungise@gmail.com",
+      "contactNumber": "772359004",
+      "licenseFeeReceipt": "R516577",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200226101",
+      "name": "Shreveport Investments (Pvt) Ltd",
+      "f64Number": "R15",
+      "physicalAddress": "154 Wellington Road, Beitbridge",
+      "email": "introcashcapital@gmail.com",
+      "contactNumber": "776231246",
+      "licenseFeeReceipt": "R88000",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200074324",
+      "name": "AKASAN TRADING",
+      "f64Number": "R17",
+      "physicalAddress": "33 St Davids Road Hatfield, Harare",
+      "email": "tradingakasan@gmail.com",
+      "contactNumber": "772731978",
+      "licenseFeeReceipt": "R56846",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200281044",
+      "name": "Quatern Freight Solution (Pvt) Ltd",
+      "f64Number": "R29",
+      "physicalAddress": "10 Warren Close Greendale, Harare",
+      "email": "kmafundu@gmail.com",
+      "contactNumber": "777780219",
+      "licenseFeeReceipt": "R88273",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200176272",
+      "name": "NASHENIC FREIGHT SERVICES",
+      "f64Number": "R53",
+      "physicalAddress": "113 Herbert Chitepo Street, Mutare",
+      "email": "gundanicholas@gmail.com",
+      "contactNumber": "772423628",
+      "licenseFeeReceipt": "R145071",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200049237",
+      "name": "BRIDGE TOWERS ENTERPRISES",
+      "f64Number": "R102",
+      "physicalAddress": "5 LIVINGWATERS, Beitbridge",
+      "email": "pcbbadmin@reglink.co.za",
+      "contactNumber": "774477278",
+      "licenseFeeReceipt": "R519242",
+      "location": "Beitbridge",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200094698",
+      "name": "SHALON LOGISTICS",
+      "f64Number": "R114",
+      "physicalAddress": "4350 Chikanga 2, Karoi",
+      "email": "dmgagady@gmail.com",
+      "contactNumber": "772891753",
+      "licenseFeeReceipt": "R145436",
+      "location": "Karoi",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200165011",
+      "name": "ALLIED CUSTOMS FREIGHT",
+      "f64Number": "R60",
+      "physicalAddress": "1st Floor Manica Chambers Herbert Chitepo St, Mutare",
+      "email": "gmpanduki@gmail.com",
+      "contactNumber": "773043508",
+      "licenseFeeReceipt": "R145232",
+      "location": "Harare",
+      "services": [
+        "clearing",
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200084762",
+      "name": "AFROTUDE INVESTMENTS",
+      "f64Number": "R30",
+      "physicalAddress": "19 B 19 B Border Service Station Beitbridge",
+      "email": "afrotudeshipping@gmail.com",
+      "contactNumber": "773408611",
+      "licenseFeeReceipt": "R518674",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200155259",
+      "name": "MR DONT WORRY CLEANING SERVICES",
+      "f64Number": "R77",
+      "physicalAddress": "39 Mull Road Belvedere, Harare",
+      "email": "manikanta@gfsintl.com",
+      "contactNumber": "778637777",
+      "licenseFeeReceipt": "R57235",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200094064",
+      "name": "SHIPPING CHAMPIONS",
+      "f64Number": "R87",
+      "physicalAddress": "4207 Denhe Close Budiriro 2. Harare",
+      "email": "brianmzw@yahoo.com",
+      "contactNumber": "772927651",
+      "licenseFeeReceipt": "R56880",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200120773",
+      "name": "BRIDWEY INVESTMENTS",
+      "f64Number": "R27",
+      "physicalAddress": "2538 Woodlands 2. Harare",
+      "email": "tinakirsty@gmail.com",
+      "contactNumber": "776246952",
+      "licenseFeeReceipt": "R10754",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200318858",
+      "name": "Seasons Enterprises Pvt Ltd",
+      "f64Number": "R88",
+      "physicalAddress": "18245 Reynolds Drive Baharm Green",
+      "email": "btchitore123@gmail.com",
+      "contactNumber": "773483629",
+      "licenseFeeReceipt": "R97107",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "2001757390",
+      "name": "ARNGIF HOLDINGS",
+      "f64Number": "R151",
+      "physicalAddress": "84 Goodrington Drive Bluffhill",
+      "email": "harepathcapital@gmail.com",
+      "contactNumber": "774256796",
+      "licenseFeeReceipt": "R88605",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200181465",
+      "name": "ITHERFORD INVESTMENTS",
+      "f64Number": "R70",
+      "physicalAddress": "6A JUSTICIA ROAD, HARARE",
+      "email": "itherfordinvestments@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200097291",
+      "name": "BONNAISENCE TRADING COMPANY",
+      "f64Number": "R256",
+      "physicalAddress": "37 living waters Living waters, beitbridge",
+      "email": "artbankfreight@gmail.com",
+      "contactNumber": "712510721",
+      "licenseFeeReceipt": "R395273",
+      "location": "Beitbridge",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "2001686375",
+      "name": "DINFREIGHT LOGISTICS",
+      "f64Number": "R84",
+      "physicalAddress": "blufhill westgate 2198, Harare",
+      "email": "dinfreight01@gmail.com",
+      "contactNumber": "777371192",
+      "licenseFeeReceipt": "R88679",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200338225",
+      "name": "SQUARE LEG CLEARING",
+      "f64Number": "R99",
+      "physicalAddress": "78 HARARE DRIVE, Harare",
+      "email": "squarelegclearing@gmail.com",
+      "contactNumber": "772327144",
+      "licenseFeeReceipt": "R518523",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200003026",
+      "name": "Professional Clearing (Pvt) Lt",
+      "f64Number": "R126",
+      "physicalAddress": "2 George Silundika Street, HARARE",
+      "email": "zahera@forward.co.zw",
+      "contactNumber": "712623732",
+      "licenseFeeReceipt": "R13269",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200292193",
+      "name": "FREILOG INVESTMENTS",
+      "f64Number": "R64",
+      "physicalAddress": "1424 ZBS",
+      "email": "mabhunugm@gmail.com",
+      "contactNumber": "713251187",
+      "licenseFeeReceipt": "R97328",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200121910",
+      "name": "ONE TAKE INTERNATIONAL",
+      "f64Number": "R59",
+      "physicalAddress": "1 Chambwa Street Zengeza 1, Chitungwiza",
+      "email": "times20invt@gmail.com",
+      "contactNumber": "771681811",
+      "licenseFeeReceipt": "R88985",
+      "location": "Chitungwiza",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200097601",
+      "name": "SMART LOGISTICS .",
+      "f64Number": "R110",
+      "physicalAddress": "772379195 33 Sandford Cresent Eastlea Harare",
+      "email": "chris@smartlogistics.co.zw",
+      "contactNumber": "772764490",
+      "licenseFeeReceipt": "R57387",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200067586",
+      "name": "Pendock Investments (Pvt) Ltd",
+      "f64Number": "R119",
+      "physicalAddress": "Suit 401 4th Floor Nora Court Cnr 3rd and Selous Avenue Harare",
+      "email": "assan@pendockcfc.com",
+      "contactNumber": "714872985",
+      "licenseFeeReceipt": "R88999",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200343359",
+      "name": "BLUMHOUSE INVESTMENTS",
+      "f64Number": "R140",
+      "physicalAddress": "191 Enterprise Road Chisipite, Harare",
+      "email": "aubreyc@frontierlogistics.co.zw",
+      "contactNumber": "772316855",
+      "licenseFeeReceipt": "R57411",
+      "location": "Harare",
+      "services": [
+        "investment",
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200123544",
+      "name": "Ecopress Enterprises (Pvt) Ltd",
+      "f64Number": "R22",
+      "physicalAddress": "5448 Nkwisi Gardens, Harare",
+      "email": "dhakalogistics17@gmail.com",
+      "contactNumber": "772803911",
+      "licenseFeeReceipt": "R88728",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200081578",
+      "name": "Once Exports And Imports (Pvt)",
+      "f64Number": "R33",
+      "physicalAddress": "722 Baobab Roa, Beitbridge",
+      "email": "emvumi@gmail.com",
+      "contactNumber": "772387610",
+      "licenseFeeReceipt": "R521190",
+      "location": "Beitbridge",
+      "services": [
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200140207",
+      "name": "SAMAR FORWARDING",
+      "f64Number": "R94",
+      "physicalAddress": "2905 Manyuchi Dr New Marlborough, Harare",
+      "email": "samarforwarding@gmail.com",
+      "contactNumber": "773691221",
+      "licenseFeeReceipt": "R57419",
+      "location": "Harare",
+      "services": [
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200195873",
+      "name": "Charlie Stevens International (Pvt) Ltd",
+      "f64Number": "R37",
+      "physicalAddress": "3 Wimbledon drive eastlea, Harare",
+      "email": "bdealinvestments@gmail.com",
+      "contactNumber": "718037511",
+      "licenseFeeReceipt": "R88167",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200027390",
+      "name": "Mistoge Investments P/l",
+      "f64Number": "R66",
+      "physicalAddress": "113 Herbet Chitepo Anglican Diocese, Mutare",
+      "email": "saungwemecv@gmail.com",
+      "contactNumber": "772717056",
+      "licenseFeeReceipt": "R4609",
+      "location": "Mutare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200098676",
+      "name": "SPEEDLINK PROJECTS TRADE",
+      "f64Number": "R180",
+      "physicalAddress": "114 Borgward Road Msasa, Harare",
+      "email": "never.government@speedlinkcargo.com",
+      "contactNumber": "775067954",
+      "licenseFeeReceipt": "R88442",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200104400",
+      "name": "Cholmondeley Investments (Pvt)",
+      "f64Number": "R28",
+      "physicalAddress": "5 Grantham Road Belmont, Bulawayo",
+      "email": "accounts@outboundexports.com",
+      "contactNumber": "774221574",
+      "licenseFeeReceipt": "R13211",
+      "location": "Bulawayo",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200144738",
+      "name": "REALSKY FREIGHT LOGISTICS P/L",
+      "f64Number": "R16",
+      "physicalAddress": "1292 Light Industrial AREA Harare",
+      "email": "realskyfreight2020@gmail.com",
+      "contactNumber": "773242123",
+      "licenseFeeReceipt": "R512862",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200287879",
+      "name": "SHABACK INVESTMENTS",
+      "f64Number": "R59",
+      "physicalAddress": "18 F Johnson Eastlea, Harare",
+      "email": "shabackinvest@gmail.com",
+      "contactNumber": "772644057",
+      "licenseFeeReceipt": "R367183",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200273838",
+      "name": "VERITAS LOGISTICS",
+      "f64Number": "R51",
+      "physicalAddress": "3392 Mainway Meadows Waterfalls, Hrare",
+      "email": "info@veritas.co.zw",
+      "contactNumber": "774337644",
+      "licenseFeeReceipt": "R56861",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200209358",
+      "name": "AURA YASHTECH (ZIMBABWE)",
+      "f64Number": "R73",
+      "physicalAddress": "65 2nd StMarlvern Corner Cnr 2nd Selous",
+      "email": "auratax2019@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200082997",
+      "name": "Moreturn Transport(Pvt) Ltd",
+      "f64Number": "R175",
+      "physicalAddress": "694 Baobab Road Beitbridge",
+      "email": "trinityaccounts@lantic.net",
+      "contactNumber": "772223615",
+      "licenseFeeReceipt": "R522810",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200205524",
+      "name": "Bastion Freight (Pvt) Ltd",
+      "f64Number": "R126",
+      "physicalAddress": "100 Prince Edward street Milton Park Harare",
+      "email": "lorraine@incofreight.com",
+      "contactNumber": "772362080",
+      "licenseFeeReceipt": "R89110",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200348891",
+      "name": "NAZ FREIGHT SERVICES",
+      "f64Number": "R152",
+      "physicalAddress": "14 Maxwell Drive Groombridge Mt Pleasant, Harare",
+      "email": "f.nazombe@nazfreight.co.zw",
+      "contactNumber": "713975535",
+      "licenseFeeReceipt": "R89081",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200314805",
+      "name": "JAY FREIGHT AGENCIES",
+      "f64Number": "R48",
+      "physicalAddress": "81 Kaguvi St, Harare",
+      "email": "jayfreghtesvs@gmail.com",
+      "contactNumber": "773265147",
+      "licenseFeeReceipt": "R522648",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200297736",
+      "name": "Steward Truckers Cafe (Pvt) Ltd",
+      "f64Number": "R107",
+      "physicalAddress": "2B ILford Road Ardbennie, HARARE",
+      "email": "stewardtruckersc2021@gmail.com",
+      "contactNumber": "712321095",
+      "licenseFeeReceipt": "R89029",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200099321",
+      "name": "Inertia Advisory (Pvt) Ltd",
+      "f64Number": "R76",
+      "physicalAddress": "2983 st andrews, harare",
+      "email": "elysianstartaxes@gmail.com",
+      "contactNumber": "783947224",
+      "licenseFeeReceipt": "R89100",
+      "location": "Harare",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200192912",
+      "name": "WALWEN FREIGHT SERVICES",
+      "f64Number": "R163",
+      "physicalAddress": "14 14Maxwell road Groombridge",
+      "email": "o.nazombe@walwenfreight.co.zw",
+      "contactNumber": "772390814",
+      "licenseFeeReceipt": "R89082",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200301434",
+      "name": "SAMMARVO INVESTMENTS",
+      "f64Number": "R71",
+      "physicalAddress": "259 Limpopo View, Beitbridge",
+      "email": "smavomore@gmail.com",
+      "contactNumber": "776093334",
+      "licenseFeeReceipt": "R523028",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200321283",
+      "name": "DEROWN INVESTMENTS",
+      "f64Number": "R18",
+      "physicalAddress": "5253 Mainway Waterfalls, HARARE",
+      "email": "derowninvestments@gmail.com",
+      "contactNumber": "774308483",
+      "licenseFeeReceipt": "R89159",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200094729",
+      "name": "Divine Freight Services",
+      "f64Number": "MANUAL",
+      "physicalAddress": "107 Hebert Chitepo st Harare",
+      "email": "cchioza@divinefreightservices.com",
+      "contactNumber": "777315333",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200002608",
+      "name": "Freight World Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "100 Kelvin Rd Graniteside Harare",
+      "email": "admin@freightworld.co.zw",
+      "contactNumber": "263475876",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200118038",
+      "name": "Shickers Clearing and forwading Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "lot 51 Haydon industrial Park Mt Hampden",
+      "email": "accounts@shickers.net",
+      "contactNumber": "086772103",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "2001693532",
+      "name": "Kres Advisory P/L",
+      "f64Number": "MANUAL",
+      "physicalAddress": "15 Downie Ave Belgravia Hre",
+      "email": "shingiemc@kres.co.zw",
+      "contactNumber": "773256162",
+      "location": "Harare",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200283292",
+      "name": "Khensani Consultancy and Advisory",
+      "f64Number": "MANUAL",
+      "physicalAddress": "8633 rm 16 Chlosteel centre Chiredzi",
+      "email": "khensaniconsultancyandadvisory@gmail.com",
+      "contactNumber": "078795673",
+      "location": "Chiredzi",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200018022",
+      "name": "Minerals marketing corporation of Zimbabwe",
+      "f64Number": "MANUAL",
+      "physicalAddress": "MMCZ Building 90 Mutare road Msasa Hre",
+      "email": "infoi@mmcz.co.zw",
+      "contactNumber": "024248697",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200023259",
+      "name": "Airton Safaris T/A Combine Cargo",
+      "f64Number": "MANUAL",
+      "physicalAddress": "47 Highfield rd Southerton Harare",
+      "email": "info@combine-cargo.co.zw",
+      "contactNumber": "774277309",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200283881",
+      "name": "Morati Freight Logistics Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "70 Kwame nkrumah CBD Harare",
+      "email": "moratipvtltd@gmail.com",
+      "contactNumber": "077422628",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001791631",
+      "name": "Frashy Investments Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "839 Dulibadzimu Beitbridge Zimbabwe",
+      "email": "frashyinvestments@gmail.com",
+      "contactNumber": "077120416",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200133583",
+      "name": "Bay shipping Services Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "95 Baines Ave Harare",
+      "email": "bayshipping@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200170529",
+      "name": "Revospace Logistics Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "145 Robert Mugabe rd Harare",
+      "email": "lloyd@revospace.co.zw",
+      "contactNumber": "773389124",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200239375",
+      "name": "Kafmas Logistics Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "105 section 1 Kambuzuma",
+      "email": "admin@kafmas.co.zw",
+      "contactNumber": "242702505",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200011039",
+      "name": "Southern Business Services",
+      "f64Number": "MANUAL",
+      "physicalAddress": "2 Sandringham dr Alexander Park",
+      "email": "operations@sbsgroup.co.zw",
+      "contactNumber": "242799008",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200090909",
+      "name": "Jesslay Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "191 Baines Ave Greenwood Park Harare",
+      "email": "blessedn@crfafrica.com",
+      "contactNumber": "774350784",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200327798",
+      "name": "Asco Logistics P/L",
+      "f64Number": "MANUAL",
+      "physicalAddress": "2962 Dulibadzimu Beitbridge",
+      "email": "ascologisticspvtltd@gmail.com",
+      "contactNumber": "077305182",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200002853",
+      "name": "Cheetar Express Logistics P/L",
+      "f64Number": "MANUAL",
+      "physicalAddress": "100 Prince Edward st Harare",
+      "email": "g.chigunduru@fedexzimbabwe.co.zw",
+      "contactNumber": "42523205",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200275606",
+      "name": "Click international Zimbabwe",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Rm 017 Longchen Plaza Belvedere Harare",
+      "email": "clickfreightlogistics@gmail.com",
+      "contactNumber": "777833129",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200251441",
+      "name": "Zimfreight Global Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "702 killarney heights 185 fife avenue Hre",
+      "email": "ntinarwo@zimfreightglobal.co.zw",
+      "contactNumber": "717592212",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200102117",
+      "name": "Run Auto Sales Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "176 Enterprise rd Chisipite Harare",
+      "email": "clearing@harrisauto.co.zw",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200089976",
+      "name": "Pockislamp Investments",
+      "f64Number": "MANUAL",
+      "physicalAddress": "4/22/23 Harare drive Parktown Waterfalls Harare",
+      "email": "ckmaweni@zimbabwefreight.co.zw",
+      "contactNumber": "775215998",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200154186",
+      "name": "Willsky Investments Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "86 third street Mutare",
+      "email": "ospiyo@gmail.com",
+      "contactNumber": "772213490",
+      "location": "Mutare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200001620",
+      "name": "Cilofreight Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "8 Loreley close Msasa Harare",
+      "email": "admin@cilofreight.com",
+      "contactNumber": "712402456",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200218374",
+      "name": "ASHOK INTERNATIONAL",
+      "f64Number": "R85",
+      "physicalAddress": "1 Beit Avenue Milton Park",
+      "email": "kinkinginvestment007@gmail.com",
+      "contactNumber": "775177896",
+      "licenseFeeReceipt": "R58928",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200342470",
+      "name": "PRUDEX LOGISTICS",
+      "f64Number": "R8",
+      "physicalAddress": "10499 Dulibadzimu West, Beitbridge",
+      "email": "prudextaxes@gmail.com",
+      "contactNumber": "717314551",
+      "licenseFeeReceipt": "R533382",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200089157",
+      "name": "Joechas Freight Forwaders (Pvt",
+      "f64Number": "R78",
+      "physicalAddress": "7834 7834 Zimre Park,HARARE",
+      "email": "jjoechas@gmail.com",
+      "contactNumber": "712540194",
+      "licenseFeeReceipt": "R89736",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200333200",
+      "name": "PEREGRINE GLOBAL",
+      "f64Number": "R67",
+      "physicalAddress": "8 Selous Avenue, HARARE",
+      "email": "bzchatikobo@gmail.com",
+      "contactNumber": "778016700",
+      "licenseFeeReceipt": "R57937",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200187660",
+      "name": "Resbright Investments (Pvt) Ltd",
+      "f64Number": "R68",
+      "physicalAddress": "room 5 ihk building room 5 first floor, Harare",
+      "email": "brightcatch06@gmail.co",
+      "contactNumber": "772116373",
+      "licenseFeeReceipt": "R58329",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200323657",
+      "name": "PROSDEL LOGISTICS",
+      "f64Number": "R74",
+      "physicalAddress": "1389 Chikangwe Township, KAROI",
+      "email": "pearsonkutsi@gmail.com",
+      "contactNumber": "776010580",
+      "licenseFeeReceipt": "R149718",
+      "location": "Karoi",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200102019",
+      "name": "CURLY INVESTMENTS",
+      "f64Number": "R95",
+      "physicalAddress": "1 HARARE",
+      "email": "casperzkunonga@gmail.com",
+      "contactNumber": "772583109",
+      "licenseFeeReceipt": "R544002",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200249806",
+      "name": "LEADERS LOGISTICS",
+      "f64Number": "R130",
+      "physicalAddress": "9125 Manyame Park, harare",
+      "email": "leaderslogisticspl@gmail.com",
+      "contactNumber": "773843562",
+      "licenseFeeReceipt": "R537045",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200284638",
+      "name": "HEADBUCKS FREIGHT LOGISTICS",
+      "f64Number": "R97",
+      "physicalAddress": "15 Newmarch Avenue Hillside, Harare",
+      "email": "tafadzwamagonde@gmail.com",
+      "contactNumber": "712160726",
+      "licenseFeeReceipt": "R89677",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200161979",
+      "name": "LAVISION FREIGHT SERVICES",
+      "f64Number": "R101",
+      "physicalAddress": "4666 Medium Density, Beitbridge",
+      "email": "t.zirebwa@gmail.com",
+      "contactNumber": "772591954",
+      "licenseFeeReceipt": "R541653",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200348605",
+      "name": "SKYHEROES",
+      "f64Number": "R104",
+      "physicalAddress": "186 Herbert Chitepo, Mutare",
+      "email": "skyheroestax@gmail.com",
+      "contactNumber": "776155790",
+      "licenseFeeReceipt": "R58858",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200323355",
+      "name": "BEITLINK",
+      "f64Number": "R105",
+      "physicalAddress": "P O BOX 65 Mareverwa Primary School Murombedzi",
+      "email": "beitlinkpvtltd@gmail.com",
+      "contactNumber": "718257931",
+      "licenseFeeReceipt": "R530129",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200002652",
+      "name": "Econet Wireless (Pvt) Ltd",
+      "f64Number": "R112",
+      "physicalAddress": "2 2 Old Mutare Rd Msasa, Harare",
+      "email": "roy.chimanikire@econet.co.zw",
+      "contactNumber": "772222974",
+      "licenseFeeReceipt": "R89566",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200086750",
+      "name": "DYNASTY FREIGHT AGENCIES",
+      "f64Number": "R162",
+      "physicalAddress": "Mobile Hse Airport, Harare",
+      "email": "dynastyfreight@gmail.com",
+      "contactNumber": "717425160",
+      "licenseFeeReceipt": "R57895",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200010395",
+      "name": "Treger Products (Pvt) Ltd",
+      "f64Number": "R45",
+      "physicalAddress": "5023 Khami Road",
+      "email": "tregers@tregers.co.zw",
+      "contactNumber": "775666906",
+      "licenseFeeReceipt": "R13742",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200074734",
+      "name": "RINGFREIGHT ENTERPRISES",
+      "f64Number": "R262",
+      "physicalAddress": "Stand 225 Chirundu",
+      "email": "ringfreight@gmail.com",
+      "contactNumber": "772839674",
+      "licenseFeeReceipt": "R152476",
+      "location": "Chirundu",
+      "services": [
+        "freight",
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200331620",
+      "name": "ADMATT CLEARING COMPANY",
+      "f64Number": "R164",
+      "physicalAddress": "1302 Parirewa Domboshava",
+      "email": "admattclearing@outlook.com",
+      "contactNumber": "772583152",
+      "licenseFeeReceipt": "R89493",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200144935",
+      "name": "AT ALL TIMES SUPPLIERS",
+      "f64Number": "R61",
+      "physicalAddress": "4 Kingsway Rd Plumtree",
+      "email": "aatsreturns@gmail.com",
+      "contactNumber": "779050938",
+      "licenseFeeReceipt": "R100637",
+      "location": "Plumtree",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200104725",
+      "name": "EFFS FREIGHT SERVICES",
+      "f64Number": "R168",
+      "physicalAddress": "26 Houghton Park Road Houghton Park",
+      "email": "effsfreight@yahoo.com",
+      "contactNumber": "772694897",
+      "licenseFeeReceipt": "R59326",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200017087",
+      "name": "Crowstick Services",
+      "f64Number": "R128",
+      "physicalAddress": "1 Browning Rd Malindela, Bulawayo",
+      "email": "mmwapaura@gmail.com",
+      "contactNumber": "772677732",
+      "licenseFeeReceipt": "R13748",
+      "location": "Bulawayo",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200167163",
+      "name": "HAYDEN LOGISTICS",
+      "f64Number": "R166",
+      "physicalAddress": "3498 20th crescent warren park 1, HARARE",
+      "email": "admin@haydenlogistics.co.zw",
+      "contactNumber": "718754523",
+      "licenseFeeReceipt": "R89792",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2002031037",
+      "name": "DONE FREIGHT",
+      "f64Number": "R172",
+      "physicalAddress": "5012 Chikanga Zimta Park",
+      "email": "sadamkazingizi@gmail.com",
+      "contactNumber": "779724114",
+      "licenseFeeReceipt": "R207",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200292144",
+      "name": "CVHT INTERNATIONAL",
+      "f64Number": "R141",
+      "physicalAddress": "159 Wellington Road, Beitbridge",
+      "email": "cvhtinternational@gmail.com",
+      "contactNumber": "712240177",
+      "licenseFeeReceipt": "R525431",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200013384",
+      "name": "SHULTON AGENCIES",
+      "f64Number": "R155",
+      "physicalAddress": "160 160 WELLINGTON, Beitbridge",
+      "email": "info@shultonagencies.co.zw",
+      "contactNumber": "712750983",
+      "licenseFeeReceipt": "R523367",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200109157",
+      "name": "RED BLUFF INVESTMENTS",
+      "f64Number": "R179",
+      "physicalAddress": "522 Area 14 Dangamvura, Mutare",
+      "email": "ferdinandntuli@yahoo.co.uk",
+      "contactNumber": "772521240",
+      "licenseFeeReceipt": "R91287",
+      "location": "Mutare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200314074",
+      "name": "SYLLOGISTICS",
+      "f64Number": "R174",
+      "physicalAddress": "25 MILTON AVENUE FAIRBRIDGE PARK",
+      "email": "malisa.lillian@gmail.com",
+      "contactNumber": "772261257",
+      "licenseFeeReceipt": "R4769",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200273128",
+      "name": "CONTIZOE SUPPLIES",
+      "f64Number": "R236",
+      "physicalAddress": "3249 3249 DULIBADZIMU TOWNSHIP MBEDZI AREA",
+      "email": "sidunawillard@gmail.com",
+      "contactNumber": "783136565",
+      "licenseFeeReceipt": "R544403",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200312534",
+      "name": "Darnble Holdings (Pvt) Ltd",
+      "f64Number": "R193",
+      "physicalAddress": "1 Sunny Yi Feng Industrial Pk",
+      "email": "harepathcapital@gmail.com",
+      "contactNumber": "774256796",
+      "licenseFeeReceipt": "R91416",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200074767",
+      "name": "MIROBS INVESTMENTS",
+      "f64Number": "R256",
+      "physicalAddress": "30 30 Ginningham Rd Greendale, HARARE",
+      "email": "mike@mirobs.com",
+      "contactNumber": "772233731",
+      "licenseFeeReceipt": "R59328",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200297225",
+      "name": "DREYVON INVESTMENTS",
+      "f64Number": "R263",
+      "physicalAddress": "5593 113 Street Warren Park D, Harare",
+      "email": "dreyvoninvestments@gmail.com",
+      "contactNumber": "772124721",
+      "licenseFeeReceipt": "R544506",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200094850",
+      "name": "Middleport Enterprises Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "18 Bertram Rd Milton Park",
+      "email": "middleport1@gmail.com",
+      "contactNumber": "773420076",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200075871",
+      "name": "Cotrace Freight Services",
+      "f64Number": "MANUAL",
+      "physicalAddress": "35 Dorchester Road Malbereign Hre",
+      "email": "tg.makoni@yahoo.com",
+      "contactNumber": "773794561",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200081019",
+      "name": "Selfmed Investments",
+      "f64Number": "MANUAL",
+      "physicalAddress": "154 Wellington Rd Sobala Complex Beitbridge",
+      "email": "dselfmed@yahoo.com",
+      "contactNumber": "852323931",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "2001721592",
+      "name": "Comcargo Freight Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "5382 Medium Density Beitbridge",
+      "email": "achifordmangundu68@gmail.com",
+      "contactNumber": "774414682",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200038569",
+      "name": "Gladercom Enterprises",
+      "f64Number": "MANUAL",
+      "physicalAddress": "AP 141 Harare Airport",
+      "email": "chris@gladercomfreight.com",
+      "contactNumber": "024258558",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200329183",
+      "name": "Crowjoh Customs Clearance",
+      "f64Number": "MANUAL",
+      "physicalAddress": "24 Cecil Rhodes Eastlea Hre",
+      "email": "ops@crowjohclearing.com",
+      "contactNumber": "775527803",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200275234",
+      "name": "Ocean Drive Freight Services Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "155 Wellington Drive Sobala Complex",
+      "email": "beitbridgetinashemukanda1@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200169831",
+      "name": "Delfina Customs Clearing and forwading",
+      "f64Number": "MANUAL",
+      "physicalAddress": "2 Fairclose Gunhill Hre",
+      "email": "info@delfinaccf.co.zw",
+      "contactNumber": "786102981",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200194033",
+      "name": "Macrobrands Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "1612 Impala Extension Beitbridge",
+      "email": "macrobrandsbeitbridge@gmail.com",
+      "contactNumber": "852323680",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200209788",
+      "name": "Veer-Freight (Pvt) Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "1 Martin Road Msasa Hre",
+      "email": "customercare@veerfreight.co.zw",
+      "contactNumber": "772218234",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200028031",
+      "name": "Andrew Evans Consultancy (Pvt)",
+      "f64Number": "R11",
+      "physicalAddress": "25 Craig Allen Road",
+      "email": "aec@mweb.co.zw",
+      "contactNumber": "712774607",
+      "licenseFeeReceipt": "R58557",
+      "location": "Other",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "2002032318",
+      "name": "SHIPMENT SAVANTS",
+      "f64Number": "R173",
+      "physicalAddress": "9392 SDP",
+      "email": "shipmentsavants@gmail.com",
+      "contactNumber": "774110997",
+      "licenseFeeReceipt": "R525075",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200348505",
+      "name": "TIME ABILITY LOGISTICS",
+      "f64Number": "R24",
+      "physicalAddress": "9257 Mkhosana",
+      "email": "ontymlogistics@gmail.com",
+      "contactNumber": "775102493",
+      "licenseFeeReceipt": "R47190",
+      "location": "Victoria Falls",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200083557",
+      "name": "INTERLOGIX",
+      "f64Number": "R321",
+      "physicalAddress": "36 Lot 2 Arlington Estate RGM Airport",
+      "email": "marshalkagoro@interlogix.co.zw",
+      "contactNumber": "772811763",
+      "licenseFeeReceipt": "R58349",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200000497",
+      "name": "MITCHELL COTTS FREIGHT ZIMBABWE",
+      "f64Number": "R205",
+      "physicalAddress": "29 29 Birmingham Road Southerton",
+      "email": "mudzipo@gmail.com",
+      "contactNumber": "772853580",
+      "licenseFeeReceipt": "R91290",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200001128",
+      "name": "Varichem Pharmaceuticals (Pvt) Ltd",
+      "f64Number": "R176",
+      "physicalAddress": "194 Gleneagles Road Southerton",
+      "email": "muswaj@varipharm.co.zw",
+      "contactNumber": "773478057",
+      "licenseFeeReceipt": "R57904",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200045575",
+      "name": "Adenium Services (Pvt) Ltd",
+      "f64Number": "R86",
+      "physicalAddress": "290 Justitia Road",
+      "email": "staphysio@gmail.com",
+      "contactNumber": "718054000",
+      "licenseFeeReceipt": "R523575",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "2001864908",
+      "name": "Carrier Barrier Pvt Ltd",
+      "f64Number": "R183",
+      "physicalAddress": "mutare 37 Hebert chitepo",
+      "email": "jcharindeguta@gmail.com",
+      "contactNumber": "",
+      "location": "Mutare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200208478",
+      "name": "BRIANBRIGH ENTERPRISES",
+      "f64Number": "R135",
+      "physicalAddress": "103 Jason Moyo Ave",
+      "email": "tax.brianbrigh@gmail.com",
+      "contactNumber": "735884331",
+      "licenseFeeReceipt": "R532658",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200165265",
+      "name": "Expert Freight (Pvt) Ltd",
+      "f64Number": "R251",
+      "physicalAddress": "124 Dartford RD",
+      "email": "expertfreight.imports@gmail.com",
+      "contactNumber": "778072120",
+      "licenseFeeReceipt": "R91426",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200307192",
+      "name": "Tinted Giant Investments",
+      "f64Number": "R208",
+      "physicalAddress": "155 Wellington Rd",
+      "email": "tintedgiant@gmail.com",
+      "contactNumber": "773640410",
+      "licenseFeeReceipt": "R544627",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200350815",
+      "name": "APE ROYALTY FOWARDING",
+      "f64Number": "R184",
+      "physicalAddress": "47 NYAMAPANDA BUSINESS CENTRE",
+      "email": "aperoyalty23@gmail.com",
+      "contactNumber": "773599736",
+      "licenseFeeReceipt": "R24242",
+      "location": "Nyamapanda",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200002211",
+      "name": "Satorial Investments (Pvt) Ltd",
+      "f64Number": "R253",
+      "physicalAddress": "9 9 Hillside Road Hillside",
+      "email": "accounts@freightsolutions.co.zw",
+      "contactNumber": "772255151",
+      "licenseFeeReceipt": "R91365",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200296115",
+      "name": "DOMPOM INVESTMENTS",
+      "f64Number": "R103",
+      "physicalAddress": "9800 Chipukutu Park",
+      "email": "dompominvestmets@gmail.com",
+      "contactNumber": "772260656",
+      "licenseFeeReceipt": "R91370",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200177696",
+      "name": "OASIS FREIGHT LOGISTICS",
+      "f64Number": "R123",
+      "physicalAddress": "210 Area 13 Dangamvura",
+      "email": "oasisfreight22@gmail.com",
+      "contactNumber": "772242055",
+      "licenseFeeReceipt": "R149328",
+      "location": "Mutare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200276714",
+      "name": "Leezcon (Pvt) Ltd",
+      "f64Number": "R113",
+      "physicalAddress": "3285 Hobhouse",
+      "email": "happy@leezcon.co.zw",
+      "contactNumber": "772872639",
+      "licenseFeeReceipt": "R146775",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200046084",
+      "name": "RUMSON TRADING",
+      "f64Number": "R106",
+      "physicalAddress": "9 Cardiff Street Belmont",
+      "email": "markh@byo.colbro.co.zw",
+      "contactNumber": "772200958",
+      "licenseFeeReceipt": "R533401",
+      "location": "Bulawayo",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200344993",
+      "name": "ANOTAPS LOGISTICS (PRIVATE) LIMITED",
+      "f64Number": "R138",
+      "physicalAddress": "Office 5 Kalulu Complex",
+      "email": "anotaps23@gmail.com",
+      "contactNumber": "775719262",
+      "licenseFeeReceipt": "R525782",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200171654",
+      "name": "SKYBRENT FREIGHT",
+      "f64Number": "R129",
+      "physicalAddress": "3135 Southlea Park",
+      "email": "admin@skybrent.co.zw",
+      "contactNumber": "717285259",
+      "licenseFeeReceipt": "R90317",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200095613",
+      "name": "Mackreel Investments (Pvt) Ltd",
+      "f64Number": "R39",
+      "physicalAddress": "286 Granite Road",
+      "email": "mackreelinvestments@gmail.com",
+      "contactNumber": "773476027",
+      "licenseFeeReceipt": "R523417",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200003560",
+      "name": "Heywood Haulage Investment Central Afr",
+      "f64Number": "R31",
+      "physicalAddress": "64 Lytton Road",
+      "email": "alfred.chiremba@gmail.com",
+      "contactNumber": "787722925",
+      "licenseFeeReceipt": "R6680",
+      "location": "Other",
+      "services": [
+        "freight",
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200004987",
+      "name": "Lanaheil Investments (Pvt)Ltd",
+      "f64Number": "R177",
+      "physicalAddress": "2 Barclays Bank Building",
+      "email": "kalistohove@yahoo.com",
+      "contactNumber": "773729424",
+      "licenseFeeReceipt": "R89176",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200068528",
+      "name": "Calgen Investments (Pvt) Ltd",
+      "f64Number": "R44",
+      "physicalAddress": "156 Wellington Road",
+      "email": "dubetaxes@gamil.com",
+      "contactNumber": "715542389",
+      "licenseFeeReceipt": "R536813",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200109911",
+      "name": "MACROTOP ZIMBABWE",
+      "f64Number": "R215",
+      "physicalAddress": "16 Renfrew Road Eastlea, Harare",
+      "email": "zhandirerk@gmail.com",
+      "contactNumber": "774167124",
+      "licenseFeeReceipt": "R59356",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200073769",
+      "name": "Boxdom Investments (Pvt) Ltd",
+      "f64Number": "R148",
+      "physicalAddress": "156 Mashavave Complex, BEITBRIDGE",
+      "email": "boxdommarketing@gmail.com",
+      "contactNumber": "772842923",
+      "licenseFeeReceipt": "R528338",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200276186",
+      "name": "NATPRAISE INVESTMENTS",
+      "f64Number": "R20",
+      "physicalAddress": "10365 Florida Extension, Mutare",
+      "email": "natpraise2@gmail.com",
+      "contactNumber": "772698835",
+      "licenseFeeReceipt": "R149873",
+      "location": "Mutare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200003194",
+      "name": "Cevafrica Logistics Zimbabwe Ltd",
+      "f64Number": "R271",
+      "physicalAddress": "91 Coventry Road Workington, Harare",
+      "email": "phibion.gahadzikwa@cevalogistics.com",
+      "contactNumber": "782768260",
+      "licenseFeeReceipt": "R91550",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2002069445",
+      "name": "KUTENDA FREIGHT SERVICES",
+      "f64Number": "R225",
+      "physicalAddress": "46 Rossal Road Greendale Harare",
+      "email": "geraldshorayi@yahoo.com",
+      "contactNumber": "772296637",
+      "licenseFeeReceipt": "R127228",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200181249",
+      "name": "PLATINUM CLEARING",
+      "f64Number": "R92",
+      "physicalAddress": "705 Mainway meadows Waterfalls, Harare",
+      "email": "blessed.nhema@gmail.com",
+      "contactNumber": "774350784",
+      "licenseFeeReceipt": "R91554",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200119256",
+      "name": "PAMSHORE INVESTMENTS",
+      "f64Number": "R115",
+      "physicalAddress": "27 G Silundika, Harare",
+      "email": "fnzvenge@gmail.com",
+      "contactNumber": "773133705",
+      "licenseFeeReceipt": "R547532",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200179330",
+      "name": "Metrofield Private Limited",
+      "f64Number": "R136",
+      "physicalAddress": "259 Limpopo View, Beitbridge",
+      "email": "metrobbr@gmail.com",
+      "contactNumber": "772595649",
+      "licenseFeeReceipt": "R545746",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200074503",
+      "name": "DAGS TRADING",
+      "f64Number": "R186",
+      "physicalAddress": "699 699 Baobab Road, HARARE",
+      "email": "oshumba@dagstrading.co.zw",
+      "contactNumber": "773204344",
+      "licenseFeeReceipt": "R550314",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200254690",
+      "name": "VULONA",
+      "f64Number": "R222",
+      "physicalAddress": "113 Herbert Chitepo Street, Harare",
+      "email": "vhusanie@gmail.com",
+      "contactNumber": "778155435",
+      "licenseFeeReceipt": "R150232",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200219806",
+      "name": "Love Your Neighbour Express (Pvt) Ltd",
+      "f64Number": "R10",
+      "physicalAddress": "118 Chirundu",
+      "email": "loveyourneighbour26@gmail.com",
+      "contactNumber": "775930237",
+      "licenseFeeReceipt": "R153435",
+      "location": "Chirundu",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200270801",
+      "name": "XPRESSSUNSHINE LOGISTICS",
+      "f64Number": "R47",
+      "physicalAddress": "129 Nelson Mandela Avenue, Harare",
+      "email": "multigreatinvesments@gmail.com",
+      "contactNumber": "772767111",
+      "licenseFeeReceipt": "R91599",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200106154",
+      "name": "TONYRICH ENTERPRISES",
+      "f64Number": "R176",
+      "physicalAddress": "136a j moyo street",
+      "email": "tonyfreight@gmail.com",
+      "contactNumber": "774414475",
+      "licenseFeeReceipt": "R547253",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200135030",
+      "name": "MACHIB ENTERPRISES",
+      "f64Number": "R25",
+      "physicalAddress": "103 184 Nyamapanda Location",
+      "email": "machibent01@gmail.com",
+      "contactNumber": "772669989",
+      "licenseFeeReceipt": "R25084",
+      "location": "Nyamapanda",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200230346",
+      "name": "SEABRIDGE CLEARING COMPANY (PRIVATE)LIMI",
+      "f64Number": "R195",
+      "physicalAddress": "7620 MKOSANA HARARE",
+      "email": "clearingseabridge@gmail.com",
+      "contactNumber": "773788585",
+      "licenseFeeReceipt": "R47803",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200314290",
+      "name": "ZIYAH TRUCKING",
+      "f64Number": "R224",
+      "physicalAddress": "9100 Dulibadzimu, Beitbridge",
+      "email": "loadwell@yahoo.co.uk",
+      "contactNumber": "772788873",
+      "licenseFeeReceipt": "R546908",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200337401",
+      "name": "MAN LYK INNO INVESTMENTS",
+      "f64Number": "R210",
+      "physicalAddress": "2999 Dulibadzimu, Beitbridge",
+      "email": "manlykinno@gmail.com",
+      "contactNumber": "782204839",
+      "licenseFeeReceipt": "R550374",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200119359",
+      "name": "Quickpower Trading (Pvt) Ltd",
+      "f64Number": "R299",
+      "physicalAddress": "919 919 Dulibadzimu Township",
+      "email": "quickpowertrading@gmail.com",
+      "contactNumber": "772597620",
+      "licenseFeeReceipt": "R546857",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200233413",
+      "name": "MELDART FREIGHT SERVICES",
+      "f64Number": "R66",
+      "physicalAddress": "259 Limpopo View, Beitbridge",
+      "email": "meldartf@gmail.com",
+      "contactNumber": "774337240",
+      "licenseFeeReceipt": "R547246",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200159959",
+      "name": "BURLPACK ENTERPRISES",
+      "f64Number": "R38",
+      "physicalAddress": "154 Wellington Road, Beitbridge",
+      "email": "bpacktaxes@gmail.com",
+      "contactNumber": "774927564",
+      "licenseFeeReceipt": "R554133",
+      "location": "Beitbridge",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200120362",
+      "name": "FIRSTROSE ENTERPRISES",
+      "f64Number": "R69",
+      "physicalAddress": "289 289 HAGEL THORN ROAD",
+      "email": "firstrose.investments@gmail.com",
+      "contactNumber": "71129802",
+      "licenseFeeReceipt": "R553969",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "2001423628",
+      "name": "Chakwilis Legacy Investments P/L",
+      "f64Number": "R91",
+      "physicalAddress": "2396 Chikanga Phase 2, Mutare",
+      "email": "chakwilisinv@gmail.com",
+      "contactNumber": "772242308",
+      "licenseFeeReceipt": "R4793",
+      "location": "Mutare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200151342",
+      "name": "CILMORE INVESTMENTS",
+      "f64Number": "R143",
+      "physicalAddress": "153 Nyamapanda Border Post",
+      "email": "zimagrofeeds@yahoo.com",
+      "contactNumber": "773998388",
+      "licenseFeeReceipt": "R25207",
+      "location": "Nyamapanda",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200096233",
+      "name": "BRASSLIGHT SHIPPING",
+      "f64Number": "R190",
+      "physicalAddress": "945 Mathendele",
+      "email": "brasslightplumtree@gmail.com",
+      "contactNumber": "772741702",
+      "licenseFeeReceipt": "R108267",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200332728",
+      "name": "CONANT CLEARING AGENCY",
+      "f64Number": "R240",
+      "physicalAddress": "23622 Damafalls Phase 6 ruwa",
+      "email": "miltonparkclinic@gmail.com",
+      "contactNumber": "772270250",
+      "licenseFeeReceipt": "R91784",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200269326",
+      "name": "CREATIVE FREIGHT LOGISTICS",
+      "f64Number": "R319",
+      "physicalAddress": "office 2 LANIEL House",
+      "email": "creativefreightbb@gmail.com",
+      "contactNumber": "773542496",
+      "licenseFeeReceipt": "R552664",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200063298",
+      "name": "NOTA BENE MARKETING LIMITED",
+      "f64Number": "R325",
+      "physicalAddress": "155 155 Wellington Road. Beitbridge",
+      "email": "clacmabika@yahoo.com",
+      "contactNumber": "772915878",
+      "licenseFeeReceipt": "R553749",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200353791",
+      "name": "ENAYIA ENTERPRISES",
+      "f64Number": "R360",
+      "physicalAddress": "1412 Lot 1 Dora Destiny",
+      "email": "enayia2023@gmail.com",
+      "contactNumber": "773148001",
+      "licenseFeeReceipt": "R151510",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200069253",
+      "name": "Jugo Enterprises (Pvt) Ltd",
+      "f64Number": "R248",
+      "physicalAddress": "110 Herbert Chitepo Street",
+      "email": "muswereg@jugofreight.co.zw",
+      "contactNumber": "772413823",
+      "licenseFeeReceipt": "R4795",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200131976",
+      "name": "DEGGRA CONSULTANTS",
+      "f64Number": "R246",
+      "physicalAddress": "154 154 Wellington Road",
+      "email": "deggrac@gmail.com",
+      "contactNumber": "777825925",
+      "licenseFeeReceipt": "R553704",
+      "location": "Other",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200086411",
+      "name": "T BAURENI CARGO",
+      "f64Number": "R133",
+      "physicalAddress": "1161 Waverly Township",
+      "email": "tbaureni01@gmai.com",
+      "contactNumber": "772306782",
+      "licenseFeeReceipt": "R552725",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200018879",
+      "name": "MOWBRAT SERVICES",
+      "f64Number": "R254",
+      "physicalAddress": "Office Office 8 Import Warehse Cargo Cntre",
+      "email": "wishnetgavi@gmail.com",
+      "contactNumber": "777697371",
+      "licenseFeeReceipt": "R59672",
+      "location": "Other",
+      "services": [
+        "freight",
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200166231",
+      "name": "MOUBRAY INVESTMENTS",
+      "f64Number": "R377",
+      "physicalAddress": "1676 LIGHT INDUSTRIAL SITE",
+      "email": "briantadya76@gmail.com",
+      "contactNumber": "772620676",
+      "licenseFeeReceipt": "R553705",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200278698",
+      "name": "EASTWAVE LOGISTICS",
+      "f64Number": "R26",
+      "physicalAddress": "2546 GLAUDINA",
+      "email": "eastwavezw@gmail.com",
+      "contactNumber": "771336132",
+      "licenseFeeReceipt": "R91833",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200117425",
+      "name": "Heinsky Investments (Pvt) Ltd",
+      "f64Number": "R14",
+      "physicalAddress": "156 Wellington Road",
+      "email": "heinskytaxes@gmail.com",
+      "contactNumber": "772556457",
+      "licenseFeeReceipt": "R551624",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200133544",
+      "name": "PRINCENET BUSINESS SOLUTIONS",
+      "f64Number": "R294",
+      "physicalAddress": "25 Selous Avenue",
+      "email": "poshymarketing20@gmail.com",
+      "contactNumber": "786127006",
+      "licenseFeeReceipt": "R6749",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200140166",
+      "name": "AGENTS HOUSE FREIGHT",
+      "f64Number": "R109",
+      "physicalAddress": "60 Livingwaters",
+      "email": "chiwatendai@gmail.com",
+      "contactNumber": "776416670",
+      "licenseFeeReceipt": "R556718",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200108249",
+      "name": "NASTLECK TRADING",
+      "f64Number": "R41",
+      "physicalAddress": "43 43 Robson Manyika Avenue Suite 206 2nd Floor Merchant House",
+      "email": "splashndash@gmail.com",
+      "contactNumber": "779550722",
+      "licenseFeeReceipt": "R91938",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "2001914864",
+      "name": "TUICHE-TAUYA LOGISTICS",
+      "f64Number": "R373",
+      "physicalAddress": "4761 DULIBADZIMU",
+      "email": "ttauya@yandex.com",
+      "contactNumber": "773812568",
+      "licenseFeeReceipt": "R553694",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2002032999",
+      "name": "FAST SHIPPING",
+      "f64Number": "R55",
+      "physicalAddress": "office number 7 Milidi Complex",
+      "email": "fastshipping@gmail.com",
+      "contactNumber": "719692100",
+      "licenseFeeReceipt": "R559426",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200222666",
+      "name": "TRINIDENKS LOGISTICS",
+      "f64Number": "R296",
+      "physicalAddress": "33 St Davida Road Hatfield",
+      "email": "trindenkszimra@gmail.com",
+      "contactNumber": "772878322",
+      "licenseFeeReceipt": "R59730",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200030122",
+      "name": "Shippy Marketing",
+      "f64Number": "R13",
+      "physicalAddress": "36 J Chinamano St Belmont",
+      "email": "clearingandshipping@gmail.com",
+      "contactNumber": "774321512",
+      "licenseFeeReceipt": "R59800",
+      "location": "Bulawayo",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200098547",
+      "name": "CAYOOSH INVESTMENTS",
+      "f64Number": "R171",
+      "physicalAddress": "2 Conald Road Graniteside",
+      "email": "cayooshtax@outlook.com",
+      "contactNumber": "772217325",
+      "licenseFeeReceipt": "R59795",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200331348",
+      "name": "ANCHOR LOGISTICS",
+      "f64Number": "R145",
+      "physicalAddress": "248 Adlinn Westgate",
+      "email": "brendan@lrv8.design",
+      "contactNumber": "773677233",
+      "licenseFeeReceipt": "R13919",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200231290",
+      "name": "Stanfort Fiscal Services (Pvt) Ltd",
+      "f64Number": "R189",
+      "physicalAddress": "121 Matopos Road Morningside",
+      "email": "nyaradzochikarsa@gmail.com",
+      "contactNumber": "775018477",
+      "licenseFeeReceipt": "R13872",
+      "location": "Other",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200237370",
+      "name": "WORLD CLASS FREIGHT ZIMBABWE",
+      "f64Number": "R231",
+      "physicalAddress": "1562 New Cenary Park Harare South",
+      "email": "andmakurira@gmail.com",
+      "contactNumber": "773185730",
+      "licenseFeeReceipt": "R60115",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200224173",
+      "name": "FLAXBY RESOURCES",
+      "f64Number": "R269",
+      "physicalAddress": "11 Murranday Squire East newlanda Shopping Centre",
+      "email": "mentafreight@outlook.com",
+      "contactNumber": "772350015",
+      "licenseFeeReceipt": "R92390",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200008432",
+      "name": "QUALITY FREIGHT COMMUNICATIONLIMITED",
+      "f64Number": "R302",
+      "physicalAddress": "10 DOOR 10 AGENTS BLOCK PLUMTREE BORDER",
+      "email": "frankgondo@yahoo.com",
+      "contactNumber": "776407910",
+      "licenseFeeReceipt": "R113702",
+      "location": "Plumtree",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200290284",
+      "name": "MASHY FREIGHT",
+      "f64Number": "R335",
+      "physicalAddress": "49 Livingwaters Building",
+      "email": "mashyfreight@gmail.com",
+      "contactNumber": "772808482",
+      "licenseFeeReceipt": "R564346",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200098703",
+      "name": "Fostmix Investments (Pvt) Ltd",
+      "f64Number": "R337",
+      "physicalAddress": "540 Pound Road",
+      "email": "fostmix2023@gmail.com",
+      "contactNumber": "778863142",
+      "licenseFeeReceipt": "R562379",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200100546",
+      "name": "Sonmage Investments (Pvt) Ltd",
+      "f64Number": "R289",
+      "physicalAddress": "155 155 Wellington Road Beitbridge",
+      "email": "maxmangere@gmail.com",
+      "contactNumber": "772878156",
+      "licenseFeeReceipt": "R558213",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200073583",
+      "name": "STARTRACK FREIGHT",
+      "f64Number": "R89",
+      "physicalAddress": "Ottawa Ottawa Hse Cnr Innezterrace Suite 2",
+      "email": "info@startrackfreight.co.zw",
+      "contactNumber": "712772884",
+      "licenseFeeReceipt": "R91957",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200255528",
+      "name": "DUNES INVESTMENTS",
+      "f64Number": "R213",
+      "physicalAddress": "70 Mutare Road",
+      "email": "btclearingzim@gmail.com",
+      "contactNumber": "782651804",
+      "licenseFeeReceipt": "R92369",
+      "location": "Mutare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200321680",
+      "name": "INNPHIL ADVISORY SERVICES",
+      "f64Number": "R127",
+      "physicalAddress": "519 Old B I Samas Office Park",
+      "email": "phillipm@innphil.co.zw",
+      "contactNumber": "774853233",
+      "licenseFeeReceipt": "R559945",
+      "location": "Other",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200083594",
+      "name": "F M PURCHASING SHIPPING SERVICES",
+      "f64Number": "R93",
+      "physicalAddress": "8A 8A Railway Avenue",
+      "email": "fmpurchasing16@gmail.com",
+      "contactNumber": "715432399",
+      "licenseFeeReceipt": "R13829",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200098086",
+      "name": "RAYTON LOGISTICS",
+      "f64Number": "R46",
+      "physicalAddress": "6A Justicia Road First Last Complex",
+      "email": "marchkutyauripo@gmai.com",
+      "contactNumber": "772564920",
+      "licenseFeeReceipt": "R563113",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200002935",
+      "name": "DHL International (Pvt) Ltd",
+      "f64Number": "R230",
+      "physicalAddress": "29 Central Avenue",
+      "email": "susan.katsukunya@dhl.com",
+      "contactNumber": "715091651",
+      "licenseFeeReceipt": "R60089",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200250032",
+      "name": "OVERSEAS LOGISTICS",
+      "f64Number": "R406",
+      "physicalAddress": "2 derbyshire waterfalls",
+      "email": "andrewmarimo305@gmail.com",
+      "contactNumber": "776800916",
+      "licenseFeeReceipt": "R155154",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200132016",
+      "name": "Leaseprop Investments (Pvt) Ltd",
+      "f64Number": "R159",
+      "physicalAddress": "2 Dunkeld Road Mt Pleasant",
+      "email": "leasezimra@gmail.com",
+      "contactNumber": "772190388",
+      "licenseFeeReceipt": "R92174",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200176268",
+      "name": "SMARTENS EMPIRE",
+      "f64Number": "R394",
+      "physicalAddress": "4651 LENANA PARK TYNWALD",
+      "email": "trevormususa@gmail.com",
+      "contactNumber": "779373448",
+      "licenseFeeReceipt": "R153483",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200134636",
+      "name": "TIMES LOGISTICS",
+      "f64Number": "R403",
+      "physicalAddress": "318 Westgate",
+      "email": "timeslogistcs2013@gmail.com",
+      "contactNumber": "783021695",
+      "licenseFeeReceipt": "R92371",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200116364",
+      "name": "TRANS FRONTIER LOGISTICS",
+      "f64Number": "R247",
+      "physicalAddress": "Rm 320 Warehouse 2 AGS Complex RGM Airport",
+      "email": "ops.transfrontierzw@gmail.com",
+      "contactNumber": "773394160",
+      "licenseFeeReceipt": "R60136",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200097661",
+      "name": "Multilink Cargo (Pvt) Ltd",
+      "f64Number": "R275",
+      "physicalAddress": "Plot 1 2 Arlington Estate Airport",
+      "email": "info@multilinkcargo.co.zw",
+      "contactNumber": "781004714",
+      "licenseFeeReceipt": "R92056",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200240277",
+      "name": "Zifin Business Consultancy PBC",
+      "f64Number": "R157",
+      "physicalAddress": "45 Kabot Drive Buena Vista",
+      "email": "davisplumbers2025@gmail.com",
+      "contactNumber": "771641896",
+      "licenseFeeReceipt": "R13915",
+      "location": "Other",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "2001928443",
+      "name": "STERMATIC INVESTMENTS",
+      "f64Number": "R381",
+      "physicalAddress": "1080 RAYLANDS ESTATE A",
+      "email": "stermaticinvestments@gmail.com",
+      "contactNumber": "771643051",
+      "licenseFeeReceipt": "R565686",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "2002209584",
+      "name": "DISCRET SHIPPING",
+      "f64Number": "R354",
+      "physicalAddress": "16 NUMBER 16 EDMOND DRIVE BELVEDERE HARARE",
+      "email": "wmawire76@gmail.com",
+      "contactNumber": "782126916",
+      "licenseFeeReceipt": "R213",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200001283",
+      "name": "CUT RAG PROCESSORS (FORMERLY) MERELY TRADING P/L",
+      "f64Number": "R244",
+      "physicalAddress": "144 Green Trees Road Lonchinvar Harare Zimbabwe",
+      "email": "tendai@cutrag.co.zw",
+      "contactNumber": "773445485",
+      "licenseFeeReceipt": "R92131",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200343710",
+      "name": "DELIROD SUNCHIE",
+      "f64Number": "R301",
+      "physicalAddress": "4 Mashavave",
+      "email": "chigovarodwell4@gmail.com",
+      "contactNumber": "784346300",
+      "licenseFeeReceipt": "R563820",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200072734",
+      "name": "L A CARGO SERVICES",
+      "f64Number": "R156",
+      "physicalAddress": "17436 17436 OFF Flanagan Avenue Hillside",
+      "email": "nextgenerationagriservices@gmail.com",
+      "contactNumber": "772695518",
+      "licenseFeeReceipt": "R92907",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200140357",
+      "name": "FREIGHT PANORAMA",
+      "f64Number": "R194",
+      "physicalAddress": "502 5th Floor Regal Star Hse G Silundika",
+      "email": "info@freightpanorama.co.zw",
+      "contactNumber": "772428440",
+      "licenseFeeReceipt": "R92670",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200002257",
+      "name": "Zimbabwe Fertilizer Company Ltd",
+      "f64Number": "R199",
+      "physicalAddress": "35 35 Coventry Road",
+      "email": "magengar@zfc.co.zw",
+      "contactNumber": "772469792",
+      "licenseFeeReceipt": "R92734",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200071969",
+      "name": "Arrowgaze Trading (Pvt) Ltd",
+      "f64Number": "R232",
+      "physicalAddress": "5 5 Livingwaters Building No",
+      "email": "arrowgtaxeszim@gmail.com",
+      "contactNumber": "772387503",
+      "licenseFeeReceipt": "R566186",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200003387",
+      "name": "Groupair (Pvt) Ltd",
+      "f64Number": "R272",
+      "physicalAddress": "1 1 Surrey House J Nkomo Road Hatfield",
+      "email": "mstinarwo@groupairfreight.com",
+      "contactNumber": "772328510",
+      "licenseFeeReceipt": "R92456",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200247821",
+      "name": "DUELOF INVESTMENTS",
+      "f64Number": "R282",
+      "physicalAddress": "107 Kelvin Rd South Graniteside",
+      "email": "peter.kazingizi@fams-zimbabwe.com",
+      "contactNumber": "772236241",
+      "licenseFeeReceipt": "R92868",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200075659",
+      "name": "CLEMAR WORLDWIDE LOGISTICS",
+      "f64Number": "R304",
+      "physicalAddress": "Suite 802 Fifth Floor Advern Hse Innez Terrace Ave",
+      "email": "wardourenter2@gmail.com",
+      "contactNumber": "733752425",
+      "licenseFeeReceipt": "R60688",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200338838",
+      "name": "B To B Logistics (Pvt) Ltd",
+      "f64Number": "R311",
+      "physicalAddress": "54 54 Edmonds Road Belvedere",
+      "email": "fani.sumani@b2bworldlogistics.com",
+      "contactNumber": "772405171",
+      "licenseFeeReceipt": "R92418",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200137408",
+      "name": "Globalview (Pvt) Ltd",
+      "f64Number": "R261",
+      "physicalAddress": "16 Office 16 Milidi Complex",
+      "email": "fowillo@gmail.com",
+      "contactNumber": "774022373",
+      "licenseFeeReceipt": "R565969",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200139607",
+      "name": "CHARTERED FREIGHT SERVICES",
+      "f64Number": "R274",
+      "physicalAddress": "108 Nelson Mandela Suit 7 Wilrse Crt",
+      "email": "charteredfreight@gmail.com",
+      "contactNumber": "773007540",
+      "licenseFeeReceipt": "R92702",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200000074",
+      "name": "ALLEN WACK SHEPHERD",
+      "f64Number": "R281",
+      "physicalAddress": "53 53 Selous Avenue Harare",
+      "email": "gmukanganwa@comoil.co.zw",
+      "contactNumber": "714170713",
+      "licenseFeeReceipt": "R92875",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200163009",
+      "name": "Gleamside Investments (Pvt) Ltd",
+      "f64Number": "R285",
+      "physicalAddress": "32 Nigel Phillip Drive Eastlea Harare",
+      "email": "rutendochiukira@gmail.com",
+      "contactNumber": "773619188",
+      "licenseFeeReceipt": "R92688",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200334924",
+      "name": "PROOFLITE ENTERPRISES",
+      "f64Number": "R343",
+      "physicalAddress": "27 Fort Road Rotten Row",
+      "email": "myrumumba@gmail.com",
+      "contactNumber": "773613988",
+      "licenseFeeReceipt": "R92819",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200150824",
+      "name": "ONE DAY INTERNATIONAL FREIGHT",
+      "f64Number": "R358",
+      "physicalAddress": "20964 Unit A Ext Seke",
+      "email": "odifreight.tax@gmail.com",
+      "contactNumber": "773275392",
+      "licenseFeeReceipt": "R60429",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200111224",
+      "name": "MOBILE FREIGHT SERVICES",
+      "f64Number": "R371",
+      "physicalAddress": "UNIT 5 STAND 18341 MATONDO SHEDS HILLSIDE ROAD MSASA",
+      "email": "wendym@mobilefrtsvs.com",
+      "contactNumber": "784152741",
+      "licenseFeeReceipt": "R92469",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200216051",
+      "name": "VITALITY FREIGHT",
+      "f64Number": "R380",
+      "physicalAddress": "11 Zimdeff house Office G11 Rotten row",
+      "email": "absolom.m@vitalityfreight.co.zw",
+      "contactNumber": "773047392",
+      "licenseFeeReceipt": "R60011",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200351353",
+      "name": "HENNLAG SHIPPING LOGISTICS",
+      "f64Number": "R328",
+      "physicalAddress": "80 Mutare Road Msasa",
+      "email": "hennlagcompany@gmail.com",
+      "contactNumber": "772994793",
+      "licenseFeeReceipt": "R92462",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200344772",
+      "name": "DECADE FREIGHT SOLUTIONS (PRIVATE) LIMITED",
+      "f64Number": "R334",
+      "physicalAddress": "107 Hebert Chitepo",
+      "email": "decadefreight@gmail.com",
+      "contactNumber": "777805738",
+      "licenseFeeReceipt": "R154592",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200076300",
+      "name": "SOUTHERN AFRICA IMPORT EXPORT",
+      "f64Number": "R344",
+      "physicalAddress": "28 Block 2 office 102 Longcheng plaza",
+      "email": "chiwanzap2020@gmail.com",
+      "contactNumber": "772882910",
+      "licenseFeeReceipt": "R92617",
+      "location": "Other",
+      "services": [
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200159192",
+      "name": "BLESSED FREIGHT AGENCIES",
+      "f64Number": "R349",
+      "physicalAddress": "537 Mudzi",
+      "email": "blessedfreight@yandex.com",
+      "contactNumber": "777058266",
+      "licenseFeeReceipt": "R567109",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001890397",
+      "name": "SHIPIFY INTERNATIONAL",
+      "f64Number": "R204",
+      "physicalAddress": "6 6 ZANDAAM COURT CORNER JOSIAH CHINAMANO AND MAZOWE STREET",
+      "email": "shipifyinternational@gmail.com",
+      "contactNumber": "775804681",
+      "licenseFeeReceipt": "R60197",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200230852",
+      "name": "Central Hub Of Africa Logistics (Pvt) Lt",
+      "f64Number": "R200",
+      "physicalAddress": "1352 1352 Great North Road BBA Building",
+      "email": "worthlogisticszim@gmail.com",
+      "contactNumber": "714830564",
+      "licenseFeeReceipt": "R565947",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200214178",
+      "name": "TOPSCAN INVESTMENTS",
+      "f64Number": "R303",
+      "physicalAddress": "490 Makoni Crescent Glen Norah A",
+      "email": "topscancargo@gmail.com",
+      "contactNumber": "772468057",
+      "licenseFeeReceipt": "R60628",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200224001",
+      "name": "CHARTEREDWATERS INVESTMENTS",
+      "f64Number": "R391",
+      "physicalAddress": "1187 Milkwood Crescent Bluffhill",
+      "email": "chinosengwaedith@gmail.com",
+      "contactNumber": "773015196",
+      "licenseFeeReceipt": "R92420",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200179206",
+      "name": "Facts Freight (Pvt) Ltd",
+      "f64Number": "R419",
+      "physicalAddress": "1 Terricave Building 529 Great North Rd",
+      "email": "factsfreight@gmail.com",
+      "contactNumber": "775915122",
+      "licenseFeeReceipt": "R567711",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200112367",
+      "name": "ANTHILL TRAVEL TOURS",
+      "f64Number": "R355",
+      "physicalAddress": "Stand 25 Chirundu",
+      "email": "j.zimclearingsolutionsacc@gmail.com",
+      "contactNumber": "773108618",
+      "licenseFeeReceipt": "R154135",
+      "location": "Chirundu",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200000255",
+      "name": "Willowvale Motor Industries (Pvt) Ltd",
+      "f64Number": "R425",
+      "physicalAddress": "WMI Factory Complex Dagenham Gleneagles Road Southerton",
+      "email": "cssamkange@wmmi.co.zw",
+      "contactNumber": "772233435",
+      "licenseFeeReceipt": "R92842",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200181662",
+      "name": "APPLEVINE FREIGHT SERVICES",
+      "f64Number": "R120",
+      "physicalAddress": "62 Living Waters Complex",
+      "email": "maturab@yahoo.com",
+      "contactNumber": "772777627",
+      "licenseFeeReceipt": "R566094",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200238086",
+      "name": "GLOBEPACK FREIGHT",
+      "f64Number": "R384",
+      "physicalAddress": "429 Pioneer Road",
+      "email": "lucy.tombindo@gmail.com",
+      "contactNumber": "775632950",
+      "licenseFeeReceipt": "R48994",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200237618",
+      "name": "PASUNT LOGISTICS",
+      "f64Number": "R434",
+      "physicalAddress": "3362 DULIBADZIMO TOWN",
+      "email": "pasuntlogistics@gmail.com",
+      "contactNumber": "773503120",
+      "licenseFeeReceipt": "R569147",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200162477",
+      "name": "AD-VALOREM LOGISTICS",
+      "f64Number": "R387",
+      "physicalAddress": "1308 Beitbridge",
+      "email": "abiotgara@gmail.com",
+      "contactNumber": "773452204",
+      "licenseFeeReceipt": "R566328",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200003094",
+      "name": "Green Motor Services (Pvt) Ltd",
+      "f64Number": "R416",
+      "physicalAddress": "45018 Cardiff Rd",
+      "email": "lawrencemakura@gmail.com",
+      "contactNumber": "772650837",
+      "licenseFeeReceipt": "R154110",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200108465",
+      "name": "KEYAS GLOBAL FREIGHT",
+      "f64Number": "R482",
+      "physicalAddress": "2 2 Gonye Close Mufakose",
+      "email": "keyasglobal@gmail.com",
+      "contactNumber": "773710419",
+      "licenseFeeReceipt": "R92666",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2002184656",
+      "name": "MINDFUL MOVEMENT",
+      "f64Number": "R50",
+      "physicalAddress": "37 Herbet Chitepo",
+      "email": "tavoz1985@gmail.com",
+      "contactNumber": "775575999",
+      "licenseFeeReceipt": "R18954",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200200355",
+      "name": "COOPER JONES GLOBAL LOGISTICS",
+      "f64Number": "R270",
+      "physicalAddress": "5 Premium Close MT Pleasant Business Park",
+      "email": "accounts3@cooperandjones.com",
+      "contactNumber": "772803832",
+      "licenseFeeReceipt": "R92898",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200110140",
+      "name": "SILKSANDS INVESTMENTS",
+      "f64Number": "R362",
+      "physicalAddress": "D6 Office Agents Block",
+      "email": "silksandsinv@gmail.com",
+      "contactNumber": "772704009",
+      "licenseFeeReceipt": "R113797",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "2001972689",
+      "name": "TAL-PAL LOGISTICS",
+      "f64Number": "R374",
+      "physicalAddress": "92B Eastroad Belgravia Harare 92B Eastroad Belgravia Harare",
+      "email": "talpal24@gmail.com",
+      "contactNumber": "775110506",
+      "licenseFeeReceipt": "R568952",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200081637",
+      "name": "Three T Investments (Pvt) Ltd",
+      "f64Number": "R211",
+      "physicalAddress": "Suit 4 Zambezi Centre",
+      "email": "wildtrekkerslodge@yahoo.com",
+      "contactNumber": "783136750",
+      "licenseFeeReceipt": "R49255",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200220394",
+      "name": "SUBLIME LOGISTICS",
+      "f64Number": "R359",
+      "physicalAddress": "6253 6253 MTUNDURU CRESENT ZIMRE PARK RUWA HARARE",
+      "email": "hwalaza@hotmail.com",
+      "contactNumber": "783188177",
+      "licenseFeeReceipt": "R60446",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200079989",
+      "name": "MUCMET ENTERPRISES",
+      "f64Number": "R433",
+      "physicalAddress": "20 Speke Avenue Reliance House Suite 401",
+      "email": "martin.zhuwao@gmail.com",
+      "contactNumber": "772583652",
+      "licenseFeeReceipt": "R49040",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200138953",
+      "name": "MCGAVHE INVESTMENTS",
+      "f64Number": "R367",
+      "physicalAddress": "2 FAIR CLOSE Gunhill",
+      "email": "lchaleka@gmail.com",
+      "contactNumber": "775215547",
+      "licenseFeeReceipt": "R92658",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200200659",
+      "name": "YASSER PHANGOLD INVESTMENTS",
+      "f64Number": "R329",
+      "physicalAddress": "14 Wembley Crescent Eastlea",
+      "email": "tynashematingo@gmail.com",
+      "contactNumber": "775546006",
+      "licenseFeeReceipt": "R92876",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200001318",
+      "name": "Paramount Export (Pvt) Ltd",
+      "f64Number": "R350",
+      "physicalAddress": "14 Plymouth Road Southerton",
+      "email": "jeremy.paramount@gmail.com",
+      "contactNumber": "772231802",
+      "licenseFeeReceipt": "R92660",
+      "location": "Harare",
+      "services": [
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200169605",
+      "name": "BROXER ENTERPRISES",
+      "f64Number": "R217",
+      "physicalAddress": "892 Retreat Park Waterfalls",
+      "email": "broxerenterprises@gmail.com",
+      "contactNumber": "773736764",
+      "licenseFeeReceipt": "R566635",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200027208",
+      "name": "Airforce Of Zimbabwe Harare",
+      "f64Number": "R54",
+      "physicalAddress": "25 25 Borrowdale Road",
+      "email": "airhqexproc@gmail.com",
+      "contactNumber": "242792271",
+      "licenseFeeReceipt": "R92880",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200298244",
+      "name": "WORLDCARE ENTERPRISES",
+      "f64Number": "R426",
+      "physicalAddress": "4 Mashavave",
+      "email": "worldcare00@gmail.com",
+      "contactNumber": "774932971",
+      "licenseFeeReceipt": "R566085",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200081943",
+      "name": "Yellow Bard Enterprises (Pvt)",
+      "f64Number": "R412",
+      "physicalAddress": "259 259 Limpopo View",
+      "email": "yellowbarenterprises@gmail.com",
+      "contactNumber": "773733687",
+      "licenseFeeReceipt": "R565949",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200141871",
+      "name": "Online Logistics (Pvt) Ltd",
+      "f64Number": "R292",
+      "physicalAddress": "23 Buckinngham Road",
+      "email": "patmose@onlinelogistics.co.zw",
+      "contactNumber": "778194416",
+      "licenseFeeReceipt": "R60711",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200035041",
+      "name": "FREIGHT MASTERS",
+      "f64Number": "R221",
+      "physicalAddress": "3 114 Seke Road Hatfield",
+      "email": "cooperkamoto@gmail.com",
+      "contactNumber": "772902006",
+      "licenseFeeReceipt": "R60641",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200350271",
+      "name": "DUAL KING EXPRESS",
+      "f64Number": "R19",
+      "physicalAddress": "21 RUFARO STREET MARLBOROUGH",
+      "email": "poshymarketing20@gmail.com",
+      "contactNumber": "786127006",
+      "licenseFeeReceipt": "R92906",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200120777",
+      "name": "TEXGOLD INVESTMENTS",
+      "f64Number": "R218",
+      "physicalAddress": "114 Seke Road Graniteside",
+      "email": "texgoldinvestments@gmail.com",
+      "contactNumber": "773681823",
+      "licenseFeeReceipt": "R567499",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200088762",
+      "name": "Stengel Logistics (Pvt) Ltd",
+      "f64Number": "R305",
+      "physicalAddress": "27 George Silundika Avenue",
+      "email": "fungaimanuwa@gmail.com",
+      "contactNumber": "772869547",
+      "licenseFeeReceipt": "R92696",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200291954",
+      "name": "ASHPRIMANO INCORPORATION",
+      "f64Number": "R23",
+      "physicalAddress": "31407 unit A SEKE",
+      "email": "buyoncredit.zimra23@gmail.com",
+      "contactNumber": "784111351",
+      "licenseFeeReceipt": "R92938",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200288614",
+      "name": "GLOBAL LIMIT INVESTMENTS",
+      "f64Number": "R75",
+      "physicalAddress": "210 WESTWOOD",
+      "email": "davechitereka@gmail.com",
+      "contactNumber": "774764947",
+      "licenseFeeReceipt": "R180",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200247124",
+      "name": "WEALTHBAG INVESTMENTS",
+      "f64Number": "R206",
+      "physicalAddress": "303 3rd Floor Gelfand House 1st Speke Avenue",
+      "email": "wealthbaginv@gmail.com",
+      "contactNumber": "772961224",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200089133",
+      "name": "RECHIPA INVESTMENTS",
+      "f64Number": "R228",
+      "physicalAddress": "99 Twentydales Hatfield",
+      "email": "rechipac@gmail.com",
+      "contactNumber": "773370843",
+      "licenseFeeReceipt": "R153",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200292682",
+      "name": "MAESTRO CARGO",
+      "f64Number": "R317",
+      "physicalAddress": "5193 Piennar Avenue Prospect Waterfalls",
+      "email": "maestrocargozw@gmail.com",
+      "contactNumber": "773587723",
+      "licenseFeeReceipt": "R569",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200061451",
+      "name": "HERVORMEN TRADING",
+      "f64Number": "R351",
+      "physicalAddress": "201 Suite 2nd Floor York Hse",
+      "email": "trumenfrt@mweb.co.zw",
+      "contactNumber": "773886093",
+      "licenseFeeReceipt": "R14017",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200016370",
+      "name": "Shipserve (Pvt) Ltd",
+      "f64Number": "R386",
+      "physicalAddress": "310 Woodlands Road Msasa",
+      "email": "augustinezhanje@gmail.com",
+      "contactNumber": "772381749",
+      "licenseFeeReceipt": "R92967",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "2002219557",
+      "name": "JUWA CORPORATION",
+      "f64Number": "R392",
+      "physicalAddress": "77 Jason Moyo Avenue Harare",
+      "email": "grysbok.etaxes@gmail.com",
+      "contactNumber": "772541861",
+      "licenseFeeReceipt": "R60366",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200327532",
+      "name": "PRINCE SHIPPING",
+      "f64Number": "R397",
+      "physicalAddress": "K2956 Katanga",
+      "email": "princeshipping98@gmail.com",
+      "contactNumber": "784210399",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200122313",
+      "name": "PLAN-TECH ELECTRICAL PRODUCTS PROJECTS",
+      "f64Number": "R395",
+      "physicalAddress": "141 Union Avenue",
+      "email": "iannyahwai@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200292753",
+      "name": "IDEALSPEAR LOGISTICS",
+      "f64Number": "R32",
+      "physicalAddress": "4069 Ascort Extension",
+      "email": "idealspear21@gmail.com",
+      "contactNumber": "712904804",
+      "licenseFeeReceipt": "R3706",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200076542",
+      "name": "HEYMAX INVESTMENTS",
+      "f64Number": "R58",
+      "physicalAddress": "303 Electra House 49 Samora Machel Avenue Harare",
+      "email": "heymax01@yahoo.com",
+      "contactNumber": "773656035",
+      "licenseFeeReceipt": "R313",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200291424",
+      "name": "ACUMEN FREIGHT (PRIVATE) LIMITED",
+      "f64Number": "R82",
+      "physicalAddress": "6 South Way Avenue Hatfield",
+      "email": "acumenfreight@yandex.com",
+      "contactNumber": "777721921",
+      "licenseFeeReceipt": "R200",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200117596",
+      "name": "FRAZIER ENTERPRISES",
+      "f64Number": "R108",
+      "physicalAddress": "7 Aurora Terrace Meyrick Park",
+      "email": "frazshipping@gmail.com",
+      "contactNumber": "731002336",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200242932",
+      "name": "Harbor Cargo Services (Pvt) Ltd",
+      "f64Number": "R142",
+      "physicalAddress": "5066 CHINOTIMBA, Victoria Falls",
+      "email": "harborcargoservices@gmail.com",
+      "contactNumber": "774399597",
+      "licenseFeeReceipt": "R192",
+      "location": "Victoria Falls",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200302072",
+      "name": "WOLT MURRAY",
+      "f64Number": "R147",
+      "physicalAddress": "552 Crowhill Views Borrowdale, Harare",
+      "email": "woltandmurray@gmail.com",
+      "contactNumber": "71308671",
+      "licenseFeeReceipt": "R160",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200279140",
+      "name": "LEGENDARY FREIGHT SERVICES",
+      "f64Number": "R149",
+      "physicalAddress": "62 Livingstone Avenue, Harare",
+      "email": "petermaroso@gmail.com",
+      "contactNumber": "775750980",
+      "licenseFeeReceipt": "R4285",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200244340",
+      "name": "Logitap (pvt) Ltd",
+      "f64Number": "R154",
+      "physicalAddress": "107 Herbert Chitepo Street",
+      "email": "naison@bloomvillegroup.co.zw",
+      "contactNumber": "713785885",
+      "licenseFeeReceipt": "R494",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200149559",
+      "name": "ALFA FREIGHT INTERNATIONAL",
+      "f64Number": "R161",
+      "physicalAddress": "1 Warehouse 1 Cargo Village Harare Airport",
+      "email": "bbvtasticfoods@gmail.com",
+      "contactNumber": "773188926",
+      "licenseFeeReceipt": "R256",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200240802",
+      "name": "LEOCHIWOZ LOGISTICS",
+      "f64Number": "R165",
+      "physicalAddress": "OFFICE 8 AMOLAS BUILDING 1ST FLOOR",
+      "email": "leochiwoz@gmail.com",
+      "contactNumber": "772806031",
+      "licenseFeeReceipt": "R2762",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200246688",
+      "name": "BEST SHEPERD INVESTMENTS",
+      "f64Number": "R188",
+      "physicalAddress": "3 McChlery Avenue Arda House Eastlea",
+      "email": "edgar@bsilogistics.co.zw",
+      "contactNumber": "772686525",
+      "licenseFeeReceipt": "R348",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200254290",
+      "name": "PERENNIAL CARGO COMPANY",
+      "f64Number": "R192",
+      "physicalAddress": "128 Airport Road Hatfield",
+      "email": "ajarthurson@gmail.com",
+      "contactNumber": "772264547",
+      "licenseFeeReceipt": "R331",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200007430",
+      "name": "TRANSAFRICA GLOBAL LOGISTICS ZIMBABWE",
+      "f64Number": "R196",
+      "physicalAddress": "92 Plymouth Road Southerton",
+      "email": "nyasha.chigodo@aglgroup.com",
+      "contactNumber": "775399644",
+      "licenseFeeReceipt": "R121",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200134785",
+      "name": "Afrobay Freight",
+      "f64Number": "R219",
+      "physicalAddress": "155 Wellington Road",
+      "email": "afrobayf@gmail.com",
+      "contactNumber": "773457600",
+      "licenseFeeReceipt": "R569294",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200250698",
+      "name": "CARGO CONNECT LOGISTICS",
+      "f64Number": "R223",
+      "physicalAddress": "55 55 Kelvin Road North",
+      "email": "operations@cargoconnectlogistics.co.zw",
+      "contactNumber": "775719773",
+      "licenseFeeReceipt": "R423",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200000048",
+      "name": "WILSPOT ENTERPRISES",
+      "f64Number": "R227",
+      "physicalAddress": "66 Herbert Chitepo Street",
+      "email": "iq78692@yahoo.com",
+      "contactNumber": "712210570",
+      "licenseFeeReceipt": "R151992",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200286448",
+      "name": "AD-LEM LOGISTICS",
+      "f64Number": "R241",
+      "physicalAddress": "182 Fidelity Park Manresa",
+      "email": "andieadmire@gmail.com",
+      "contactNumber": "776486355",
+      "licenseFeeReceipt": "R261",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200083387",
+      "name": "Stillpack Investments (Pvt) Lt",
+      "f64Number": "R242",
+      "physicalAddress": "NRZComplex Seke Road Harare",
+      "email": "mikemusandu@gmail.com",
+      "contactNumber": "772283578",
+      "licenseFeeReceipt": "R92957",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200315680",
+      "name": "Danrime Investments (Pvt) Ltd",
+      "f64Number": "R264",
+      "physicalAddress": "8729 Fairview",
+      "email": "primeterrencemujee@gmail.com",
+      "contactNumber": "777789996",
+      "licenseFeeReceipt": "R261",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200133816",
+      "name": "CHIKANDAMINA CHIRASHA CLEARING AGENTS",
+      "f64Number": "R266",
+      "physicalAddress": "21 Oriole Street Greenside",
+      "email": "simbarashemakuvaza@gmail.com",
+      "contactNumber": "773086894",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200298583",
+      "name": "ENEGRA LOGISTICS",
+      "f64Number": "R284",
+      "physicalAddress": "404 Reigate Subburbs Umguza",
+      "email": "enegra97@gmail.com",
+      "contactNumber": "782434464",
+      "licenseFeeReceipt": "R4010",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001777177",
+      "name": "TRUEROD INVESTMENTS",
+      "f64Number": "R287",
+      "physicalAddress": "4 EXPRESS IMAGE COMPLEX",
+      "email": "takawirafreddy@gmail.com",
+      "contactNumber": "772839405",
+      "licenseFeeReceipt": "R249",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200115517",
+      "name": "BAK LOGISTICS",
+      "f64Number": "R295",
+      "physicalAddress": "106 Willowvale Road",
+      "email": "mary.machingaidze@baklogistics.co.zw",
+      "contactNumber": "772414984",
+      "licenseFeeReceipt": "R124",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200006768",
+      "name": "Logistica Shipping Freight (Pvt) Ltd",
+      "f64Number": "R297",
+      "physicalAddress": "1 Swissway Southerton",
+      "email": "accounts@logisticashipping.com",
+      "contactNumber": "716801520",
+      "licenseFeeReceipt": "R105",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200295536",
+      "name": "DIVINE MUSHMO HOLDINGS",
+      "f64Number": "R308",
+      "physicalAddress": "122 Kelvin Road South Graniteside",
+      "email": "nelstm@dmhlogistics.co.zw",
+      "contactNumber": "785600186",
+      "licenseFeeReceipt": "R340",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200304169",
+      "name": "TRUSTSEAL INVESTMENTS",
+      "f64Number": "R309",
+      "physicalAddress": "26 26 Glenara Avenue Eastlea",
+      "email": "kudzisean@gmail.com",
+      "contactNumber": "773370185",
+      "licenseFeeReceipt": "R285",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200042857",
+      "name": "SEEORDER INVESTMENTS",
+      "f64Number": "R313",
+      "physicalAddress": "7 Exeter Court 134 Nelson Mandela Ave",
+      "email": "seeorder1@gmail.com",
+      "contactNumber": "772278555",
+      "licenseFeeReceipt": "R382",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200047926",
+      "name": "JAMANTO INVESTMENTS",
+      "f64Number": "R315",
+      "physicalAddress": "8th 8th Ave J Moyo St 601 CIPF Bdg",
+      "email": "frtexperts@gmail.com",
+      "contactNumber": "771163251",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200123662",
+      "name": "WORLDWIDE LOGISTICS",
+      "f64Number": "R332",
+      "physicalAddress": "Area 5 Wingflora Complex Harare Airport",
+      "email": "worldwidelogistics2016@yahoo.com",
+      "contactNumber": "772341438",
+      "licenseFeeReceipt": "R59940",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200001515",
+      "name": "French Smith (Pvt) Ltd",
+      "f64Number": "R368",
+      "physicalAddress": "67 Coventry Rd Workington",
+      "email": "bmafarachisi@customsservices.co.zw",
+      "contactNumber": "772490301",
+      "licenseFeeReceipt": "R92048",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200080208",
+      "name": "BluSuit Trading (Pvt) Ltd",
+      "f64Number": "R399",
+      "physicalAddress": "613 Fidelity Life Centre",
+      "email": "blusuittrading@gmail.com",
+      "contactNumber": "772321890",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200001445",
+      "name": "Zimbabwe Spinners Weavers Ltd",
+      "f64Number": "R404",
+      "physicalAddress": "3 Golden Stairs Rd Mount Pleasant",
+      "email": "fm@zimspin.spinweave.co.zw",
+      "contactNumber": "778915115",
+      "licenseFeeReceipt": "R257",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200154145",
+      "name": "NYAMJACK CLEARING FORWARDING",
+      "f64Number": "R410",
+      "physicalAddress": "137 nyamapanda location",
+      "email": "sipsolutions@gmail.com",
+      "contactNumber": "777044958",
+      "licenseFeeReceipt": "R25787",
+      "location": "Nyamapanda",
+      "services": [
+        "clearing",
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "2001714660",
+      "name": "TAE FREIGHT FORWARDERS LOGISTICS (PRIVATE) LIMITED",
+      "f64Number": "R415",
+      "physicalAddress": "29 29 Chatambudza zengeza",
+      "email": "mcwhistle.20@gmail.com",
+      "contactNumber": "719546016",
+      "licenseFeeReceipt": "R1313",
+      "location": "Chitungwiza",
+      "services": [
+        "freight",
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200269047",
+      "name": "Wilvin Logistics (Private) Limited",
+      "f64Number": "R421",
+      "physicalAddress": "9 Alum Close",
+      "email": "nawetac@gmail.com",
+      "contactNumber": "773327231",
+      "licenseFeeReceipt": "R569398",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200100366",
+      "name": "NATIONAL OIL INFRASTRUCTURE COMPANY OF ZIMBABWE",
+      "f64Number": "R432",
+      "physicalAddress": "100 L Takawira",
+      "email": "washington.gadzikwa@gmail.com",
+      "contactNumber": "719167949",
+      "licenseFeeReceipt": "R146",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200089637",
+      "name": "WEDAPRIL ENTERPRISES",
+      "f64Number": "R442",
+      "physicalAddress": "4315 4315 Chinotimba",
+      "email": "amuramani@gmail.com",
+      "contactNumber": "712789478",
+      "licenseFeeReceipt": "R620",
+      "location": "Victoria Falls",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200246229",
+      "name": "WOOVEN LOGISTICS",
+      "f64Number": "R382",
+      "physicalAddress": "102 Prince Edward Road Milton Park",
+      "email": "ledimintersupply@gmail.com",
+      "contactNumber": "775914725",
+      "licenseFeeReceipt": "R525",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200217923",
+      "name": "SEQUENCE FREIGHT LOGISTICS",
+      "f64Number": "R413",
+      "physicalAddress": "lot 2 Lot 2 Arlington Estate RGM International Airport",
+      "email": "charlessarai@gmail.com",
+      "contactNumber": "772749262",
+      "licenseFeeReceipt": "R757",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200081129",
+      "name": "AMOLAS AGENCIES",
+      "f64Number": "R43",
+      "physicalAddress": "6 Caithness Road Eastlea",
+      "email": "stachiwona@amolasagencies.com",
+      "contactNumber": "774759746",
+      "licenseFeeReceipt": "R742",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200335542",
+      "name": "VIMOZIM TRADE",
+      "f64Number": "R203",
+      "physicalAddress": "313 REMBRANDIT J CHINAMANO AVENUE",
+      "email": "mmukarondah@gmail.com",
+      "contactNumber": "772598303",
+      "licenseFeeReceipt": "R1961",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200132846",
+      "name": "STRAIGHT FORWARD LOGISTICS",
+      "f64Number": "R216",
+      "physicalAddress": "22 2nd Floor Silke House cnr R Mugabe 4th street",
+      "email": "nyashafacts@gmail.com",
+      "contactNumber": "772947521",
+      "licenseFeeReceipt": "R659",
+      "location": "Other",
+      "services": [
+        "freight",
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "2001786015",
+      "name": "PLUMBRIDGE LOGISTICS",
+      "f64Number": "R283",
+      "physicalAddress": "8054 Leopard Road Zimre Park Harare",
+      "email": "leeroynyamupangedengu@gmail.com",
+      "contactNumber": "777459830",
+      "licenseFeeReceipt": "R576",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200099147",
+      "name": "DISTINCT MANAGEMENT CONSULTANCY",
+      "f64Number": "R286",
+      "physicalAddress": "Old Nathoo Building 1st Floor Old Nathoo Building",
+      "email": "saungwemecv@gmail.com",
+      "contactNumber": "772717056",
+      "licenseFeeReceipt": "R1488",
+      "location": "Other",
+      "services": [
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200023181",
+      "name": "Munworth Trading (Pvt) Ltd",
+      "f64Number": "R277",
+      "physicalAddress": "23 Selous Avenue",
+      "email": "daniel@airseacargo.co.zw",
+      "contactNumber": "772351855",
+      "licenseFeeReceipt": "R762",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200137467",
+      "name": "Vatespeed Enterprises (Pvt) Ltd",
+      "f64Number": "R291",
+      "physicalAddress": "1994 Londa Hotel",
+      "email": "patrickmatondora@gmail.com",
+      "contactNumber": "773211990",
+      "licenseFeeReceipt": "R5118",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200295851",
+      "name": "Salf Express PL",
+      "f64Number": "R331",
+      "physicalAddress": "24 Logan Road Hatfield",
+      "email": "carboncopytt@gmail.com",
+      "contactNumber": "772612053",
+      "licenseFeeReceipt": "R593",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200001941",
+      "name": "SAMFYAN TRANSPORT SERVICES",
+      "f64Number": "R347",
+      "physicalAddress": "54 Edmonds Rd",
+      "email": "solzsitetrading@gmail.com",
+      "contactNumber": "772977942",
+      "licenseFeeReceipt": "R496",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200027041",
+      "name": "MANICA BOARDS DOORS",
+      "f64Number": "R396",
+      "physicalAddress": "5 St Helens Drive, mutare",
+      "email": "zimomigfinance@oldmutual.co.zw",
+      "contactNumber": "782706575",
+      "location": "Mutare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200184299",
+      "name": "FREIGHT ARCHITECTS",
+      "f64Number": "R401",
+      "physicalAddress": "17797 STONERIDGE PARK, Harare",
+      "email": "priscillanyikadzino@gmail.com",
+      "contactNumber": "771519062",
+      "licenseFeeReceipt": "R477",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200346187",
+      "name": "AGILITY FREIGHT SERVICES",
+      "f64Number": "R424",
+      "physicalAddress": "261 261 RHINO FARM LOWER VUMBA MUTARE",
+      "email": "agilityfreightservices@gmail.com",
+      "contactNumber": "774490812",
+      "licenseFeeReceipt": "R2177",
+      "location": "Mutare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200106733",
+      "name": "Hyperclass Investments P/L",
+      "f64Number": "R437",
+      "physicalAddress": "540 Pound Road Beitbridge",
+      "email": "handsome@asante-freight.com",
+      "contactNumber": "772971089",
+      "licenseFeeReceipt": "R6065",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200272285",
+      "name": "BRANLIE",
+      "f64Number": "R440",
+      "physicalAddress": "7148 New medium Density, Beitbridge",
+      "email": "drbnhidza@gmail.com",
+      "contactNumber": "772225804",
+      "licenseFeeReceipt": "R6199",
+      "location": "Beitbridge",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200202881",
+      "name": "OCEAN CARGO",
+      "f64Number": "R98",
+      "physicalAddress": "29 Wheeler Avenue, Harare",
+      "email": "cephas@oceancargozim.co.zw",
+      "contactNumber": "779409740",
+      "licenseFeeReceipt": "R906",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200053150",
+      "name": "Volm Akes Investments (Pvt) Ltd",
+      "f64Number": "R229",
+      "physicalAddress": "NEW MONTH T A FOREVER 525 Great North RD",
+      "email": "gpinkiep@yahoo.com",
+      "contactNumber": "772372407",
+      "licenseFeeReceipt": "R8261",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200164438",
+      "name": "Skypax Freight Services (Pvt) Ltd",
+      "f64Number": "R234",
+      "physicalAddress": "Office 5 First Floor ZB Chambers First Street",
+      "email": "milmindsadvisors@gmail.com",
+      "contactNumber": "772522373",
+      "licenseFeeReceipt": "R2325",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200053565",
+      "name": "Reliable Consolidation And Shipping Co",
+      "f64Number": "R243",
+      "physicalAddress": "110 Nelson Mandela St Annes Crt",
+      "email": "multigreatinvesments@gmail.com",
+      "contactNumber": "772767111",
+      "licenseFeeReceipt": "R896",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200240346",
+      "name": "Mouz Freight (Pvt) Ltd",
+      "f64Number": "R298",
+      "physicalAddress": "62 Birmingham Road Southerton",
+      "email": "mouzfreight@gmail.com",
+      "contactNumber": "772966836",
+      "licenseFeeReceipt": "R903",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200067007",
+      "name": "SHAWSHANKS ENTERPRISES",
+      "f64Number": "R411",
+      "physicalAddress": "5 Newcastle Rd Nyakamete, Mutare",
+      "email": "amos2maisiri@gmail.com",
+      "contactNumber": "777930842",
+      "licenseFeeReceipt": "R2905",
+      "location": "Mutare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200116457",
+      "name": "LINKAGE LOGISTICS",
+      "f64Number": "R195",
+      "physicalAddress": "1194 FALCON ROAD NEW PROSPECT PARK",
+      "email": "linkagelogistics24@yahoo.com",
+      "contactNumber": "772873969",
+      "licenseFeeReceipt": "R1030",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200004343",
+      "name": "Miconex (Pvt) Ltd",
+      "f64Number": "R182",
+      "physicalAddress": "37 J Chinamano Rd Belmont",
+      "email": "dberrie@minemachines.co.zw",
+      "contactNumber": "772234608",
+      "licenseFeeReceipt": "R251",
+      "location": "Bulawayo",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200286563",
+      "name": "SUPERTRACK SHIPPING",
+      "f64Number": "R312",
+      "physicalAddress": "7 Younger rd Hogerty Hills Borrowdale",
+      "email": "chikooreg26@gmail.com",
+      "contactNumber": "777086855",
+      "licenseFeeReceipt": "R3188",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200108337",
+      "name": "EXPECT FREIGHT",
+      "f64Number": "R300",
+      "physicalAddress": "6925 6925 Westlea, Harare",
+      "email": "schimharo@gmail.com",
+      "contactNumber": "773402477",
+      "licenseFeeReceipt": "R1163",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200149850",
+      "name": "LOGISTICS EXPERTS",
+      "f64Number": "R118",
+      "physicalAddress": "7295 Medium Density, Beitbridge",
+      "email": "ronaldkapfunde@gmail.com",
+      "contactNumber": "773242102",
+      "licenseFeeReceipt": "R12240",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200069807",
+      "name": "VELOCITY FREIGHT SERVICES",
+      "f64Number": "R181",
+      "physicalAddress": "234 Hre Domestic Terminal Harare Airport",
+      "email": "cncubegwatidzo@yahoo.com",
+      "contactNumber": "772882840",
+      "licenseFeeReceipt": "R1327",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2002034395",
+      "name": "AFROGREAT INVESTMENTS",
+      "f64Number": "R393",
+      "physicalAddress": "19 BATH ROAD BELGRAVIA HARARE",
+      "email": "murindagomospencer0@gmail.com",
+      "contactNumber": "719647673",
+      "licenseFeeReceipt": "R1279",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200117905",
+      "name": "Amortz Enterprises (Pvt) Ltd",
+      "f64Number": "RR121",
+      "physicalAddress": "9 Bodle Avenue Eastlea",
+      "email": "spaceduncan@gmail.com",
+      "contactNumber": "772949700",
+      "licenseFeeReceipt": "R1315",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200339542",
+      "name": "EXPLORE FREIGHT FOWARDING",
+      "f64Number": "R390",
+      "physicalAddress": "office 5 beitbridge hotel",
+      "email": "princesssibanda@gmail.com",
+      "contactNumber": "772584063",
+      "licenseFeeReceipt": "R12463",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200141582",
+      "name": "Imephas Investments (Pvt) Ltd",
+      "f64Number": "R280",
+      "physicalAddress": "46 24417",
+      "email": "rttaurash@gmail.com",
+      "contactNumber": "773818101",
+      "licenseFeeReceipt": "R13173",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200091978",
+      "name": "FLAGPOLE ENTERPRISES",
+      "f64Number": "R439",
+      "physicalAddress": "1782 1782 Cowdray Park, Bulawayo",
+      "email": "leteaster1@gmail.com",
+      "contactNumber": "772255335",
+      "licenseFeeReceipt": "R317",
+      "location": "Bulawayo",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200147769",
+      "name": "BALANCED BUSINESS SYSTEMS",
+      "f64Number": "R345",
+      "physicalAddress": "310 Anlaby House 35 N Mandela Avenue",
+      "email": "bbsfreight@gmail.com",
+      "contactNumber": "772869550",
+      "licenseFeeReceipt": "R1255",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200078146",
+      "name": "NEXTBLUE ENTERPRISES",
+      "f64Number": "R124",
+      "physicalAddress": "152 152 Wellington Road",
+      "email": "pisemunya@gmail.com",
+      "contactNumber": "772967536",
+      "licenseFeeReceipt": "R14580",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200122324",
+      "name": "COMBINED LOGISTICS (ZIMBABWE)",
+      "f64Number": "R400",
+      "physicalAddress": "14947 Simon Mazorodze Road Southerton",
+      "email": "operations@hdcargo.co.zw",
+      "contactNumber": "772900304",
+      "licenseFeeReceipt": "R1532",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200279659",
+      "name": "DEBIRTH INVESTMENTS",
+      "f64Number": "R233",
+      "physicalAddress": "15 Seke Road",
+      "email": "debirthinvestments@gmail.com",
+      "contactNumber": "773500557",
+      "licenseFeeReceipt": "R1502",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200054017",
+      "name": "Aviocean Freight Services",
+      "f64Number": "R81",
+      "physicalAddress": "51 51 Falcon Road Hatfield",
+      "email": "sekaimanyepwa@gmail.com",
+      "contactNumber": "772573660",
+      "licenseFeeReceipt": "R1780",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001744318",
+      "name": "TODD FREIGHT SERVICES",
+      "f64Number": "R96",
+      "physicalAddress": "2432 Hopely Tariro Township Waterfalls",
+      "email": "anoiddk@gmail.com",
+      "contactNumber": "785927568",
+      "licenseFeeReceipt": "R1742",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200322495",
+      "name": "CUSTOMS EXPERTS INVESTMENT",
+      "f64Number": "R236",
+      "physicalAddress": "2240 Chikanga 2",
+      "email": "pmudawariwo86@gmail.com",
+      "contactNumber": "773294575",
+      "licenseFeeReceipt": "R4711",
+      "location": "Other",
+      "services": [
+        "clearing",
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200086939",
+      "name": "PERNOD ENTERPRISES",
+      "f64Number": "R100",
+      "physicalAddress": "231 Sopers Crescent",
+      "email": "lastnyango@gmail.com",
+      "contactNumber": "771613807",
+      "licenseFeeReceipt": "R1488",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200000336",
+      "name": "The Zimbabwe Bata Shoe Company",
+      "f64Number": "R139",
+      "physicalAddress": "521 522 Heavy Industrial sites Bulawayo Rd",
+      "email": "460.taxes@bata.com",
+      "contactNumber": "542223391",
+      "licenseFeeReceipt": "R341",
+      "location": "Bulawayo",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200026102",
+      "name": "MAC-VIEW ENTERPRISES",
+      "f64Number": "R336",
+      "physicalAddress": "5 IMF Building Luton Street Belmont",
+      "email": "macviewenterprises@gmail.com",
+      "contactNumber": "779707700",
+      "licenseFeeReceipt": "R345",
+      "location": "Bulawayo",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200154174",
+      "name": "ENERGY FREIGHT SERVICES",
+      "f64Number": "R409",
+      "physicalAddress": "2206 Tynwald South, Harare",
+      "email": "deltaonesecuri1@outlook.com",
+      "contactNumber": "772743403",
+      "licenseFeeReceipt": "R3702",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200272879",
+      "name": "XANNE CHRIS",
+      "f64Number": "R212",
+      "physicalAddress": "276 Herbert Chitepo Ave",
+      "email": "ethynyakudya@gmail.com",
+      "contactNumber": "773437618",
+      "licenseFeeReceipt": "R1794",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200102287",
+      "name": "NEW CHOICE ENTERPRISES",
+      "f64Number": "R363",
+      "physicalAddress": "6990 6990 91st Crescent Glen View 8",
+      "email": "newchoicetax@gmail.com",
+      "contactNumber": "771144867",
+      "licenseFeeReceipt": "R3990",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200211170",
+      "name": "CHECENT FREIGHT",
+      "f64Number": "R389",
+      "physicalAddress": "21a CRANLEIGH HATFIELD",
+      "email": "ernestchems@gmail.com",
+      "contactNumber": "775145981",
+      "licenseFeeReceipt": "R14648",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200005985",
+      "name": "CMC Shipping Freight",
+      "f64Number": "R79",
+      "physicalAddress": "159 Fife Avenue",
+      "email": "sharonmbano84@gmail.com",
+      "contactNumber": "775554146",
+      "licenseFeeReceipt": "R1621",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200348631",
+      "name": "EASTERNGATE CUSTOMS CLEARING",
+      "f64Number": "R36",
+      "physicalAddress": "61662 Pelandaba",
+      "email": "easterngateccs@gmail.com",
+      "contactNumber": "773457636",
+      "licenseFeeReceipt": "R16041",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200007128",
+      "name": "Zim Transport (Pvt) Ltd",
+      "f64Number": "R220",
+      "physicalAddress": "2 Conald Road Graniteside",
+      "email": "russell@oceanair.co.zw",
+      "contactNumber": "776404013",
+      "licenseFeeReceipt": "R1882",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200089874",
+      "name": "CHROMBAND INVESTMENTS",
+      "f64Number": "R117",
+      "physicalAddress": "13 6th Floor Pax House",
+      "email": "chrombands7@gmail.com",
+      "contactNumber": "773058118",
+      "licenseFeeReceipt": "R1796",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200135641",
+      "name": "TRANSDIRECT FREIGHT SERVICES",
+      "f64Number": "R116",
+      "physicalAddress": "2417 Warren Park",
+      "email": "ledmarttaxes@gmail.com",
+      "contactNumber": "772626734",
+      "licenseFeeReceipt": "R1848",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200353695",
+      "name": "Three May Logistics (Pvt) Ltd",
+      "f64Number": "R427",
+      "physicalAddress": "2784 Dulibadzimu",
+      "email": "threemaytaxes@gmail.cm",
+      "contactNumber": "773151220",
+      "licenseFeeReceipt": "R14660",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200068656",
+      "name": "DISTINCT FREIGHT SERVICES",
+      "f64Number": "R237",
+      "physicalAddress": "Unit 67 347 Masotcha Ndlovu Complex Waterfalls",
+      "email": "dfspvtltd@yahoo.com",
+      "contactNumber": "773290257",
+      "licenseFeeReceipt": "R1684",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200149004",
+      "name": "NEW CARGO MANAGEMENT",
+      "f64Number": "R57",
+      "physicalAddress": "234 Domestic Terminal Harare International Airport",
+      "email": "newcargomgt@gmail.com",
+      "contactNumber": "772469565",
+      "licenseFeeReceipt": "R1904",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200092630",
+      "name": "BAR BOUTIQUE",
+      "f64Number": "R214",
+      "physicalAddress": "113 Herbert Citepo Street",
+      "email": "barboutique2021@gmail.com",
+      "contactNumber": "773763232",
+      "licenseFeeReceipt": "R160",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200143344",
+      "name": "NHARIRA CARGO",
+      "f64Number": "R249",
+      "physicalAddress": "15B 6th Avenue Parktown Waterfalls",
+      "email": "movenkufa76@gmail.com",
+      "contactNumber": "772423575",
+      "licenseFeeReceipt": "R1874",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200037278",
+      "name": "Dabchick Investments",
+      "f64Number": "R226",
+      "physicalAddress": "3 Trojan Street Belmont",
+      "email": "cargoair@mweb.co.zw",
+      "contactNumber": "772216749",
+      "licenseFeeReceipt": "R363",
+      "location": "Bulawayo",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200318640",
+      "name": "Avocet Freight (Pvt) Ltd",
+      "f64Number": "R255",
+      "physicalAddress": "7 Frank Johnson Avenue Eastlea",
+      "email": "caisheng2025@gmail.com",
+      "contactNumber": "784169503",
+      "licenseFeeReceipt": "R1961",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200184525",
+      "name": "SWAN FREIGHT",
+      "f64Number": "R252",
+      "physicalAddress": "3895 1ST STREET DZIVARASEKWA 1",
+      "email": "joanahmut@gmail.com",
+      "contactNumber": "772306069",
+      "licenseFeeReceipt": "R2003",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200105382",
+      "name": "PEDREW COMPUTERS",
+      "f64Number": "R21",
+      "physicalAddress": "Block 1A Albco House 5 Bristol Dumfries Road",
+      "email": "andrewm@pedrewcomputers.co.zw",
+      "contactNumber": "772312495",
+      "licenseFeeReceipt": "R1594",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200287126",
+      "name": "EVERGLORY LOGISTICS",
+      "f64Number": "R385",
+      "physicalAddress": "253 STAND 253 NYAMAPANDA",
+      "email": "shipalllogistics956@gmail.com",
+      "contactNumber": "772583141",
+      "licenseFeeReceipt": "R14956",
+      "location": "Nyamapanda",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200247511",
+      "name": "Automated Customs Solutions (Pvt) Ltd",
+      "f64Number": "R366",
+      "physicalAddress": "289 Shortstone Derbyshire Waterfalls",
+      "email": "edwell@automatedcustoms.co.zw",
+      "contactNumber": "773609694",
+      "licenseFeeReceipt": "R1797",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200061387",
+      "name": "Alcomak Investments (Pvt) Ltd",
+      "f64Number": "R265",
+      "physicalAddress": "286 Granite Road",
+      "email": "makhadondifelani@gmail.com",
+      "contactNumber": "772732205",
+      "licenseFeeReceipt": "R14863",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200325167",
+      "name": "ANTOLE FREIGHT SERVICES",
+      "f64Number": "R279",
+      "physicalAddress": "2474 Hatfield",
+      "email": "makarichig21@gmail.com",
+      "contactNumber": "773734951",
+      "licenseFeeReceipt": "R4717",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200352755",
+      "name": "PATADA LOGISTICS",
+      "f64Number": "R326",
+      "physicalAddress": "3 Aberdeen Road Belgravia",
+      "email": "patadalogisticspvtltd@gmail.com",
+      "contactNumber": "776620234",
+      "licenseFeeReceipt": "R4689",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200160391",
+      "name": "VALLEY FREIGHT (PRIAVTE)",
+      "f64Number": "R361",
+      "physicalAddress": "4560 141 st Warren Park d",
+      "email": "valleyfreight2016@gmail.com",
+      "contactNumber": "772498619",
+      "licenseFeeReceipt": "R16002",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200223969",
+      "name": "GIMATAR LOGISTICS",
+      "f64Number": "R238",
+      "physicalAddress": "202 Nedlaw Complex Seke Road",
+      "email": "gibson@gimatar.co.zw",
+      "contactNumber": "772909525",
+      "licenseFeeReceipt": "R2053",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200210768",
+      "name": "TRANS GLOBAL LOGISTICS",
+      "f64Number": "R370",
+      "physicalAddress": "8 Nigel Phillips Avenue Eastlea",
+      "email": "hchids@gmail.com",
+      "contactNumber": "772691377",
+      "licenseFeeReceipt": "R1956",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200001524",
+      "name": "Transhaul (Pvt) Ltd",
+      "f64Number": "R201",
+      "physicalAddress": "22 23 HAYDON INDUSTRIAL PARK",
+      "email": "lisafalconer71@gmail.com",
+      "contactNumber": "712600844",
+      "licenseFeeReceipt": "R2209",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200107309",
+      "name": "HABERWAY INVESTMENTS",
+      "f64Number": "R356",
+      "physicalAddress": "10 Open Road Romney Park",
+      "email": "haberwayinvestments@gmail.com",
+      "contactNumber": "775101579",
+      "licenseFeeReceipt": "R475",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200218945",
+      "name": "MUSUSA RUDDY LOGISTICS",
+      "f64Number": "R42",
+      "physicalAddress": "4910 Hobhouse Harare",
+      "email": "rhungwa@gmail.com",
+      "contactNumber": "773571515",
+      "licenseFeeReceipt": "R5561",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200021975",
+      "name": "Pinrange Transport (Pvt) Ltd",
+      "f64Number": "R327",
+      "physicalAddress": "6946 Zimre Park, Ruwa",
+      "email": "pinrangetransport@gmail.com",
+      "contactNumber": "772380014",
+      "licenseFeeReceipt": "R2305",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200327250",
+      "name": "ENVIRO CUSTOMS CLEARING FORWARDING",
+      "f64Number": "R144",
+      "physicalAddress": "34 Greendale Avenue",
+      "email": "envirocustomsclearing@gmail.com",
+      "contactNumber": "773224546",
+      "licenseFeeReceipt": "R2195",
+      "location": "Harare",
+      "services": [
+        "clearing",
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200291897",
+      "name": "GEN POP",
+      "f64Number": "R49",
+      "physicalAddress": "134A 4TH AVE PARKTOWN WATERFALLS HARARE 134A 4TH AVE PARKTOWN WATERFALLS HARARE",
+      "email": "micholole@gmail.com",
+      "contactNumber": "787198420",
+      "licenseFeeReceipt": "R2369",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200294140",
+      "name": "BRICON MARLYN FLIGHT CARGO INTERNATIONAL",
+      "f64Number": "R422",
+      "physicalAddress": "5012 Chinotimba",
+      "email": "briconmarylnfreight@gmail.com",
+      "contactNumber": "771221990",
+      "licenseFeeReceipt": "R1817",
+      "location": "Victoria Falls",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200284470",
+      "name": "FLASHDELIVERY FREIGHT",
+      "f64Number": "R414",
+      "physicalAddress": "92C East Road Belgravia",
+      "email": "tattezvakavapano@gmail.com",
+      "contactNumber": "772881500",
+      "licenseFeeReceipt": "R2115",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200046917",
+      "name": "HELVETIA INVESTMENTS",
+      "f64Number": "R323",
+      "physicalAddress": "89a 89a G Silundika 14Th Avenue",
+      "email": "tairosmujakachi@gmail.com",
+      "contactNumber": "713273753",
+      "licenseFeeReceipt": "R620",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200286634",
+      "name": "AUTARKINGS INVESTMENTS",
+      "f64Number": "R438",
+      "physicalAddress": "2780 Herbert Chitepo Road",
+      "email": "lkodzwa@autarkings.co.zw",
+      "contactNumber": "772211573",
+      "licenseFeeReceipt": "R2753",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200314809",
+      "name": "Hypervision Investment Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Office 11 Pendock Complex Chirundu",
+      "email": "hypervisionpvtltd@gmail.com",
+      "contactNumber": "772526768",
+      "location": "Chirundu",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "2001794435",
+      "name": "Easy Shipping Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "lot 2 Lot 2 Arlington Estate RGM International Airport",
+      "email": "info.easyshippingpl@gmail.com",
+      "contactNumber": "772512156",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200283569",
+      "name": "Netmat Clearing and Forwarding",
+      "f64Number": "MANUAL",
+      "physicalAddress": "11 Philips Avenue, Belgravia, Harare",
+      "email": "netmat2022@gmail.com",
+      "contactNumber": "772843717",
+      "location": "Harare",
+      "services": [
+        "clearing",
+        "international"
+      ]
+    },
+    {
+      "bpNumber": "200294024",
+      "name": "Hemlex Logistics Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Stand Number 287 Chirundu",
+      "email": "hemlexlogistics@gmail.com",
+      "contactNumber": "773536476",
+      "location": "Chirundu",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200127707",
+      "name": "Beacon Freight Services",
+      "f64Number": "MANUAL",
+      "physicalAddress": "17 Mcloughlin Road, Kensington Harae",
+      "email": "jpiyo@beaconfreight.com",
+      "contactNumber": "773014657",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200109132",
+      "name": "Blywend Trading Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "NRZ 23 Dingimuzi T/Ship Plumtree",
+      "email": "blywendtrading@gmail.com",
+      "contactNumber": "774358151",
+      "location": "Plumtree",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200313506",
+      "name": "All Ports Freight & Logistics Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "No 10 Third Street Mutare",
+      "email": "allportsfreight40@gmail.com",
+      "contactNumber": "771025023",
+      "location": "Mutare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200239104",
+      "name": "Sheets Green Freight Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "1 Argyll Drive Newlands",
+      "email": "sthandim91@gmail.com",
+      "contactNumber": "772215901",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200071417",
+      "name": "Maction Enterprises Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "St No 179 Nyamapanda Location",
+      "email": "muswewestririb@yahoo.com",
+      "contactNumber": "772583503",
+      "location": "Nyamapanda",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200175029",
+      "name": "Famist Logistics P/L",
+      "f64Number": "MANUAL",
+      "physicalAddress": "7 Frank Johnson Avenue Eastlea, Harare",
+      "email": "famistlogistics@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200269272",
+      "name": "Rufab Freight and Logistics",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Office No4 Stand 1350 Chirundu",
+      "email": "rufabfrlogistics@gmail.com",
+      "contactNumber": "771946955",
+      "location": "Chirundu",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200272312",
+      "name": "Point to Point Freight Services",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Corner 5th/3rd Street Harare Showgrounds",
+      "email": "mmaxen2009@gmail.com",
+      "contactNumber": "773372769",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200259455",
+      "name": "Triangular logistics Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "983 Destiny Dangamvura Mutare",
+      "email": "ptriangularlogistics@gmail.com",
+      "contactNumber": "775155235",
+      "location": "Mutare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200178680",
+      "name": "Veltray Logistics P/L",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Office 1 Beitbridge Inn, Beitbridge",
+      "email": "veltraylogistics@gmail.com",
+      "contactNumber": "776976826",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200133271",
+      "name": "Ashglen Customs Consultancy",
+      "f64Number": "MANUAL",
+      "physicalAddress": "1259 Aerodrome, Victoria Falls",
+      "email": "mutsagob@yahoo.com",
+      "contactNumber": "775728107",
+      "location": "Victoria Falls",
+      "services": [
+        "clearing",
+        "consulting"
+      ]
+    },
+    {
+      "bpNumber": "200133335",
+      "name": "All Seas Freight Logistics",
+      "f64Number": "MANUAL",
+      "physicalAddress": "48 Airport Road, Hatfield, Harare",
+      "email": "chindurub@allseasfreight.co.zw",
+      "contactNumber": "772586650",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200331716",
+      "name": "Smartcargo",
+      "f64Number": "MANUAL",
+      "physicalAddress": "7455 Mkhosana Victoria Falls",
+      "email": "smartcargoffs@gmail.com",
+      "contactNumber": "773210779",
+      "location": "Victoria Falls",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001920405",
+      "name": "Qwik Shipping",
+      "f64Number": "MANUAL",
+      "physicalAddress": "6010 Nyamakata Mutare",
+      "email": "qwikshipping@gmail.com",
+      "contactNumber": "779849021",
+      "location": "Mutare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001326460",
+      "name": "Sphartak Investments",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Office 2 Pendo Complex Chirundu",
+      "email": "sphatakesvs@gmail.com",
+      "contactNumber": "778309874",
+      "location": "Chirundu",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200204938",
+      "name": "Twin Motivation Pvt Ltd",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Chirundu Agency Complex Room No 9 Chirundu",
+      "email": "twinmotivation@gmail.com",
+      "contactNumber": "779097834",
+      "location": "Chirundu",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200345770",
+      "name": "BRISK FREIGHT SERVICES",
+      "f64Number": "R309",
+      "physicalAddress": "9 G Silundika Ave, Harare",
+      "email": "briskfreightesvs@gmail.com",
+      "contactNumber": "772647673",
+      "licenseFeeReceipt": "R8083",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200191873",
+      "name": "RANDCLICK",
+      "f64Number": "R407",
+      "physicalAddress": "155 Wellington Road",
+      "email": "randclickpvt@gmail.com",
+      "contactNumber": "773874746",
+      "licenseFeeReceipt": "R32055",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200160749",
+      "name": "EBENEZER SHIPPING FREIGHT",
+      "f64Number": "R431",
+      "physicalAddress": "7511 Limpopo Road Zimre Park",
+      "email": "amos.nyamanzi@ebenezershipping.co.zw",
+      "contactNumber": "772200987",
+      "licenseFeeReceipt": "R3392",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200296496",
+      "name": "Translucent Freight Services (Pvt) Ltd",
+      "f64Number": "R441",
+      "physicalAddress": "23 Henry Street",
+      "email": "transluscenttaxes2021@gmail.com",
+      "contactNumber": "784915518",
+      "licenseFeeReceipt": "R9294",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200121598",
+      "name": "PREMIER LOGISTICS",
+      "f64Number": "R428",
+      "physicalAddress": "578 RETREAT WATERFALLS",
+      "email": "premierlogistcs@gmail.com",
+      "contactNumber": "773443454",
+      "licenseFeeReceipt": "R4345",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200091996",
+      "name": "DELIVERY GOODS FREIGHT",
+      "f64Number": "R357",
+      "physicalAddress": "1 33 St Davids rd Hatfield",
+      "email": "chrispen.muchemwa@gmail.com",
+      "contactNumber": "772277184",
+      "licenseFeeReceipt": "R3569",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200044547",
+      "name": "BELLSTAKE MARKETING",
+      "f64Number": "R378",
+      "physicalAddress": "7443 7443 Harare North",
+      "email": "bellstake@gmail.com",
+      "contactNumber": "772243965",
+      "licenseFeeReceipt": "R3925",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "2002089660",
+      "name": "CURVE FREIGHT",
+      "f64Number": "R420",
+      "physicalAddress": "15 Park Road",
+      "email": "robertmarume173@gmail.com",
+      "contactNumber": "779393275",
+      "licenseFeeReceipt": "R4384",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200319040",
+      "name": "HARDLIFE DICK SHIPPING",
+      "f64Number": "R30",
+      "physicalAddress": "3888 Medium Density, Beitbridge",
+      "email": "mukopadick@gmail.com",
+      "contactNumber": "774337476",
+      "licenseFeeReceipt": "R1179",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200327164",
+      "name": "ZIMJOURNEY INVESTMENTS",
+      "f64Number": "R383",
+      "physicalAddress": "3 Josiah Chinamano Avenue",
+      "email": "robbyinin@gmail.com",
+      "contactNumber": "717383988",
+      "licenseFeeReceipt": "R4423",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200001204",
+      "name": "Fidelity Gold Refinery (Pvt) Ltd",
+      "f64Number": "R340",
+      "physicalAddress": "1 01 George Drive Msasa",
+      "email": "gnyamuchengwa@fpr.co.zw",
+      "contactNumber": "775215267",
+      "licenseFeeReceipt": "R4438",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200344210",
+      "name": "TRISTAN LOGISTICS",
+      "f64Number": "R436",
+      "physicalAddress": "6448 Medium Density",
+      "email": "operationstl2020@gmail.com",
+      "contactNumber": "775667052",
+      "licenseFeeReceipt": "R28161",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001022605",
+      "name": "Prime Beryl",
+      "f64Number": "MANUAL",
+      "physicalAddress": "Stand no 72 Nymapanda Mudzi",
+      "email": "ssgumi@gmail.com",
+      "contactNumber": "772583121",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200069181",
+      "name": "COSTWAY TRADING",
+      "f64Number": "R197",
+      "physicalAddress": "7 CHARUMBIRA STREET ZENGEZA 3",
+      "email": "enyanhy@gmail.com",
+      "contactNumber": "772210294",
+      "licenseFeeReceipt": "R1821",
+      "location": "Chitungwiza",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "2002013288",
+      "name": "KARO FREIGHT",
+      "f64Number": "R352",
+      "physicalAddress": "117 THE CHASE MT PLEASANT HARARE",
+      "email": "chengemavi@gmail.com",
+      "contactNumber": "778477813",
+      "licenseFeeReceipt": "R9908",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200262786",
+      "name": "GLOBE TREK LOGISTICS",
+      "f64Number": "R408",
+      "physicalAddress": "65 Living Waters, Beitbridge",
+      "email": "phabelmakaranga@gmail.com",
+      "contactNumber": "776262989",
+      "licenseFeeReceipt": "R37509",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001898143",
+      "name": "SILICON FREIGHT",
+      "f64Number": "R163",
+      "physicalAddress": "25 25 SANDERS HOUSE 1ST STREET JASON MOYO HARARE",
+      "email": "siliconfrt@gmail.com",
+      "contactNumber": "772960277",
+      "licenseFeeReceipt": "R5003",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200142201",
+      "name": "GRAND RIDE ENTERPRISES",
+      "f64Number": "R122",
+      "physicalAddress": "1712 DULIBADZIMO, Beitbridhe",
+      "email": "grandrideenterprises@gmail.com",
+      "contactNumber": "773010611",
+      "licenseFeeReceipt": "R47990",
+      "location": "Beitbridge",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "2001890269",
+      "name": "KINKING CLEARING ENTERPRISES",
+      "f64Number": "R330",
+      "physicalAddress": "- 3 Tamar road vinona",
+      "email": "kinkinginvestment007@gmail.com",
+      "contactNumber": "775177896",
+      "licenseFeeReceipt": "R92900",
+      "location": "Other",
+      "services": [
+        "clearing",
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200123321",
+      "name": "ABERCON SERVICES",
+      "f64Number": "R417",
+      "physicalAddress": "425 Pioneer Road",
+      "email": "ephremdube@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200148995",
+      "name": "AFIDAL SHIPPING",
+      "f64Number": "R405",
+      "physicalAddress": "2 2 hafs complex RGM airport",
+      "email": "afidalshipping2023@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200032293",
+      "name": "AFROPRIDE FREIGHT EXPRESS",
+      "f64Number": "R80",
+      "physicalAddress": "268 Domboshava Road Borrowdale",
+      "email": "charles@carbongreenafrica.net",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200070995",
+      "name": "ALL CARGO FREIGHT",
+      "f64Number": "R318",
+      "physicalAddress": "2512 Outspan Close Glen Lorne",
+      "email": "allcargofreight@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200344132",
+      "name": "BEIT FRONTIER LOGISTICS",
+      "f64Number": "R63",
+      "physicalAddress": "5 Margaret Gardens Cockington Rd",
+      "email": "hillay.machiya@gmail.com",
+      "contactNumber": "",
+      "location": "Beitbridge",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200084240",
+      "name": "BIG JOE ENTERPRISES",
+      "f64Number": "R288",
+      "physicalAddress": "Room 4 11th Floor Construction House",
+      "email": "supergrowtax@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200002770",
+      "name": "BLUMMER INVESTMENTS",
+      "f64Number": "R306",
+      "physicalAddress": "2 203 2nd floor Anlaby house N Mandela",
+      "email": "memoryvmadzorera@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200020874",
+      "name": "BOLSBURY TRADING",
+      "f64Number": "R342",
+      "physicalAddress": "5 Barrow Road Southerton",
+      "email": "bolsbury2018@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200150510",
+      "name": "City Hub Transport (Pvt)ltd",
+      "f64Number": "R111",
+      "physicalAddress": "147 Marimba Road Matsheumhlope",
+      "email": "inyoni835@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200089092",
+      "name": "Constan Freight Services (Pvt) Ltd",
+      "f64Number": "R72",
+      "physicalAddress": "69 J Moyo Ave Hungwe Hse 5th Flr",
+      "email": "multigreatinvesments@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200104512",
+      "name": "CYDRUH FREIGHT SOLUTIONS",
+      "f64Number": "R250",
+      "physicalAddress": "4949 Medium Density",
+      "email": "sgumbo50@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200159026",
+      "name": "DELTA FREIGHT SERVICES",
+      "f64Number": "R436",
+      "physicalAddress": "Shop 180 Longcheng Plaza Belvedere",
+      "email": "tich@deltafreight.africa",
+      "contactNumber": "157570",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200063102",
+      "name": "DIRECT INTERNATIONAL TRADE FREIGHT SERVICES",
+      "f64Number": "R134",
+      "physicalAddress": "7th Floor Angwa City Julius Nyere Way Kwame Nkrumah Avenue",
+      "email": "rodwelldzimba@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200119487",
+      "name": "Migisi Investments (Pvt) Ltd",
+      "f64Number": "R202",
+      "physicalAddress": "7182 Medium density",
+      "email": "divinetouch@lantic.net",
+      "contactNumber": "569389",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200307151",
+      "name": "DUNAMIS FREIGHT",
+      "f64Number": "R316",
+      "physicalAddress": "2258 Lavengham Drive Bluffhilll",
+      "email": "dunamisfreightzimra1@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200304733",
+      "name": "ELEFANTE INVESTMENTS",
+      "f64Number": "R125",
+      "physicalAddress": "1st Floor BB House 125 L Takawira Street",
+      "email": "sandrat@crocoholdings.co.zw",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200082477",
+      "name": "FASTPORT INVESTMENTS",
+      "f64Number": "R364",
+      "physicalAddress": "109 Vanguard House1st Floor",
+      "email": "sekaiparewa46@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200134457",
+      "name": "FREIGHLOAD LOGISTICS",
+      "f64Number": "R132",
+      "physicalAddress": "1st Floor west wing Manica Chambers",
+      "email": "vicpointlogistics@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200012259",
+      "name": "GREYWING TRADING",
+      "f64Number": "R207",
+      "physicalAddress": "7191 Stree Avenue Prospect",
+      "email": "greywingt@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200236544",
+      "name": "INSPIRATION GROUND INTERNATIONAL",
+      "f64Number": "R259",
+      "physicalAddress": "7 Express Image",
+      "email": "lmudau4@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200263759",
+      "name": "ISIMILO INVESTMENTS",
+      "f64Number": "R430",
+      "physicalAddress": "4998 NEW MEDIUM BEITBRIDGE",
+      "email": "isimiloinnvestments@gmail.com",
+      "contactNumber": "",
+      "location": "Beitbridge",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200050889",
+      "name": "JETSET TRADING",
+      "f64Number": "R35",
+      "physicalAddress": "146 146 Wellington Rd Industrial Sites",
+      "email": "cchiweshe@jetsetfreight.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200263050",
+      "name": "JUWARIYYA FREIGHT",
+      "f64Number": "R267",
+      "physicalAddress": "16911 Old SPCA Complex Graniteside",
+      "email": "juwariyyazimra@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200084024",
+      "name": "LILANTON FREIGHT",
+      "f64Number": "R322",
+      "physicalAddress": "105 17728 New Cranborne Harare",
+      "email": "multigreatinvesments@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200230791",
+      "name": "MARKET FOOTPRINTS",
+      "f64Number": "R187",
+      "physicalAddress": "9 Bodle Avenue Eastlea",
+      "email": "spectra.holdings1@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200160282",
+      "name": "MOUNT SEIR INVESTMENTS",
+      "f64Number": "R62",
+      "physicalAddress": "425 Pioneer Road",
+      "email": "mountseirinvest@gmail.com",
+      "contactNumber": "113750",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200271953",
+      "name": "OVERBORDER CARGO SOLUTIONS",
+      "f64Number": "R314",
+      "physicalAddress": "9 The Chase Emerald Hill",
+      "email": "explorezimdrilling@outlook.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "0200205519",
+      "name": "Power Pick Investments P/L",
+      "f64Number": "R150",
+      "physicalAddress": "780 Medium Density",
+      "email": "mutsamandisodza@gmail.com",
+      "contactNumber": "566853",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "0200246256",
+      "name": "POWERPRAY INVESTMENTS",
+      "f64Number": "R260",
+      "physicalAddress": "3 Alderson Ave St Martins",
+      "email": "fchakuta@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "0200348341",
+      "name": "PROMUZ FREIGHT SOLUTIONS",
+      "f64Number": "R9",
+      "physicalAddress": "2999 Dulibadzimu",
+      "email": "muzaprosper2015@gmail.com",
+      "contactNumber": "565950",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200255736",
+      "name": "SEASHI CLEARING AGENTS",
+      "f64Number": "R245",
+      "physicalAddress": "15 Arundel School Road Mt Pleasant",
+      "email": "surfacecores@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "clearing"
+      ]
+    },
+    {
+      "bpNumber": "200184062",
+      "name": "Sepharvaim Investments (Pvt) Ltd",
+      "f64Number": "R290",
+      "physicalAddress": "14 Sanders Hse 1st Street",
+      "email": "sepharvaiminv@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200311654",
+      "name": "SHELTON SHEPHERD FREIGHT SERVICES",
+      "f64Number": "R170",
+      "physicalAddress": "9053 MKHOSANA",
+      "email": "snsfreightservices@gmail.com",
+      "contactNumber": "",
+      "location": "Victoria Falls",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200012471",
+      "name": "SOUTHWARK ENTERPRISES",
+      "f64Number": "R276",
+      "physicalAddress": "201 LONGCHEN PLAZA BELVEDERE",
+      "email": "southwark.ent@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200174309",
+      "name": "STANLEY LOGISTICS",
+      "f64Number": "R90",
+      "physicalAddress": "2 Nigel Phillips Road Eastlea",
+      "email": "smuseka@stanlogistics.co.zw",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200031231",
+      "name": "Volcano Freight Services (Pvt) Ltd",
+      "f64Number": "R443",
+      "physicalAddress": "21 Glenara Road Eastleah",
+      "email": "thetribes1@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200113829",
+      "name": "Uppermost Freight (Pvt) Ltd",
+      "f64Number": "R273",
+      "physicalAddress": "3 Clive Road Hatfield",
+      "email": "eng.silingani@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200134161",
+      "name": "WATERVISION FREIGHT",
+      "f64Number": "R52",
+      "physicalAddress": "23 LIVING WATERS",
+      "email": "watervisionfreight@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200219865",
+      "name": "URBAN FREIGHT",
+      "f64Number": "R418",
+      "physicalAddress": "22 Connaught Road Avondale",
+      "email": "mcmchibwe@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200340210",
+      "name": "Vizorly Investments (Pvt) Ltd",
+      "f64Number": "R185",
+      "physicalAddress": "8063 Chikangwe",
+      "email": "vizorlyinvestments@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200233321",
+      "name": "ARMSURGE ENTERPRISES",
+      "f64Number": "R160",
+      "physicalAddress": "27 G Silundika Ave",
+      "email": "armsurgeent2018@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "trading"
+      ]
+    },
+    {
+      "bpNumber": "200289468",
+      "name": "MIKILES FREIGHT",
+      "f64Number": "R333",
+      "physicalAddress": "165 nyamapanda",
+      "email": "mikilesfreight2esvs@gmail.com",
+      "contactNumber": "",
+      "location": "Nyamapanda",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2001328917",
+      "name": "BACCANGELA INVESTMENTS",
+      "f64Number": "R257",
+      "physicalAddress": "673 IZAYI PARK ZVISHAVANE",
+      "email": "dexterclarebhachi@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "2001927101",
+      "name": "ROYALCREST FREIGHT LOGISTICS",
+      "f64Number": "R372",
+      "physicalAddress": "91 POUND ROAD",
+      "email": "royalcrestfreightlogistics@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "2002089039",
+      "name": "ANAYE FREIGHT",
+      "f64Number": "R388",
+      "physicalAddress": "37 37 Robert Mugabe",
+      "email": "norman@anayefreight.co.zw",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "freight"
+      ]
+    },
+    {
+      "bpNumber": "200108181",
+      "name": "Heddridge Investments (Pvt) Ltd",
+      "f64Number": "R167",
+      "physicalAddress": "190 Samora Machel Avenue",
+      "email": "maedzengelorraine@gmail.com",
+      "contactNumber": "",
+      "location": "Harare",
+      "services": [
+        "investment"
+      ]
+    },
+    {
+      "bpNumber": "200030803",
+      "name": "WEBBLES SHIPPING",
+      "f64Number": "R353",
+      "physicalAddress": "3A Schanna Road",
+      "email": "alexious2mandishona@gmail.com",
+      "contactNumber": "",
+      "location": "Other",
+      "services": [
+        "freight"
+      ]
+    }
+  ]
+}
