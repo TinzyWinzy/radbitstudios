@@ -98,6 +98,45 @@ function isTaxQuery(text: string): boolean {
   return lower.startsWith('tax') || lower.startsWith('zimra') || lower.startsWith('vat');
 }
 
+function isShowSme(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower.startsWith('show me ') || lower.startsWith('show ');
+}
+
+function isVerifySme(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower.startsWith('verify ');
+}
+
+function isDepositCommand(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower.startsWith('deposit $') || lower.startsWith('deposit usd');
+}
+
+function isAlertCommand(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return (lower.startsWith('alert me') || lower.startsWith('alert ')) && lower.includes('drop');
+}
+
+function extractSmeName(text: string, prefix: string): string {
+  const lower = text.toLowerCase();
+  const idx = lower.indexOf(prefix);
+  if (idx === -1) return text.trim();
+  return text.slice(idx + prefix.length).trim().replace(/\s+(below|\$)\s*.*/i, '').trim();
+}
+
+function extractAmount(text: string): number | null {
+  const match = text.match(/\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/);
+  if (match) return parseFloat(match[1].replace(/,/g, ''));
+  const second = text.match(/\b(\d{3,})\b/);
+  return second ? parseInt(second[1]) : null;
+}
+
+function extractThreshold(text: string): number | null {
+  const match = text.match(/below\s*(\d+)/i);
+  return match ? parseInt(match[1]) : null;
+}
+
 export async function handleIncomingMessage(
   from: string,
   text: string,
@@ -149,6 +188,59 @@ export async function handleIncomingMessage(
       'https://radbitstudios.co.zw'
     );
     await addExchange(from, 'assistant', 'Welcome - account linking prompt');
+    return;
+  }
+
+  if (isShowSme(lower)) {
+    const smeName = extractSmeName(text, 'show me ');
+    const { handleShowSme } = await import('@/services/diaspora-commands');
+    const reply = await handleShowSme(session.userId, smeName || text.replace(/^show\s+/i, ''));
+    await sendWhatsAppMessage(from, reply);
+    await addExchange(from, 'assistant', reply);
+    return;
+  }
+
+  if (isVerifySme(lower)) {
+    const smeName = extractSmeName(text, 'verify ');
+    const { handleVerifyDeliveries } = await import('@/services/diaspora-commands');
+    const reply = await handleVerifyDeliveries(session.userId, smeName);
+    await sendWhatsAppMessage(from, reply);
+    await addExchange(from, 'assistant', reply);
+    return;
+  }
+
+  if (isDepositCommand(lower)) {
+    const amount = extractAmount(text);
+    if (!amount || amount <= 0) {
+      await sendWhatsAppMessage(from, 'Please specify a valid amount. Example: Deposit $500 to Mutare Trucking');
+      await addExchange(from, 'assistant', 'Invalid amount');
+      return;
+    }
+    const smeName = text.replace(/deposit\s+\$?[\d,]+\.?\d*\s*(?:to|for|in)?\s*/i, '').trim();
+    if (!smeName) {
+      await sendWhatsAppMessage(from, 'Please specify which SME. Example: Deposit $500 to Mutare Trucking');
+      await addExchange(from, 'assistant', 'No SME specified');
+      return;
+    }
+    const { handleDepositEscrow } = await import('@/services/diaspora-commands');
+    const reply = await handleDepositEscrow(session.userId, smeName, amount);
+    await sendWhatsAppMessage(from, reply);
+    await addExchange(from, 'assistant', reply);
+    return;
+  }
+
+  if (isAlertCommand(lower)) {
+    const threshold = extractThreshold(text);
+    const smeName = text.replace(/alert\s+(me\s+)?(if|when)\s+/i, '').replace(/\s+drops?\s+(below\s+)?\d+/i, '').trim();
+    if (!smeName) {
+      await sendWhatsAppMessage(from, 'Please specify which SME to monitor. Example: Alert me if Mutare Trucking drops below 60');
+      await addExchange(from, 'assistant', 'No SME specified');
+      return;
+    }
+    const { handleCreateAlert } = await import('@/services/diaspora-commands');
+    const reply = await handleCreateAlert(session.userId, smeName, threshold || undefined);
+    await sendWhatsAppMessage(from, reply);
+    await addExchange(from, 'assistant', reply);
     return;
   }
 
