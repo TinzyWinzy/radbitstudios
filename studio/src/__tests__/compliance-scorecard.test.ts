@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { getPrazProfile } from '@/services/praz-compliance';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { calculateComplianceScore } from '@/services/compliance-scorecard';
@@ -30,7 +30,7 @@ function makeQuerySnapshot(docs: any[]) {
 }
 
 function setupMockDb() {
-  (adminDb.collection as vi.Mock).mockImplementation((name: string) => {
+  const mockCollection = vi.fn().mockImplementation((name: string) => {
     const filters: Array<{ field: string; op: string; value: unknown }> = [];
 
     const queryRef: any = {
@@ -65,6 +65,8 @@ function setupMockDb() {
       add: vi.fn().mockResolvedValue({ id: 'mock-id' }),
     };
   });
+
+  (adminDb.collection as unknown as Mock).mockImplementation(mockCollection);
 }
 
 beforeEach(() => {
@@ -76,7 +78,7 @@ beforeEach(() => {
 describe('calculateComplianceScore', () => {
   it('scores correctly with valid PRAZ, tax, and NSSA', async () => {
     setCollectionData('users', [{ businessName: 'Acme Pvt Ltd' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({
+    (getPrazProfile as unknown as Mock).mockResolvedValue({
       readinessScore: 100,
       documents: {
         cert_incorporation: { status: 'valid' },
@@ -105,7 +107,7 @@ describe('calculateComplianceScore', () => {
 
   it('scores NSSA separately from tax clearance', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
+    (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', [
       { userId: 'user1', type: 'zimra_tax_clearance', status: 'expired', expiryDate: new Date('2025-01-01') },
       { userId: 'user1', type: 'nssa', status: 'valid', expiryDate: new Date('2027-12-31') },
@@ -122,7 +124,7 @@ describe('calculateComplianceScore', () => {
 
   it('scores PRAZ readiness proportionally', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({
+    (getPrazProfile as unknown as Mock).mockResolvedValue({
       readinessScore: 75,
       documents: {
         cert_incorporation: { status: 'valid' },
@@ -144,7 +146,7 @@ describe('calculateComplianceScore', () => {
 
   it('returns non_compliant for expired certificates', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
+    (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', [
       { userId: 'user1', type: 'zimra_tax_clearance', status: 'expired', expiryDate: new Date('2025-01-01') },
     ]);
@@ -157,7 +159,7 @@ describe('calculateComplianceScore', () => {
 
   it('returns expiring certificates as partial', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
+    (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', [
       { userId: 'user1', type: 'zimra_tax_clearance', status: 'expiring', expiryDate: new Date('2026-07-15') },
     ]);
@@ -170,7 +172,7 @@ describe('calculateComplianceScore', () => {
 
   it('marks not_tracked checks with score 0', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
+    (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', []);
     setCollectionData('scraped_items', []);
 
@@ -186,7 +188,7 @@ describe('calculateComplianceScore', () => {
 
   it('returns red for low scores', async () => {
     setCollectionData('users', [{ businessName: 'Fail Co' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
+    (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', []);
     setCollectionData('scraped_items', []);
 
@@ -195,9 +197,39 @@ describe('calculateComplianceScore', () => {
     expect(result.overallScore).toBeLessThan(60);
   });
 
+  it('returns amber for mixed scores', async () => {
+    setCollectionData('users', [{ businessName: 'Mixed Co' }]);
+    (getPrazProfile as unknown as Mock).mockResolvedValue({
+      readinessScore: 100,
+      documents: {
+        cert_incorporation: { status: 'valid' },
+        cr14: { status: 'valid' },
+        cr6: { status: 'valid' },
+        itf263: { status: 'valid' },
+        nssa: { status: 'valid' },
+        business_license: { status: 'valid' },
+        proof_residence: { status: 'valid' },
+      },
+    });
+    setCollectionData('compliance_certificates', [
+      { userId: 'user1', type: 'zimra_tax_clearance', status: 'valid', expiryDate: new Date('2027-12-31') },
+      { userId: 'user1', type: 'nssa', status: 'valid', expiryDate: new Date('2027-12-31') },
+    ]);
+    setCollectionData('scraped_items', [
+      { userId: 'user1', title: 'Road Construction Tender', status: 'won' },
+      { userId: 'user1', title: 'IT Services Tender', status: 'won' },
+      { userId: 'user1', title: 'Consultancy Tender', status: 'lost' },
+    ]);
+
+    const result = await calculateComplianceScore('user1');
+    expect(result.breakdown.tender_track_record.score).toBe(67);
+    expect(result.overallScore).toBeGreaterThanOrEqual(50);
+    expect(result.overallScore).toBeLessThan(80);
+  });
+
   it('includes all 9 breakdown checks', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
-    (getPrazProfile as vi.Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
+    (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', []);
     setCollectionData('scraped_items', []);
 

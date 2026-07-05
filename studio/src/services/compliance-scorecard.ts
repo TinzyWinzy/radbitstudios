@@ -45,19 +45,34 @@ const CHECKS: Array<{ key: keyof ComplianceScorecard['breakdown']; label: string
   { key: 'banking_history', label: 'Banking History (No Bounced Checks)', weight: 0.10 },
 ];
 
-function scoreForCertificate(cert: ComplianceCertificate | null): { score: number; maxScore: number; status: CheckStatus; details: string } {
+function makeCheck(
+  score: number,
+  maxScore: number,
+  weight: number,
+  status: CheckStatus,
+  details: string,
+  dataSource: string,
+): ScorecardCheck {
+  return { score, maxScore, weight, status, details, dataSource };
+}
+
+function checkFromCertificate(cert: ComplianceCertificate | null, weight: number): ScorecardCheck {
   if (!cert) {
-    return { score: 0, maxScore: 100, status: 'non_compliant', details: 'No certificate registered. Upload your certificate to track compliance.' };
+    return makeCheck(0, 100, weight, 'non_compliant', 'No certificate registered. Upload your certificate to track compliance.', 'Compliance Tracker');
   }
   switch (cert.status) {
-    case 'valid':
-      return { score: 100, maxScore: 100, status: 'compliant', details: `Valid until ${cert.expiryDate instanceof Date ? cert.expiryDate.toLocaleDateString() : new Date(cert.expiryDate as unknown as string).toLocaleDateString()}` };
-    case 'expiring':
-      return { score: 60, maxScore: 100, status: 'partial', details: `Expiring ${cert.expiryDate instanceof Date ? cert.expiryDate.toLocaleDateString() : new Date(cert.expiryDate as unknown as string).toLocaleDateString()} — renew now` };
+    case 'valid': {
+      const dateStr = cert.expiryDate instanceof Date ? cert.expiryDate.toLocaleDateString() : new Date(cert.expiryDate as unknown as string).toLocaleDateString();
+      return makeCheck(100, 100, weight, 'compliant', `Valid until ${dateStr}`, 'Compliance Tracker');
+    }
+    case 'expiring': {
+      const dateStr = cert.expiryDate instanceof Date ? cert.expiryDate.toLocaleDateString() : new Date(cert.expiryDate as unknown as string).toLocaleDateString();
+      return makeCheck(60, 100, weight, 'partial', `Expiring ${dateStr} — renew now`, 'Compliance Tracker');
+    }
     case 'expired':
-      return { score: 0, maxScore: 100, status: 'non_compliant', details: 'Certificate expired — immediate action required' };
+      return makeCheck(0, 100, weight, 'non_compliant', 'Certificate expired — immediate action required', 'Compliance Tracker');
     default:
-      return { score: 0, maxScore: 100, status: 'non_compliant', details: 'Unknown status' };
+      return makeCheck(0, 100, weight, 'non_compliant', 'Unknown status', 'Compliance Tracker');
   }
 }
 
@@ -82,12 +97,11 @@ export async function calculateComplianceScore(userId: string): Promise<Complian
   const userData = userDoc.data();
   const businessName = userData?.businessName || userData?.displayName || 'Business';
 
-  const breakdown: ComplianceScorecard['breakdown'] = {} as ComplianceScorecard['breakdown'];
+  const breakdown = {} as ComplianceScorecard['breakdown'];
   let totalWeightedScore = 0;
-  let activeWeight = 0;
 
   for (const check of CHECKS) {
-    let result: { score: number; maxScore: number; status: CheckStatus; details: string; dataSource: string };
+    let result: ScorecardCheck;
 
     switch (check.key) {
       case 'praz_registration': {
@@ -95,38 +109,36 @@ export async function calculateComplianceScore(userId: string): Promise<Complian
           const profile = await getPrazProfile(userId);
           const readinessScore = profile.readinessScore;
           if (readinessScore === 0) {
-            result = { score: 0, maxScore: 100, weight: check.weight, status: 'non_compliant', details: 'No PRAZ documents uploaded. Certificate of Incorporation, CR14, CR6, and tax clearance are required.', dataSource: 'PRAZ Document Upload' };
+            result = makeCheck(0, 100, check.weight, 'non_compliant', 'No PRAZ documents uploaded. Certificate of Incorporation, CR14, CR6, and tax clearance are required.', 'PRAZ Document Upload');
           } else {
             const docsUploaded = Object.values(profile.documents).filter(Boolean).length;
             const status: CheckStatus = readinessScore >= 80 ? 'compliant' : readinessScore >= 40 ? 'partial' : 'non_compliant';
-            result = { score: readinessScore, maxScore: 100, weight: check.weight, status, details: `${docsUploaded}/7 required documents uploaded (${readinessScore}% readiness)`, dataSource: 'PRAZ Document Upload' };
+            result = makeCheck(readinessScore, 100, check.weight, status, `${docsUploaded}/7 required documents uploaded (${readinessScore}% readiness)`, 'PRAZ Document Upload');
           }
         } catch {
-          result = { score: 0, maxScore: 100, weight: check.weight, status: 'non_compliant', details: 'Could not retrieve PRAZ profile', dataSource: 'PRAZ Document Upload' };
+          result = makeCheck(0, 100, check.weight, 'non_compliant', 'Could not retrieve PRAZ profile', 'PRAZ Document Upload');
         }
         break;
       }
 
       case 'tax_clearance': {
         const cert = await getCertificate(userId, 'zimra_tax_clearance');
-        const base = scoreForCertificate(cert);
-        result = { ...base, weight: check.weight, dataSource: 'Compliance Tracker' };
+        result = checkFromCertificate(cert, check.weight);
         break;
       }
 
       case 'nssa_compliance': {
         const cert = await getCertificate(userId, 'nssa');
-        const base = scoreForCertificate(cert);
-        result = { ...base, weight: check.weight, dataSource: 'Compliance Tracker' };
+        result = checkFromCertificate(cert, check.weight);
         break;
       }
 
       case 'paye_remittance':
-        result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'PAYE tracking not yet set up. Connect your payroll to enable this check.', dataSource: 'Not Available' };
+        result = makeCheck(0, 100, check.weight, 'not_tracked', 'PAYE tracking not yet set up. Connect your payroll to enable this check.', 'Not Available');
         break;
 
       case 'saz_iso':
-        result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'SAZ/ISO certification tracking not yet available. Upload your certificates to include this check.', dataSource: 'Not Available' };
+        result = makeCheck(0, 100, check.weight, 'not_tracked', 'SAZ/ISO certification tracking not yet available. Upload your certificates to include this check.', 'Not Available');
         break;
 
       case 'tender_track_record': {
@@ -136,43 +148,43 @@ export async function calculateComplianceScore(userId: string): Promise<Complian
             .limit(50)
             .get();
           if (snap.empty) {
-            result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'No tender history found. Start bidding to build your track record.', dataSource: 'PRAZ / Tender Scraper' };
+            result = makeCheck(0, 100, check.weight, 'not_tracked', 'No tender history found. Start bidding to build your track record.', 'PRAZ / Tender Scraper');
           } else {
             const tenders = snap.docs.map(d => d.data());
             const won = tenders.filter(t => t.status === 'awarded' || t.status === 'won');
             const winRate = tenders.length > 0 ? (won.length / tenders.length) * 100 : 0;
             const score = Math.round(winRate);
             const status: CheckStatus = score >= 60 ? 'compliant' : score >= 30 ? 'partial' : 'non_compliant';
-            result = { score, maxScore: 100, weight: check.weight, status, details: `${won.length}/${tenders.length} tenders won (${score}% win rate)`, dataSource: 'PRAZ / Tender Scraper' };
+            result = makeCheck(score, 100, check.weight, status, `${won.length}/${tenders.length} tenders won (${score}% win rate)`, 'PRAZ / Tender Scraper');
           }
         } catch {
-          result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'Could not retrieve tender history', dataSource: 'PRAZ / Tender Scraper' };
+          result = makeCheck(0, 100, check.weight, 'not_tracked', 'Could not retrieve tender history', 'PRAZ / Tender Scraper');
         }
         break;
       }
 
       case 'litigation':
-        result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'Litigation monitoring not yet available. This will check Zimbabwe court records for judgments against your business.', dataSource: 'Not Available' };
+        result = makeCheck(0, 100, check.weight, 'not_tracked', 'Litigation monitoring not yet available. This will check Zimbabwe court records for judgments against your business.', 'Not Available');
         break;
 
       case 'blacklist_status':
-        result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'Blacklist monitoring not yet available. This will check ZIMRA, PRAZ, and RBZ blacklists.', dataSource: 'Not Available' };
+        result = makeCheck(0, 100, check.weight, 'not_tracked', 'Blacklist monitoring not yet available. This will check ZIMRA, PRAZ, and RBZ blacklists.', 'Not Available');
         break;
 
       case 'banking_history':
-        result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'Banking verification not yet available. Connect your bank account to enable this check.', dataSource: 'Not Available' };
+        result = makeCheck(0, 100, check.weight, 'not_tracked', 'Banking verification not yet available. Connect your bank account to enable this check.', 'Not Available');
         break;
 
       default:
-        result = { score: 0, maxScore: 100, weight: check.weight, status: 'not_tracked', details: 'Check not yet implemented', dataSource: 'Not Available' };
+        result = makeCheck(0, 100, check.weight, 'not_tracked', 'Check not yet implemented', 'Not Available');
     }
 
     breakdown[check.key] = result;
-    totalWeightedScore += result.score * result.weight * (result.maxScore > 0 ? 1 : 0);
-    activeWeight += result.weight;
+    totalWeightedScore += result.score * result.weight;
   }
 
-  const overallScore = activeWeight > 0 ? Math.round(totalWeightedScore) : 0;
+  const overallScore = Math.round(totalWeightedScore);
+
   let status: ScorecardStatus;
   if (overallScore >= 80) status = 'green';
   else if (overallScore >= 60) status = 'amber';
