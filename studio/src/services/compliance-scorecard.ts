@@ -1,6 +1,5 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { getPrazProfile } from './praz-compliance';
-import { getFiscalComplianceStatus } from './zimra-fiscal';
 import type { ComplianceCertificate } from './compliance-tracker';
 
 export type CheckStatus = 'compliant' | 'partial' | 'non_compliant' | 'not_tracked';
