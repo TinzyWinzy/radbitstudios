@@ -10,6 +10,7 @@ import { TiltCard } from "@/components/tilt-card";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { AdUnit } from "@/components/adsense";
 import { HeroBackground } from "@/components/hero-background";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 import { OperationalStressTester } from "@/components/operational-stress-tester";
 import dynamic from "next/dynamic";
 
@@ -912,6 +913,15 @@ export default function LandingPage() {
         </section>
         <EssentialSection />
         <PricingTeaser />
+        <section className="container max-w-4xl py-12 relative z-10">
+          <NewsletterSignup
+            variant="banner"
+            title="Stay ahead of ZIMRA deadlines, tender opportunities, and market shifts"
+            description="Join 500+ Zimbabwean entrepreneurs who read our weekly newsletter."
+            buttonText="Subscribe Free"
+            leadMagnet="ZIMRA Tax Deadline Calendar for 2026"
+          />
+        </section>
         <CTASection />
       </div>
     </div>

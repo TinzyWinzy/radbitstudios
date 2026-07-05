@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Globe, Shield, BarChart, Briefcase, Handshake, CheckCircle2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TiltCard } from "@/components/tilt-card";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 
 const features = [
   {
@@ -177,6 +178,16 @@ export function DiasporaLanding() {
             </Link>
           </Button>
         </div>
+      </section>
+
+      <section className="container max-w-4xl pb-16">
+        <NewsletterSignup
+          variant="banner"
+          title="Diaspora investor newsletter — opportunities delivered weekly"
+          description="Get vetted SME investment opportunities, diaspora business guides, and policy updates."
+          buttonText="Subscribe Free"
+          leadMagnet="Diaspora Investment Checklist PDF"
+        />
       </section>
     </div>
   );

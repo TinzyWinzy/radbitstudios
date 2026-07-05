@@ -46,6 +46,7 @@ export default function robots(): MetadataRoute.Robots {
           '/use-cases',
           '/vat-threshold-alerts',
           '/zimra-fiscal-device-registration',
+          '/guides/',
         ],
       },
     ],

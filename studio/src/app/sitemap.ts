@@ -34,6 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/diaspora/start-business`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/diaspora-matchmaking`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
     { url: `${SITE_URL}/events/zimbabwe-business-expo-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/guides/zimra-tax-calendar-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
   ];
 
   let blogPosts: MetadataRoute.Sitemap = [];

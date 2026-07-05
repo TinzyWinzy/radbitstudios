@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Rss } from "lucide-react";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 
 /* ── static metadata (server-rendered, indexable by crawlers) ── */
 export const metadata: Metadata = {
@@ -66,6 +67,15 @@ export default function BlogPage() {
           Radbit&apos;s blog covers the intersection of enterprise technology, regulatory compliance, and SME growth in Zimbabwe and across the SADC region. We publish guides on tender preparation, PRAZ compliance workflows, ZIMRA tax updates, diaspora investment mechanics, and practical case studies from Zimbabwean businesses navigating digital transformation. Topics draw on real operator experience &mdash; not theory &mdash; and are written for business owners, compliance officers, and technology practitioners working within Zimbabwe&apos;s economic environment.
         </p>
       </div>
+
+      <NewsletterSignup
+        variant="banner"
+        title="Get tender alerts, tax deadline reminders, and diaspora investment opportunities"
+        description="Join 500+ Zimbabwean entrepreneurs who get our weekly newsletter."
+        buttonText="Subscribe Free"
+        leadMagnet="ZIMRA Tax Deadline Calendar for 2026"
+        className="mb-10"
+      />
 
       <BlogList />
     </div>
