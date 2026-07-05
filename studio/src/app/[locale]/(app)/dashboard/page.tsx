@@ -29,6 +29,10 @@ import {
   BarChart,
   WifiOff,
   Clock,
+  ShieldCheck,
+  DollarSign,
+  UserCheck,
+  Package,
 } from "lucide-react";
 import Link from "next/link";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
@@ -120,6 +124,12 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectTasks, setProjectTasks] = useState<Record<string, ProjectTask[]>>({});
   const upgradeShown = useRef(false);
+
+  const [complianceScore, setComplianceScore] = useState<number | null>(null);
+  const [financialHealth, setFinancialHealth] = useState<{ score: number; details: string } | null>(null);
+  const [founderRep, setFounderRep] = useState<{ score: number; status: string } | null>(null);
+  const [opMirror, setOpMirror] = useState<{ stockCount: number; deliveryCount: number; assetCount: number } | null>(null);
+  const [loadingWidgets, setLoadingWidgets] = useState(true);
 
   const hasCompletedProfile = !!(user && user.businessName && user.industry);
 
@@ -284,6 +294,32 @@ export default function DashboardPage() {
       return;
     }
 
+    const fetchWidgets = async () => {
+      if (!user) return;
+      try {
+        const headers = { Authorization: `Bearer ${await user.getIdToken()}` };
+        const [compRes, finRes, repRes, stockRes, deliveryRes, assetRes] = await Promise.all([
+          fetch('/api/compliance/scorecard', { headers }).then(r => r.json()).catch(() => ({})),
+          fetch('/api/financial-oracle', { headers }).then(r => r.json()).catch(() => ({})),
+          fetch('/api/reputation', { headers }).then(r => r.json()).catch(() => ({})),
+          fetch('/api/operations/stock', { headers }).then(r => r.json()).catch(() => ({})),
+          fetch('/api/operations/delivery', { headers }).then(r => r.json()).catch(() => ({})),
+          fetch('/api/operations/assets', { headers }).then(r => r.json()).catch(() => ({})),
+        ]);
+        if (mounted) {
+          if (compRes.scorecard) setComplianceScore(compRes.scorecard.overallScore);
+          if (finRes.health) setFinancialHealth({ score: finRes.health.overallScore, details: finRes.health.details });
+          if (repRes.reputation) setFounderRep({ score: repRes.reputation.overallScore, status: repRes.reputation.status });
+          setOpMirror({
+            stockCount: stockRes.stock?.length ?? 0,
+            deliveryCount: deliveryRes.deliveries?.length ?? 0,
+            assetCount: assetRes.assets?.length ?? 0,
+          });
+        }
+      } catch { /* silent */ }
+      if (mounted) setLoadingWidgets(false);
+    };
+
     const fetchProjects = async () => {
       if (!user) return;
       try {
@@ -308,6 +344,7 @@ export default function DashboardPage() {
 
     fetchDashboardInsights();
     fetchAssessmentData();
+    fetchWidgets();
     fetchProjects();
 
     return () => { mounted = false; };
@@ -361,6 +398,60 @@ export default function DashboardPage() {
 
       {/* Market Snapshot */}
       <MarketSnapshotCard />
+
+      {/* Widgets row: Compliance, Financial Health, Founder Rep, Ops Mirror */}
+      {loadingWidgets ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Card className="border-l-4 border-l-green-500">
+            <CardContent className="p-4 flex items-center gap-3">
+              <ShieldCheck className="h-8 w-8 text-green-500 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Compliance</p>
+                <p className="text-xl font-bold">{complianceScore ?? '—'}</p>
+                <p className="text-[10px] text-muted-foreground truncate">
+                  {complianceScore !== null ? (complianceScore >= 80 ? 'Good standing' : complianceScore >= 60 ? 'Needs work' : 'At risk') : 'No data'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-l-4 border-l-blue-500">
+            <CardContent className="p-4 flex items-center gap-3">
+              <DollarSign className="h-8 w-8 text-blue-500 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Financial Health</p>
+                <p className="text-xl font-bold">{financialHealth?.score ?? '—'}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{financialHealth?.details?.slice(0, 40) ?? 'Upload statements'}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-l-4 border-l-purple-500">
+            <CardContent className="p-4 flex items-center gap-3">
+              <UserCheck className="h-8 w-8 text-purple-500 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Founder Reputation</p>
+                <p className="text-xl font-bold">{founderRep?.score ?? '—'}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{founderRep?.status ?? 'Not rated'}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-l-4 border-l-orange-500">
+            <CardContent className="p-4 flex items-center gap-3">
+              <Package className="h-8 w-8 text-orange-500 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs text-muted-foreground">Ops Mirror</p>
+                <p className="text-xl font-bold">{opMirror ? opMirror.stockCount + opMirror.deliveryCount + opMirror.assetCount : '—'}</p>
+                <p className="text-[10px] text-muted-foreground truncate">
+                  {opMirror ? `${opMirror.stockCount} stock · ${opMirror.deliveryCount} deliveries · ${opMirror.assetCount} assets` : 'No data'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Main Content: Assessment + Insights side by side */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">

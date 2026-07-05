@@ -1,5 +1,20 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 
+const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || '';
+
+export async function geocodeLocation(destination: string): Promise<{ latitude: number; longitude: number; formattedAddress: string } | null> {
+  if (!MAPS_API_KEY) return null;
+  try {
+    const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(destination)}&key=${MAPS_API_KEY}`);
+    const data = await res.json();
+    if (data.status !== 'OK' || !data.results?.[0]) return null;
+    const { lat, lng } = data.results[0].geometry.location;
+    return { latitude: lat, longitude: lng, formattedAddress: data.results[0].formatted_address };
+  } catch {
+    return null;
+  }
+}
+
 export interface StockCount {
   id: string;
   userId: string;

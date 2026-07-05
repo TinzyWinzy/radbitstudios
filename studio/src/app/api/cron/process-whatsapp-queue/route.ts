@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { processOutboundQueue } from '@/services/whatsapp/outbound-queue';
+import { processOutboundQueue } from '@/services/notifications/outbound-dispatcher';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';

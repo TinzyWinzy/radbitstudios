@@ -645,6 +645,170 @@ const liveTenders: CustomParser = async (config) => {
   return results;
 };
 
+const botswanaPPADB: CustomParser = async (config) => {
+  const results: Tender[] = [];
+  const seen = new Set<string>();
+  try {
+    const r = await axios.get('https://www.ppadb.co.bw/api/tenders', {
+      timeout: config.timeout || 15000,
+      headers: { 'User-Agent': 'RadbitStudios/1.0', 'Accept': 'application/json' },
+    });
+    const data = r.data as Record<string, unknown>;
+    const tenders: Array<Record<string, unknown>> = Array.isArray(data)
+      ? data
+      : ((data?.tenders || data?.data || []) as Array<Record<string, unknown>>);
+    for (const item of tenders.slice(0, 30)) {
+      const title = (item.title || item.name || item.procurement_reference || '') as string;
+      if (!title || title.length < 3) continue;
+      const key = title.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const closingDate = item.closing_date || item.deadline || item.closingDate || null;
+      results.push(enrichTender({
+        title,
+        description: (item.description || item.details || '') as string || `Botswana PPADB tender: ${title}`,
+        organization: (item.organization || item.procuring_entity || config.organization) as string,
+        sourceUrl: (item.url || item.link || item.sourceUrl || 'https://www.ppadb.co.bw/tenders') as string,
+        closingDate: closingDate ? new Date(closingDate as string) : null,
+        value: (item.value || item.estimated_value || null) as string | null,
+        sector: classifySector(title),
+        category: (item.category || config.category) as string,
+        requirements: [],
+        region: 'Botswana',
+        sourceName: config.name,
+      }));
+    }
+    if (results.length > 0) console.log(`[TenderScraper] PPADB Botswana: ${results.length} tenders`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] PPADB Botswana failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
+  }
+  return results;
+};
+
+const zambiaZPPA: CustomParser = async (config) => {
+  const results: Tender[] = [];
+  const seen = new Set<string>();
+  try {
+    const r = await axios.get('https://www.zppa.org.zm/index.php/procurement-notices', {
+      timeout: config.timeout || 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = parseHtml(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    $('table tbody tr, table tr, .notice-item, .views-row').each((_, row) => {
+      const cells = $(row).find('td').map((_, c) => $(c).text().trim().replace(/\s+/g, ' ')).get();
+      const link = $(row).find('a[href]').first();
+      const href = link.attr('href') || '';
+      const linkText = link.text().trim();
+      if (!href || href === '#' || href === '/') return;
+      const title = linkText || cells[0] || '';
+      if (!title || title.length < 5) return;
+      const key = (href + title.slice(0, 40)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      const fullHref = href.startsWith('http') ? href : `${config.baseUrl}${href}`;
+      let closingDate: Date | null = null;
+      for (const c of cells) {
+        const m = c.match(/(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/);
+        if (m) { try { closingDate = new Date(m[1]); } catch { /* ignore */ } break; }
+      }
+      results.push(enrichTender({
+        title,
+        description: cells.join(' | ') || `ZPPA Zambia procurement notice`,
+        organization: config.organization,
+        sourceUrl: fullHref,
+        closingDate,
+        value: null,
+        sector: classifySector(title),
+        category: config.category,
+        requirements: [],
+        region: 'Zambia',
+        sourceName: config.name,
+      }));
+    });
+    if (results.length > 0) console.log(`[TenderScraper] ZPPA Zambia: ${results.length} tenders`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] ZPPA Zambia failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
+  }
+  return results;
+};
+
+const mozambiqueCNU: CustomParser = async (config) => {
+  const results: Tender[] = [];
+  const seen = new Set<string>();
+  try {
+    const r = await axios.get('https://www.cnu.gov.mz/avisos-de-concurso', {
+      timeout: config.timeout || 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = parseHtml(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    $('a[href*="concurso"], a[href*="tender"], table tr').each((_, el) => {
+      const link = $(el).is('a') ? $(el) : $(el).find('a').first();
+      const href = link.attr('href') || '';
+      const text = link.text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5) return;
+      const key = (href + text.slice(0, 40)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      const fullHref = href.startsWith('http') ? href : `${config.baseUrl}${href}`;
+      results.push(enrichTender({
+        title: text.slice(0, 200),
+        description: `Mozambique CNU procurement notice: ${text}`,
+        organization: config.organization,
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: config.category,
+        requirements: [],
+        region: 'Mozambique',
+        sourceName: config.name,
+      }));
+    });
+    if (results.length > 0) console.log(`[TenderScraper] CNU Mozambique: ${results.length} notices`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] CNU Mozambique failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
+  }
+  return results;
+};
+
+const malawiPPDA: CustomParser = async (config) => {
+  const results: Tender[] = [];
+  const seen = new Set<string>();
+  try {
+    const r = await axios.get('https://www.ppda.mw/procurement-notices', {
+      timeout: config.timeout || 15000,
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'Accept': 'text/html' },
+    });
+    const $ = parseHtml(typeof r.data === 'string' ? r.data : JSON.stringify(r.data));
+    $('a[href*="notice"], a[href*="tender"], .views-row a, table tr a').each((_, el) => {
+      const href = $(el).attr('href') || '';
+      const text = $(el).text().trim().replace(/\s+/g, ' ');
+      if (!href || !text || text.length < 5) return;
+      const key = (href + text.slice(0, 40)).toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      const fullHref = href.startsWith('http') ? href : `${config.baseUrl}${href}`;
+      results.push(enrichTender({
+        title: text.slice(0, 200),
+        description: `Malawi PPDA procurement notice: ${text}`,
+        organization: config.organization,
+        sourceUrl: fullHref,
+        closingDate: null,
+        value: null,
+        sector: classifySector(text),
+        category: config.category,
+        requirements: [],
+        region: 'Malawi',
+        sourceName: config.name,
+      }));
+    });
+    if (results.length > 0) console.log(`[TenderScraper] PPDA Malawi: ${results.length} notices`);
+  } catch (error: unknown) {
+    console.warn(`[TenderScraper] PPDA Malawi failed: ${(error instanceof Error ? error.message : String(error)).slice(0, 100)}`);
+  }
+  return results;
+};
+
 export const customScrapers: Record<string, CustomParser> = {
   'sa-etenders': saETenders,
   'afdb': afdb,
@@ -656,4 +820,8 @@ export const customScrapers: Record<string, CustomParser> = {
   'undp': undp,
   'herald': herald,
   'live-tenders': liveTenders,
+  'botswana-ppadb': botswanaPPADB,
+  'zambia-zppa': zambiaZPPA,
+  'mozambique-cnu': mozambiqueCNU,
+  'malawi-ppda': malawiPPDA,
 };

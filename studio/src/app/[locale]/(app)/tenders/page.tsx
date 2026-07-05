@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   Briefcase, Search, ExternalLink, Calendar, DollarSign, Building2,
   Clock, AlertCircle, CheckCircle, Loader2, RefreshCw,
-  Bookmark, Zap, Globe, Lock, Code
+  Bookmark, Zap, Globe, Lock, Code, Shield, ShieldCheck, ShieldX, ListChecks,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AuthContext } from '@/contexts/auth-context';
@@ -22,6 +22,9 @@ import { checkFeatureAccess } from '@/services/feature-gate';
 import type { UpgradeInfo } from '@/services/feature-gate';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import { createNotification } from "@/services/notifications/notifications-service";
+import {
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
 type Tender = {
@@ -164,6 +167,11 @@ export default function TendersPage() {
 
   const [mySectorOnly, setMySectorOnly] = useState(false);
 
+  const [armorResult, setArmorResult] = useState<{
+    status: string; overallScore: number; checks: Array<{ name: string; status: string; details: string }>;
+  } | null>(null);
+  const [loadingArmor, setLoadingArmor] = useState(false);
+
   const loadTenders = useCallback(async (showRefresh = false) => {
     const sectorMap: Record<string, string> = {
       'Agriculture': 'Agriculture & Agribusiness',
@@ -254,6 +262,27 @@ export default function TendersPage() {
     await loadTenders(true);
   };
 
+  const runArmorCheck = async () => {
+    if (!user) return;
+    setLoadingArmor(true);
+    try {
+      const idToken = await user.getIdToken();
+      const res = await fetch('/api/tender/armor', {
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setArmorResult(data);
+      } else {
+        toast({ title: 'Armor check failed', description: 'Could not run pre-flight check.', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Network error running armor check.', variant: 'destructive' });
+    } finally {
+      setLoadingArmor(false);
+    }
+  };
+
   const userPlan = user?.plan || 'Free';
   const isRegional = regionTab === 'regional';
 
@@ -262,7 +291,7 @@ export default function TendersPage() {
   const filteredTenders = tenders
     .filter(t => {
       if (activeTab !== 'all' && t.status !== activeTab) return false;
-      const isZimbabweOrSadc = t.region === 'Zimbabwe' || t.region === 'SADC' || t.region === 'Africa';
+      const isZimbabweOrSadc = ['Zimbabwe', 'SADC', 'Africa', 'Botswana', 'Zambia', 'Mozambique', 'Malawi'].includes(t.region);
       if (isRegional && isZimbabweOrSadc) return false;
       if (!isRegional && !isZimbabweOrSadc) return false;
       if (searchQuery) {
@@ -306,6 +335,15 @@ export default function TendersPage() {
         >
           {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
           {isRefreshing ? 'Refreshing...' : 'Refresh Tenders'}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={runArmorCheck}
+          disabled={loadingArmor || !user}
+          className="gap-2"
+        >
+          {loadingArmor ? <Loader2 className="h-4 w-4 animate-spin" /> : <ListChecks className="h-4 w-4" />}
+          {loadingArmor ? 'Checking...' : 'Tender Armor'}
         </Button>
         <Button
           variant="ghost"
@@ -495,6 +533,52 @@ export default function TendersPage() {
           </CardContent>
         </Card>
       )}
+
+      <Dialog open={!!armorResult} onOpenChange={(o) => { if (!o) setArmorResult(null); }}>
+        <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ListChecks className="h-5 w-5 text-primary" />
+              Tender Armor — Pre-Flight Check
+            </DialogTitle>
+            <DialogDescription>
+              {armorResult ? `${armorResult.overallScore}/100 — ${armorResult.status}` : 'Running checks...'}
+            </DialogDescription>
+          </DialogHeader>
+          {armorResult && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 p-3 rounded-lg border text-sm font-medium"
+                style={{
+                  backgroundColor: armorResult.status === 'Green' ? 'rgb(220 252 231)' : armorResult.status === 'Yellow' ? 'rgb(254 249 195)' : 'rgb(254 226 226)',
+                  color: armorResult.status === 'Green' ? 'rgb(22 101 52)' : armorResult.status === 'Yellow' ? 'rgb(133 77 14)' : 'rgb(153 27 27)',
+                }}
+              >
+                {armorResult.status === 'Green' ? <ShieldCheck className="h-5 w-5" /> :
+                 armorResult.status === 'Yellow' ? <Shield className="h-5 w-5" /> :
+                 <ShieldX className="h-5 w-5" />}
+                {armorResult.status === 'Green' ? ' Ready to bid' :
+                 armorResult.status === 'Yellow' ? ' Address warnings before bidding' :
+                 ' Fix critical issues before bidding'}
+              </div>
+              {armorResult.checks.map((check, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg border">
+                  {check.status === 'pass' ? (
+                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
+                  ) : check.status === 'warn' ? (
+                    <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                  ) : (
+                    <ShieldX className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{check.name}</p>
+                    <p className="text-xs text-muted-foreground">{check.details}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <UpgradeModal
         open={!!upgradeInfo}

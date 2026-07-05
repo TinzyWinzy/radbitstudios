@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withIpRateLimit } from '@/services/api-rate-limit';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { calculateTrustSeal } from '@/services/trust-seal';
+import type { TrustSeal } from '@/services/trust-seal';
 
 function revenueLabel(revenue: number | undefined): string {
   if (!revenue || revenue === 0) return 'Pre-revenue';
@@ -26,7 +28,7 @@ export const GET = withIpRateLimit(
       .limit(50)
       .get();
 
-    const smes = snap.docs
+    const baseSmes = snap.docs
       .map(doc => {
         const d = doc.data();
         if (!d.businessName || !d.industry) return null;
@@ -51,9 +53,9 @@ export const GET = withIpRateLimit(
       tourism: ['Hospitality & Tourism', 'Transport & Logistics'],
     };
 
-    let filtered = smes;
+    let filtered = baseSmes;
     if (sectorFilter && sectorMap[sectorFilter]) {
-      filtered = smes.filter(s => sectorMap[sectorFilter].includes(s.sector));
+      filtered = baseSmes.filter(s => sectorMap[sectorFilter].includes(s.sector));
     }
     if (search) {
       filtered = filtered.filter(
@@ -61,7 +63,21 @@ export const GET = withIpRateLimit(
       );
     }
 
-    return NextResponse.json({ smes: filtered });
+    const trustSealResults = await Promise.allSettled(
+      filtered.map(sme => calculateTrustSeal(sme.id)),
+    );
+    const trustSealMap = new Map<string, TrustSeal | null>();
+    filtered.forEach((sme, i) => {
+      const result = trustSealResults[i];
+      trustSealMap.set(sme.id, result.status === 'fulfilled' ? result.value : null);
+    });
+
+    const smes = filtered.map(sme => ({
+      ...sme,
+      trustSeal: trustSealMap.get(sme.id) ?? null,
+    }));
+
+    return NextResponse.json({ smes });
   } catch (error: unknown) {
     console.error('[Diaspora SMEs] Error:', error);
     return NextResponse.json({ error: 'Failed to load SMEs' }, { status: 500 });

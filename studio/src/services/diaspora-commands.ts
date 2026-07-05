@@ -1,7 +1,7 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { calculateTrustSeal } from './trust-seal';
 import { getFinancialSummary } from './financial-oracle';
-import { enqueueOutboundMessage } from './whatsapp/outbound-queue';
+import { enqueueNotification } from './notifications/outbound-dispatcher';
 
 export interface DiasporaAlert {
   id: string;
@@ -75,9 +75,12 @@ export async function handleDepositEscrow(investorUserId: string, smeName: strin
   const investorDoc = await adminDb.collection('diaspora_investors').doc(investorUserId).get();
   const investorName = investorDoc.data()?.countryOfResidence || 'Diaspora investor';
 
-  await enqueueOutboundMessage(smeId, '', 'assessment_results_ready', {
-    message: `New escrow deposit: ${investorName} proposes $${amountUsd.toLocaleString()} deposit to ${smeName}. Reply CONFIRM or DECLINE.`,
-  }, 0);
+  await enqueueNotification(smeId, {
+    title: 'New Escrow Deposit',
+    body: `${investorName} proposes $${amountUsd.toLocaleString()} deposit to ${smeName}. Confirm or decline in your dashboard.`,
+    channels: ['email', 'in_app'],
+    link: '/investor-portal',
+  });
 
   return `Escrow request #${escrowRef.id} created for $${amountUsd.toLocaleString()} to ${smeName}. The SME will be notified to confirm.`;
 }

@@ -1,5 +1,6 @@
 import { getComplianceScorecard } from './compliance-scorecard';
 import { getFinancialHealth } from './financial-oracle';
+import { calculateFounderReputation } from './founder-reputation';
 
 export type TrustSealStatus = 'green' | 'amber' | 'red';
 
@@ -39,9 +40,10 @@ function scoreToStatus(score: number): TrustSealStatus {
 }
 
 export async function calculateTrustSeal(userId: string): Promise<TrustSeal> {
-  const [scorecard, financialHealth] = await Promise.all([
+  const [scorecard, financialHealth, founderReputation] = await Promise.all([
     getComplianceScorecard(userId),
     getFinancialHealth(userId),
+    calculateFounderReputation(userId).catch(() => null),
   ]);
 
   const dimensions: TrustSeal['dimensions'] = {} as TrustSeal['dimensions'];
@@ -98,9 +100,15 @@ export async function calculateTrustSeal(userId: string): Promise<TrustSeal> {
         break;
 
       case 'founder_reputation':
-        score = 0;
-        details = 'Founder reputation scoring not yet available. This will incorporate tender performance, employee retention, and supplier payment history.';
-        available = false;
+        if (founderReputation && founderReputation.status !== 'unrated') {
+          score = founderReputation.overallScore;
+          details = `Tender: ${founderReputation.components.tenderPerformance.detail} | Retention: ${founderReputation.components.employeeRetention.detail}`;
+          available = true;
+        } else {
+          score = 0;
+          details = 'Founder reputation scoring needs more data — bid on tenders and track attendance to build your profile.';
+          available = false;
+        }
         break;
 
       default:

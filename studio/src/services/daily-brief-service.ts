@@ -1,7 +1,7 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 import { generateDigestForUser } from '@/services/newsletter-service';
-import { enqueueOutboundMessage } from '@/services/whatsapp/outbound-queue';
+import { enqueueNotification } from '@/services/notifications/outbound-dispatcher';
 
 const BRIEF_SUBSCRIPTIONS = 'whatsapp_briefs';
 
@@ -50,60 +50,57 @@ export async function getWhatsAppBriefSubscribers(frequency: 'daily' | 'weekly')
   return snap.docs.map(d => d.data() as WhatsAppBriefSubscription);
 }
 
-export async function sendDailyBriefToUser(userId: string, phoneNumber: string): Promise<boolean> {
+export async function sendDailyBriefToUser(userId: string, phoneNumber: string, email?: string): Promise<boolean> {
   try {
     const digest = await generateDigestForUser(userId, true);
 
     const topTender = digest.relevantTenders[0];
     const deadlineAlerts = digest.upcomingDeadlines.filter(d => d.daysLeft <= 7);
 
-    const messageLines = [
-      `*Radbit Daily Brief — ${new Date().toLocaleDateString('en-ZW', { weekday: 'long', day: 'numeric', month: 'short' })}*`,
+    const bodyLines = [
+      `Radbit Daily Brief — ${new Date().toLocaleDateString('en-ZW', { weekday: 'long', day: 'numeric', month: 'short' })}`,
       '',
     ];
 
     if (digest.topStories.length > 0) {
-      messageLines.push(`*Top Stories:*`);
+      bodyLines.push(`Top Stories:`);
       digest.topStories.slice(0, 2).forEach(s => {
-        messageLines.push(`• ${s.headline}`);
+        bodyLines.push(`• ${s.headline}`);
       });
-      messageLines.push('');
+      bodyLines.push('');
     }
 
     if (topTender) {
-      messageLines.push(`*Featured Tender:*`);
-      messageLines.push(`• ${topTender.title}`);
-      messageLines.push(`  ${topTender.org} | ${topTender.value} | Deadline: ${topTender.deadline}`);
-      messageLines.push('');
+      bodyLines.push(`Featured Tender:`);
+      bodyLines.push(`• ${topTender.title}`);
+      bodyLines.push(`  ${topTender.org} | ${topTender.value} | Deadline: ${topTender.deadline}`);
+      bodyLines.push('');
     }
 
     if (deadlineAlerts.length > 0) {
-      messageLines.push(`*⚠️ Deadline Alerts:*`);
+      bodyLines.push(`⚠️ Deadline Alerts:`);
       deadlineAlerts.slice(0, 3).forEach(d => {
-        messageLines.push(`• ${d.tender} — ${d.daysLeft} day${d.daysLeft === 1 ? '' : 's'} left`);
+        bodyLines.push(`• ${d.tender} — ${d.daysLeft} day${d.daysLeft === 1 ? '' : 's'} left`);
       });
-      messageLines.push('');
+      bodyLines.push('');
     }
 
     if (digest.industryInsight) {
-      messageLines.push(`*Market Insight:*`);
-      messageLines.push(digest.industryInsight.slice(0, 200));
-      messageLines.push('');
+      bodyLines.push(`Market Insight:`);
+      bodyLines.push(digest.industryInsight.slice(0, 200));
+      bodyLines.push('');
     }
 
-    messageLines.push(`_Reply TAX to talk to Mai Chipo (tax advisor)_`);
-    messageLines.push(`_Reply TENDER to search opportunities_`);
-    messageLines.push(`_Radbit — built for the SADC reality_`);
+    bodyLines.push(`Radbit — built for the SADC reality`);
 
-    const message = messageLines.join('\n');
-
-    await enqueueOutboundMessage(
-      userId,
+    await enqueueNotification(userId, {
+      title: `Daily Brief — ${new Date().toLocaleDateString('en-ZW', { day: 'numeric', month: 'short' })}`,
+      body: bodyLines.join('\n'),
       phoneNumber,
-      'assessment_results_ready',
-      { message },
-      0,
-    );
+      email,
+      channels: phoneNumber ? ['whatsapp', 'email', 'in_app'] : ['email', 'in_app'],
+      link: '/tenders',
+    });
 
     await adminDb.collection(BRIEF_SUBSCRIPTIONS).doc(userId).update({
       lastSentAt: FieldValue.serverTimestamp(),
@@ -122,7 +119,9 @@ export async function sendBulkDailyBriefs(frequency: 'daily' | 'weekly'): Promis
   let failed = 0;
 
   for (const sub of subscribers) {
-    const ok = await sendDailyBriefToUser(sub.userId, sub.phoneNumber);
+    const userDoc = await adminDb.collection('users').doc(sub.userId).get();
+    const email = userDoc.data()?.email as string | undefined;
+    const ok = await sendDailyBriefToUser(sub.userId, sub.phoneNumber, email);
     if (ok) sent++;
     else failed++;
   }
