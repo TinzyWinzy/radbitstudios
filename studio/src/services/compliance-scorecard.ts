@@ -30,6 +30,7 @@ export interface ComplianceScorecard {
     litigation: ScorecardCheck;
     blacklist_status: ScorecardCheck;
     banking_history: ScorecardCheck;
+    zimra_fiscal_device: ScorecardCheck;
   };
 }
 
@@ -40,9 +41,10 @@ const CHECKS: Array<{ key: keyof ComplianceScorecard['breakdown']; label: string
   { key: 'paye_remittance', label: 'PAYE / AIDS Levy Remittance', weight: 0.10 },
   { key: 'saz_iso', label: 'SAZ / ISO Certification', weight: 0.05 },
   { key: 'tender_track_record', label: 'Tender Win/Loss History', weight: 0.15 },
-  { key: 'litigation', label: 'Litigation / Judgments', weight: 0.10 },
-  { key: 'blacklist_status', label: 'Blacklist Status', weight: 0.10 },
-  { key: 'banking_history', label: 'Banking History (No Bounced Checks)', weight: 0.10 },
+  { key: 'litigation', label: 'Litigation / Judgments', weight: 0.05 },
+  { key: 'blacklist_status', label: 'Blacklist Status', weight: 0.05 },
+  { key: 'banking_history', label: 'Banking History (No Bounced Checks)', weight: 0.05 },
+  { key: 'zimra_fiscal_device', label: 'ZIMRA Fiscal Device', weight: 0.15 },
 ];
 
 function makeCheck(
@@ -174,6 +176,12 @@ export async function calculateComplianceScore(userId: string): Promise<Complian
       case 'banking_history':
         result = makeCheck(0, 100, check.weight, 'not_tracked', 'Banking verification not yet available. Connect your bank account to enable this check.', 'Not Available');
         break;
+
+      case 'zimra_fiscal_device': {
+        const cert = await getCertificate(userId, 'zimra_fiscal_device');
+        result = checkFromCertificate(cert, check.weight);
+        break;
+      }
 
       default:
         result = makeCheck(0, 100, check.weight, 'not_tracked', 'Check not yet implemented', 'Not Available');

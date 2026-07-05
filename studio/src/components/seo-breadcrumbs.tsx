@@ -29,6 +29,15 @@ const LABEL_OVERRIDES: Record<string, string> = {
   "privacy": "Privacy Policy",
   "terms": "Terms of Service",
   "founders": "Founders",
+  "vat-threshold-alerts": "VAT Threshold Alerts",
+  "compliant-receipts": "Compliant Receipts",
+  "offline-mode": "Offline Mode",
+  "penalty-protection": "Penalty Protection",
+  "tender-compliance-bridge": "Tender Compliance Bridge",
+  "bid-writer": "AI Bid Writer",
+  "tax-copilot": "Tax Co-Pilot",
+  "praz-compliance": "PRAZ Compliance",
+  "escrow": "Escrow Protection",
 };
 
 function labelFor(segment: string): string {

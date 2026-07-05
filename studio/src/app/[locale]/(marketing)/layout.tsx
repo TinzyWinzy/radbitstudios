@@ -19,33 +19,26 @@ import {
 } from "@/components/ui/sheet";
 import {
   Menu,
-  LayoutDashboard,
-  ClipboardCheck,
   Sparkles,
   CreditCard,
   BookOpen,
-  Briefcase,
-  Users,
+  LayoutDashboard,
+
   Newspaper,
   Shield,
   ArrowRight,
   LogIn,
-  AlertTriangle,
+  Receipt,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/solutions", label: "Leverage Menu", icon: Sparkles },
-  { href: "/solutions#diagnostic", label: "Stress-Tester", icon: ClipboardCheck },
-  { href: "/toolkit", label: "AI Toolkit", icon: LayoutDashboard },
+  { href: "/solutions", label: "Solutions", icon: Sparkles },
+  { href: "/zimra-fiscal-device-registration", label: "Fiscal Device", icon: Receipt },
   { href: "/pricing", label: "Pricing", icon: CreditCard },
-  { href: "/about", label: "About", icon: Shield },
-  { href: "/founders", label: "Founders", icon: Users },
   { href: "/resources", label: "Resources", icon: BookOpen },
-  { href: "/tenders", label: "Tenders", icon: Briefcase },
-  { href: "/threats", label: "Threats", icon: AlertTriangle },
-  { href: "/community", label: "Community", icon: Users },
+  { href: "/about", label: "About", icon: Shield },
   { href: "/blog", label: "Blog", icon: Newspaper },
 ];
 

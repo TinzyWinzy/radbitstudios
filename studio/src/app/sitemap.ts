@@ -8,7 +8,7 @@ const SITE_URL = (process.env.FRONTEND_URL || "https://radbitstudios.co.zw").rep
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastMod = new Date().toISOString().split("T")[0];
 
-  const staticPages = [
+  const staticPages: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 1.0 },
     { url: `${SITE_URL}/about`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/privacy`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.3 },
@@ -18,7 +18,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/blog`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
     { url: `${SITE_URL}/solutions`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
     { url: `${SITE_URL}/use-cases`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
-
+    { url: `${SITE_URL}/pricing`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.8 },
+    { url: `${SITE_URL}/founders`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/contact`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.4 },
+    { url: `${SITE_URL}/consultancy`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/partners`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.4 },
+    { url: `${SITE_URL}/zimra-fiscal-device-registration`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
+    { url: `${SITE_URL}/compliant-receipts`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/vat-threshold-alerts`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/offline-mode`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/penalty-protection`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/tender-compliance-bridge`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/diaspora`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${SITE_URL}/diaspora/invest`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${SITE_URL}/diaspora/start-business`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${SITE_URL}/diaspora-matchmaking`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/events/zimbabwe-business-expo-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
   ];
 
   let blogPosts: MetadataRoute.Sitemap = [];

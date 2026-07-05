@@ -56,8 +56,18 @@ export function MarketingFooter() {
               links: [
                 { href: "/assessment", label: "Stress-Tester" },
                 { href: "/threats", label: "Threat Assessments" },
-                { href: "/toolkit", label: "AI Toolkit" },
-                { href: "/tenders", label: "Tenders" },
+                { href: "/solutions", label: "Solutions" },
+                { href: "/use-cases", label: "Use Cases" },
+              ],
+            },
+            {
+              title: "Compliance",
+              links: [
+                { href: "/zimra-fiscal-device-registration", label: "Register Fiscal Device" },
+                { href: "/compliant-receipts", label: "Compliant Receipts" },
+                { href: "/penalty-protection", label: "Penalty Protection" },
+                { href: "/vat-threshold-alerts", label: "VAT Threshold Alerts" },
+                { href: "/offline-mode", label: "Offline Mode" },
               ],
             },
             {
@@ -65,7 +75,9 @@ export function MarketingFooter() {
               links: [
                 { href: "/pricing", label: "Pricing" },
                 { href: "/about", label: "About" },
+                { href: "/founders", label: "Founders" },
                 { href: "/consultancy", label: "Consultancy" },
+                { href: "/partners", label: "Partners" },
                 { href: "/privacy", label: "Privacy" },
                 { href: "/terms", label: "Terms" },
               ],
@@ -74,6 +86,10 @@ export function MarketingFooter() {
               title: "Resources",
               links: [
                 { href: "/resources", label: "Guides & Tools" },
+                { href: "/blog", label: "Blog" },
+                { href: "/tender-compliance-bridge", label: "Tender Bridge" },
+                { href: "/diaspora", label: "Diaspora" },
+                { href: "/contact", label: "Contact" },
               ],
             },
           ].map(group => (

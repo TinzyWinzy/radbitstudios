@@ -406,18 +406,20 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Card className="border-l-4 border-l-green-500">
-            <CardContent className="p-4 flex items-center gap-3">
-              <ShieldCheck className="h-8 w-8 text-green-500 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">Compliance</p>
-                <p className="text-xl font-bold">{complianceScore ?? '—'}</p>
-                <p className="text-[10px] text-muted-foreground truncate">
-                  {complianceScore !== null ? (complianceScore >= 80 ? 'Good standing' : complianceScore >= 60 ? 'Needs work' : 'At risk') : 'No data'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <Link href="/praz-compliance" className="block">
+            <Card className="border-l-4 border-l-green-500 cursor-pointer hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center gap-3">
+                <ShieldCheck className="h-8 w-8 text-green-500 shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">Compliance</p>
+                  <p className="text-xl font-bold">{complianceScore ?? '—'}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">
+                    {complianceScore !== null ? (complianceScore >= 80 ? 'Good standing' : complianceScore >= 60 ? 'Needs work' : 'At risk') : 'No data'}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
           <Card className="border-l-4 border-l-blue-500">
             <CardContent className="p-4 flex items-center gap-3">
               <DollarSign className="h-8 w-8 text-blue-500 shrink-0" />

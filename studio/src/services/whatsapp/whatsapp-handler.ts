@@ -118,6 +118,31 @@ function isAlertCommand(text: string): boolean {
   return (lower.startsWith('alert me') || lower.startsWith('alert ')) && lower.includes('drop');
 }
 
+function isFdgRegister(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower === 'register fdg' || lower.startsWith('register fiscal');
+}
+
+function isIssueReceipt(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower.startsWith('issue receipt');
+}
+
+function isComplianceStatus(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower === 'my compliance status' || lower === 'compliance status' || lower === 'my status';
+}
+
+function isVatThreshold(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower === 'vat threshold' || lower === 'vat status' || lower.startsWith('what\'s my vat');
+}
+
+function isSyncReceipts(text: string): boolean {
+  const lower = text.toLowerCase().trim();
+  return lower === 'sync receipts' || lower === 'sync';
+}
+
 function extractSmeName(text: string, prefix: string): string {
   const lower = text.toLowerCase();
   const idx = lower.indexOf(prefix);
@@ -241,6 +266,80 @@ export async function handleIncomingMessage(
     const reply = await handleCreateAlert(session.userId, smeName, threshold || undefined);
     await sendWhatsAppMessage(from, reply);
     await addExchange(from, 'assistant', reply);
+    return;
+  }
+
+  if (isFdgRegister(lower)) {
+    const { getFiscalComplianceStatus, registerFiscalDevice } = await import('@/services/zimra-fiscal');
+    const status = await getFiscalComplianceStatus(session.userId);
+    if (status.status === 'registered') {
+      await sendWhatsAppMessage(from, `✅ Your fiscal device is already registered (${status.deviceId}). Expires: ${status.certificateExpiry?.slice(0, 10) || 'N/A'}. Reply "my compliance status" for full details.`);
+    } else {
+      const result = await registerFiscalDevice(session.userId, 'software');
+      if (result.success) {
+        await sendWhatsAppMessage(from, `✅ Fiscal device registered! ID: ${result.deviceId}. Certificate valid for 12 months. Reply "issue receipt $X for description" to issue your first receipt.`);
+      } else {
+        await sendWhatsAppMessage(from, `❌ ${result.error || 'Registration failed.'} Make sure your ZIMRA taxpayer ID is set in your profile, or register via web at radbitstudios.co.zw/zimra-fiscal-device-registration`);
+      }
+    }
+    await addExchange(from, 'assistant', 'FDG register response');
+    return;
+  }
+
+  if (isIssueReceipt(lower)) {
+    const { openFiscalDay, submitFiscalReceipt } = await import('@/services/zimra-fiscal');
+    const amountMatch = text.match(/\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/);
+    if (!amountMatch) {
+      await sendWhatsAppMessage(from, 'Please specify amount. Example: Issue receipt $50 for consultation fees');
+      await addExchange(from, 'assistant', 'No amount');
+      return;
+    }
+    const amount = parseFloat(amountMatch[1].replace(/,/g, ''));
+    const description = text.replace(/issue\s+receipt\s+\$?[\d,]+\.?\d*\s*/i, '').trim() || 'Sale';
+    await openFiscalDay(session.userId).catch(() => {});
+    const result = await submitFiscalReceipt(session.userId, {
+      receiptType: 'FISCALINVOICE',
+      currency: 'USD',
+      totalAmount: amount,
+      vatAmount: Math.round(amount * 0.15 * 100) / 100,
+      description,
+      taxLines: [
+        { taxID: 1, taxCode: 'VAT', taxPercent: 15, taxAmountCents: Math.round(amount * 0.15 * 100), salesAmountWithTaxCents: Math.round(amount * 100) },
+      ],
+    });
+    if (result.success) {
+      await sendWhatsAppMessage(from, `🧾 Receipt issued!\n\nReceipt: ${result.receiptNumber}\nAmount: $${amount.toFixed(2)}\nVAT (15%): $${(amount * 0.15).toFixed(2)}\nSignature: ${result.receiptDeviceSignature?.slice(-8) || 'N/A'}\nQR: ${result.receiptQrCode || 'N/A'}\n\nPowered by Radbit — ZIMRA FDG compliant`);
+    } else {
+      await sendWhatsAppMessage(from, `❌ ${result.error || 'Failed to issue receipt.'}`);
+    }
+    await addExchange(from, 'assistant', 'Issue receipt response');
+    return;
+  }
+
+  if (isComplianceStatus(lower)) {
+    const { getFiscalComplianceStatus, getFiscalThresholds } = await import('@/services/zimra-fiscal');
+    const status = await getFiscalComplianceStatus(session.userId);
+    const thresholds = getFiscalThresholds();
+    if (status.status === 'not_registered') {
+      await sendWhatsAppMessage(from, `📋 No fiscal device registered. Reply "register FDG" to get started.\n\nThresholds:\n• VAT registration: US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}\n• Fiscal device mandate: US$${thresholds.fiscalDeviceMandatoryTurnoverUsd.toLocaleString()}\n• Penalty: up to US$${thresholds.penaltyNonComplianceUsd}`);
+    } else {
+      await sendWhatsAppMessage(from, `📋 Compliance Status\n\nDevice: ${status.deviceId}\nType: ${status.deviceType}\nStatus: ${status.status}\nExpires: ${status.certificateExpiry?.slice(0, 10) || 'N/A'}\nLast fiscal day: ${status.lastFiscalDay?.slice(0, 10) || 'Not closed'}\n\nThresholds:\n• VAT registration: US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}\n• Penalty: up to US$${thresholds.penaltyNonComplianceUsd}`);
+    }
+    await addExchange(from, 'assistant', 'Compliance status response');
+    return;
+  }
+
+  if (isVatThreshold(lower)) {
+    const { getFiscalThresholds } = await import('@/services/zimra-fiscal');
+    const thresholds = getFiscalThresholds();
+    await sendWhatsAppMessage(from, `📊 VAT Threshold Tracker\n\nRegistration threshold: US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}\nFiscal device mandate: US$${thresholds.fiscalDeviceMandatoryTurnoverUsd.toLocaleString()}\n\nReply "register FDG" to register your fiscal device.\nSet up alerts to be notified before you hit the threshold.`);
+    await addExchange(from, 'assistant', 'VAT threshold response');
+    return;
+  }
+
+  if (isSyncReceipts(lower)) {
+    await sendWhatsAppMessage(from, '🔄 Offline receipts are synced automatically when connectivity returns. No action needed. Reply "my compliance status" to verify your last sync.');
+    await addExchange(from, 'assistant', 'Sync receipts response');
     return;
   }
 

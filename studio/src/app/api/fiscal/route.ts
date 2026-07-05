@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFiscalComplianceStatus, registerFiscalDevice, getFiscalThresholds, getFiscalComplianceGuide } from '@/services/zimra-fiscal';
+import {
+  getFiscalComplianceStatus, registerFiscalDevice, getFiscalThresholds, getFiscalComplianceGuide,
+  openFiscalDay, closeFiscalDay, submitFiscalReceipt, submitOfflineFile,
+} from '@/services/zimra-fiscal';
 import { adminAuth } from '@/lib/firebase/firebase-admin';
 
 export async function GET(request: NextRequest) {
@@ -35,8 +38,31 @@ export async function POST(request: NextRequest) {
     const token = authHeader.slice(7);
     const decoded = await adminAuth.verifyIdToken(token);
     const body = await request.json();
-    const result = await registerFiscalDevice(decoded.uid, body.deviceType || 'software');
-    return NextResponse.json(result);
+
+    switch (body.action) {
+      case 'register':
+        return NextResponse.json(await registerFiscalDevice(decoded.uid, body.deviceType || 'software', body.operatingMode || 'online'));
+      case 'open_day':
+        return NextResponse.json(await openFiscalDay(decoded.uid));
+      case 'close_day':
+        return NextResponse.json(await closeFiscalDay(decoded.uid));
+      case 'submit_receipt':
+        return NextResponse.json(await submitFiscalReceipt(decoded.uid, {
+          receiptType: body.receiptType || 'FISCALINVOICE',
+          currency: body.currency || 'USD',
+          totalAmount: body.totalAmount || 0,
+          vatAmount: body.vatAmount,
+          description: body.description,
+          taxLines: body.taxLines,
+          submissionMode: body.submissionMode || 'online',
+        }));
+      case 'submit_file':
+        return NextResponse.json(await submitOfflineFile(decoded.uid));
+      default:
+        return NextResponse.json({
+          error: 'Invalid action. Use: register, open_day, close_day, submit_receipt, submit_file.',
+        }, { status: 400 });
+    }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ error: message }, { status: 500 });
