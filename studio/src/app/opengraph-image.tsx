@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Radbit — SME Software & AI Platform for Zimbabwean Businesses";
+export const alt = "Radbit | Business Software for Zimbabwean SMEs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -63,13 +63,13 @@ export default async function GlobalOgImage() {
             lineHeight: 1.4,
           }}
         >
-          AI-powered SME platform for Zimbabwean businesses
+          Business software for Zimbabwean SMEs
         </p>
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 16, fontWeight: 500 }}>
-          Tenders · Compliance · AI Tools · No monthly fees
+          Tenders · Compliance · Records · AI Tools
         </span>
         <span style={{ color: "#1A8A7A", fontSize: 18, fontWeight: 700 }}>
           radbitstudios.co.zw

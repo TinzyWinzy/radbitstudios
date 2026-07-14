@@ -4,22 +4,20 @@ import dynamic from "next/dynamic";
 import { Rss } from "lucide-react";
 import { NewsletterSignup } from "@/components/newsletter-signup";
 
-/* ── static metadata (server-rendered, indexable by crawlers) ── */
 export const metadata: Metadata = {
-  title: "Blog — Radbit",
+  title: "Blog | Radbit",
   description:
-    "Enterprise AI, digital sovereignty, and business intelligence for Zimbabwean organisations. Insights on compliance, tenders, and technology infrastructure.",
+    "Practical notes on Zimbabwean business software, tenders, compliance records, tax reminders, and SME operations.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Blog — Radbit",
+    title: "Blog | Radbit",
     description:
-      "Enterprise AI, digital sovereignty, and business intelligence for Zimbabwean organisations.",
+      "Practical notes on Zimbabwean business software, tenders, compliance records, tax reminders, and SME operations.",
     type: "website",
     url: "/blog",
   },
 };
 
-/* ── blog service is client-side (Firebase SDK) — dynamic-import it ── */
 const BlogList = dynamic(
   () =>
     import("./_blog-list.client").then((m) => ({
@@ -43,7 +41,6 @@ function BlogListSkeleton() {
   );
 }
 
-/* ── page ───────────────────────────────────── */
 export default function BlogPage() {
   return (
     <div className="container py-8 md:py-16">
@@ -61,10 +58,10 @@ export default function BlogPage() {
       </div>
       <div className="mb-6 md:mb-12 max-w-prose space-y-3">
         <p className="text-muted-foreground">
-          Thoughts on digital sovereignty, AI, and building for Zimbabwe.
+          Practical notes on building, running, and formalising Zimbabwean businesses.
         </p>
         <p className="text-sm text-muted-foreground/70 leading-relaxed">
-          Radbit&apos;s blog covers the intersection of enterprise technology, regulatory compliance, and SME growth in Zimbabwe and across the SADC region. We publish guides on tender preparation, PRAZ compliance workflows, ZIMRA tax updates, diaspora investment mechanics, and practical case studies from Zimbabwean businesses navigating digital transformation. Topics draw on real operator experience &mdash; not theory &mdash; and are written for business owners, compliance officers, and technology practitioners working within Zimbabwe&apos;s economic environment.
+          We write about the things operators actually search for: tender preparation, PRAZ workflows, ZIMRA reminders, business records, diaspora investment checks, and the everyday systems that help a company look credible when a buyer, bank, or partner asks for proof.
         </p>
       </div>
 

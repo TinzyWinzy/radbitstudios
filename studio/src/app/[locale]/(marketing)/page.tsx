@@ -5,17 +5,17 @@ const baseUrl = process.env.FRONTEND_URL || "https://radbitstudios.co.zw";
 import PageClient from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
-  description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises. No monthly fees.",
+  title: "Radbit | Business Software for Zimbabwean SMEs",
+  description: "Tender tracking, compliance records, tax reminders, and practical AI tools for Zimbabwean businesses.",
   openGraph: {
-    title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
-    description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises.",
+    title: "Radbit | Business Software for Zimbabwean SMEs",
+    description: "Tender tracking, compliance records, tax reminders, and practical AI tools for Zimbabwean businesses.",
     url: `${baseUrl}/`,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radbit — SME Software & AI Platform for Zimbabwean Businesses",
-    description: "Zimbabwe's sovereign AI platform for SMEs. Tender intelligence, PRAZ compliance automation, AI business tools, and digital readiness assessment — purpose-built for African enterprises.",
+    title: "Radbit | Business Software for Zimbabwean SMEs",
+    description: "Tender tracking, compliance records, tax reminders, and practical AI tools for Zimbabwean businesses.",
   },
 };
 

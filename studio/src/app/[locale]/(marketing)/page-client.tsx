@@ -58,7 +58,7 @@ function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-headline text-fluid-5xl font-bold tracking-tighter leading-[0.9] text-foreground"
         >
-          <span className="text-gradient">Digital Leverage</span>
+          <span className="text-gradient">Practical Systems</span>
           <br />
           <span>For Zimbabwean SMEs.</span>
         </motion.h1>
@@ -76,7 +76,7 @@ function HeroSection() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-8 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          You can't grow if you can't let go. Every tender, every compliance check, every cross-border deal runs through you right now. Radbit automates the parts that eat your time — so you can step back without worrying everything falls apart.
+          You can't grow if every tender, compliance check, invoice, and follow-up still runs through you. Radbit helps you turn that daily admin into a system your team can actually use.
         </motion.p>
 
         <motion.p
@@ -85,7 +85,7 @@ function HeroSection() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-4 text-sm text-muted-foreground/60 max-w-xl mx-auto italic"
         >
-          Radbit is Zimbabwe's sovereign AI platform — purpose-built for African SMEs. No monthly subscriptions. No data leaving the continent.
+          Built in Zimbabwe for local workflows: tenders, compliance records, tax deadlines, payments, and the paperwork buyers ask for.
         </motion.p>
 
         <motion.div
@@ -111,10 +111,10 @@ function HeroSection() {
           transition={{ delay: 0.7 }}
           className="mt-8 flex items-center justify-center gap-6 text-xs text-muted-foreground/50"
         >
-          <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Tender Armor</span>
-          <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-primary/60" /> Operational Certainty</span>
-          <span className="flex items-center gap-1.5"><Globe className="h-3 w-3 text-primary/60" /> Market Protection</span>
-          <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Verified by Radbit</span>
+          <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Tender checks</span>
+          <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-primary/60" /> Deadline reminders</span>
+          <span className="flex items-center gap-1.5"><Globe className="h-3 w-3 text-primary/60" /> Export records</span>
+          <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary/60" /> Document vault</span>
         </motion.div>
 
       </motion.div>
@@ -134,35 +134,35 @@ function ProblemSolutionSection() {
     {
       icon: <TrendingUp className="h-4 w-4" />,
       title: "The Founder Bottleneck",
-      body: "You cannot scale because you cannot safely delegate. Every decision, every approval, every compliance check runs through you. One absence — and the operation stalls or leaks.",
+      body: "The business works because you remember everything. That is useful early on, but it breaks when tenders, staff, suppliers, and tax dates all need attention at once.",
     },
     {
       icon: <Shield className="h-4 w-4" />,
       title: "The Procurement Trap",
-      body: "Your enterprise has the capability to win government and state contracts. But microscopic compliance errors, missing PRAZ filings, or blind spots in award histories get you cut before evaluation.",
+      body: "A capable company can still lose before evaluation because one certificate expired, one form is missing, or the tender pack was assembled in a rush.",
     },
     {
       icon: <Globe className="h-4 w-4" />,
       title: "The Trust Deficit",
-      body: "Cross-border buyers, diaspora investors, and AfCFTA partners require auditable, bank-grade operational histories. Fragmented paper records make you invisible to the capital pipeline.",
+      body: "Buyers, banks, and diaspora partners ask for proof. Scattered receipts, old spreadsheets, and WhatsApp threads make that proof hard to provide.",
     },
   ];
 
   const solutions = [
     {
       icon: <Shield className="h-4 w-4" />,
-      title: "Tender Intelligence & Compliance Shield",
-      body: "An automated pre-flight abort engine that simulates the procurement officer's disqualification process, flags structural gaps, and seals your bid. You arrive at evaluation bulletproof.",
+      title: "Tender and Compliance Checks",
+      body: "Radbit helps you match tenders to your profile, check the required documents, and spot gaps before submission day.",
     },
     {
       icon: <Zap className="h-4 w-4" />,
-      title: "The Executive Multiplier",
-      body: "Autonomous digital shadows that enforce your exact business rules across inventory, invoices, and logistics. Real-time alerts the instant an operational anomaly occurs — not after losses compound.",
+      title: "Daily Operating System",
+      body: "Put invoices, stock, tasks, approvals, and reminders in one place so work moves without everything living in the founder's head.",
     },
     {
       icon: <Database className="h-4 w-4" />,
-      title: "The Global Partner Passport",
-      body: "Transform fragmented records into an immutable, verifiable track record on blockchain. The institutional credibility required to satisfy international suppliers, diaspora investors, and AfCFTA compliance.",
+      title: "Cleaner Business Records",
+      body: "Keep the records partners ask for: certificates, invoices, delivery notes, tax documents, project history, and supporting files.",
     },
   ];
 
@@ -179,7 +179,7 @@ function ProblemSolutionSection() {
             You Don&apos;t Have a <span className="text-gradient">Tool Problem</span>
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-base">
-            You have a trust, compliance, and delegation problem. Off-the-shelf software was built for stable markets. Radbit was built for the SADC reality.
+            You have a records, compliance, and delegation problem. Radbit focuses on the paperwork and workflows Zimbabwean operators deal with every week.
           </p>
         </motion.div>
 
@@ -211,7 +211,7 @@ function ProblemSolutionSection() {
           >
             <span className="font-headline text-xs tracking-[0.3em] text-primary uppercase">Radbit Delivers</span>
             <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter text-foreground">
-              Three Pillars of <span className="text-gradient">Operational Leverage</span>
+            Three Ways Radbit <span className="text-gradient">Helps</span>
             </h2>
           </motion.div>
 
@@ -245,13 +245,13 @@ function HowItWorksSection() {
     {
       icon: <Shield className="h-4 w-4" />,
       title: "Stress-Test",
-      body: "A 3-minute check-up that shows you where your business is leaking — compliance gaps you didn't spot, tasks you shouldn't be doing yourself, opportunities you're missing because your records aren't credible.",
+      body: "A short check-up that shows where your records, deadlines, handovers, and tender readiness need work.",
       symbol: <Sankofa className="h-8 w-8 text-primary/20" />,
     },
     {
       icon: <Target className="h-4 w-4" />,
-      title: "Armor",
-      body: "We build the exact system your operation needs — tender tracking that catches every compliance requirement, automations that enforce your business rules, or verified records that open cross-border deals. Each piece plugs into the next.",
+      title: "Set Up",
+      body: "Start with the system your operation needs most: tender tracking, a compliance file, invoice workflows, reminders, or a cleaner document trail.",
       symbol: <GyeNyame className="h-8 w-8 text-primary/20" />,
     },
     {
@@ -342,7 +342,7 @@ function DiagnosticSection() {
             Three Minutes to Know Your <span className="text-gradient">Exact Exposure</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-base">
-            Tell us your industry and where it hurts — compliance, leaks, employee errors, or cross-border friction. We'll show you exactly what needs fixing.
+            Tell us your industry and where the admin hurts: compliance, tender documents, stock, staff handovers, or cross-border paperwork. We'll show you what to fix first.
           </p>
         </motion.div>
         <OperationalStressTester />
@@ -355,26 +355,26 @@ function FeaturesSection() {
   const features = [
     {
       icon: <Shield className="h-4 w-4" />,
-      title: "Custom Enterprise Architectures",
-      body: "No generic templates. No bloated software built for someone else's market. Your system does exactly what your business needs — and nothing you don't.",
+      title: "Systems That Fit the Work",
+      body: "Start with the workflow you actually have: tenders, invoices, stock, documents, approvals, or customer follow-up.",
       href: "/solutions",
     },
     {
       icon: <Lock className="h-4 w-4" />,
-      title: "Asset & Margin Protection",
-      body: "We watch the margins, compliance deadlines, and operational risks you don't have time to track. You get alerted the moment something shifts — before it costs you money.",
+      title: "Deadlines and Risk Flags",
+      body: "Keep tax dates, registration renewals, open invoices, and missing documents visible before they become urgent.",
       href: "/solutions",
     },
     {
       icon: <Zap className="h-4 w-4" />,
-      title: "Operational Multipliers",
-      body: "Your business rules run automatically — inventory, invoices, logistics. You step in only when something unusual happens. Everything else runs on its own, exactly how you'd do it.",
+      title: "Team Handover",
+      body: "Give staff a clear process to follow so routine work does not depend on one person's memory.",
       href: "/solutions",
     },
     {
       icon: <Brain className="h-4 w-4" />,
-      title: "Agentic System Automation",
-      body: "Your system drafts tenders, runs compliance checks, reconciles accounts, and produces the institutional paperwork banks and partners demand — all without you at the keyboard.",
+      title: "Useful AI Where It Helps",
+      body: "Use AI to draft, summarize, compare, and check documents while you keep final judgment and approvals in human hands.",
       href: "/solutions",
     },
   ];
@@ -441,8 +441,8 @@ function PlatformScopeSection() {
         >
           {[
             { value: "12+", label: "Government Data Sources", sub: "Tender intelligence across PRAZ, ministries, and state enterprises", icon: <Zap className="h-4 w-4 text-secondary" /> },
-            { value: "4", label: "Regulatory Frameworks", sub: "ZIMRA, PRAZ, NSSA, RBZ — unified in one command centre", icon: <Shield className="h-4 w-4 text-primary" /> },
-            { value: "3", label: "Platform Layers", sub: "Assessment, AI agents, and compliance — end-to-end sovereign infrastructure", icon: <BarChart className="h-4 w-4 text-accent" /> },
+            { value: "4", label: "Regulatory Workflows", sub: "ZIMRA, PRAZ, NSSA, and RBZ records kept easier to track", icon: <Shield className="h-4 w-4 text-primary" /> },
+            { value: "3", label: "Platform Layers", sub: "Assessment, AI tools, and compliance records working together", icon: <BarChart className="h-4 w-4 text-accent" /> },
           ].map((metric, i) => (
             <motion.div
               key={metric.label}
@@ -476,22 +476,22 @@ function TrustSection() {
     {
       icon: <Lock className="h-4 w-4" />,
       title: "End-to-End Encrypted",
-      body: "All data encrypted at rest and in transit using AES-256 and TLS 1.3. Your operational data is yours alone.",
+      body: "We use Firebase and modern web security controls to protect account and business data in transit and at rest.",
     },
     {
       icon: <Server className="h-4 w-4" />,
-      title: "Stored in Southern Africa",
-      body: "Data centres in Johannesburg and Harare. Zero data leaves the region. Compliant with Zimbabwe Cyber and Data Protection Act.",
+      title: "Data Treated Carefully",
+      body: "We collect the information needed to run the product and keep sensitive business records behind authenticated access.",
     },
     {
       icon: <Database className="h-4 w-4" />,
       title: "Never Shared or Sold",
-      body: "We do not share, license, or sell your business data. Period. Privacy is our core architecture, not a checkbox.",
+      body: "We do not sell your business data. Product access is designed around accounts, roles, and permissions.",
     },
     {
       icon: <BadgeCheck className="h-4 w-4" />,
       title: "Regulatory Compliance",
-      body: "Designed to meet ZIMRA, PRAZ, NSSA, and RBZ requirements. Your compliance data is audit-ready at all times.",
+      body: "Built to help you organize the documents and reminders commonly needed for ZIMRA, PRAZ, NSSA, and other local workflows.",
     },
   ];
 
@@ -505,10 +505,10 @@ function TrustSection() {
           className="text-center space-y-3 mb-12"
         >
           <h2 className="font-headline text-2xl font-bold tracking-tight text-foreground">
-            Built for <span className="text-gradient">Trust &amp; Sovereignty</span>
+            Built for <span className="text-gradient">Trust</span>
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-sm">
-            Every layer of Radbit is designed to protect your business data and respect Zimbabwean law.
+            Business records are sensitive. Radbit keeps the language plain and the controls practical.
           </p>
         </motion.div>
         <motion.div
@@ -542,7 +542,7 @@ const caseStudies = [
     company: "Cultural Coder",
     url: "https://culturalcoder.co.zw",
     tagline: "Zimbabwean software studio building for local needs",
-    result: "Scaled from solo founder to 8-person team, reduced compliance overhead by 40% using Radbit's regulatory command centre.",
+    result: "A Zimbabwean software studio with a practical focus on local business systems.",
     industry: "Technology",
     established: "2020",
     badge: "Portfolio",
@@ -551,7 +551,7 @@ const caseStudies = [
     company: "Unikvilla",
     url: "https://unikvilla.co.zw",
     tagline: "Boutique lodging and accommodation in Zimbabwe",
-    result: "Doubled direct bookings and automated 90% of guest communications through Radbit's AI agent infrastructure.",
+    result: "A hospitality business where clear booking records and guest communication matter every day.",
     industry: "Hospitality & Tourism",
     established: "2019",
     badge: "Client",
@@ -560,7 +560,7 @@ const caseStudies = [
     company: "Nexus Agronomics",
     url: "https://nexusagronomics.co.zw",
     tagline: "Data-driven farming solutions for smallholder cooperatives",
-    result: "Secured $50K in matched grant funding and won three government supply contracts via Radbit's tender intelligence.",
+    result: "An agri-tech business working with data, growers, and operational records.",
     industry: "Agri-tech",
     established: "2022",
     badge: "Parent Company",
@@ -578,7 +578,7 @@ function CaseStudiesSection() {
           className="text-center space-y-3 mb-14"
         >
           <h2 className="font-headline text-fluid-4xl font-bold tracking-tighter max-w-3xl mx-auto">
-            Enterprises Already <span className="text-gradient">Winning with Radbit</span>
+            Zimbabwean Businesses We <span className="text-gradient">Understand</span>
           </h2>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
@@ -630,21 +630,21 @@ function CuratedBriefsSection() {
   const briefs = [
     {
       title: "Zimbabwe Budget 2026 Analysis",
-      summary: "Key takeaways for enterprises: tax relief on digital equipment, expanded MSME lending facilities, and new export incentives for agro-processors.",
+      summary: "Policy and tax updates can change quickly. Radbit helps teams keep notes, dates, and source documents in one place before decisions are made.",
       category: "Policy",
-      action: "Review how the new digital equipment tax relief applies to your business.",
+      action: "Save the source notice and assign someone to review the impact.",
     },
     {
       title: "Tender Alert: Govt. IT Infrastructure",
-      summary: "POTRAZ is accepting proposals for rural connectivity infrastructure. Bids close 15 June. Estimated contract value: $2.5M.",
+      summary: "Tender opportunities often move across portals, newspapers, and private procurement pages. Missing the document pack is usually the real loss.",
       category: "Tender",
-      action: "Check if your business meets the procurement thresholds.",
+      action: "Check eligibility, required certificates, and closing dates before drafting.",
     },
     {
       title: "Sector Insight: Agri-Tech Growth",
-      summary: "Zimbabwean agri-tech startups raised $4.2M in Q1 2026, up 40% YoY. Mobile-based supply chain solutions lead adoption.",
+      summary: "Agriculture teams need reliable records: field activity, inputs, buyers, delivery notes, and compliance documents.",
       category: "Market Intelligence",
-      action: "Explore how digital tools can optimize your supply chain.",
+      action: "Start by cleaning the records buyers and funders already ask for.",
     },
   ];
 
@@ -667,7 +667,7 @@ function CuratedBriefsSection() {
             Intelligence That <span className="text-gradient">Moves Your Business</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto text-base">
-            AI-curated news, tenders, and market insights tailored to your industry.
+            Briefs, reminders, and records your team can act on without hunting through chats.
           </p>
         </motion.div>
 
@@ -714,7 +714,7 @@ function CuratedBriefsSection() {
           transition={{ delay: 0.3 }}
           className="text-center mt-8"
         >
-          <p className="text-sm text-muted-foreground mb-4">Personalized briefs generated daily from live data sources.</p>
+          <p className="text-sm text-muted-foreground mb-4">Useful notes are only useful when the source and next step are clear.</p>
           <MagneticButton asChild size="default" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60">
             <Link href="/sign-up">
               Get Your First Brief <ArrowRight className="ml-1 h-3 w-3" />
@@ -731,22 +731,22 @@ function EssentialSection() {
     {
       icon: Shield,
       title: "Fiscal Device Compliance",
-      desc: "ZIMRA mandates fiscal devices for all VAT-registered businesses (turnover > US$40,000). Radbit's FDG API integration keeps you compliant without hardware costs.",
-      badge: "LEGAL MANDATE",
+      desc: "ZIMRA's Fiscal Device Gateway rules require fiscal days, receipt sequencing, QR data, and submission flows for fiscal devices. Radbit is built around that workflow.",
+      badge: "ZIMRA WORKFLOW",
       href: "/api/fiscal",
     },
     {
       icon: TrendingUp,
       title: "ZiG Currency Intelligence",
-      desc: "Navigate Zimbabwe's dual-currency economy with real-time ZiG rates, PAYE tax tables, and automatic tax obligation conversion between USD and ZiG.",
+      desc: "Keep ZiG and USD amounts clear in your records, and track the tax tables and notices your accountant needs to review.",
       badge: "DAILY TOOL",
       href: "/api/zig",
     },
     {
       icon: Target,
       title: "NDS2 & Constitutional Alignment",
-      desc: "Align your strategy with Zimbabwe's National Development Strategy and Constitutional provisions — essential for government tenders and regulatory compliance.",
-      badge: "TENDER READY",
+      desc: "Store the policy, sector, and compliance references your tender team uses when a bid asks for local context.",
+      badge: "BID SUPPORT",
       href: "/about",
     },
   ];
@@ -755,10 +755,10 @@ function EssentialSection() {
     <section className="container py-16 relative z-10">
       <div className="text-center mb-10">
         <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-3">
-          Why Radbit is Essential
+          Where Radbit Helps
         </h2>
         <p className="text-muted-foreground max-w-xl mx-auto">
-          Not just helpful — required. Zimbabwean law and regulation make these tools indispensable for your business.
+          The goal is simple: fewer missed dates, cleaner records, and less last-minute document chasing.
         </p>
       </div>
       <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -792,7 +792,7 @@ function PricingTeaser() {
           Solutions for Every Budget
         </h2>
         <p className="text-muted-foreground max-w-xl mx-auto">
-          From a free AI platform to full enterprise systems — find the right fit for your business.
+          Start small, then add the workflows your team actually uses.
         </p>
       </div>
       <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -806,7 +806,7 @@ function PricingTeaser() {
           {
             title: "AI Platform",
             price: "Free — $15/mo",
-            desc: "AI tools, tender intelligence, and compliance — start free.",
+            desc: "AI tools, tender tracking, and compliance records. Start free.",
             href: "/pricing#saas",
           },
           {
@@ -862,7 +862,7 @@ function CTASection() {
             <span className="text-gradient">Losing Command.</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-lg mx-auto">
-            Three minutes to your first stress-test. One deployment to bulletproof your operations. No generic dashboards. No rented developer hours.
+            Run a quick check, fix the messiest workflow first, and build from there. No bloated dashboard your team will ignore.
           </p>
         </motion.div>
         <motion.div
@@ -873,7 +873,7 @@ function CTASection() {
         >
           <MagneticButton asChild size="lg" className="font-headline text-sm tracking-wider border border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 hover:border-primary/60 animate-glow-pulse px-8">
             <Link href="/assessment">
-              Deploy Your Armor
+              Start the Check
               <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
             </Link>
           </MagneticButton>
