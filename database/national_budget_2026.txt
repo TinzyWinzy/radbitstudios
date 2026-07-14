@@ -1,0 +1,169 @@
+ZIMBABWE NATIONAL BUDGET 2026
+Source: 2026 National Budget Speech (27 November 2025), Finance Act (No. 7) of 2025, Ministry of Finance publications
+
+========================================
+OVERVIEW
+========================================
+
+The 2026 National Budget was presented by Honorable Professor Mthuli Ncube, Minister of Finance, Economic Development and Investment Promotion, on 27 November 2025. Theme: "Enhancing Drivers of Economic Growth and Transformation Towards Vision 2030."
+
+The budget sets the stage for the National Development Strategy 2 (NDS2) (2026-2030), which is the successor to NDS1 (2021-2025). It is an implementation tool for NDS2.
+
+The Finance Act (No. 7) of 2025 was gazetted on 29 December 2025 and signed into law, with all approved tax measures taking effect from 1 January 2026.
+
+========================================
+FISCAL OUTLOOK
+========================================
+
+2025 Actuals:
+- Revenue collections: ZiG215.7 billion (US$7.96 billion)
+- Expenditure: ZiG219.46 billion (US$8.10 billion)
+- Budget deficit: ZiG3.8 billion (US$140.1 million) = -0.3% of GDP
+
+2026 Targets:
+- Revenue: ZiG288 billion (16.9% of GDP, US$9.4 billion)
+- Expenditure: ZiG290 billion (17% of GDP, US$9.5 billion)
+- Near-balanced budget with deficit of ZiG3 billion
+
+Fiscal consolidation efforts have paid off through prudent fiscal policies (expenditure alignment and cash budgeting) complemented by monetary policy, anchoring inflation and macroeconomic stability.
+
+========================================
+BUDGET STRATEGY: "QUID PRO QUO"
+========================================
+
+The defining characteristic of the 2026 budget is its explicit "Quid Pro Quo" revenue management approach: reducing the distortionary Intermediated Money Transfer Tax (IMTT) while compensating through increased Value Added Tax (VAT).
+
+The private sector long criticised IMTT as a cascading tax inflating business costs at every transaction stage. The IMTT reduction for ZiG transactions alleviates pressure on production chains, while the VAT increase shifts the burden to final consumers.
+
+========================================
+KEY REVENUE MEASURES
+========================================
+
+VALUE ADDED TAX:
+- VAT rate increased from 15% to 15.5% effective 1 January 2026
+- VAT on imported services must be declared and paid in the currency of trade
+- Introduction of Digital Services Withholding Tax at 15% for payments to offshore digital platforms (in lieu of VAT on imported services)
+- Splitting of supplies for VAT purposes introduced
+- Penalties and interest for failure to account for taxes in the currency of trade
+
+INTERMEDIATED MONEY TRANSFER TAX (IMTT):
+- ZiG-denominated transactions: reduced from 2% to 1.5%
+- USD and foreign currency transactions: maintained at 2%
+- IMTT designated as a tax-deductible expense for Corporate Income Tax purposes
+- Definition of Financial Institution expanded to include Microfinance Institutions
+
+CORPORATE INCOME TAX:
+- Standard rate maintained at 24% (effective 24.72% with AIDS levy)
+- Deductibility of interest payable on deposits made with financial institutions allowed (subject to safeguards including transfer pricing rules, thin capitalisation, and anti-base erosion measures)
+- Domestic Minimum Top-Up Tax (DMTT) introduced aligning with OECD/G20 BEPS framework
+- DMTT: Applies to MNEs with consolidated turnover exceeding €750 million, ensuring minimum 15% effective tax rate
+
+MINING SECTOR:
+- Gold royalty rate maintained at 5% (reversed earlier plan to double to 10%)
+- Sliding scale gold royalty: 3% (up to US$1,200/oz), 5% (US$1,201-US$2,500/oz), 10% (US$2,501+/oz)
+- Assessed loss carry forward limited to 30% for mining entities
+- Capital redemption allowance aligned with life of mine
+- Export tax on un-beneficiated minerals: 10% antimony, 5% ferro-chrome
+- New 2% Corporate Social Responsibility Levy on coal
+- Quoted price method introduced for transfer pricing of minerals (referencing London Bullion Market, London Metals Exchange, Shanghai Metals Market)
+- Tiered royalties regime for mining activities
+
+BOOKMAKERS AND GAMING:
+- Bookmakers Tax increased from 3% to 20% of gross revenues (final tax)
+- Tax on winnings by punters increased from 10% to 25%
+
+OTHER TAX MEASURES:
+- Special Capital Gains Tax of 20% on offshore disposal of specified assets (shares whose underlying value derives from immovable property)
+- Non-Resident Tax on Interest reintroduced at 15%
+- Permanent Establishment threshold reduced from 183 days to 90 days for construction/building/installation projects
+- Cash withdrawal levy: progressive tiered structure (2% for US$501-US$1,000, 3% for over US$1,000)
+- Rental income tax: landlords to withhold 10% of rental income from tenants liable for presumptive tax
+- Presumptive tax collection strengthened through partnerships with local authorities and ZINARA
+- Mandatory migration from presumptive tax to self-assessment for certain sectors (public service buses >25 passengers, haulage trucks, commercial water vessels)
+- Dividends declared by building societies treated as dividends (no longer classified as interest)
+
+========================================
+SUPPORT FOR PRODUCTIVE SECTORS
+========================================
+
+BUSINESS AND KNOWLEDGE PROCESS OUTSOURCING (BKPO):
+- Suspension of customs duty on specified equipment for qualifying operators
+- Flat 15% Corporate Income Tax rate (subject to DMTT provisions)
+- 100% capital allowance deduction in first year of use
+- Exemption from Non-Residents Tax on Dividends
+- Tax credit of US$1,500 per employee per annum (Youth Employment Tax Incentive)
+- Flat tax rate of 15% on skilled essential expatriate staff
+
+24-HOUR ECONOMY INCENTIVES:
+- Additional tax deductions on selected expenditure during extended operational hours
+- Accelerated wear-and-tear allowances on plant and equipment used in round-the-clock production cycles
+- Priority access to import duty concessions for firms demonstrating expansion/productivity improvements under the 24-hour model
+
+CUSTOMS DUTY REFORMS:
+- Customs duty removed on capital equipment for beneficiation plants (with longer VAT deferment periods)
+- Suspension of customs duty on selected raw materials (steel coils and plates for gas cylinder manufacturing)
+- Suspended customs duty on electric public service buses (from 25% to 0%)
+- Partially suspended customs duty to 10% on conventional public service buses (registered, tax-compliant operators)
+- Suspended duty on semi-knocked-down kits for passenger motor vehicle assembly
+- Duty on selected polyester staple fibres aligned with dyed woven cotton fabrics (40% + US$2.50/kg)
+
+TAX RELIEF MEASURES:
+- IMTT reduction for ZiG transactions (2% to 1.5%)
+- IMTT designated as deductible expense
+- Interest on deposits with financial institutions made deductible
+- REITs tax exemptions extended to fund managers registering on behalf of pooled pension funds
+
+========================================
+TAX ADMINISTRATION AND COMPLIANCE
+========================================
+
+- Increased inter-agency collaboration for compliance checking
+- Automatic reporting of tenders with mandatory inclusion of TINs in tender details
+- Automatic linking of new business bank accounts and merchant wallets to ZIMRA
+- Transaction details on accounts automatically transmitted to ZIMRA
+- Regulations in shipping, clearing, and forwarding industry: minimum diploma level qualification, agent registration, unique identifiers; insurance guarantee bond increased from US$15,000 to US$25,000
+- TaRMS (Tax and Revenue Management System) enhanced for real-time monitoring
+- FDMS (Fiscalisation Data Management System) for real-time transaction verification
+- Strengthened anti-money laundering monitoring of banking institutions
+
+========================================
+MACROECONOMIC FRAMEWORK
+========================================
+
+GDP Growth:
+- 2025: Revised to ~8.2%
+- 2026: Projected 5% (supported by strong commodity prices, gold and PGMs)
+
+Inflation:
+- ZiG annual inflation projected to decline to single digits in 2026
+- Projected average of 12.1% for 2026
+- Monthly inflation stable at ~0.4% during Feb-Oct 2025
+
+Public Debt: Being managed through fiscal consolidation.
+
+The budget seeks balance between expanding on NDS1 gains while safeguarding fiscal sustainability. Anchoring macroeconomic stability is the number one priority.
+
+========================================
+SECTOR-SPECIFIC SUPPORT
+========================================
+
+SPORTS:
+- Accelerated capital allowance of 150% (spread over two years) on expenditure on sporting infrastructure
+- Tax credit of US$10,000 on assessed income for corporates funding rural sports academies or youth sports development (registered under SRC)
+
+AGRICULTURE:
+- Support for cotton-to-clothing value chain
+- Duty reforms on critical production inputs
+
+ENERGY:
+- Sector reforms approved (November 2025)
+- Support for Rural Electrification Fund through VAT exemptions
+
+MANUFACTURING:
+- 24-hour economy incentives
+- Support for local production capacity (gas cylinders, fabrics)
+- Beneficiation plant incentives
+
+WHOLESALE AND RETAIL:
+- Sector reforms approved (October 2025)
+- IMTT relief for ZiG transactions

@@ -1,0 +1,163 @@
+ZIMRA 2026 TAX GUIDE
+Source: Compiled from ZIMRA official publications, Finance Act (No. 7) of 2025, and 2026 National Budget
+
+========================================
+CORPORATE INCOME TAX
+========================================
+
+Standard corporate income tax rate: 24% (effective rate 24.72% with 3% AIDS levy on tax payable)
+
+Special rates:
+- Mining companies (special minerals): 15% + AIDS levy = 15.45%
+- Industrial park companies: 15% + AIDS levy
+- Licensed investor in SEZ (first 5 years): 0%
+- Licensed investor in SEZ (after 5 years): 15% + AIDS levy
+- Business and Knowledge Process Outsourcing (BKPO): 15% (flat)
+- Registered pension funds: 0% (exempt)
+- Approved charitable organisations: 0% (exempt, must register with ZIMRA)
+
+Tax registration: All businesses must register on TaRMS platform at https://mytaxselfservice.zimra.co.zw to obtain a Tax Identification Number (TIN) and Business Partner (BP) Number.
+
+Quarterly Payment Dates (QPDs) for provisional tax:
+- 25 March (30% of estimated tax)
+- 25 June (30% of estimated tax)
+- 25 September (30% of estimated tax)
+- 20 December (balance)
+
+Annual corporate tax return (ITF14): Due within 6 months of financial year-end.
+For companies with December year-end: deadline is 30 June.
+
+Self-assessment regime: All clients must furnish self-assessment returns.
+Tax year runs 1 January to 31 December.
+
+Domestic Minimum Top-Up Tax (DMTT): Effective 1 January 2026. Applies to multinational enterprises with consolidated annual turnover exceeding €750 million (€760 million per draft bill). Ensures minimum 15% effective tax rate on Zimbabwean profits.
+
+Assessed loss carry forward for mining: Limited to 30% per annum (effective 1 Jan 2026).
+
+========================================
+ITF263 — TAX CLEARANCE CERTIFICATE
+========================================
+
+ITF263 is a Tax Clearance Certificate issued by the Commissioner General of ZIMRA confirming a taxpayer has no outstanding tax obligations.
+
+Required for: Government tenders and procurement, bank loans and financing, visa applications, property transfers, vehicle registration, business licence renewal, foreign exchange applications (remitting funds abroad), supplier registration with large corporates.
+
+Requirements:
+- All tax returns filed (income tax, VAT, PAYE, and any other applicable returns up to date)
+- No outstanding tax payments (assessed taxes, penalties, and interest must be paid)
+- Valid TIN number
+- Active TaRMS account for online applications
+
+Validity: 1 month from date of issue (changed from 6 months in December 2025). Must apply for a fresh certificate each month.
+
+Consequences of non-compliance: 30% withholding on amounts payable to payees who fail to furnish valid tax clearance certificates (Section 80 of Income Tax Act Chapter 23:06). Applies to contracts with obligation to pay amounts totalling US$1,000 or ZiG equivalent or more.
+
+Processing time: 5-10 working days.
+
+========================================
+PAYE — PAY AS YOU EARN (INDIVIDUAL INCOME TAX)
+========================================
+
+2026 Individual Income Tax Bands (USD — annual):
+
+| Income Range (USD) | Tax Rate |
+|---|---|
+| US$0 — US$1,200 | 0% (tax-free) |
+| US$1,201 — US$36,000 | 20% |
+| US$36,001 — US$72,000 | 25% |
+| US$72,001 — US$120,000 | 30% |
+| Over US$120,000 | 40% |
+
+Tax credit: US$1,200 per year (US$100 per month)
+AIDS levy: 3% on net tax after credit
+
+2026 Individual Income Tax Bands (ZiG — annual):
+
+| Income Range (ZiG) | Tax Rate |
+|---|---|
+| ZiG 0 — 33,600 | 0% (tax-free) |
+| ZiG 33,601 — 100,800 | 20% |
+| ZiG 100,801 — 1,008,000 | 25% |
+| Above ZiG 1,008,000 | 40% |
+
+Monthly PAYE return (REV5): Due 10th of following month.
+Individual Income Tax return (ITF1): Due 30 April.
+
+Employers must segregate income by currency and apply the relevant schedule. Separate tax tables for USD and ZiG.
+
+Withholding Tax Rates 2026:
+- Resident: Fees for services 10%, Dividends 10%, Interest 15%, Rental income 10%, Tender payments (government) 10%
+- Non-Resident: Dividends 10% (may be reduced by DTA), Interest 15%, Royalties 15%, Fees for technical/management services 15%, Remittances by branches 15%
+
+========================================
+VALUE ADDED TAX (VAT)
+========================================
+
+Standard VAT rate: 15.5% (increased from 15% effective 1 January 2026)
+
+Registration threshold: Taxable supplies exceeding or expected to exceed US$25,000 (or ZiG equivalent) per year.
+
+Voluntary registration: Available for traders whose taxable supplies do not meet the threshold.
+
+VAT return (VAT7): Due 25th of the month following the end of the tax period.
+VAT Categories: Category A (monthly), Category B (bi-monthly), Category C, Category D.
+
+Key 2026 changes:
+- VAT rate increased from 15% to 15.5%
+- New definition of "tax invoice": must be a fiscal tax invoice printed by an approved fiscal device, with transaction details identical to those transmitted to the ZIMRA Fiscalisation Data Management System (FDMS), and verifiable on the FDMS validation portal
+- New definition of "fiscal device" or "electronic fiscal device": electronic device, machine, application, system or software compatible with FDMS requirements, approved by the Commissioner for recording and transmitting business transactions
+- Zero-rating for transfers of business as a going concern: restricted to transactions involving the Public Service Pension Fund only (effective 1 Jan 2026)
+- Three new VAT-exempt categories: prescribed electrification services to rural communities (Rural Electrification Fund), healthcare services, and other prescribed categories
+- VAT on imported services: must be declared and paid in the currency of trade
+- Digital Services Withholding Tax of 15% introduced for payments to offshore digital platforms (Netflix, Spotify, AWS, Starlink, etc.)
+- Electronic commerce: qualifying threshold removed for Electronic Commerce Operators' Tax of 5%
+
+TaRMS compliance: From January 2026, TaRMS automatically populates VAT Input Tax schedule based on data from suppliers' fiscal devices. Non-compliant invoices (no fiscal device interfaced with FDMS) will be automatically denied.
+
+Fiscalisation: All registered operators must use electronic fiscal devices (ETR, EFP, ESD, Fuel Fiscal Device, Virtual Fiscal Device/Software Application) to record transactions and transmit to FDMS.
+
+Record keeping: Accounting records must be kept for at least 6 years after the tax period.
+
+========================================
+INTERMEDIATED MONEY TRANSFER TAX (IMTT)
+========================================
+
+2026 Rates:
+- ZiG-denominated transactions: 1.5% (reduced from 2%)
+- USD and foreign currency transactions: 2%
+- High-value transactions (>US$500,000): capped at US$10,150
+
+IMTT designated as a tax-deductible expense for Corporate Income Tax purposes.
+Definition of Financial Institution expanded to include Microfinance Institutions.
+
+========================================
+OTHER KEY TAXES
+========================================
+
+Presumptive Tax: 10% of turnover for qualifying small businesses.
+Capital Gains Tax: 20% on disposal of specified assets.
+Special Capital Gains Tax: 20% on offshore disposal of specified assets (shares whose underlying value is derived from immovable property).
+Bookmakers Tax: increased from 3% to 20% of gross revenues (final tax).
+Tax on winnings by punters: increased from 10% to 25%.
+Non-Resident Tax on Interest: reintroduced at 15% (effective 1 Jan 2026).
+Corporate Social Responsibility Levy: 2% on gross value of coal.
+Permanent Establishment threshold: reduced from 183 days to 90 days for construction/building/installation projects (effective 1 Jan 2026).
+Export tax on un-beneficiated minerals: 10% on antimony, 5% on ferro-chrome (must be paid in foreign currency).
+Cash withdrawal levy: progressive tiered structure.
+
+========================================
+TAX ADMINISTRATION
+========================================
+
+TaRMS (Tax and Revenue Management System): Online platform for tax registration, return submission, and payments.
+FDMS (Fiscalisation Data Management System): Real-time transaction monitoring system.
+
+Automatic linking: New business bank accounts and merchant wallets on mobile network operator platforms automatically linked to ZIMRA. Transaction details automatically transmitted to ZIMRA.
+
+Penalties:
+- Late filing of returns: up to 100% of tax + interest
+- Late payment: 15% penalty + interest
+- Late VAT return: 25% of VAT + interest
+- Late QPD instalment: 10% of instalment + interest
+
+All returns and payments must be made in the currency of trade.

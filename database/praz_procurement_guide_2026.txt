@@ -1,0 +1,187 @@
+PRAZ PROCUREMENT GUIDELINES 2026
+Source: Procurement Regulatory Authority of Zimbabwe, PPDPA Act [Chapter 22:23], PRAZ official publications
+
+========================================
+OVERVIEW
+========================================
+
+The Procurement Regulatory Authority of Zimbabwe (PRAZ) is established under the Public Procurement and Disposal of Public Assets (PPDPA) Act [Chapter 22:23]. PRAZ sets standards and regulates public procurement and disposal of public assets in a manner that is transparent, fair, honest, cost-effective, and competitive.
+
+Vision: "A responsive regulator, driving a modern, efficient, and effective Public Procurement system by 2030."
+
+Mission: To set standards and regulate public procurement and disposal of public assets in a manner that is transparent, fair, honest, cost-effective, and competitive.
+
+========================================
+ELECTRONIC GOVERNMENT PROCUREMENT (eGP) SYSTEM
+========================================
+
+PRAZ implemented the electronic Government Procurement (eGP) System to enhance transparency, efficiency, accountability, and cost-effectiveness in public procurement. Launched by President Mnangagwa on 23 October 2023, with pilot phase commencing immediately.
+
+All Procuring Entities (PEs) including Government Ministries, Departments, and Agencies were expected to be fully onboarded by January 2024.
+
+The eGP System is a secure web-based platform enabling all public entities and bidders to conduct procurement activities electronically. It enhances competition, transparency, efficiency, and integrity in public procurement.
+
+Supplier registration fees on eGP (per year):
+- Micro Enterprise: US$50 (or ZiG equivalent)
+- Small/Medium Enterprise: US$60
+- Non-Micro, Small, Medium Enterprise: US$75
+- Foreign bidders: US$850
+
+========================================
+PROCUREMENT PRINCIPLES (Section 4 of PPDPA Act)
+========================================
+
+All procurement officials must ensure:
+1. Procurement is conducted in a manner that is transparent, fair, honest, cost-effective, and competitive
+2. Promotion of competition among bidders
+3. Fair and equitable treatment of all bidders, resulting in procurement contracts that represent value for money
+4. Promotion of integrity, fairness, and public confidence in procurement processes
+5. Facilitation of implementation of environmental, social, economic, or other policy considerations authorised or required by law
+
+Accounting Officers are held accountable for ensuring strict adherence to prescribed procurement standards.
+
+========================================
+TENDER PROCESS
+========================================
+
+Standard tender procedure:
+1. Contact
+2. Identification of a requirement by the Accounting Officer
+3. Budgeting for it
+4. Preparing a specification
+5. Advertising the requirement
+6. Receiving offers or bids
+7. Evaluating the bids
+8. Awarding the tender
+9. Signing of contract
+10. Implementation
+
+Minimum advertising periods:
+- National tenders: 20 days
+- International tenders: 40 days (as prescribed in Procurement Regulations, Section 19(1))
+
+Bid validity period: At least 30 days (for RFQ method).
+
+========================================
+PROCUREMENT METHODS
+========================================
+
+Request for Quotations (RFQ) method (Section 34 of PPDPA Act):
+Used for low-value procurements below prescribed thresholds:
+- Goods: Below US$10,000
+- Works: Below US$20,000
+- Consultancy and non-consultancy services: Below US$5,000
+
+RFQ requirements:
+- Solicit at least 3 competitive quotations from reputable suppliers registered with PRAZ
+- Use Standard Bidding Documents produced by PRAZ
+- Clear statement of procurement requirement (quality, quantity, terms, delivery period)
+- Specify bid validity period (at least 30 days)
+- Provide adequate time for bidders to prepare and submit quotations (at least 3 days)
+- Each bidder permitted to submit only one quotation (cannot be altered or negotiated)
+
+========================================
+SPECIAL PROCUREMENT OVERSIGHT COMMITTEE
+========================================
+
+Procurements at or above the following thresholds must be reviewed by the Special Procurement Oversight Committee (Section 54 of PPDPA Act, Section 10(5)):
+
+Class A Procuring Entity:
+- Construction works: US$500,000
+- Goods: US$250,000
+- Non-consultancy and consultancy services: US$100,000
+
+Class B Procuring Entity:
+- Construction works: US$250,000
+- Goods: US$150,000
+- Non-consultancy and consultancy services: US$75,000
+
+Class C Procuring Entity:
+- Construction works: US$200,000
+- Goods: US$100,000
+- Non-consultancy and consultancy services: US$50,000
+
+The Secretariat must convene a meeting within 7 days after receipt of procurement record.
+
+========================================
+NATIONAL STANDARD PRICE LIST (NSPL)
+========================================
+
+The NSPL provides a structured and standardised pricing reference for goods and services procured by Public Entities in Zimbabwe. It enhances compliance with the PPDPA Act.
+
+NSPL is used for:
+- Budgeting and resource allocation
+- Annual Procurement Planning
+- Bid or tender evaluation, including price reasonableness assessment
+
+Permissible variance: ±10% of applicable NSPL reference prices.
+Base currency: United States Dollar (USD).
+Updated quarterly.
+
+If a required item is not covered in the applicable quarterly NSPL, Procuring Entities must undertake a price reasonableness analysis supported by market evidence and subject to PRAZ approval or concurrence.
+
+========================================
+TENDER COMPLAINTS AND REVIEWS
+========================================
+
+A potential or actual bidder who claims to have suffered loss or injury due to a breach of duty by a procuring entity may challenge proceedings by lodging a written notice (Section 73(1) of PPDPA Act).
+
+Within 5 days after lodging a challenge, the bidder may apply in writing to the Authority for review by a review panel (Section 74 of PPDPA Act).
+
+Grounds for challenge:
+1. Commercial requirements of the tender
+2. Technical requirements/specifications of the tender
+3. Tender process and procedure
+
+========================================
+PROCURING ENTITY CLASSIFICATION
+========================================
+
+Class A: Major government ministries and large public entities
+Class B: Medium-sized procuring entities
+Class C: Smaller procuring entities and local authorities
+
+========================================
+PRAZ FEES SCHEDULE (SI 9 of 2026 — Fifth Schedule)
+========================================
+
+Exemption application fees:
+- Class C procuring entity: US$450
+- Class B procuring entity: US$1,250
+- Class A procuring entity: US$1,750
+
+Authority to conduct procurement (application and renewal):
+- Class C: US$250
+- Class B: US$500
+- Class A: US$1,000
+
+Bidder registration (annual):
+- Micro Enterprise: US$50
+- SME: US$60
+- Non-Micro, Small, Medium Enterprise: US$75
+- International bidders: US$850
+
+Annual administration fees (domestic, based on contract value):
+- US$10,000-US$20,000: 2% up to US$400
+- US$20,000-US$50,000: 1.5% up to US$750
+- US$50,000-US$500,000: 1% up to US$5,000
+- US$500,000-US$1,000,000: 0.7% up to US$7,000
+- US$1,000,000-US$5,000,000: 0.5% up to US$15,000
+- Above US$5,000,000: US$20,000
+
+========================================
+PREFERENTIAL PROCUREMENT
+========================================
+
+Circular No. Ops 1 of 2025: Procuring entities must procure works, goods, and services from local producers and suppliers to support local industries.
+
+Procurement of goods, works, and services from local suppliers is prioritised in line with national industrialisation policy.
+
+========================================
+TRAINING AND CAPACITY BUILDING
+========================================
+
+PRAZ provides:
+- e-Learning platform for free procurement training
+- eGP Support System for guidance on e-procurement, e-bidding, and e-tendering
+- Comprehensive manuals and technical guidelines on its website

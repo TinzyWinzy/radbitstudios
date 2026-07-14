@@ -1,0 +1,169 @@
+ZIMBABWE BUSINESS REGISTRATION GUIDE 2026
+Source: Companies and Other Business Entities Act [Chapter 24:31], CIPAZ portal, Registrar of Companies
+
+========================================
+OVERVIEW
+========================================
+
+Company registration in Zimbabwe is governed by the Companies and Other Business Entities Act (Chapter 24:31) and administered by the Registrar of Companies. The process is now fully electronic through the CIPAZ (Companies and Intellectual Property Office of Zimbabwe) E-Registry Portal.
+
+Registration timeline: 1-2 weeks (local), a few weeks (diaspora from abroad).
+
+Offline company registration under the old Companies Act (pre-February 2024) ended. All entities registered under the old Act must re-register on the new CIPZ (Centralised Integrated Platform for the Administration of Business Entities) portal by 20 April 2026 (SI 108 of 2025). Failure results in automatic deregistration.
+
+========================================
+BUSINESS ENTITY TYPES
+========================================
+
+1. Private Limited Company (PLC/Pvt Ltd):
+   - Limited liability for shareholders
+   - Minimum 1 shareholder, minimum 2 directors (1 must be resident in Zimbabwe)
+   - Most common structure for serious businesses
+   - Can issue shares to raise capital
+
+2. Public Limited Company:
+   - For businesses that intend to trade publicly or raise capital through shares
+   - Subject to additional regulatory requirements
+
+3. Private Business Corporation (PBC):
+   - Simplified structure for sole traders and small businesses
+   - Limited liability
+   - Members own percentage shares (total must equal 100%)
+
+4. Sole Proprietorship:
+   - Simplest structure
+   - Unlimited personal liability
+   - No separate legal entity
+
+5. Partnership:
+   - Joint and several liability
+   - Individual rates per partner
+   - Suitable for professional practices and small joint ventures
+
+6. Cooperative:
+   - Limited liability
+   - For farming groups, community projects
+   - Registration fees: US$50-US$200
+
+7. Non-Profit Organisation/NGO:
+   - For charitable or public-benefit organisations
+   - Must register with relevant government department
+
+Recommendation for most SMEs: Private Limited Company (PBC) or Private Limited Company (PLC). Protects personal assets, looks professional, and facilitates bank loans and investor access.
+
+========================================
+REGISTRATION PROCESS — STEP BY STEP
+========================================
+
+Step 1: Create CIPAZ Account
+Create an account on the CIPAZ E-Registry Portal. Provide full name, national ID or passport number, email address, and phone number.
+
+Step 2: Name Search and Reservation (CR21)
+Submit up to 5 name options in order of preference. The Registrar checks for identical or confusingly similar names. Approved names are reserved for 30 days.
+Processing time: 2-5 working days.
+
+Step 3: Prepare Constitutional Documents
+For a Private Limited Company (PLC):
+- Memorandum of Association: Defines company's name, objects (business activities), powers, authorised share capital, and subscriber details
+- Articles of Association: Sets out internal governance rules including director appointments, meetings, dividends, share transfers, and winding-up procedures
+- CR14 Form (old) / CR6 Form (new): Declares names, ID/passport numbers, residential addresses, and appointment dates of all directors and company secretary. Must include at least one resident director.
+- CR6 Form (old) / CR5 Form (new): Declares physical and postal address of company's registered office in Zimbabwe
+
+Common mistake: Incorrectly completed CR forms are the #1 reason for registration delays. Names must match IDs exactly, dates in DD/MM/YYYY format, and addresses must be complete.
+
+Step 4: Submit Application Electronically
+Complete registration pack submitted through CIPAZ portal:
+- Approved CR21 name search result
+- Memorandum of Association (signed by subscribers)
+- Articles of Association
+- Director details form (signed by all directors and secretary)
+- Registered office address form
+- Certified copies of national IDs or passports for all directors and shareholders
+
+Step 5: Pay Registration Fees
+Fees vary by company type. Government fees typically under US$100.
+Payment methods: Mobile money (EcoCash, OneMoney), bank transfer/ZIPIT, online debit/credit cards.
+
+Professional service fees for full registration assistance: typically US$100-US$300 (flat fee all-inclusive: approximately US$150 for Pvt Ltd or PBC).
+
+Step 6: Certificate of Incorporation (CR2)
+Once approved, Certificate of Incorporation, CR6, and CR14 forms are available to download. This legally confirms the company exists as a separate legal entity.
+Processing time: 3-7 working days after submission.
+
+========================================
+DIASPORA COMPANY REGISTRATION
+========================================
+
+Zimbabweans abroad can register a company entirely remotely.
+
+Key requirements:
+- At least one director must be ordinarily resident in Zimbabwe (professional proxy or trusted local contact)
+- 100% foreign ownership permitted (no local shareholder required)
+- Documents can be scanned and submitted electronically
+
+Diaspora-specific steps:
+1. Secure a resident director (professional services firm or local contact)
+2. Reserve company name online via CIPAZ portal
+3. Prepare and submit incorporation documents electronically (may need notarised Power of Attorney)
+4. Receive Certificate of Incorporation
+5. Register with ZIMRA for TIN and BP Number (online via TaRMS or through local agent)
+6. Open corporate bank account remotely (diaspora-friendly banks: Stanbic, Nedbank with video verification, NMB)
+
+Recommended: Register with ZIDA for investment protection and funds repatriation guarantees.
+
+========================================
+POST-REGISTRATION STEPS
+========================================
+
+1. Register with ZIMRA for Tax:
+   - Obtain Tax Identification Number (TIN) and Business Partner (BP) Number
+   - Register for Income Tax, VAT (if turnover > US$25,000), PAYE (if hiring employees), Withholding Tax
+   - Register on TaRMS Self-Service Portal at https://mytaxselfservice.zimra.co.zw
+   - Obtain ITF263 Tax Clearance Certificate
+
+2. Open a Business Bank Account:
+   Required documents: Certificate of Incorporation, Memorandum and Articles of Association, director particulars (CR14/CR6), registered office (CR6/CR5), IDs/passports of directors, proof of residence for directors (utility bill max 3 months old), ZIMRA registration confirmation, board resolution authorising account opening
+
+3. Obtain Operating Licences:
+   - City/Town Council: General business licence (Shop Licence, Hawker's Licence)
+   - EMA: Environmental Impact Assessment (manufacturing, mining, large projects)
+   - MCAZ: Medicines Control Authority (pharmacies and drug distribution)
+   - RBZ: Reserve Bank licensing (financial services, microfinance)
+   - POTRAZ: Telecoms regulator (ICT businesses)
+   - Ministry of Mines: Mining licences and claims
+
+4. Register with NSSA (National Social Security Authority):
+   - Mandatory if you have employees
+   - Employer and employee contributions
+
+5. Set Up Accounting Systems
+6. Obtain Business Insurance (public liability, professional indemnity, stock cover)
+
+========================================
+ONGOING COMPLIANCE
+========================================
+
+- Annual Returns: File within 21 days of incorporation anniversary. Late filing incurs penalties.
+- Tax Returns: Corporate tax return due within 6 months of financial year-end. Monthly PAYE (REV5) by 10th. Monthly VAT by 25th. Quarterly provisional tax on 25 Mar, 25 Jun, 25 Sep, 20 Dec.
+- Notify Registrar of any changes to directors, address, or company structure within 1 month
+- Maintain registered office address in Zimbabwe
+- Keep accounting records for at least 6 years
+
+========================================
+MANDATORY RE-REGISTRATION DEADLINE
+========================================
+
+All companies and PBCs registered before February 2024 under the old Companies Act must re-register on the CIPZ portal by 20 April 2026. This is a statutory obligation under Section 303(9) of the COBE Act, formalised through SI 108 of 2025.
+
+Requirements for re-registration:
+- File all outstanding annual returns (with backdated fees and penalties if applicable)
+- Ensure share capital correctly expressed in accordance with current monetary guidelines (ZiG/USD)
+- Provide scanned copies of original Certificate of Incorporation and CR forms
+- Updated Articles of Association aligned with COBE Act provisions (electronic meetings, director responsibilities)
+- Verified digital details (email, phone) for all directors and shareholders
+- Clear scanned copies of National IDs or Passports for all officers
+- Board resolution authorising re-registration
+- Shareholder special resolution agreeing to re-registration
+- Affidavit of Authority from a director or authorised representative
+
+Consequences of non-compliance by 20 April 2026: Automatic striking off and dissolution of the company. The company ceases to exist as a legal person.
