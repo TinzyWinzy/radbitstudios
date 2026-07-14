@@ -243,4 +243,16 @@ export const RAG_SOURCES = [
     enabled: false,
     claimGuidance: 'Disabled until ownership, date, and relevance are confirmed.',
   },
+  {
+    id: 'nds2-trade-tourism-opportunities',
+    title: 'NDS2 trade and tourism opportunities',
+    source: 'National Development Strategy 2 (2026-2030)',
+    category: 'nds2',
+    locale: 'en',
+    type: 'text',
+    path: '../../database/nds2_toc.txt',
+    trust: 'primary-policy',
+    freshness: '2026-2030',
+    claimGuidance: 'Use for trade and tourism opportunity lists from NDS2. Covers leather, processed foods, horticulture, textiles, tourism sites.',
+  },
 ];

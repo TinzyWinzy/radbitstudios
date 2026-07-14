@@ -429,6 +429,12 @@ async function scrapeNewsApi(): Promise<NewsArticle[]> {
     { q: 'Africa trade OR AfCFTA OR SADC', category: 'business' },
     { q: 'Zimbabwe technology OR startup OR fintech', category: 'technology' },
     { q: 'Zimbabwe mining OR agriculture OR energy', category: 'business' },
+    { q: 'Zimbabwe tax OR ZIMRA OR compliance OR regulatory', category: 'regulatory' },
+    { q: 'Zimbabwe SME OR small business OR entrepreneurship', category: 'business' },
+    { q: 'Zimbabwe banking OR insurance OR investment', category: 'finance' },
+    { q: 'Zimbabwe real estate OR construction OR infrastructure', category: 'business' },
+    { q: 'Zimbabwe manufacturing OR retail OR wholesale', category: 'business' },
+    { q: 'Africa investment OR private equity OR development finance Zimbabwe', category: 'finance' },
   ];
 
   const articles: NewsArticle[] = [];
