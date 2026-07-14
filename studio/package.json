@@ -12,6 +12,8 @@
     "lint": "next lint",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
+    "rag:index": "tsx scripts/index-rag-knowledge.mjs",
+    "rag:list": "tsx scripts/index-rag-knowledge.mjs --list",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
