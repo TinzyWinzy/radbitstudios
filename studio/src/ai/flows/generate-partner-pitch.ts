@@ -49,6 +49,7 @@ export async function generatePartnerPitch(input: GeneratePartnerPitchInput): Pr
     systemPrompt: SYSTEM_PROMPT,
     difficulty: 'complex',
     maxTokens: 2048,
+    enableRAG: true,
   });
 
   const text = result.content || '';

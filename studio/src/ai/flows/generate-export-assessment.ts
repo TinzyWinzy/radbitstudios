@@ -54,6 +54,8 @@ export async function generateExportAssessment(input: GenerateExportAssessmentIn
     jsonMode: true,
     userId: input.userId,
     temperature: 0.3,
+    enableRAG: true,
+    ragCategory: 'zimra_tenders',
   });
 
   try {

@@ -311,6 +311,8 @@ ${buildHolonPrompt(input, pillar)}`;
     maxTokens: 2048,
     temperature: 0.4,
     jsonMode: true,
+    enableRAG: true,
+    ragCategory: input.triggerCategory,
   });
 
   let parsed: ThreatAssessmentOutput;

@@ -95,6 +95,8 @@ async function ensureSchema(): Promise<void> {
       source TEXT,
       category TEXT,
       locale TEXT DEFAULT 'en',
+      trust_tier TEXT,
+      freshness TEXT,
       chunk_count INTEGER DEFAULT 0,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
@@ -112,6 +114,7 @@ async function ensureSchema(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_rag_chunks_doc_id ON rag_chunks(document_id);
     CREATE INDEX IF NOT EXISTS idx_rag_chunks_metadata_category ON rag_chunks((metadata->>'category'));
     CREATE INDEX IF NOT EXISTS idx_rag_chunks_metadata_locale ON rag_chunks((metadata->>'locale'));
+    CREATE INDEX IF NOT EXISTS idx_rag_documents_trust_tier ON rag_documents(trust_tier);
   `);
 }
 

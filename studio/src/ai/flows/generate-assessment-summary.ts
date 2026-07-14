@@ -56,6 +56,7 @@ export async function generateAssessmentSummary(input: GenerateAssessmentSummary
     difficulty: 'simple',
     maxTokens: 512,
     userId: input.userId,
+    enableRAG: true,
   });
 
   let summary = result.content;

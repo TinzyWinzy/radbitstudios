@@ -1,8 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { generateEmbedding, cosineSimilarity } from './embeddings';
-import { searchRelevantContext } from './rag';
-import { buildRAGContext } from './rag';
+import { searchRelevantContext, buildRAGContext } from './rag.server';
 import { checkRateLimit, RateLimits } from '@/services/rate-limiter';
 import { withCircuitBreaker } from '@/lib/circuit-breaker';
 import { logger } from '@/lib/logger';

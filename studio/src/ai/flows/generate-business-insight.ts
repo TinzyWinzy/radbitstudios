@@ -43,6 +43,7 @@ export async function generateBusinessInsight(input: GenerateBusinessInsightInpu
     systemPrompt: SYSTEM_PROMPTS[input.insightType] || '',
     difficulty: 'complex',
     maxTokens: 1024,
+    enableRAG: true,
   });
 
   return { insight: result.content };

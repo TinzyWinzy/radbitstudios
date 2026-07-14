@@ -181,6 +181,8 @@ async function indexSections(sections, source) {
         source.source,
         source.category,
         source.locale || 'en',
+        source.trust || null,
+        source.freshness || null,
       );
       console.log(`  OK [${id}] ${section.title.slice(0, 60)}`);
       indexed++;

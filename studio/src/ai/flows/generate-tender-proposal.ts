@@ -45,6 +45,8 @@ Currency: ${input.currency}`;
     difficulty: 'complex',
     maxTokens: 1536,
     jsonMode: true,
+    enableRAG: true,
+    ragCategory: 'zimra_tenders',
   });
 
   const parsed = TenderProposalOutputSchema.parse(JSON.parse(result.content));
