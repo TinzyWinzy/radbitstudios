@@ -8,6 +8,7 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "Zimbabwe Business Expo 2026 — Radbit",
   description: "Zimbabwe's premier B2B expo. December 18, 2026 at Golden Conifer Conference Centre, Harare. Register now.",
+  alternates: { canonical: "/events/zimbabwe-business-expo-2026" },
   openGraph: {
     title: "Zimbabwe Business Expo 2026 — Radbit",
     description: "Zimbabwe's premier B2B expo. December 18, 2026 at Golden Conifer Conference Centre, Harare. Register now.",

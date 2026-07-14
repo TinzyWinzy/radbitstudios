@@ -7,7 +7,6 @@ import { aggregateRatingSchema } from "@/data/testimonials";
 import { CookieBanner } from "@/components/cookie-banner";
 import { GA4Script } from "@/components/analytics/ga4";
 import { DeviceProvider } from "@/contexts/device-context";
-import { SEOLinks } from "@/components/seo-links";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -105,7 +104,6 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
-        <SEOLinks />
         <GA4Script />
         <script
           async

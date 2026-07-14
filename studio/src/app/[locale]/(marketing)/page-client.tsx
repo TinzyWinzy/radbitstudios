@@ -9,11 +9,11 @@ import { MagneticButton } from "@/components/magnetic-button";
 import { TiltCard } from "@/components/tilt-card";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { AdUnit } from "@/components/adsense";
-import { HeroBackground } from "@/components/hero-background";
 import { NewsletterSignup } from "@/components/newsletter-signup";
 import { OperationalStressTester } from "@/components/operational-stress-tester";
 import dynamic from "next/dynamic";
 
+const HeroBackground = dynamic(() => import("@/components/hero-background").then(m => m.HeroBackground), { ssr: false });
 const WaveField = dynamic(() => import("@/components/wave-field").then(m => m.WaveField), { ssr: false });
 
 const containerVariants = {

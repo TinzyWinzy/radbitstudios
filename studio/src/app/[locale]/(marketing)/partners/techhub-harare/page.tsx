@@ -8,6 +8,7 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "Tech Hub Harare × Radbit — AI Tools for Zimbabwe's Founders",
   description: "AI agent workforce, cloud credits, tender intelligence and PRAZ compliance for Tech Hub Harare members.",
+  alternates: { canonical: '/partners/techhub-harare' },
   openGraph: {
     title: "Tech Hub Harare × Radbit — AI Tools for Zimbabwe's Founders",
     description: "AI agent workforce, cloud credits, tender intelligence and PRAZ compliance for Tech Hub Harare members.",

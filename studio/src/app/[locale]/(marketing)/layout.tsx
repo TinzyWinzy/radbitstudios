@@ -8,7 +8,8 @@ import { MagneticButton } from "@/components/magnetic-button";
 import { UserNav } from "@/components/user-nav";
 import { Breadcrumbs } from "@/components/seo-breadcrumbs";
 import { AuthContext } from "@/contexts/auth-context";
-import { RollingShapes } from "@/components/rolling-shapes";
+import dynamic from "next/dynamic";
+const RollingShapes = dynamic(() => import("@/components/rolling-shapes").then(m => m.RollingShapes), { ssr: false });
 import { MarketingFooter } from "@/components/marketing-footer";
 import {
   Sheet,

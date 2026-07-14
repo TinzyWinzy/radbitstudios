@@ -8,6 +8,7 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "Moto Republik × Radbit — Creative Entrepreneurship Meets AI",
   description: "Generate logos, write copy, automate marketing with AI agents. Built for the Moto Republik creative community.",
+  alternates: { canonical: '/partners/moto-republik' },
   openGraph: {
     title: "Moto Republik × Radbit — Creative Entrepreneurship Meets AI",
     description: "Generate logos, write copy, automate marketing with AI agents. Built for the Moto Republik creative community.",

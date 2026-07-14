@@ -8,6 +8,7 @@ import { ArrowLeft, Shield, Eye, Download, Mail } from "lucide-react";
 export const metadata: Metadata = {
   title: "Privacy Policy — Radbit",
   description: "How Radbit collects, uses, and protects your personal data. Privacy policy for the Radbit enterprise platform.",
+  alternates: { canonical: "/privacy" },
   robots: { index: true, follow: true },
 };
 

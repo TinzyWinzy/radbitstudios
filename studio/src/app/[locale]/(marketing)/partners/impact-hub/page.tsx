@@ -8,6 +8,7 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "Impact Hub Harare × Radbit — Sustainable Innovation Powered by AI",
   description: "Track green energy tenders, access sustainability grants, and scale your climate action impact with AI.",
+  alternates: { canonical: '/partners/impact-hub' },
   openGraph: {
     title: "Impact Hub Harare × Radbit — Sustainable Innovation Powered by AI",
     description: "Track green energy tenders, access sustainability grants, and scale your climate action impact with AI.",
