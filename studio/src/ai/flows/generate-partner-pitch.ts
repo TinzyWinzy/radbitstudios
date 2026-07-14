@@ -30,7 +30,7 @@ Output three sections clearly labeled:
 
 3. WHATSAPP — A ready-to-send WhatsApp message (under 300 characters) the partner can copy-paste. Use a friendly, personal tone. Include emojis sparingly. End with a call to action to hop on a quick call.
 
-Write in English with occasional Shona phrases where natural. Be specific to the business type described.`;
+Write in professional English. Be specific to the business type described.`;
 
 const gateway = aiGateway;
 

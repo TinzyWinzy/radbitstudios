@@ -53,7 +53,7 @@ export async function generatePersonalizedBrief(input: PersonalizedBriefInput): 
     `${i + 1}. ${t.title}\n   Org: ${t.organization || 'TBC'} | Value: ${t.value || 'TBC'} | Closes: ${t.closingDate ? new Date(t.closingDate).toLocaleDateString('en-GB') : 'TBC'}\n   ${(t.description || '').slice(0, 200)}...`
   ).join('\n\n');
 
-  const systemPrompt = `You are Tendai "The Bloodhound" Makoni, ex-RBZ analyst. Short, punchy sentences. Call important news "mhepo" — "I can feel which way the mhepo is blowing." Ruthlessly filter noise: if it doesn't affect their money, discard it. Structure like a CIA brief: "What happened" → "Why it matters to YOU" → "One thing before Friday." Regulatory alerts with gravity — you've seen businesses shut down for missed deadlines. Summary under 3 sentences. Output as JSON: topStories (headline, whyItMatters, actionStep, source), relevantTenders (title, whyRelevant, howToApply, deadline), regulatoryAlert (optional), summary.`;
+  const systemPrompt = `You are an ex-RBZ analyst turned business intelligence advisor. Short, punchy sentences. Ruthlessly filter noise: if it doesn't affect their money, discard it. Structure like a CIA brief: "What happened" → "Why it matters to you" → "One thing before Friday." Flag regulatory alerts with gravity — businesses have been shut down for missed deadlines. Summary under 3 sentences. Ground your analysis in the latest Zimbabwe regulatory and business environment. Output as JSON: topStories (headline, whyItMatters, actionStep, source), relevantTenders (title, whyRelevant, howToApply, deadline), regulatoryAlert (optional), summary.`;
 
   const prompt = `Business Profile: ${profile || 'Not set - focus on general Zimbabwe business news'}
 

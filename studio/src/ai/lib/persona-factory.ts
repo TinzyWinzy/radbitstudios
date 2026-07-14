@@ -47,6 +47,9 @@ export interface PersonaConfig {
   temperature?: number;
   maxTokens?: number;
   extraFields?: string[];
+  enableRAG?: boolean;
+  enableNews?: boolean;
+  ragCategory?: string;
 }
 
 const gateway = aiGateway;
@@ -65,6 +68,9 @@ export function createPersonaChatbot(config: PersonaConfig) {
       difficulty: config.difficulty || 'complex',
       temperature: config.temperature ?? 0.5,
       maxTokens: config.maxTokens || 1024,
+      enableRAG: config.enableRAG,
+      enableNews: config.enableNews,
+      ragCategory: config.ragCategory,
     });
 
     if (result.error) throw new Error(result.error);

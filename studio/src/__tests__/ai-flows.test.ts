@@ -71,7 +71,7 @@ describe('Pattern A — simple text response with error check', () => {
 
     const result = await negotiateSupplier({ query: 'Negotiate price' });
     expect(result.answer).toBe('Negotiation script');
-    expect(getLastGenerateCall()?.systemPrompt).toContain('VaMoyo');
+    expect(getLastGenerateCall()?.systemPrompt).toContain('Zimbabwe procurement negotiator');
   });
 
   it('aiBusinessMentor returns answer from gateway', async () => {
@@ -267,7 +267,7 @@ describe('Pattern C — JSON mode with quality control retry', () => {
 
     expect(result.summary.length).toBeGreaterThan(0);
     const calls = getGenerateCalls();
-    expect(calls[0].systemPrompt).toContain('Amai Chenai');
+    expect(calls[0].systemPrompt).toContain('Zimbabwe business assessor');
   });
 });
 
@@ -292,7 +292,7 @@ describe('Pattern D — Dynamic system prompts', () => {
     setMockContent('Slogans');
 
     await generateBusinessInsight({ businessDescription: 'Cafe', insightType: 'slogan_generator' });
-    expect(getLastGenerateCall()?.systemPrompt).toContain('Rudo');
+    expect(getLastGenerateCall()?.systemPrompt).toContain('Zimbabwe brand strategist');
   });
 });
 

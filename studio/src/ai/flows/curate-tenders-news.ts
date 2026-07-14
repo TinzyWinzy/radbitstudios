@@ -26,7 +26,7 @@ export type CurateTendersNewsOutput = z.infer<typeof CurateTendersNewsOutputSche
 const gateway = aiGateway;
 
 export async function curateTendersNews(input: CurateTendersNewsInput): Promise<CurateTendersNewsOutput> {
-  const systemPrompt = `You are Radical the Info Broker, curating business intel in a Harare café. Scan raw text, extract only what's useful. Classify as 'Tender', 'News', or 'Policy Update'. Extract expiry date for tenders. Discard noise ruthlessly — if it won't help someone make or save money, cut it. User's Interest: ${input.userQuery}. Return JSON: { articles: [{ title, summary, source (url), category, isRelevant (boolean), expiryDate (YYYY-MM-DD, tenders only) }] } Only include relevant articles.`;
+  const systemPrompt = `You are a Zimbabwe business intelligence analyst curating opportunities for local SMEs. Scan raw text, extract only what's useful. Classify as 'Tender', 'News', or 'Policy Update'. Extract expiry date for tenders. Discard noise ruthlessly — if it won't help someone make or save money, cut it. User's Interest: ${input.userQuery}. Return JSON: { articles: [{ title, summary, source (url), category, isRelevant (boolean), expiryDate (YYYY-MM-DD, tenders only) }] } Only include relevant articles.`;
 
   const result = await gateway.generate({
     prompt: input.content,

@@ -43,7 +43,7 @@ function buildPrompt(input: GenerateAssessmentSummaryInput): { prompt: string; s
 
   return {
     prompt: `Business Context:\n${businessContext || 'N/A'}\n\nAssessment Data:\n${assessmentData}`,
-    systemPrompt: `You are Amai Chenai, a firm-but-fair business assessor in Mabelreign. Grade like a school report — call weaknesses "chikwama chako chisina simba" and strengths "simba rako". Structure: "Result: [category] — Rating: [score/4]". Give 2-3 recommendations referencing real Zim resources (ZimTrade, POTRAZ, ZIMRA, RBZ). Say "Tinofanira kushanda pane izvi" rather than sugar-coating. Keep under 100 words. Be specific with scores, categories, industry, and concrete next steps.`,
+    systemPrompt: `You are a professional Zimbabwe business assessor with experience evaluating SMEs across multiple sectors. Grade objectively on a 1-4 scale. Structure each assessment as: "Category — Score/4 — Key Finding". Give 2-3 actionable recommendations referencing real Zimbabwe resources (ZimTrade, POTRAZ, ZIMRA, RBZ, ZIDA, PRAZ). Be direct about weaknesses without sugar-coating. Keep under 100 words. Be specific with scores, categories, industry context, and concrete next steps.`,
   };
 }
 
@@ -66,7 +66,7 @@ export async function generateAssessmentSummary(input: GenerateAssessmentSummary
   if (!qc.passed) {
     const retryResult = await gateway.generate({
       prompt: `${prompt}\n\nYour previous response had these issues: ${qc.issues.join('; ')}. Fix them. Keep under 100 words.`,
-      systemPrompt: `You are Amai Chenai. Grade fairly. Give scores, categories, 2-3 recommendations with Zim context. Under 100 words.`,
+      systemPrompt: `You are a professional Zimbabwe business assessor. Grade fairly on 1-4 scale. Give scores, categories, 2-3 recommendations with Zim context. Under 100 words.`,
       difficulty: 'simple',
       maxTokens: 512,
     });

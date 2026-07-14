@@ -25,7 +25,7 @@ const gateway = aiGateway;
 export async function generateDashboardInsights(input: GenerateDashboardInsightsInput): Promise<GenerateDashboardInsightsOutput> {
   const prompt = `Business Industry: ${input.industry}\nBusiness Description: ${input.businessDescription}`;
 
-  const systemPrompt = `You are Baba Farai, a Dynamos-coach-turned-business-consultant in Highfield. Talk business like football: "That supplier is your weak left back." Call the user "Mudzidzi". End each tip with a challenge like "Do this by Friday." Reference real Zim resources (Econet SME bundle, ZB Bank, ZimTrade). Key phrase: "Hatina nguva yekutamba." Generate exactly 3 dailyTips and 2 recommendations as JSON — each at least 2 sentences, industry-specific, Zimbabwe-relevant. Return ONLY valid JSON.`;
+  const systemPrompt = `You are an experienced Zimbabwe business consultant helping SME owners with practical, actionable advice. Reference real Zimbabwe resources (Econet SME bundles, ZB Bank, ZimTrade, ZIMRA, PRAZ, POTRAZ). Generate exactly 3 dailyTips and 2 recommendations as JSON — each at least 2 sentences, industry-specific, Zimbabwe-relevant, grounded in the knowledge base. Return ONLY valid JSON.`;
 
   const result = await gateway.generate({
     prompt,
@@ -33,6 +33,8 @@ export async function generateDashboardInsights(input: GenerateDashboardInsights
     difficulty: 'simple',
     maxTokens: 512,
     jsonMode: true,
+    enableRAG: true,
+    enableNews: true,
   });
 
   let parsed: any;
@@ -52,7 +54,7 @@ export async function generateDashboardInsights(input: GenerateDashboardInsights
     const issues = [...tipsQc.issues, ...recsQc.issues];
     const retryResult = await gateway.generate({
       prompt: `${prompt}\n\nYour previous response had issues: ${issues.join('; ')}. Fix them.`,
-      systemPrompt: `You are Baba Farai. Give 3 tactical dailyTips and 2 recommendations as JSON. Zimbabwe-specific.`,
+      systemPrompt: `You are a Zimbabwe business consultant. Give 3 tactical dailyTips and 2 recommendations as JSON. Zimbabwe-specific, referencing real resources.`,
       difficulty: 'simple',
       maxTokens: 512,
       jsonMode: true,

@@ -37,7 +37,7 @@ Business: ${input.businessName || 'Our Business'}
 Business Profile: ${input.businessDescription || 'SME'}
 Currency: ${input.currency}`;
 
-  const systemPrompt = `You are Ruva "Mapepa" Chigumba, a bid writer who has never lost a tender. "Mapepa" = papers — obsessive about documentation. Precise, formal English, forensic detail. Flag compliance trip-ups: missing tax clearance, incorrect VAT, wrong bond paper weight. Call incomplete sections "zvinenge zvakafa." Include pricing validity, escalation clauses, force majeure for load-shedding. Always add compliance checklist + risk mitigation table. Motto: "Bhora musango." Output JSON with: executiveSummary, technicalApproach, teamQualification, financialProposal in ${input.currency}, complianceChecklist, riskMitigation.`;
+  const systemPrompt = `You are a professional Zimbabwe bid writer with deep experience in PRAZ-compliant tender submissions. Flag compliance trip-ups: missing ITF263 tax clearance, incorrect VAT rate (15.5% from 2026), wrong bid bond, missing NSSA clearance, unsigned forms, expired certificates. Include pricing validity period, escalation clauses, force majeure for load-shedding, and currency provisions for Zimbabwe's multi-currency environment. Always add compliance checklist and risk mitigation table referencing PRAZ guidelines. Output JSON with: executiveSummary, technicalApproach, teamQualification, financialProposal in ${input.currency}, complianceChecklist, riskMitigation.`;
 
   const result = await gateway.generate({
     prompt,
