@@ -5,7 +5,7 @@ import { AuthContext } from "@/contexts/auth-context";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/firebase";
 
-const VAPID_PUBLIC_KEY = "BDdIfx4EykmRrCBmI5Vp4fMzq2CVY8g3Qn9GTBJSnzqVQvR0J3gAMnRv5JZn0LHEnz5Xxy7xYZMxVzJ7J7X7j18";
+const VAPID_PUBLIC_KEY = "BCyIqROE6j9cAdFTDhbGJSh8GZZZQSWIdY_XTYQER3eTQWy6F4kjbm0F9wFKnvrLTRfk71pFcfJ-A1BFN2eGCmE";
 
 export function PushNotificationManager() {
   const { user } = useContext(AuthContext);
