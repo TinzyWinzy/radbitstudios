@@ -29,12 +29,14 @@ import {
   ArrowRight,
   LogIn,
   Receipt,
+  BriefcaseBusiness,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/solutions", label: "Solutions", icon: Sparkles },
+  { href: "/portfolio", label: "Portfolio", icon: BriefcaseBusiness },
   { href: "/zimra-fiscal-device-registration", label: "Fiscal Device", icon: Receipt },
   { href: "/pricing", label: "Pricing", icon: CreditCard },
   { href: "/resources", label: "Resources", icon: BookOpen },

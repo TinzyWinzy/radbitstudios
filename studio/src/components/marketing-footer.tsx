@@ -74,6 +74,7 @@ export function MarketingFooter() {
               title: "Company",
               links: [
                 { href: "/pricing", label: "Pricing" },
+                { href: "/portfolio", label: "Portfolio" },
                 { href: "/about", label: "About" },
                 { href: "/founders", label: "Founders" },
                 { href: "/consultancy", label: "Consultancy" },
