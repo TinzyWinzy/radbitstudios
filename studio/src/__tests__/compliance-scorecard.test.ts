@@ -227,7 +227,7 @@ describe('calculateComplianceScore', () => {
     expect(result.overallScore).toBeLessThan(80);
   });
 
-  it('includes all 9 breakdown checks', async () => {
+  it('includes all 10 breakdown checks', async () => {
     setCollectionData('users', [{ businessName: 'Acme' }]);
     (getPrazProfile as unknown as Mock).mockResolvedValue({ readinessScore: 0, documents: {} });
     setCollectionData('compliance_certificates', []);
@@ -246,6 +246,7 @@ describe('calculateComplianceScore', () => {
       'litigation',
       'blacklist_status',
       'banking_history',
+      'zimra_fiscal_device',
     ]);
   });
 });

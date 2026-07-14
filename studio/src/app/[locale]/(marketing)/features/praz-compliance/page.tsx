@@ -8,11 +8,11 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "PRAZ Compliance for Zimbabwe Tenders — Radbit",
   description: "Stay compliant with PRAZ (Procurement Regulatory Authority of Zimbabwe). Track documents, get readiness scores, expiry alerts, and match with tenders you're qualified to win.",
-  alternates: { canonical: "/praz-compliance" },
+  alternates: { canonical: "/features/praz-compliance" },
   openGraph: {
     title: "PRAZ Compliance for Zimbabwe Tenders — Radbit",
     description: "Stay compliant with PRAZ. Track documents, get readiness scores, expiry alerts, and match with qualified tenders.",
-    url: `${baseUrl}/praz-compliance`,
+    url: `${baseUrl}/features/praz-compliance`,
   },
   twitter: {
     card: "summary_large_image",

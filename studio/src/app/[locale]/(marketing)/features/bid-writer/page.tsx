@@ -8,11 +8,11 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "AI Bid Writer for Zimbabwe Tenders — Radbit",
   description: "Write winning tender bids faster with Radbit's AI Bid Writer. Smart templates, PRAZ auto-compliance, pricing engine, and deadline tracking for Zimbabwean SMEs.",
-  alternates: { canonical: "/bid-writer" },
+  alternates: { canonical: "/features/bid-writer" },
   openGraph: {
     title: "AI Bid Writer for Zimbabwe Tenders — Radbit",
     description: "Write winning tender bids faster with AI. Smart templates, PRAZ compliance, pricing engine for Zimbabwean SMEs.",
-    url: `${baseUrl}/bid-writer`,
+    url: `${baseUrl}/features/bid-writer`,
   },
   twitter: {
     card: "summary_large_image",

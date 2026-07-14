@@ -65,7 +65,7 @@ export default function TaxCopilotPageClient() {
               <span className="text-gradient">ZIMRA Compliance</span>
             </motion.h1>
             <motion.p variants={itemVariants} className="mt-6 text-lg text-muted-foreground">
-              Radbit's Tax Co-Pilot answers your ZIMRA questions, calculates VAT, tracks deadlines, and integrates with your fiscal device. Tax compliance for Zimbabwean SMEs, simplified.
+              Radbit&apos;s Tax Co-Pilot answers your ZIMRA questions, calculates VAT, tracks deadlines, and integrates with your fiscal device. Tax compliance for Zimbabwean SMEs, simplified.
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button asChild>

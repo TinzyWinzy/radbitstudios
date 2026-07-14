@@ -5,6 +5,10 @@ const mockConnect = vi.fn();
 const mockCreateProject = vi.fn();
 const mockGenerateChecklist = vi.fn();
 const mockValidateBody = vi.fn();
+const mockAdminAdd = vi.fn();
+const mockGetDocs = vi.fn();
+const mockSendEmail = vi.fn();
+const mockSendWhatsAppMessage = vi.fn();
 
 vi.mock('@/services/api-rate-limit', () => ({
   withIpRateLimit: (_config: unknown, handler: (req: NextRequest) => Promise<Response>) => handler,
@@ -25,6 +29,34 @@ vi.mock('@/services/onboarding-engine', () => ({
   generateOnboardingChecklist: mockGenerateChecklist,
 }));
 
+vi.mock('@/lib/firebase/firebase-admin', () => ({
+  adminDb: {
+    collection: vi.fn(() => ({
+      add: mockAdminAdd,
+    })),
+  },
+}));
+
+vi.mock('@/lib/firebase/firebase', () => ({
+  db: {},
+}));
+
+vi.mock('firebase/firestore', () => ({
+  collection: vi.fn(),
+  query: vi.fn(),
+  where: vi.fn(),
+  limit: vi.fn(),
+  getDocs: mockGetDocs,
+}));
+
+vi.mock('@/services/email-service', () => ({
+  sendEmail: mockSendEmail,
+}));
+
+vi.mock('@/services/whatsapp/whatsapp-handler', () => ({
+  sendWhatsAppMessage: mockSendWhatsAppMessage,
+}));
+
 vi.mock('@/lib/api-validation', async () => {
   const actual = await vi.importActual<typeof import('@/lib/api-validation')>('@/lib/api-validation');
   return {
@@ -37,6 +69,10 @@ describe('leads API route', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockConnect.mockRejectedValue(new Error('getaddrinfo ENOTFOUND db.example.supabase.co'));
+    mockAdminAdd.mockResolvedValue({ id: 'lead-123' });
+    mockGetDocs.mockResolvedValue({ empty: true, docs: [] });
+    mockSendEmail.mockResolvedValue(undefined);
+    mockSendWhatsAppMessage.mockResolvedValue(undefined);
     mockCreateProject.mockResolvedValue('project-123');
     mockGenerateChecklist.mockResolvedValue(undefined);
     mockValidateBody.mockResolvedValue({

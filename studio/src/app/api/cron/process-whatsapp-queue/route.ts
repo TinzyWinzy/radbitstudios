@@ -4,7 +4,7 @@ import { processOutboundQueue } from '@/services/notifications/outbound-dispatch
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: Request) {
+async function handleQueueProcessing(req: Request) {
   const authHeader = req.headers.get('authorization');
   const expectedToken = process.env.CRON_SECRET;
   if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
@@ -18,4 +18,12 @@ export async function GET(req: Request) {
     const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export async function GET(req: Request) {
+  return handleQueueProcessing(req);
+}
+
+export async function POST(req: Request) {
+  return handleQueueProcessing(req);
 }

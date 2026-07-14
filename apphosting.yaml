@@ -40,7 +40,7 @@ env:
     availability:
       - RUNTIME
   - variable: PAYNOW_INTEGRATION_KEY
-    value: "87fb4b90-d1b1-460b-a487-ac98129644bb"
+    secret: PAYNOW_INTEGRATION_KEY
     availability:
       - RUNTIME
   - variable: GEMINI_API_KEY

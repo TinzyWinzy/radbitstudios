@@ -98,7 +98,7 @@ export default function PenaltyProtectionPageClient() {
               <span className="text-gradient">Pay Without Compliance</span>
             </motion.h2>
             <motion.p variants={itemVariants} className="mt-4 text-muted-foreground">
-              ZIMRA penalties add up fast. Here's what's at stake for non-compliant businesses.
+              ZIMRA penalties add up fast. Here&apos;s what&apos;s at stake for non-compliant businesses.
             </motion.p>
           </motion.div>
           <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
@@ -130,7 +130,7 @@ export default function PenaltyProtectionPageClient() {
           >
             <DollarSign className="mx-auto mb-2 size-8 text-primary" />
             <p className="text-lg font-medium">Total potential exposure: <span className="text-gradient font-bold">US$14,000+</span></p>
-            <p className="mt-1 text-sm text-muted-foreground">Radbit's compliance automation costs less than a single penalty.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Radbit&apos;s compliance automation costs less than a single penalty.</p>
           </motion.div>
         </div>
       </section>
@@ -206,7 +206,7 @@ export default function PenaltyProtectionPageClient() {
                 <span className="text-gradient">Not Penalties</span>
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Radbit's free tier includes basic compliance monitoring. Upgrade for full penalty protection with automated certificate renewal and audit-ready records.
+                Radbit&apos;s free tier includes basic compliance monitoring. Upgrade for full penalty protection with automated certificate renewal and audit-ready records.
               </p>
               <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">

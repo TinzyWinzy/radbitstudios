@@ -70,7 +70,7 @@ export default function CompliantReceiptsPageClient() {
               <span className="text-gradient">Expensive Hardware</span>
             </motion.h1>
             <motion.p variants={itemVariants} className="mt-6 text-lg text-muted-foreground">
-              Radbit's software fiscal device generates legally compliant digital receipts. No hardware needed — issue from WhatsApp, web, or our API.
+              Radbit&apos;s software fiscal device generates legally compliant digital receipts. No hardware needed — issue from WhatsApp, web, or our API.
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button asChild>
@@ -101,7 +101,7 @@ export default function CompliantReceiptsPageClient() {
               <span className="text-gradient">Compliant?</span>
             </motion.h2>
             <motion.p variants={itemVariants} className="mt-4 text-muted-foreground">
-              ZIMRA's Fiscal Device Gateway requires specific fields on every receipt. Radbit handles them all automatically.
+              ZIMRA&apos;s Fiscal Device Gateway requires specific fields on every receipt. Radbit handles them all automatically.
             </motion.p>
           </motion.div>
 

@@ -109,7 +109,6 @@ export const POST = withRateLimit(
       temperature,
       model,
       threadId,
-      userId,
     } = validation.data;
 
     const stream = new ReadableStream({
@@ -124,9 +123,9 @@ export const POST = withRateLimit(
 
           controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ done: true, fullContent })}\n\n`));
 
-          if (userId && threadId) {
+          if (threadId) {
             try {
-              const msgCol = adminDb.collection('conversations').doc(userId)
+              const msgCol = adminDb.collection('conversations').doc(user.uid)
                 .collection('threads').doc(threadId)
                 .collection('messages');
               await msgCol.add({
@@ -135,7 +134,7 @@ export const POST = withRateLimit(
                 tokens: Math.ceil(fullContent.length / 4),
                 createdAt: new Date(),
               });
-              await adminDb.collection('conversations').doc(userId)
+              await adminDb.collection('conversations').doc(user.uid)
                 .collection('threads').doc(threadId)
                 .update({ updatedAt: new Date(), messageCount: FieldValue.increment(1) });
             } catch { /* non-critical */ }

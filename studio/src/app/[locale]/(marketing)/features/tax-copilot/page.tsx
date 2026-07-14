@@ -8,11 +8,11 @@ const PageClient = dynamic(() => import("./page-client"), { ssr: true });
 export const metadata: Metadata = {
   title: "Tax Co-Pilot — AI Tax Assistant for Zimbabwe — Radbit",
   description: "Your AI tax assistant for ZIMRA compliance. Get VAT answers, tax deadline reminders, fiscal device integration, and expert guidance for Zimbabwean SMEs.",
-  alternates: { canonical: "/tax-copilot" },
+  alternates: { canonical: "/features/tax-copilot" },
   openGraph: {
     title: "Tax Co-Pilot — AI Tax Assistant for Zimbabwe — Radbit",
     description: "Your AI tax assistant for ZIMRA compliance. VAT answers, tax deadlines, fiscal device integration for Zimbabwean SMEs.",
-    url: `${baseUrl}/tax-copilot`,
+    url: `${baseUrl}/features/tax-copilot`,
   },
   twitter: {
     card: "summary_large_image",

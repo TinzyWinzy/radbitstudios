@@ -70,7 +70,7 @@ export default function OfflineModePageClient() {
               <span className="text-gradient">With or Without Internet</span>
             </motion.h1>
             <motion.p variants={itemVariants} className="mt-6 text-lg text-muted-foreground">
-              Zimbabwe's connectivity is unreliable. Radbit's fiscal device works offline, queues receipts, and syncs automatically when you're back online. No downtime, no penalties.
+              Zimbabwe&apos;s connectivity is unreliable. Radbit&apos;s fiscal device works offline, queues receipts, and syncs automatically when you&apos;re back online. No downtime, no penalties.
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button asChild>
@@ -98,10 +98,10 @@ export default function OfflineModePageClient() {
           >
             <motion.h2 variants={itemVariants} className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">
               Built for{" "}
-              <span className="text-gradient">Zimbabwe's Internet</span>
+              <span className="text-gradient">Zimbabwe&apos;s Internet</span>
             </motion.h2>
             <motion.p variants={itemVariants} className="mt-4 text-muted-foreground">
-              Hardware fiscal devices stop working when connectivity drops. Radbit's software FDG keeps going.
+              Hardware fiscal devices stop working when connectivity drops. Radbit&apos;s software FDG keeps going.
             </motion.p>
           </motion.div>
 

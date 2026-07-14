@@ -77,7 +77,7 @@ export default function VatThresholdAlertsPageClient() {
               <span className="text-gradient">VAT Threshold</span> Again
             </motion.h1>
             <motion.p variants={itemVariants} className="mt-6 text-lg text-muted-foreground">
-              Radbit monitors your turnover in real-time and alerts you before your SME crosses ZIMRA's US$60,000 VAT registration threshold. Avoid penalties, stay compliant.
+              Radbit monitors your turnover in real-time and alerts you before your SME crosses ZIMRA&apos;s US$60,000 VAT registration threshold. Avoid penalties, stay compliant.
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button asChild>
@@ -107,7 +107,7 @@ export default function VatThresholdAlertsPageClient() {
               Know Your <span className="text-gradient">Thresholds</span>
             </motion.h2>
             <motion.p variants={itemVariants} className="mt-4 text-muted-foreground">
-              ZIMRA's fiscal regulations are clear. Radbit makes sure you never cross them unknowingly.
+              ZIMRA&apos;s fiscal regulations are clear. Radbit makes sure you never cross them unknowingly.
             </motion.p>
           </motion.div>
           <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
@@ -199,7 +199,7 @@ export default function VatThresholdAlertsPageClient() {
                 Set Up Your First Alert in <span className="text-gradient">60 Seconds</span>
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Link your SME account, set your threshold preference, and Radbit handles the rest. You'll never worry about VAT registration deadlines again.
+                Link your SME account, set your threshold preference, and Radbit handles the rest. You&apos;ll never worry about VAT registration deadlines again.
               </p>
               <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">

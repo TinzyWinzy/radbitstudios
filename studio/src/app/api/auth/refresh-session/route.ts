@@ -19,7 +19,15 @@ export const POST = withIpRateLimit(
       const { idToken, expiresIn = 3600 } = await req.json();
 
       if (!idToken) {
-        return NextResponse.json({ error: 'Missing idToken' }, { status: 400 });
+        const response = NextResponse.json({ success: true, cleared: true });
+        response.cookies.set('__session', '', {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/',
+          maxAge: 0,
+        });
+        return response;
       }
 
       const { BruteForceProtection } = await import('@/services/security/index');

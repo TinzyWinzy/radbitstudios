@@ -177,7 +177,7 @@ export default function TenderComplianceBridgePageClient() {
                 <h3 className="font-headline text-xl font-semibold">Tender Armor: Pre-Flight Check</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Before you bid, run a Tender Armor check. Radbit scans your compliance posture against the tender's requirements and identifies gaps before you submit. Pass/fail/warn status for each compliance category.
+                Before you bid, run a Tender Armor check. Radbit scans your compliance posture against the tender&apos;s requirements and identifies gaps before you submit. Pass/fail/warn status for each compliance category.
               </p>
               <Button asChild className="mt-6">
                 <Link href="/tenders" className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25">
@@ -225,7 +225,7 @@ export default function TenderComplianceBridgePageClient() {
                 Ready to Win<span className="text-gradient"> More Tenders?</span>
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Start tracking your compliance and discover tenders you're qualified to win — all in one place.
+                Start tracking your compliance and discover tenders you&apos;re qualified to win — all in one place.
               </p>
               <Button asChild className="mt-8">
                 <Link href="/sign-up" className="inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-8 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40">
