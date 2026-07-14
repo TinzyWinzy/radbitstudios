@@ -149,12 +149,21 @@ create_scheduler \
   "${BASE_URL}/api/cron/process-whatsapp-queue" \
   "WhatsApp: Process pending outbound message queue"
 
+# ─── 5. RAG Knowledge Index ─────────────────────────────────────────────────
+# Runs weekly to re-index all knowledge sources into pgvector
+create_scheduler \
+  "radbit-rag-index" \
+  "0 3 * * 0" \
+  "${BASE_URL}/api/cron/rag-index" \
+  "RAG: Re-index all knowledge base sources (Constitution, NDS2, ZIDA, fiscal, etc.) into pgvector"
+
 echo ""
 echo "🎉 All cron jobs deployed successfully!"
 echo ""
 echo "📋 Summary:"
 echo "   reti-scan          - Every 6 hours    - Policy threat assessments"
 echo "   news-scraper       - Every 4 hours    - News feed ingestion"
+echo "   rag-index          - Every Sunday 3AM - Knowledge base re-index"
 echo "   tender-scraper     - Every 6 hours    - Tender opportunity scraping"
 echo "   whatsapp-queue     - Every 5 minutes  - WhatsApp message dispatch"
 echo ""

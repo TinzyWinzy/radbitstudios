@@ -313,6 +313,7 @@ ${buildHolonPrompt(input, pillar)}`;
     jsonMode: true,
     enableRAG: true,
     ragCategory: input.triggerCategory,
+    enableNews: true,
   });
 
   let parsed: ThreatAssessmentOutput;

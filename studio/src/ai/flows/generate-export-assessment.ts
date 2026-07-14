@@ -56,6 +56,7 @@ export async function generateExportAssessment(input: GenerateExportAssessmentIn
     temperature: 0.3,
     enableRAG: true,
     ragCategory: 'zimra_tenders',
+    enableNews: true,
   });
 
   try {

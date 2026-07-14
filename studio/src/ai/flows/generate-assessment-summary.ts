@@ -57,6 +57,7 @@ export async function generateAssessmentSummary(input: GenerateAssessmentSummary
     maxTokens: 512,
     userId: input.userId,
     enableRAG: true,
+    enableNews: true,
   });
 
   let summary = result.content;

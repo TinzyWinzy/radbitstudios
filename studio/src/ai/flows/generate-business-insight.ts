@@ -44,6 +44,7 @@ export async function generateBusinessInsight(input: GenerateBusinessInsightInpu
     difficulty: 'complex',
     maxTokens: 1024,
     enableRAG: true,
+    enableNews: true,
   });
 
   return { insight: result.content };

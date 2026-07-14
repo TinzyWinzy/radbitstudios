@@ -786,8 +786,8 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
           type: 'news' as const,
         }))
       )
-        .then(scored => {
-          saveScores(
+        .then(async scored => {
+          await saveScores(
             scored.map(s => ({
               contentId: s.id,
               contentType: 'news' as const,
@@ -798,6 +798,25 @@ export async function scrapeAllFeeds(): Promise<{ scraped: number; errors: numbe
               scoredAt: new Date().toISOString(),
             }))
           ).catch(e => logToFile(`Score save failed: ${e}`));
+
+          // Index scored articles into RAG for AI flow consumption
+          try {
+            const { indexNewsToRag } = await import('@/services/ai/news-rag-indexer');
+            const enriched = allArticles.map(a => {
+              const s = scored.find(x => x.id === a.id);
+              return {
+                ...a,
+                publishedAt: a.publishedAt || new Date(),
+                impactScore: s?.scores.impactScore,
+                urgencyScore: s?.scores.urgencyScore,
+                confidenceScore: s?.scores.confidenceScore,
+              } as import('@/types/news').NewsArticle;
+            });
+            const ragCount = await indexNewsToRag(enriched);
+            logToFile(`Indexed ${ragCount} articles into RAG`);
+          } catch (e) {
+            logToFile(`RAG news indexing failed: ${e}`);
+          }
         })
         .catch(e => logToFile(`Score generation failed: ${e}`));
 

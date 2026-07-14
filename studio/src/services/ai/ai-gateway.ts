@@ -20,6 +20,7 @@ export interface AIGatewayRequest {
   jsonMode?: boolean;
   enableRAG?: boolean;
   ragCategory?: string;
+  enableNews?: boolean;
 }
 
 export interface AIGatewayResponse {
@@ -277,6 +278,22 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / TOKEN_ESTIMATE_FACTOR);
 }
 
+async function buildNewsContext(query: string): Promise<string> {
+  try {
+    const { searchRelevantContext, buildRAGContext } = await import('./rag.server');
+    const results = await searchRelevantContext(query, 3, 0.5, 'news');
+    if (results.length === 0) return '';
+    const dated = results.map(r => {
+      const freshness = r.metadata.freshness || r.metadata.freshness;
+      const date = freshness ? ` (${freshness})` : '';
+      return `${r.content}${date}`;
+    });
+    return buildRAGContext(results.map((r, i) => ({ ...r, content: dated[i] })));
+  } catch {
+    return '';
+  }
+}
+
 export class AIGateway {
   private cache = new SemanticCache();
 
@@ -400,12 +417,24 @@ export class AIGateway {
     }
     if (cacheHit) return cacheHit;
 
-    const ragContext = request.enableRAG
-      ? buildRAGContext(await searchRelevantContext(request.prompt, 5, 0.5, request.ragCategory))
-      : '';
+    const [ragContext, newsContext] = await Promise.all([
+      request.enableRAG
+        ? buildRAGContext(await searchRelevantContext(request.prompt, 5, 0.5, request.ragCategory))
+        : Promise.resolve(''),
+      request.enableNews
+        ? buildNewsContext(request.prompt)
+        : Promise.resolve(''),
+    ]);
 
-    const augmentedPrompt = ragContext
-      ? `Use the following reference information to answer the user's question.\n\nReference information:\n${ragContext}\n\nUser question:\n${request.prompt}`
+    const parts = [request.prompt];
+    if (ragContext) {
+      parts.unshift(`Reference information:\n${ragContext}`);
+    }
+    if (newsContext) {
+      parts.unshift(`Recent business news (time-sensitive):\n${newsContext}`);
+    }
+    const augmentedPrompt = parts.length > 1
+      ? `Use the following information to answer the user's question.\n\n${parts.join('\n\n')}`
       : request.prompt;
 
     const estimatedInputTokens = estimateTokens(augmentedPrompt) + estimateTokens(request.systemPrompt ?? '');

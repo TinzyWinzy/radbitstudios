@@ -50,6 +50,7 @@ export async function generatePartnerPitch(input: GeneratePartnerPitchInput): Pr
     difficulty: 'complex',
     maxTokens: 2048,
     enableRAG: true,
+    enableNews: true,
   });
 
   const text = result.content || '';

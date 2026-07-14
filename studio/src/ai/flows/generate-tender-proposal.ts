@@ -47,6 +47,7 @@ Currency: ${input.currency}`;
     jsonMode: true,
     enableRAG: true,
     ragCategory: 'zimra_tenders',
+    enableNews: true,
   });
 
   const parsed = TenderProposalOutputSchema.parse(JSON.parse(result.content));
