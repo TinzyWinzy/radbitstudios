@@ -407,7 +407,7 @@ const DIFFERENTIATORS = [
 // ─── Stats ─────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: 100, prefix: "$", suffix: "+", label: "Starting Budget" },
+  { value: 150, prefix: "$", suffix: "+", label: "Starting Budget" },
   { value: 24, suffix: "h", label: "Response Time" },
   { value: 100, suffix: "%", label: "Commitment" },
   { value: 15, suffix: "+", label: "Countries Served" },
@@ -645,7 +645,7 @@ export default function SolutionsPage() {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               Projects start from{" "}
-              <span className="text-primary font-semibold">$100 USD</span>
+              <span className="text-primary font-semibold">$150 USD</span>
             </motion.p>
           </div>
         </div>

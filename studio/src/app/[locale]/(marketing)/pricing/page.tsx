@@ -236,9 +236,24 @@ export default function PricingPage() {
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter mb-4">
             Pricing for <span className="text-gradient">Digital Infrastructure</span>.
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-lg text-muted-foreground leading-relaxed mb-6">
             Radbit Ops compliance and tender-readiness platform. Plus systems architecture, AI integration, and development services.
           </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/pilot"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Try Radbit Ops Pilot
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="mailto:hanzohanic@gmail.com?subject=Free%20Consultation"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border border-border/50 hover:bg-muted/50 transition-colors"
+            >
+              Book a Free Consultation
+            </Link>
+          </div>
         </div>
 
         {/* ─── AI Platform (SaaS) ──────────────────────────────────────── */}
@@ -459,10 +474,10 @@ export default function PricingPage() {
         </section>
 
         <hr className="border-border/50 mb-10 md:mb-20" />
-        {/* ─── Professional Services ───────────────────────────────────── */}
+        {/* ─── Consultancy Products ──────────────────────────────────── */}
         <section id="services" className="mb-10 scroll-mt-20">
           <div className="text-center mb-8">
-            <h3 className="font-headline text-xl font-bold mb-2">Professional Services</h3>
+            <h3 className="font-headline text-xl font-bold mb-2">Consultancy Products</h3>
             <p className="text-sm text-muted-foreground max-w-xl mx-auto">
               Expert consultancy to protect, grow, and transform your business.
               Project-based or retainer pricing.

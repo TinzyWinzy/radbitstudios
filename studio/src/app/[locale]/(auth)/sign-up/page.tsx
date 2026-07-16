@@ -139,6 +139,16 @@ export default function SignUpPage() {
         <p className="text-sm text-muted-foreground">Join the Radbit ecosystem</p>
       </div>
 
+      <div className="rounded-lg border border-primary/20 bg-primary/[0.03] p-3 text-center">
+        <p className="text-xs text-muted-foreground">
+          Need a custom system, website, or ERP?{" "}
+          <a href="mailto:hanzohanic@gmail.com?subject=Free%20Consultation" className="text-primary hover:underline font-medium">
+            Book a free consultation
+          </a>{" "}
+          instead — no account needed.
+        </p>
+      </div>
+
       <Button
         variant="outline"
         className="w-full h-11 font-medium border-primary/20 text-primary/80 hover:text-primary hover:border-primary/40 hover:bg-primary/5"

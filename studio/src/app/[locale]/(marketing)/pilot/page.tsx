@@ -110,6 +110,13 @@ export default function PilotPage() {
             </p>
           </div>
 
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-6">
+            <h2 className="font-headline text-base font-bold mb-2">After the pilot</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Pilot participants get first access to paid plans starting at $15/mo when the platform launches. Your pilot feedback shapes the feature set and pricing. You keep your account and data through the transition.
+            </p>
+          </div>
+
           <div className="text-center">
             <Button
               size="lg"
