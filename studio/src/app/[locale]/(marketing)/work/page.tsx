@@ -21,7 +21,7 @@ const projects = [
     href: "https://cityviewguesthouse.co.zw",
     outcome: "Public-facing hospitality website with booking enquiry flow and mobile-first layout.",
     stacks: ["Next.js", "Tailwind", "Vercel"],
-    status: "Paid",
+    status: "Live",
     desc: "A full website build for a Harare-based guest house. Mobile-first, contact-optimised, and designed to help guests check availability and make enquiries without friction.",
   },
   {
@@ -30,7 +30,7 @@ const projects = [
     href: "https://wobic.co.zw",
     outcome: "Clean web presence for a Zimbabwean business with responsive design and SEO foundations.",
     stacks: ["Next.js", "Tailwind", "Vercel"],
-    status: "Paid",
+    status: "Live",
     desc: "A professional company website built to make services easier to present, share, and verify with prospective clients.",
   },
   {
@@ -39,7 +39,7 @@ const projects = [
     href: "https://traamand.co.zw",
     outcome: "Corporate website with clear service pages and mobile-optimised layout.",
     stacks: ["Next.js", "Tailwind", "Vercel"],
-    status: "Paid",
+    status: "Live",
     desc: "A corporate web presence focused on clarity, responsive browsing, and a credible first impression.",
   },
   {
@@ -48,7 +48,7 @@ const projects = [
     href: "https://unikvilla.co.zw",
     outcome: "Hospitality web presence with property presentation and booking enquiry flow.",
     stacks: ["Next.js", "Tailwind", "Vercel"],
-    status: "Paid",
+    status: "Live",
     desc: "A hospitality website shaped around trust, property presentation, and a simple path from browsing to enquiry.",
   },
   {
@@ -81,7 +81,7 @@ const projects = [
 ];
 
 const statusColors: Record<string, string> = {
-  "Paid": "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
+  "Live": "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
   "Built + Deployed": "border-blue-500/30 text-blue-400 bg-blue-500/10",
   "Built + Deployed (Pilot)": "border-amber-500/30 text-amber-400 bg-amber-500/10",
 };
@@ -95,10 +95,10 @@ export default function WorkPage() {
           Demonstrated work
         </span>
         <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tighter max-w-3xl">
-          Projects we have built, deployed, and been paid for.
+          Projects we have built and deployed.
         </h1>
         <p className="mt-5 max-w-2xl text-muted-foreground leading-relaxed">
-          Every project on this page has an honest status label. We do not claim paid clients we do not have, or deployed systems that exist only in a design file.
+          Every project on this page has an honest status label. We do not claim deployed systems that exist only in a design file.
         </p>
       </section>
 

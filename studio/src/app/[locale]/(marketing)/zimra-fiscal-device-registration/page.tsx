@@ -87,7 +87,6 @@ export default function ZimraFiscalDeviceRegistration() {
             <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
               <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> No hardware required</span>
               <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> Free to register</span>
-              <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> 200+ SMEs registered</span>
             </div>
           </div>
 

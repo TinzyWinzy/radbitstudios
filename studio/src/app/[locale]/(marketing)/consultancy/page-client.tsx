@@ -104,16 +104,14 @@ const differentiators = [
   },
   {
     title: "Rapid Turnaround",
-    description: "Agile methodology with 2-week sprints. See progress weekly, pivot when needed, launch faster than competitors.",
+    description: "Agile methodology with 2-week sprints. See progress weekly, pivot when needed, launch with confidence.",
     icon: Clock,
   },
 ];
 
 const stats = [
   { value: 100, prefix: "$", suffix: "+", label: "Starting Budget" },
-  { value: 24, suffix: "h", label: "Response Time" },
-  { value: 100, suffix: "%", label: "Commitment" },
-  { value: 15, suffix: "+", label: "Countries Served" },
+  { value: 24, suffix: "h", label: "Target Response Time" },
 ];
 
 const formSchema = z.object({
