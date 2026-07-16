@@ -77,7 +77,6 @@ export function MarketingFooter() {
               links: [
                 { href: "/resources", label: "Guides & Tools" },
                 { href: "/pricing", label: "Pricing" },
-                { href: "/diaspora", label: "Diaspora" },
                 { href: "/guides/zimra-tax-calendar-2026", label: "Tax Calendar 2026" },
               ],
             },

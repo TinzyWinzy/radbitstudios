@@ -755,6 +755,144 @@ export default function SolutionsPage() {
         </div>
       </section>
 
+      {/* ─── Consultancy Services Grid (Animated) ──────────────────────── */}
+      {persona !== "individual" && (
+        <section className="py-12 md:py-20 border-t border-border content-visibility-auto">
+          <div className="container">
+            <ScrollReveal className="text-center mb-8 md:mb-16">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
+                What We Build
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Each solution works on its own or plugs into the others. Start with what you need most. Add more as you grow.
+              </p>
+            </ScrollReveal>
+
+            <StaggerContainer
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+              staggerDelay={0.1}
+            >
+              {consultancy.map((service, index) => {
+                const Icon = service.icon;
+                return (
+                  <StaggerItem key={service.title} direction="scale">
+                    <Card3D intensity={5}>
+                      <motion.div
+                        className={`group p-4 md:p-8 rounded-2xl border border-border bg-gradient-to-br ${service.color} backdrop-blur-sm hover:border-primary/30 transition-all duration-300 h-full`}
+                        onMouseEnter={() => setHoveredService(index)}
+                        onMouseLeave={() => setHoveredService(null)}
+                        whileHover={{ y: -5 }}
+                      >
+                        <motion.div
+                          className="w-12 h-12 rounded-xl bg-background/80 flex items-center justify-center mb-6"
+                          animate={{
+                            rotate:
+                              hoveredService === index
+                                ? [0, -10, 10, 0]
+                                : 0,
+                          }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <Icon
+                            className={`w-6 h-6 ${service.iconColor}`}
+                          />
+                        </motion.div>
+                        <h3 className="font-headline text-xl font-semibold mb-3">
+                          {service.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {service.description}
+                        </p>
+                        <motion.div
+                          className="mt-4 flex items-center text-sm font-medium text-primary"
+                          initial={{ x: -10 }}
+                          animate={{
+                            x: hoveredService === index ? 0 : -10,
+                          }}
+                        >
+                          Learn more{" "}
+                          <ArrowRight className="ml-1 h-4 w-4" />
+                        </motion.div>
+                      </motion.div>
+                    </Card3D>
+                  </StaggerItem>
+                );
+              })}
+            </StaggerContainer>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Professional Services ──────────────────────────────────────── */}
+      {services.length > 0 && (
+        <section className="py-12 md:py-20 border-t border-border content-visibility-auto">
+          <div className="container">
+            <ScrollReveal className="text-center mb-10">
+              <h2 className="font-headline text-3xl font-bold mb-3">
+                Professional Services
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Expert consultancy to protect, grow, and transform your
+                business. Project-based or retainer pricing.
+              </p>
+            </ScrollReveal>
+
+            <StaggerContainer
+              className="grid md:grid-cols-2 gap-6"
+              staggerDelay={0.1}
+            >
+              {services.map((svc) => (
+                <StaggerItem key={svc.name} direction="up">
+                  <div className="rounded-xl border border-border/50 bg-card/30 p-6 flex flex-col h-full">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary">
+                        {svc.icon}
+                      </div>
+                      <div>
+                        <h3 className="font-headline text-lg font-bold">
+                          {svc.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {svc.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <span className="text-2xl font-bold font-headline">
+                        From ${svc.price}
+                      </span>
+                      <span className="text-muted-foreground text-sm ml-1">
+                        one-time
+                      </span>
+                    </div>
+                    <ul className="space-y-2 mb-6 flex-1">
+                      {svc.features.map((f) => (
+                        <li
+                          key={f}
+                          className="flex items-start gap-2 text-sm"
+                        >
+                          <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <motion.a
+                      href="#contact"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-border/50 hover:bg-muted/50 transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {svc.cta}
+                      <ArrowRight className="h-4 w-4" />
+                    </motion.a>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </div>
+        </section>
+      )}
+
       {/* ─── Solutions Grid ─────────────────────────────────────────────── */}
       <section id="solutions" className="border-t border-border py-12 md:py-20">
         <div className="container max-w-6xl">
@@ -1037,143 +1175,9 @@ export default function SolutionsPage() {
             </section>
           )}
 
-          {/* Professional Services */}
-          {services.length > 0 && (
-            <section className="mb-10 md:mb-20 content-visibility-auto">
-              <ScrollReveal className="text-center mb-10">
-                <h2 className="font-headline text-3xl font-bold mb-3">
-                  Professional Services
-                </h2>
-                <p className="text-muted-foreground max-w-xl mx-auto">
-                  Expert consultancy to protect, grow, and transform your
-                  business. Project-based or retainer pricing.
-                </p>
-              </ScrollReveal>
-
-              <StaggerContainer
-                className="grid md:grid-cols-2 gap-6"
-                staggerDelay={0.1}
-              >
-                {services.map((svc) => (
-                  <StaggerItem key={svc.name} direction="up">
-                    <div className="rounded-xl border border-border/50 bg-card/30 p-6 flex flex-col h-full">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary">
-                          {svc.icon}
-                        </div>
-                        <div>
-                          <h3 className="font-headline text-lg font-bold">
-                            {svc.name}
-                          </h3>
-                          <p className="text-xs text-muted-foreground">
-                            {svc.description}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mb-4">
-                        <span className="text-2xl font-bold font-headline">
-                          From ${svc.price}
-                        </span>
-                        <span className="text-muted-foreground text-sm ml-1">
-                          one-time
-                        </span>
-                      </div>
-                      <ul className="space-y-2 mb-6 flex-1">
-                        {svc.features.map((f) => (
-                          <li
-                            key={f}
-                            className="flex items-start gap-2 text-sm"
-                          >
-                            <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
-                            <span>{f}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <motion.a
-                        href="#contact"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-border/50 hover:bg-muted/50 transition-colors"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        {svc.cta}
-                        <ArrowRight className="h-4 w-4" />
-                      </motion.a>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </section>
-          )}
-        </div>
+      </div>
       </section>
 
-      {/* ─── Consultancy Services Grid (Animated) ──────────────────────── */}
-      {persona !== "individual" && (
-        <section className="py-12 md:py-20 border-t border-border content-visibility-auto">
-          <div className="container">
-            <ScrollReveal className="text-center mb-8 md:mb-16">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                What We Build
-              </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
-                Each solution works on its own or plugs into the others. Start with what you need most. Add more as you grow.
-              </p>
-            </ScrollReveal>
-
-            <StaggerContainer
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-              staggerDelay={0.1}
-            >
-              {consultancy.map((service, index) => {
-                const Icon = service.icon;
-                return (
-                  <StaggerItem key={service.title} direction="scale">
-                    <Card3D intensity={5}>
-                      <motion.div
-                        className={`group p-4 md:p-8 rounded-2xl border border-border bg-gradient-to-br ${service.color} backdrop-blur-sm hover:border-primary/30 transition-all duration-300 h-full`}
-                        onMouseEnter={() => setHoveredService(index)}
-                        onMouseLeave={() => setHoveredService(null)}
-                        whileHover={{ y: -5 }}
-                      >
-                        <motion.div
-                          className="w-12 h-12 rounded-xl bg-background/80 flex items-center justify-center mb-6"
-                          animate={{
-                            rotate:
-                              hoveredService === index
-                                ? [0, -10, 10, 0]
-                                : 0,
-                          }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          <Icon
-                            className={`w-6 h-6 ${service.iconColor}`}
-                          />
-                        </motion.div>
-                        <h3 className="font-headline text-xl font-semibold mb-3">
-                          {service.title}
-                        </h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {service.description}
-                        </p>
-                        <motion.div
-                          className="mt-4 flex items-center text-sm font-medium text-primary"
-                          initial={{ x: -10 }}
-                          animate={{
-                            x: hoveredService === index ? 0 : -10,
-                          }}
-                        >
-                          Learn more{" "}
-                          <ArrowRight className="ml-1 h-4 w-4" />
-                        </motion.div>
-                      </motion.div>
-                    </Card3D>
-                  </StaggerItem>
-                );
-              })}
-            </StaggerContainer>
-          </div>
-        </section>
-      )}
 
       {/* ─── Digital Maturity Journey ───────────────────────────────────── */}
       <section className="py-12 md:py-20 border-t border-border overflow-hidden content-visibility-auto">

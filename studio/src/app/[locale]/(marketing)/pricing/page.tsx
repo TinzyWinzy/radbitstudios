@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  CheckCircle2, ArrowRight, Zap, Globe, Server,
-  Shield, Brain, Palette, Code, Mail, MessageCircle, Lock, CreditCard, Phone,
+  CheckCircle2, ArrowRight, Shield, Brain, Palette, Code, Globe,
+  Mail, MessageCircle, Lock, CreditCard, Phone,
 } from "lucide-react";
 import { subscriptionPlans } from "@/lib/subscriptions";
 
@@ -18,15 +18,6 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 3600;
-
-// ─── Tab Data ────────────────────────────────────────────────────────────────
-
-const TABS = [
-  { id: "web", label: "Web Packages", icon: <Globe className="h-4 w-4" /> },
-  { id: "saas", label: "AI Platform", icon: <Zap className="h-4 w-4" /> },
-  { id: "erp", label: "ERP Systems", icon: <Server className="h-4 w-4" /> },
-  { id: "services", label: "Professional Services", icon: <Shield className="h-4 w-4" /> },
-] as const;
 
 // ─── Tab 1: Web Packages ─────────────────────────────────────────────────────
 
@@ -246,93 +237,21 @@ export default function PricingPage() {
             Pricing for <span className="text-gradient">Digital Infrastructure</span>.
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            From a free AI platform to enterprise ERP systems and professional consultancy — Radbit delivers technology infrastructure built for Zimbabwean organisations.
+            Radbit Ops compliance and tender-readiness platform. Plus systems architecture, AI integration, and development services.
           </p>
         </div>
-
-        {/* Section navigation */}
-        <nav className="flex flex-wrap justify-center gap-2 mb-12 border-b border-border/50 pb-4" aria-label="Pricing categories">
-          {TABS.map((tab) => (
-            <a
-              key={tab.id}
-              href={`#${tab.id}`}
-              className="inline-flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-            >
-              {tab.icon}
-              {tab.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* ─── Web Packages ─────────────────────────────────────────────── */}
-        <section id="web" className="mb-10 md:mb-20 scroll-mt-20">
-          <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">Web <span className="text-gradient">Packages</span></h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Professional websites and web applications, designed and built for the African market.
-              All prices in USD.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {WEB_PACKAGES.map((pkg) => (
-              <div
-                key={pkg.name}
-                className={`relative rounded-xl border p-6 flex flex-col ${
-                  pkg.popular
-                    ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5"
-                    : "border-border/50 bg-card/30"
-                }`}
-              >
-                {pkg.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
-                    Most Popular
-                  </span>
-                )}
-                <h3 className="font-headline text-lg font-bold mb-1">{pkg.name}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{pkg.tagline}</p>
-                <div className="mb-6">
-                  <span className="text-3xl font-bold font-headline">From ${pkg.price}</span>
-                  <span className="text-muted-foreground text-sm ml-1">one-time</span>
-                </div>
-                <ul className="space-y-2 mb-8 flex-1">
-                  {pkg.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={`mailto:hanzohanic@gmail.com?subject=${encodeURIComponent(pkg.name + " Inquiry")}`}
-                  className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    pkg.popular
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "border border-border/50 hover:bg-muted/50"
-                  }`}
-                >
-                  {pkg.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Hosting from $2/mo after 1st year. Domain renewal from $5/yr. Prices may vary based on feature additions.
-          </p>
-        </section>
 
         {/* ─── AI Platform (SaaS) ──────────────────────────────────────── */}
         <section id="saas" className="mb-10 md:mb-20 scroll-mt-20">
           <div className="text-center mb-10">
             <h2 className="font-headline text-3xl font-bold mb-3">AI <span className="text-gradient">Platform</span></h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              AI-powered tools for assessments, tender intelligence, mentorship, and compliance — built
-              for Zimbabwean SMEs.
+              Radbit Ops: tender alerts, compliance deadlines, document storage, and ZIMRA workflow reminders. Currently in pilot.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {subscriptionPlans.map((plan) => {
-              const isHighlighted = plan.name === "Growth" || plan.name === "Tender Starter";
+              const isHighlighted = plan.name === "Tender Starter";
               return (
               <div
                 key={plan.name}
@@ -342,14 +261,9 @@ export default function PricingPage() {
                     : "border-border/50 bg-card/30"
                 }`}
               >
-                {plan.name === "Growth" && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium whitespace-nowrap">
-                    Most Popular
-                  </span>
-                )}
                 {plan.name === "Tender Starter" && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary/80 text-primary-foreground text-xs font-medium whitespace-nowrap">
-                    Best for Tenders
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium whitespace-nowrap">
+                    Best for Pilot
                   </span>
                 )}
                 <h3 className="font-headline text-lg font-bold mb-1">{plan.name}</h3>
@@ -381,7 +295,7 @@ export default function PricingPage() {
                     ? "mailto:hanzohanic@gmail.com?subject=Enterprise%20Plan%20Inquiry"
                     : `/sign-up?plan=${plan.name.toLowerCase().replace(/\s+/g, "_")}`}
                   className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    plan.name === "Growth" || plan.name === "Pro"
+                    plan.name === "Tender Starter" || plan.name === "Pro"
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "border border-border/50 hover:bg-muted/50"
                   }`}
@@ -411,48 +325,112 @@ export default function PricingPage() {
           </div>
         </section>
 
-        <hr className="border-border/50 mb-10 md:mb-20" />
+        {/* ─── Additional Services ──────────────────────────────────────── */}
+        <div className="relative mb-10 md:mb-20">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border/30" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-background px-4 text-xs text-muted-foreground/50 font-medium uppercase tracking-widest">
+              Additional Services
+            </span>
+          </div>
+        </div>
+
+        {/* ─── Web Packages ─────────────────────────────────────────────── */}
+        <section id="web" className="mb-10 scroll-mt-20">
+          <div className="text-center mb-8">
+            <h3 className="font-headline text-xl font-bold mb-2">Web Packages</h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              Professional websites and web applications. All prices in USD.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {WEB_PACKAGES.map((pkg) => (
+              <div
+                key={pkg.name}
+                className={`relative rounded-lg border p-5 flex flex-col ${
+                  pkg.popular
+                    ? "border-primary/30 bg-primary/[0.03]"
+                    : "border-border/30 bg-card/20"
+                }`}
+              >
+                {pkg.popular && (
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-primary/80 text-primary-foreground text-[10px] font-medium">
+                    Most Popular
+                  </span>
+                )}
+                <h3 className="font-headline font-bold mb-1 text-sm">{pkg.name}</h3>
+                <p className="text-xs text-muted-foreground mb-3">{pkg.tagline}</p>
+                <div className="mb-4">
+                  <span className="text-xl font-bold font-headline">From ${pkg.price}</span>
+                  <span className="text-muted-foreground text-xs ml-1">one-time</span>
+                </div>
+                <ul className="space-y-1 mb-6 flex-1">
+                  {pkg.features.map((f) => (
+                    <li key={f} className="flex items-start gap-1.5 text-xs">
+                      <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={`mailto:hanzohanic@gmail.com?subject=${encodeURIComponent(pkg.name + " Inquiry")}`}
+                  className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    pkg.popular
+                      ? "bg-primary/10 text-primary hover:bg-primary/20"
+                      : "border border-border/30 hover:bg-muted/30 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {pkg.cta}
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ─── ERP Systems ─────────────────────────────────────────────── */}
-        <section id="erp" className="mb-10 md:mb-20 scroll-mt-20">
-          <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">ERP <span className="text-gradient">Systems</span></h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
+        <section id="erp" className="mb-10 scroll-mt-20">
+          <div className="text-center mb-8">
+            <h3 className="font-headline text-xl font-bold mb-2">ERP Systems</h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
               Streamline operations with integrated accounting, inventory, HR, and CRM.
               ZIMRA FDMS compliant. All prices in USD.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {ERP_TIERS.map((tier) => (
               <div
                 key={tier.name}
-                className={`relative rounded-xl border p-6 flex flex-col ${
+                className={`relative rounded-lg border p-5 flex flex-col ${
                   tier.popular
-                    ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5"
-                    : "border-border/50 bg-card/30"
+                    ? "border-primary/30 bg-primary/[0.03]"
+                    : "border-border/30 bg-card/20"
                 }`}
               >
                 {tier.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-primary/80 text-primary-foreground text-[10px] font-medium">
                     Most Popular
                   </span>
                 )}
-                <h3 className="font-headline text-lg font-bold mb-1">{tier.name}</h3>
-                <p className="text-xs text-muted-foreground mb-4">{tier.tagline}</p>
-                <div className="mb-6">
+                <h3 className="font-headline font-bold mb-1 text-sm">{tier.name}</h3>
+                <p className="text-xs text-muted-foreground mb-3">{tier.tagline}</p>
+                <div className="mb-4">
                   {tier.price === null ? (
-                    <span className="text-3xl font-bold font-headline">Custom</span>
+                    <span className="text-xl font-bold font-headline">Custom</span>
                   ) : (
                     <>
-                      <span className="text-3xl font-bold font-headline">${tier.price}</span>
-                      <span className="text-muted-foreground text-sm">/mo</span>
+                      <span className="text-xl font-bold font-headline">${tier.price}</span>
+                      <span className="text-muted-foreground text-xs">/mo</span>
                     </>
                   )}
                 </div>
-                <ul className="space-y-2 mb-8 flex-1">
+                <ul className="space-y-1 mb-6 flex-1">
                   {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
-                      <span>{f}</span>
+                    <li key={f} className="flex items-start gap-1.5 text-xs">
+                      <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -462,14 +440,14 @@ export default function PricingPage() {
                     : tier.name === "ERP Enterprise"
                     ? "mailto:hanzohanic@gmail.com?subject=ERP%20Enterprise%20Inquiry"
                     : "mailto:hanzohanic@gmail.com?subject=" + encodeURIComponent(tier.name + " Inquiry")}
-                  className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                     tier.popular
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "border border-border/50 hover:bg-muted/50"
+                      ? "bg-primary/10 text-primary hover:bg-primary/20"
+                      : "border border-border/30 hover:bg-muted/30 text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {tier.cta}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             ))}
@@ -482,47 +460,47 @@ export default function PricingPage() {
 
         <hr className="border-border/50 mb-10 md:mb-20" />
         {/* ─── Professional Services ───────────────────────────────────── */}
-        <section id="services" className="mb-10 md:mb-20 scroll-mt-20">
-          <div className="text-center mb-10">
-            <h2 className="font-headline text-3xl font-bold mb-3">Professional <span className="text-gradient">Services</span></h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
+        <section id="services" className="mb-10 scroll-mt-20">
+          <div className="text-center mb-8">
+            <h3 className="font-headline text-xl font-bold mb-2">Professional Services</h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
               Expert consultancy to protect, grow, and transform your business.
               Project-based or retainer pricing.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
             {SERVICES.map((svc) => (
               <div
                 key={svc.name}
-                className="rounded-xl border border-border/50 bg-card/30 p-6 flex flex-col"
+                className="rounded-lg border border-border/30 bg-card/20 p-5 flex flex-col"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary">
+                <div className="flex items-center gap-2.5 mb-2.5">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary">
                     {svc.icon}
                   </div>
                   <div>
-                    <h3 className="font-headline text-lg font-bold">{svc.name}</h3>
+                    <h3 className="font-headline font-bold text-sm">{svc.name}</h3>
                     <p className="text-xs text-muted-foreground">{svc.description}</p>
                   </div>
                 </div>
-                <div className="mb-4">
-                  <span className="text-2xl font-bold font-headline">From ${svc.price}</span>
-                  <span className="text-muted-foreground text-sm ml-1">one-time</span>
+                <div className="mb-3">
+                  <span className="text-lg font-bold font-headline">From ${svc.price}</span>
+                  <span className="text-muted-foreground text-xs ml-1">one-time</span>
                 </div>
-                <ul className="space-y-2 mb-6 flex-1">
+                <ul className="space-y-1 mb-5 flex-1">
                   {svc.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
-                      <span>{f}</span>
+                    <li key={f} className="flex items-start gap-1.5 text-xs">
+                      <CheckCircle2 className="h-3 w-3 text-green-500 shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{f}</span>
                     </li>
                   ))}
                 </ul>
                 <Link
                   href={`mailto:hanzohanic@gmail.com?subject=${encodeURIComponent(svc.name + " Inquiry")}`}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-border/50 hover:bg-muted/50 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border border-border/30 hover:bg-muted/30 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {svc.cta}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             ))}
