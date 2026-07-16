@@ -52,7 +52,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       };
     });
-  } catch {}
+  } catch (err) {
+    console.error('[Sitemap] Failed to fetch blog posts:', (err as Error)?.message);
+  }
 
   let guides: MetadataRoute.Sitemap = [];
   try {
@@ -66,7 +68,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       };
     });
-  } catch {}
+  } catch (err) {
+    console.error('[Sitemap] Failed to fetch guides:', (err as Error)?.message);
+  }
 
   let seoPages: MetadataRoute.Sitemap = [];
   try {
@@ -81,7 +85,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       };
     });
-  } catch {}
+  } catch (err) {
+    console.error('[Sitemap] Failed to fetch SEO pages:', (err as Error)?.message);
+  }
 
   let threatAssessments: MetadataRoute.Sitemap = [];
   try {
@@ -97,7 +103,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       };
     });
-  } catch {}
+  } catch (err) {
+    console.error('[Sitemap] Failed to fetch threat assessments:', (err as Error)?.message);
+  }
 
   return [...staticPages, ...blogPosts, ...guides, ...seoPages, ...threatAssessments];
 }

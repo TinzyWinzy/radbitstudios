@@ -4,9 +4,14 @@ const isDev = process.env.NODE_ENV === 'development';
 
 export const logger = pino({
   level: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
-  transport: isDev
-    ? { target: 'pino-pretty', options: { colorize: true, translateTime: 'SYS:HH:MM:ss' } }
-    : undefined,
+  ...(isDev
+    ? {
+        transport: {
+          target: 'pino/file',
+          options: { destination: 1 },
+        },
+      }
+    : {}),
   // Redact sensitive fields from logs
   redact: {
     paths: ['req.headers.authorization', 'req.headers.cookie', 'password', 'token', 'idToken', 'apiKey'],

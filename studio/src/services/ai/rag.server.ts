@@ -71,8 +71,14 @@ export async function searchRelevantContext(
   const queryEmbedding = await generateEmbedding(searchQuery);
   if (queryEmbedding.length === 0) return [];
 
-  const pool = getPool();
-  await initSchema();
+  let pool;
+  try {
+    pool = getPool();
+    await initSchema();
+  } catch (err) {
+    console.warn('[RAG] Database unavailable for context search:', (err as Error)?.message);
+    return [];
+  }
   const embeddingStr = `[${queryEmbedding.join(',')}]`;
 
   const TIER_ORDER = ['derived-summary', 'public-notices', 'tourism-reference', 'sector-report', 'official-web-extract', 'official-guidance', 'official-register', 'technical-specification', 'official-report', 'primary-policy', 'primary'];
