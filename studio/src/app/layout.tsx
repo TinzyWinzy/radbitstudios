@@ -24,35 +24,33 @@ const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').rep
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Radbit | Business Software for Zimbabwean SMEs",
-    template: "%s | Radbit",
+    default: "Radbit Studios | Systems & AI for African Business",
+    template: "%s | Radbit Studios",
   },
   description:
-    "Business software for Zimbabwean SMEs. Track tenders, manage compliance documents, keep tax deadlines visible, and use practical AI tools where they help.",
+    "Systems architecture, AI integration, and compliance systems for African businesses. Cloud infrastructure, automation workflows, and software systems that work.",
   keywords: [
-    "Zimbabwe enterprise digital infrastructure", "Zimbabwe AI business tools",
-    "tender intelligence Zimbabwe", "PRAZ compliance Zimbabwe",
-    "digital readiness assessment Zimbabwe", "government tenders Zimbabwe",
-    "Zimbabwe business software", "SME software Zimbabwe",
-    "ZIMRA tax compliance", "AI agents Zimbabwe",
-    "regulatory compliance Zimbabwe", "enterprise technology Zimbabwe",
-    "business records Zimbabwe", "business intelligence Zimbabwe",
+    "systems architecture Zimbabwe", "AI integration Zimbabwe",
+    "cloud infrastructure Zimbabwe", "Radbit Studios",
+    "software development Zimbabwe", "compliance automation",
+    "Zimbabwe tech studio", "RAG pipelines Zimbabwe",
+    "tender intelligence Zimbabwe", "ZIMRA compliance",
   ],
   other: {
     'norton-safeweb': 'not applicable',
   },
   openGraph: {
-    title: "Radbit | Business Software for Zimbabwean SMEs",
-    description: "Tender tracking, compliance records, tax reminders, and practical AI tools for Zimbabwean businesses.",
+    title: "Radbit Studios | Systems & AI for African Business",
+    description: "Systems architecture, AI integration, and compliance systems for African businesses.",
     url: SITE_URL,
-    siteName: "Radbit",
+    siteName: "Radbit Studios",
     locale: "en_ZW",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Radbit | Business Software for Zimbabwean SMEs",
-    description: "Tender tracking, compliance records, tax reminders, and practical AI tools for Zimbabwean businesses.",
+    title: "Radbit Studios | Systems & AI for African Business",
+    description: "Systems architecture, AI integration, and compliance systems for African businesses.",
     site: "@radbitzw",
     creator: "@radbitzw",
   },
@@ -70,7 +68,7 @@ export const metadata: Metadata = {
   verification: {
     google: 'XuoZg3JKm--RR2ak1v3OosORY7Gz0f_xJxxPAViBNfE',
   },
-  applicationName: "Radbit",
+  applicationName: "Radbit Studios",
   category: "business",
 };
 

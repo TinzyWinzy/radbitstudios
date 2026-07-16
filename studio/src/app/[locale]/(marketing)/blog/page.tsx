@@ -68,7 +68,7 @@ export default function BlogPage() {
       <NewsletterSignup
         variant="banner"
         title="Get tender alerts, tax deadline reminders, and diaspora investment opportunities"
-        description="Join 500+ Zimbabwean entrepreneurs who get our weekly newsletter."
+        description="Weekly notes on systems, compliance, and building in Zimbabwe."
         buttonText="Subscribe Free"
         leadMagnet="ZIMRA Tax Deadline Calendar for 2026"
         className="mb-10"

@@ -21,10 +21,8 @@ import {
 import {
   Menu,
   Sparkles,
-  CreditCard,
   BookOpen,
   LayoutDashboard,
-
   Newspaper,
   Shield,
   ArrowRight,
@@ -36,12 +34,11 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/solutions", label: "Solutions", icon: Sparkles },
-  { href: "/portfolio", label: "Portfolio", icon: BriefcaseBusiness },
-  { href: "/zimra-fiscal-device-registration", label: "Fiscal Device", icon: Receipt },
-  { href: "/pricing", label: "Pricing", icon: CreditCard },
-  { href: "/resources", label: "Resources", icon: BookOpen },
-  { href: "/about", label: "About", icon: Shield },
+  { href: "/services", label: "Services", icon: Sparkles },
+  { href: "/work", label: "Work", icon: BriefcaseBusiness },
+  { href: "/pilot", label: "Pilot", icon: Receipt },
+  { href: "/solutions", label: "Solutions", icon: Shield },
+  { href: "/about", label: "About", icon: BookOpen },
   { href: "/blog", label: "Blog", icon: Newspaper },
 ];
 

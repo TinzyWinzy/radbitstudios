@@ -71,11 +71,7 @@ export function DiasporaLanding() {
           <div className="flex items-center justify-center gap-4 pt-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Users className="h-4 w-4 text-primary" />
-              500+ diaspora entrepreneurs
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
-              200+ verified SMEs
+              Connecting diaspora investors to Zim businesses
             </span>
           </div>
         </div>
