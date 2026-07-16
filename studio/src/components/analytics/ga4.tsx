@@ -2,11 +2,15 @@
 
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { useConsent } from '@/hooks/use-consent';
+import { onCLS, onLCP, onINP, onFCP, onTTFB } from 'web-vitals';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export function GA4Script() {
-  if (!GA_ID) return null;
+  const { preferences, isLoaded } = useConsent();
+
+  if (!GA_ID || !isLoaded || !preferences.analytics) return null;
 
   return (
     <>
@@ -59,4 +63,36 @@ declare global {
   interface Window {
     gtag: (...args: unknown[]) => void;
   }
+}
+
+function reportWebVitalsToGA4() {
+  if (!GA_ID || typeof window.gtag !== 'function') return;
+
+  const send = (name: string, value: number) => {
+    window.gtag('event', name, {
+      event_category: 'Web Vitals',
+      event_label: name,
+      value: Math.round(name === 'CLS' ? value * 1000 : value),
+      non_interaction: true,
+    });
+  };
+
+  onCLS(({ value }) => send('CLS', value));
+  onLCP(({ value }) => send('LCP', value));
+  onINP(({ value }) => send('INP', value));
+  onFCP(({ value }) => send('FCP', value));
+  onTTFB(({ value }) => send('TTFB', value));
+}
+
+let vitalsInitialized = false;
+
+export function useWebVitals() {
+  const { preferences, isLoaded } = useConsent();
+
+  useEffect(() => {
+    if (isLoaded && preferences.analytics && !vitalsInitialized) {
+      vitalsInitialized = true;
+      reportWebVitalsToGA4();
+    }
+  }, [isLoaded, preferences.analytics]);
 }

@@ -75,7 +75,7 @@ export function localBusinessSchema() {
     name: 'Radbit',
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-192x192.png`,
-    image: `${SITE_URL}/opengraph-image.png`,
+    image: `${SITE_URL}/opengraph-image`,
     description: 'AI-powered digital infrastructure platform for Zimbabwean SMEs — readiness assessment, AI tools, tender matching, PRAZ compliance.',
     foundingDate: '2025',
     email: 'hello@radbitstudios.co.zw',

@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Send, CheckCircle2, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { trackEvent } from "@/components/analytics/ga4";
 
 export default function PilotPage() {
   const [step, setStep] = useState<"info" | "form">("info");
@@ -41,6 +42,7 @@ export default function PilotPage() {
         }),
       });
       if (!res.ok) throw new Error("Failed to send");
+      trackEvent("generate_lead", "pilot", "application_submitted");
       toast({ title: "Application received!", description: "We will reply within 48 hours to schedule a 10-minute diagnostic call." });
       setName(""); setBusiness(""); setIndustry(""); setPainPoint(""); setCurrentTools(""); setPhone(""); setEmail("");
       setStep("info");
