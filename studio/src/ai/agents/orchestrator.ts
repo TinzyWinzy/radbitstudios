@@ -66,6 +66,15 @@ interface CachedPlan {
 
 const planCache = new Map<string, CachedPlan>();
 const PLAN_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const PLAN_CACHE_MAX = 100;
+
+function setCachedPlan(key: string, plan: DecompositionPlan): void {
+  if (planCache.size >= PLAN_CACHE_MAX) {
+    const firstKey = planCache.keys().next().value;
+    if (firstKey) planCache.delete(firstKey);
+  }
+  planCache.set(key, { plan, expiry: Date.now() + PLAN_CACHE_TTL });
+}
 
 function cacheKey(request: string): string {
   let hash = 0;
@@ -179,7 +188,7 @@ Break this into 2-4 subtasks. Assign each to the best agent. Use dependsOn: [] f
     }
 
     // Cache the plan
-    planCache.set(key, { plan, expiry: Date.now() + PLAN_CACHE_TTL });
+    setCachedPlan(key, plan);
 
     this.emit('decompose:complete', { subtaskCount: plan.subtasks.length });
     return plan;

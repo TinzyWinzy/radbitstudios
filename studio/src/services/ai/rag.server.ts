@@ -98,6 +98,7 @@ export async function searchRelevantContext(
   category?: string,
   locale?: string,
   minTrustTier?: string,
+  queryEmbedding?: number[],
 ): Promise<{ content: string; score: number; metadata: Record<string, string> }[]> {
   if (await isPgAvailable()) {
     let pool;
@@ -109,9 +110,9 @@ export async function searchRelevantContext(
       return [];
     }
 
-    const queryEmbedding = await generateEmbedding(searchQuery);
-    if (queryEmbedding.length === 0) return [];
-    const embeddingStr = `[${queryEmbedding.join(',')}]`;
+    const effectiveEmbedding = queryEmbedding ?? await generateEmbedding(searchQuery);
+    if (effectiveEmbedding.length === 0) return [];
+    const embeddingStr = `[${effectiveEmbedding.join(',')}]`;
 
     const TIER_ORDER = ['derived-summary', 'public-notices', 'tourism-reference', 'sector-report', 'official-web-extract', 'official-guidance', 'official-register', 'technical-specification', 'official-report', 'primary-policy', 'primary'];
 

@@ -30,9 +30,10 @@ export async function searchRelevantContext(
   minScore = 0.5,
   category?: string,
   locale?: string,
+  queryEmbedding?: number[],
 ): Promise<{ content: string; score: number; metadata: Record<string, string> }[]> {
-  const queryEmbedding = await generateEmbedding(searchQuery);
-  if (queryEmbedding.length === 0) return [];
+  const embedding = queryEmbedding ?? await generateEmbedding(searchQuery);
+  if (embedding.length === 0) return [];
 
   let constraints: any[] = [];
   if (category) constraints.push(where('metadata.category', '==', category));
@@ -46,7 +47,7 @@ export async function searchRelevantContext(
   for (const docSnap of snapshot.docs) {
     const data = docSnap.data();
     if (!data.embedding || !Array.isArray(data.embedding)) continue;
-    const score = cosineSimilarity(queryEmbedding, data.embedding);
+    const score = cosineSimilarity(embedding, data.embedding);
     if (score >= minScore) {
       scored.push({ doc: data, score });
     }

@@ -134,19 +134,25 @@ class SemanticCache {
   private readonly TTL_MS = 86_400_000; // 24h
   private readonly SIMILARITY_THRESHOLD = 0.92;
 
-  async find(query: string, systemPrompt: string): Promise<AIGatewayResponse | null> {
+  hasMemoryEntries(): boolean {
+    const now = Date.now();
+    this.entries = this.entries.filter(e => now < e.expiry);
+    return this.entries.length > 0;
+  }
+
+  async find(query: string, systemPrompt: string, queryEmbedding?: number[]): Promise<AIGatewayResponse | null> {
     const now = Date.now();
     this.entries = this.entries.filter(e => now < e.expiry);
 
     if (this.entries.length > 0) {
-      const queryEmb = await generateEmbedding(query);
-      if (queryEmb.length > 0) {
+      const embedding = queryEmbedding ?? await generateEmbedding(query);
+      if (embedding.length > 0) {
         let bestScore = 0;
         let bestEntry: CacheEntry | null = null;
 
         for (const entry of this.entries) {
           if (entry.systemPrompt !== systemPrompt) continue;
-          const score = cosineSimilarity(queryEmb, entry.embedding);
+          const score = cosineSimilarity(embedding, entry.embedding);
           if (score > bestScore) {
             bestScore = score;
             bestEntry = entry;
@@ -159,11 +165,11 @@ class SemanticCache {
       }
     }
 
-    // Tier 2: Firestore lookup
-    try {
-      const queryEmb = await generateEmbedding(query);
-      if (queryEmb.length === 0) return null;
+    // Tier 2: Firestore lookup (only if we have an embedding)
+    const embedding = queryEmbedding ?? (await generateEmbedding(query).catch(() => []));
+    if (embedding.length === 0) return null;
 
+    try {
       const snap = await adminDb.collection(this.Firestore_Collection)
         .where('systemPrompt', '==', systemPrompt)
         .where('expiry', '>', now)
@@ -176,7 +182,7 @@ class SemanticCache {
       for (const doc of snap.docs) {
         const data = doc.data();
         if (!data.embedding || !Array.isArray(data.embedding)) continue;
-        const score = cosineSimilarity(queryEmb, data.embedding);
+        const score = cosineSimilarity(embedding, data.embedding);
         if (score > bestScore) {
           bestScore = score;
           bestDoc = doc;
@@ -194,7 +200,7 @@ class SemanticCache {
         };
 
         // Promote to memory cache
-        this.addToMemory(data.systemPrompt, data.prompt, response, queryEmb);
+        this.addToMemory(data.systemPrompt, data.prompt, response, embedding);
         return response;
       }
     } catch {
@@ -204,8 +210,8 @@ class SemanticCache {
     return null;
   }
 
-  async store(systemPrompt: string, prompt: string, response: AIGatewayResponse): Promise<void> {
-    const embedding = await generateEmbedding(prompt);
+  async store(systemPrompt: string, prompt: string, response: AIGatewayResponse, queryEmbedding?: number[]): Promise<void> {
+    const embedding = queryEmbedding ?? await generateEmbedding(prompt);
     if (embedding.length === 0) return;
 
     this.addToMemory(systemPrompt, prompt, response, embedding);
@@ -278,10 +284,10 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / TOKEN_ESTIMATE_FACTOR);
 }
 
-async function buildNewsContext(query: string): Promise<string> {
+async function buildNewsContext(query: string, queryEmbedding?: number[]): Promise<string> {
   try {
     const { searchRelevantContext, buildRAGContext } = await import('./rag.server');
-    const results = await searchRelevantContext(query, 3, 0.5, 'news');
+    const results = await searchRelevantContext(query, 3, 0.5, 'news', undefined, undefined, queryEmbedding);
     if (results.length === 0) return '';
     const dated = results.map(r => {
       const freshness = r.metadata.freshness || r.metadata.freshness;
@@ -410,8 +416,15 @@ export class AIGateway {
     }
 
     let cacheHit: AIGatewayResponse | null = null;
+    // Only generate an embedding if RAG/news is enabled or the in-memory cache may have a match.
+    // If neither is true, we skip the cache lookup embedding entirely on cold starts.
+    const mayNeedEmbedding = request.enableRAG || request.enableNews || this.cache.hasMemoryEntries();
+    let queryEmbedding: number[] | undefined;
+    if (mayNeedEmbedding) {
+      queryEmbedding = await generateEmbedding(request.prompt).catch(() => []);
+    }
     try {
-      cacheHit = await this.cache.find(request.prompt, request.systemPrompt ?? '');
+      cacheHit = await this.cache.find(request.prompt, request.systemPrompt ?? '', queryEmbedding);
     } catch {
       // Cache unavailable — proceed directly to model
     }
@@ -419,10 +432,10 @@ export class AIGateway {
 
     const [ragContext, newsContext] = await Promise.all([
       request.enableRAG
-        ? buildRAGContext(await searchRelevantContext(request.prompt, 5, 0.5, request.ragCategory))
+        ? buildRAGContext(await searchRelevantContext(request.prompt, 5, 0.5, request.ragCategory, undefined, undefined, queryEmbedding))
         : Promise.resolve(''),
       request.enableNews
-        ? buildNewsContext(request.prompt)
+        ? buildNewsContext(request.prompt, queryEmbedding)
         : Promise.resolve(''),
     ]);
 
@@ -438,7 +451,8 @@ export class AIGateway {
       : request.prompt;
 
     const estimatedInputTokens = estimateTokens(augmentedPrompt) + estimateTokens(request.systemPrompt ?? '');
-    const estimatedCost = (estimatedInputTokens / 1000) * (route.costPer1kInput + route.costPer1kOutput);
+    const estimatedOutputTokens = request.maxTokens || 2048;
+    const estimatedCost = (estimatedInputTokens / 1000) * route.costPer1kInput + (estimatedOutputTokens / 1000) * route.costPer1kOutput;
 
     const budgetCheck = await this.fetchAndBudget(request.userId, estimatedCost);
     if (!budgetCheck.allowed) {
@@ -449,26 +463,30 @@ export class AIGateway {
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
-        const content = await this.callModel(route.provider, route.model, {
+        const result = await this.callModel(route.provider, route.model, {
           ...request,
           prompt: augmentedPrompt,
         });
 
-        if (!content) {
+        if (!result.content) {
           lastError = 'Empty response from AI model';
           if (attempt < MAX_RETRIES) continue;
           break;
         }
 
+        const actualInputTokens = result.inputTokens || estimatedInputTokens;
+        const actualOutputTokens = result.outputTokens || estimateTokens(result.content);
+        const actualCost = (actualInputTokens / 1000) * route.costPer1kInput + (actualOutputTokens / 1000) * route.costPer1kOutput;
+
         const response: AIGatewayResponse = {
-          content,
+          content: result.content,
           model: route.model,
-          tokensUsed: estimatedInputTokens,
-          costUsd: estimatedCost,
+          tokensUsed: actualInputTokens + actualOutputTokens,
+          costUsd: actualCost,
           cached: false,
         };
 
-        this.cache.store(request.systemPrompt ?? '', request.prompt, response).catch(() => {});
+        this.cache.store(request.systemPrompt ?? '', request.prompt, response, queryEmbedding).catch(() => {});
         return response;
       } catch (error: unknown) {
         lastError = sanitizeError(error);
@@ -511,10 +529,13 @@ export class AIGateway {
 
     if (fallbackRoute) {
       try {
-        const content = await this.callModel(fallbackRoute.provider, fallbackRoute.model, request);
+        const result = await this.callModel(fallbackRoute.provider, fallbackRoute.model, request);
+        const actualInputTokens = result.inputTokens || estimatedInputTokens;
+        const actualOutputTokens = result.outputTokens || estimateTokens(result.content);
+        const actualCost = (actualInputTokens / 1000) * fallbackRoute.costPer1kInput + (actualOutputTokens / 1000) * fallbackRoute.costPer1kOutput;
         return {
-          content, model: fallbackRoute.model,
-          tokensUsed: estimatedInputTokens, costUsd: (estimatedInputTokens / 1000) * (fallbackRoute.costPer1kInput + fallbackRoute.costPer1kOutput), cached: false,
+          content: result.content, model: fallbackRoute.model,
+          tokensUsed: actualInputTokens + actualOutputTokens, costUsd: actualCost, cached: false,
           error: `Primary model failed. Used fallback.`,
         };
       } catch (err) {
@@ -537,7 +558,7 @@ export class AIGateway {
     };
   }
 
-  private async callModel(provider: string, model: string, request: AIGatewayRequest): Promise<string> {
+  private async callModel(provider: string, model: string, request: AIGatewayRequest): Promise<{ content: string; inputTokens: number; outputTokens: number }> {
     const circuitName = `ai-${provider}`;
     const fallbackModels: Record<string, string> = {
       'gemini-2.5-flash': 'gemini-2.5-pro',
@@ -579,7 +600,7 @@ export class AIGateway {
     }
   }
 
-  private async callGemini(model: string, request: AIGatewayRequest): Promise<string> {
+  private async callGemini(model: string, request: AIGatewayRequest): Promise<{ content: string; inputTokens: number; outputTokens: number }> {
     const apiKey = process.env.GOOGLE_GENAI_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error('Gemini API key not set (set GOOGLE_GENAI_API_KEY or GEMINI_API_KEY)');
 
@@ -610,10 +631,19 @@ export class AIGateway {
     if (!res.ok) throw new Error(data.error?.message || `Gemini API error (${res.status})`);
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    return request.jsonMode ? extractJsonFromResponse(text) : text;
+    const inputTokens = data.usageMetadata?.promptTokenCount
+      ?? estimateTokens(request.prompt) + estimateTokens(request.systemPrompt ?? '');
+    const outputTokens = data.usageMetadata?.candidatesTokenCount
+      ?? estimateTokens(text);
+
+    return {
+      content: request.jsonMode ? extractJsonFromResponse(text) : text,
+      inputTokens,
+      outputTokens,
+    };
   }
 
-  private async callOpenAI(model: string, request: AIGatewayRequest): Promise<string> {
+  private async callOpenAI(model: string, request: AIGatewayRequest): Promise<{ content: string; inputTokens: number; outputTokens: number }> {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) throw new Error('OPENAI_API_KEY not set');
 
@@ -641,10 +671,17 @@ export class AIGateway {
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error?.message || `OpenAI API error (${res.status})`);
-    return data.choices?.[0]?.message?.content || '';
+
+    const text = data.choices?.[0]?.message?.content || '';
+    const inputTokens = data.usage?.prompt_tokens
+      ?? estimateTokens(request.prompt) + estimateTokens(request.systemPrompt ?? '');
+    const outputTokens = data.usage?.completion_tokens
+      ?? estimateTokens(text);
+
+    return { content: text, inputTokens, outputTokens };
   }
 
-  private async callAnthropic(model: string, request: AIGatewayRequest): Promise<string> {
+  private async callAnthropic(model: string, request: AIGatewayRequest): Promise<{ content: string; inputTokens: number; outputTokens: number }> {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set');
 
@@ -663,7 +700,14 @@ export class AIGateway {
 
     const data = await res.json();
     if (!res.ok) throw new Error(data.error?.message || `Anthropic API error (${res.status})`);
-    return data.content?.[0]?.text || '';
+
+    const text = data.content?.[0]?.text || '';
+    const inputTokens = data.usage?.input_tokens
+      ?? estimateTokens(request.prompt) + estimateTokens(request.systemPrompt ?? '');
+    const outputTokens = data.usage?.output_tokens
+      ?? estimateTokens(text);
+
+    return { content: text, inputTokens, outputTokens };
   }
 
   private getFallbackResponse(difficulty: TaskDifficulty): string {
