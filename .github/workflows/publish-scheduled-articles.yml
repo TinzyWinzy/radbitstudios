@@ -1,0 +1,22 @@
+name: Publish scheduled articles
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call protected publication endpoint
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$SITE_URL"
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error \
+            --retry 3 \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            "${SITE_URL%/}/api/cron/publish-scheduled-articles"

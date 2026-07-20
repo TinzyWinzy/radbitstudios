@@ -8,7 +8,7 @@ import { ArrowLeft, Plus, Edit, Trash2, Eye, EyeOff, Loader2 } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/contexts/auth-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { resolveEditorialStatus } from "@/lib/editorial";
+import { isStalePost, resolveEditorialStatus } from "@/lib/editorial";
 
 export default function AdminBlogPage() {
   const { role } = useContext(AuthContext);
@@ -95,7 +95,13 @@ export default function AdminBlogPage() {
           </Button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-5">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="border-l-2 border-primary bg-muted/20 p-4"><span className="block text-2xl font-semibold">{posts.filter(post => resolveEditorialStatus(post) === 'review').length}</span><span className="text-sm text-muted-foreground">awaiting review</span></div>
+            <div className="border-l-2 border-amber-500 bg-muted/20 p-4"><span className="block text-2xl font-semibold">{posts.filter(post => resolveEditorialStatus(post) === 'scheduled').length}</span><span className="text-sm text-muted-foreground">scheduled</span></div>
+            <div className="border-l-2 border-destructive bg-muted/20 p-4"><span className="block text-2xl font-semibold">{posts.filter(post => isStalePost(post)).length}</span><span className="text-sm text-muted-foreground">stale after 180 days</span></div>
+          </div>
+          <div className="space-y-2">
           {posts.map(post => (
             <div
               key={post.id}
@@ -106,6 +112,7 @@ export default function AdminBlogPage() {
                   <h3 className="font-medium truncate">{post.title}</h3>
                   <span className="text-xs capitalize px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{resolveEditorialStatus(post)}</span>
                   {post.category && <span className="hidden sm:inline text-xs text-muted-foreground">{post.category}</span>}
+                  {isStalePost(post) && <span className="text-xs px-1.5 py-0.5 border border-amber-500/40 text-amber-600">Review due</span>}
                 </div>
                 <p className="text-sm text-muted-foreground truncate mt-0.5">/blog/{post.slug}</p>
               </div>
@@ -135,6 +142,7 @@ export default function AdminBlogPage() {
               </div>
             </div>
           ))}
+          </div>
         </div>
       )}
 

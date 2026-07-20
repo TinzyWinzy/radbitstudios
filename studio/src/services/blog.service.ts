@@ -1,11 +1,13 @@
 import { db } from '@/lib/firebase/firebase';
 import {
   collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc,
-  query, where, orderBy, limit, Timestamp, serverTimestamp,
+  query, where, orderBy, limit, Timestamp, serverTimestamp, arrayUnion,
 } from 'firebase/firestore';
 import type { ArticleCategory, ContentClusterSlug } from '@/data/content-clusters';
 
 export type EditorialStatus = 'draft' | 'review' | 'approved' | 'scheduled' | 'published';
+export type ReviewGates = { factualClaimsChecked: boolean; firsthandContextAdded: boolean; proofBoundariesChecked: boolean; internalLinksChecked: boolean };
+export type PublicationAuditEntry = { action: string; actor: string; at: string; fromStatus?: EditorialStatus; toStatus?: EditorialStatus };
 
 export interface BlogPost {
   id?: string;
@@ -29,6 +31,8 @@ export interface BlogPost {
   serviceLinks?: string[];
   industryLinks?: string[];
   faq?: Array<{ question: string; answer: string }>;
+  reviewGates?: ReviewGates;
+  publicationAudit?: PublicationAuditEntry[];
   authorName: string;
   authorBio?: string;
   imageUrl?: string;
@@ -61,9 +65,15 @@ class BlogService {
   }
 
   async update(id: string, post: Partial<Omit<BlogPost, 'id' | 'createdAt'>>): Promise<void> {
+    const current = await getDoc(doc(db, COLLECTION, id));
+    const previousStatus = current.exists() ? (current.data().status as EditorialStatus | undefined) : undefined;
+    const nextStatus = post.status;
     await updateDoc(doc(db, COLLECTION, id), {
       ...post,
       updatedAt: serverTimestamp(),
+      ...(nextStatus && nextStatus !== previousStatus ? {
+        publicationAudit: arrayUnion({ action: 'status_changed', actor: post.authorName || 'Radbit editor', at: new Date().toISOString(), fromStatus: previousStatus || 'draft', toStatus: nextStatus }),
+      } : {}),
     });
   }
 

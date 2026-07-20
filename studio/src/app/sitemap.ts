@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { CONTENT_CLUSTERS } from "@/data/content-clusters";
+import { INDUSTRY_PAGES, SERVICE_PAGES } from "@/data/commercial-content";
+import { DIAGNOSTIC_TOOLS } from "@/data/diagnostic-tools";
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +43,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/diaspora-matchmaking`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
     { url: `${SITE_URL}/events/zimbabwe-business-expo-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
     { url: `${SITE_URL}/guides/zimra-tax-calendar-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
+    ...SERVICE_PAGES.map(page => ({ url: `${SITE_URL}/services/${page.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.85 })),
+    ...INDUSTRY_PAGES.map(page => ({ url: `${SITE_URL}/solutions/${page.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.8 })),
+    ...DIAGNOSTIC_TOOLS.map(tool => ({ url: `${SITE_URL}/resources/tools/${tool.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.75 })),
   ];
 
   let blogPosts: MetadataRoute.Sitemap = [];

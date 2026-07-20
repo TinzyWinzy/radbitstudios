@@ -5,6 +5,7 @@ import { BookOpen, Calculator, ArrowRight, Wrench, HelpCircle, Sparkles, ArrowRi
 import { AdBanner } from "@/components/ads/ad-banner";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { breadcrumbSchema } from "@/lib/seo";
+import { DIAGNOSTIC_TOOLS } from "@/data/diagnostic-tools";
 
 export const revalidate = 3600;
 
@@ -38,6 +39,7 @@ const GUIDE_ICONS: Record<string, LucideIcon> = {
 };
 
 const tools = [
+  ...DIAGNOSTIC_TOOLS.map(tool => ({ slug: tool.slug, title: tool.title, excerpt: tool.metaDescription, icon: <Calculator className="h-6 w-6" /> })),
   {
     slug: "vat-calculator",
     title: "VAT Calculator Zimbabwe",

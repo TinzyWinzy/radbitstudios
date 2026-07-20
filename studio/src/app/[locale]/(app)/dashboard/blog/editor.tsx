@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Loader2, Eye } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Eye } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ARTICLE_CATEGORIES, CONTENT_CLUSTERS } from "@/data/content-clusters";
-import { estimateReadingMinutes, resolveEditorialStatus } from "@/lib/editorial";
+import { canAdvanceEditorialStatus, estimateReadingMinutes, resolveEditorialStatus, validateEditorialPost } from "@/lib/editorial";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { VersionsDialog } from "@/components/editor/versions-dialog";
@@ -30,6 +30,7 @@ export default function BlogEditor({ initial }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const isLegacy = typeof initial?.content === 'string';
   const initialJson = isLegacy || !initial?.content
     ? null
@@ -55,6 +56,16 @@ export default function BlogEditor({ initial }: Props) {
     authorBio: initial?.authorBio || 'Founder and systems architect at Radbit Studios.',
     imageUrl: initial?.imageUrl || '',
     editorial: initial?.editorial,
+    reviewGates: initial?.reviewGates || { factualClaimsChecked: false, firsthandContextAdded: false, proofBoundariesChecked: false, internalLinksChecked: false },
+  });
+
+  const editorialChecks = validateEditorialPost({
+    ...form,
+    scheduledAt: undefined,
+    tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
+    relatedSlugs: form.relatedSlugs.split(',').map(t => t.trim()).filter(Boolean),
+    serviceLinks: form.serviceLinks.split(',').map(t => t.trim()).filter(Boolean),
+    industryLinks: form.industryLinks.split(',').map(t => t.trim()).filter(Boolean),
   });
 
   const update = (key: string, value: any) => {
@@ -66,6 +77,11 @@ export default function BlogEditor({ initial }: Props) {
   };
 
   const save = async () => {
+    if (!canAdvanceEditorialStatus(form.status, editorialChecks)) {
+      setSaveError("This article cannot be approved, scheduled or published until all blocking review gates pass.");
+      return;
+    }
+    setSaveError("");
     setSaving(true);
     try {
       const data = {
@@ -93,6 +109,7 @@ export default function BlogEditor({ initial }: Props) {
         authorBio: form.authorBio,
         imageUrl: form.imageUrl,
         editorial: form.editorial,
+        reviewGates: form.reviewGates,
       };
       if (initial?.id) {
         await saveVersion('blog_posts', initial.id, initial.authorName || 'Radbit').catch(() => {});
@@ -133,6 +150,7 @@ export default function BlogEditor({ initial }: Props) {
           </Button>
         </div>
       </div>
+      {saveError && <p role="alert" className="mb-5 flex items-center gap-2 border-l-2 border-destructive bg-destructive/5 p-3 text-sm text-destructive"><AlertCircle className="size-4" />{saveError}</p>}
 
       {preview ? (
         <div className="p-6 rounded-xl border border-border/50">
@@ -142,6 +160,10 @@ export default function BlogEditor({ initial }: Props) {
       ) : (
         <div className="space-y-6">
           <EditorialWorkbench onApply={(patch) => setForm(prev => ({ ...prev, ...patch }))} />
+          <section className="rounded-xl border border-border/60 bg-muted/20 p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="font-headline text-lg font-semibold">Publication gates</h2><p className="mt-1 text-sm text-muted-foreground">Blocking checks must pass before approval, scheduling or publication.</p></div><span className="text-sm font-medium">{editorialChecks.filter(check => check.passed).length}/{editorialChecks.length} passed</span></div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">{editorialChecks.map(check => <div key={check.id} className="flex gap-2 text-sm">{check.passed ? <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" /> : <AlertCircle className={`mt-0.5 size-4 shrink-0 ${check.blocking ? "text-destructive" : "text-amber-500"}`} />}<div><p className="font-medium">{check.label}{check.blocking && !check.passed ? " · blocking" : ""}</p>{!check.passed && <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{check.detail}</p>}</div></div>)}</div>
+          </section>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
@@ -260,6 +282,16 @@ export default function BlogEditor({ initial }: Props) {
               <div className="space-y-2"><Label>Service links</Label><Input value={form.serviceLinks} onChange={e => update('serviceLinks', e.target.value)} placeholder="/services/custom-software" /></div>
             </div>
             <div className="space-y-2"><Label>Industry solution links</Label><Input value={form.industryLinks} onChange={e => update('industryLinks', e.target.value)} placeholder="/solutions/hospitality" /></div>
+          </section>
+
+          <section className="space-y-4 rounded-xl border border-border/60 p-5">
+            <div><h2 className="font-headline text-lg font-semibold">Human review record</h2><p className="text-sm text-muted-foreground">These confirmations belong to the editor, not Gemini.</p></div>
+            {([
+              ["factualClaimsChecked", "Factual claims and citations checked"],
+              ["firsthandContextAdded", "Genuine firsthand Radbit context added"],
+              ["proofBoundariesChecked", "Built, demonstrated, deployed and validated states distinguished"],
+              ["internalLinksChecked", "Internal and external links opened and reviewed"],
+            ] as const).map(([key, label]) => <label key={key} className="flex cursor-pointer items-start gap-3 text-sm"><input type="checkbox" checked={form.reviewGates[key]} onChange={e => update('reviewGates', { ...form.reviewGates, [key]: e.target.checked })} className="mt-0.5 size-4 accent-primary" /><span>{label}</span></label>)}
           </section>
         </div>
       )}
