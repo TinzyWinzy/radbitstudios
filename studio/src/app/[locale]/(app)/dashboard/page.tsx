@@ -29,10 +29,6 @@ import {
   BarChart,
   WifiOff,
   Clock,
-  ShieldCheck,
-  DollarSign,
-  UserCheck,
-  Package,
 } from "lucide-react";
 import Link from "next/link";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
@@ -60,6 +56,7 @@ import type { AppUser } from "@/types/user";
 import type { Project, ProjectTask } from "@/types/project";
 import type { PersonalizedBriefOutput } from "@/ai/flows/generate-personalized-brief";
 import type { AssessmentDoc } from "@/services/maturity";
+import { DailyCommandCentre } from "@/components/daily-command-centre";
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
@@ -354,18 +351,15 @@ export default function DashboardPage() {
   const insightCount = dailyTips.length + recommendations.length;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="font-headline text-2xl font-bold">
-            Welcome, {user?.displayName?.split(' ')[0] || 'Entrepreneur'}!
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Here&apos;s your business overview for today.
-          </p>
-        </div>
-      </div>
+    <div className="space-y-8">
+      <DailyCommandCentre
+        firstName={user?.displayName?.split(' ')[0] || 'Entrepreneur'}
+        complianceScore={complianceScore}
+        financialHealth={financialHealth}
+        founderReputation={founderRep}
+        operations={opMirror}
+        loading={loadingWidgets}
+      />
 
       <OnboardingWizard />
 
@@ -398,62 +392,6 @@ export default function DashboardPage() {
 
       {/* Market Snapshot */}
       <MarketSnapshotCard />
-
-      {/* Widgets row: Compliance, Financial Health, Founder Rep, Ops Mirror */}
-      {loadingWidgets ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <Link href="/praz-compliance" className="block">
-            <Card className="border-l-4 border-l-green-500 cursor-pointer hover:shadow-md transition-shadow">
-              <CardContent className="p-4 flex items-center gap-3">
-                <ShieldCheck className="h-8 w-8 text-green-500 shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground">Compliance</p>
-                  <p className="text-xl font-bold">{complianceScore ?? '—'}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">
-                    {complianceScore !== null ? (complianceScore >= 80 ? 'Good standing' : complianceScore >= 60 ? 'Needs work' : 'At risk') : 'No data'}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-          <Card className="border-l-4 border-l-blue-500">
-            <CardContent className="p-4 flex items-center gap-3">
-              <DollarSign className="h-8 w-8 text-blue-500 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">Financial Health</p>
-                <p className="text-xl font-bold">{financialHealth?.score ?? '—'}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{financialHealth?.details?.slice(0, 40) ?? 'Upload statements'}</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-l-4 border-l-purple-500">
-            <CardContent className="p-4 flex items-center gap-3">
-              <UserCheck className="h-8 w-8 text-purple-500 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">Founder Reputation</p>
-                <p className="text-xl font-bold">{founderRep?.score ?? '—'}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{founderRep?.status ?? 'Not rated'}</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border-l-4 border-l-orange-500">
-            <CardContent className="p-4 flex items-center gap-3">
-              <Package className="h-8 w-8 text-orange-500 shrink-0" />
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">Ops Mirror</p>
-                <p className="text-xl font-bold">{opMirror ? opMirror.stockCount + opMirror.deliveryCount + opMirror.assetCount : '—'}</p>
-                <p className="text-[10px] text-muted-foreground truncate">
-                  {opMirror ? `${opMirror.stockCount} stock · ${opMirror.deliveryCount} deliveries · ${opMirror.assetCount} assets` : 'No data'}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
       {/* Main Content: Assessment + Insights side by side */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">

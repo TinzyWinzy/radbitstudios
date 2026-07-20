@@ -298,6 +298,18 @@ service cloud.firestore {
       allow delete: if request.auth.token.role in ['admin', 'super_admin'];
     }
 
+    // ─── BUSINESS ACTIONS ─────────────────────────────────────────────────
+    // User-owned operating actions generated from signals or created manually.
+    match /business_actions/{actionId} {
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.userId;
+      allow get, list, delete: if request.auth != null
+        && request.auth.uid == resource.data.userId;
+      allow update: if request.auth != null
+        && request.auth.uid == resource.data.userId
+        && request.resource.data.userId == resource.data.userId;
+    }
+
     // ─── CLIENT NOTES (admin-only) ────────────────────────────────────────
     match /client_notes/{noteId} {
       allow get, list: if request.auth.token.role in ['admin', 'super_admin'];

@@ -37,6 +37,11 @@
     --sidebar-accent-foreground: 0 0% 95%;
     --sidebar-border: 25 10% 18%;
     --sidebar-ring: 18 85% 55%;
+    --radbit-ink: 24 18% 3%;
+    --radbit-surface: 24 13% 6%;
+    --radbit-elevated: 27 11% 8%;
+    --radbit-mineral: 177 24% 42%;
+    --radbit-copper: 20 76% 55%;
   }
 }
 
@@ -46,6 +51,7 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    background-image: radial-gradient(circle at 82% -10%, hsl(var(--primary) / 0.055), transparent 30rem);
   }
   html {
     -webkit-tap-highlight-color: transparent;
@@ -124,9 +130,49 @@
 }
 
 @layer components {
+  .frost-surface {
+    background: hsl(var(--radbit-surface) / 0.88);
+    border: 1px solid hsl(var(--foreground) / 0.09);
+    box-shadow:
+      inset 0 1px 0 hsl(var(--foreground) / 0.055),
+      0 24px 64px hsl(var(--radbit-ink) / 0.3);
+    backdrop-filter: blur(18px) saturate(112%);
+  }
+
+  .editorial-surface {
+    background: hsl(var(--radbit-elevated));
+    border: 1px solid hsl(var(--foreground) / 0.08);
+    box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.035);
+  }
+
+  .eyebrow {
+    @apply text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground;
+  }
+
+  .decision-link {
+    @apply rounded-md outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
   .content-visibility-auto {
     content-visibility: auto;
     contain-intrinsic-size: 1px 500px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .frost-surface {
+    background: hsl(var(--radbit-surface));
   }
 }
 

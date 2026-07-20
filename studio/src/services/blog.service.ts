@@ -14,6 +14,18 @@ export interface BlogPost {
   published: boolean;
   authorName: string;
   imageUrl?: string;
+  editorial?: {
+    metaDescription: string;
+    primaryKeyword: string;
+    secondaryKeywords: string[];
+    searchIntent: string;
+    readerLevel: string;
+    schemaRecommendations: string[];
+    internalLinks: Array<{ topic: string; reason: string }>;
+    authoritativeSources: Array<{ name: string; url: string; purpose: string }>;
+    contentGraph: Record<string, string[]>;
+    reviewNotes: string[];
+  };
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

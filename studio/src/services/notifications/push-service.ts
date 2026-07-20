@@ -53,8 +53,8 @@ export async function sendPush(
     const payload = JSON.stringify({
       title,
       body,
-      icon: '/icon-192.png',
-      badge: '/badge-72.png',
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-72x72.png',
       data: {
         url: link || '/',
         click_action: link || '/',

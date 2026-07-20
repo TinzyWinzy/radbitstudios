@@ -13,6 +13,7 @@ import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { VersionsDialog } from "@/components/editor/versions-dialog";
 import { saveVersion } from "@/services/version.service";
+import { EditorialWorkbench } from "./editorial-workbench";
 
 interface Props {
   initial?: BlogPost;
@@ -40,6 +41,7 @@ export default function BlogEditor({ initial }: Props) {
     published: initial?.published ?? false,
     authorName: initial?.authorName || 'Radbit',
     imageUrl: initial?.imageUrl || '',
+    editorial: initial?.editorial,
   });
 
   const update = (key: string, value: any) => {
@@ -62,6 +64,7 @@ export default function BlogEditor({ initial }: Props) {
         published: form.published,
         authorName: form.authorName || 'Radbit',
         imageUrl: form.imageUrl,
+        editorial: form.editorial,
       };
       if (initial?.id) {
         await saveVersion('blog_posts', initial.id, initial.authorName || 'Radbit').catch(() => {});
@@ -110,6 +113,7 @@ export default function BlogEditor({ initial }: Props) {
         </div>
       ) : (
         <div className="space-y-6">
+          <EditorialWorkbench onApply={(patch) => setForm(prev => ({ ...prev, ...patch }))} />
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>

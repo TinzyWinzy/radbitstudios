@@ -7,6 +7,7 @@ import { aggregateRatingSchema } from "@/data/testimonials";
 import { CookieBanner } from "@/components/cookie-banner";
 import { GA4Script } from "@/components/analytics/ga4";
 import { DeviceProvider } from "@/contexts/device-context";
+import { PwaLifecycle } from "@/components/pwa-lifecycle";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -70,6 +71,22 @@ export const metadata: Metadata = {
   },
   applicationName: "Radbit Studios",
   category: "business",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Radbit",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/icon-152x152.png", sizes: "152x152", type: "image/png" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
@@ -91,7 +108,6 @@ export default async function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        <link rel="manifest" href="/manifest.json" />
         <link rel="alternate" type="application/rss+xml" title="Radbit Blog RSS Feed" href="/blog/feed.xml" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://firestore.googleapis.com" />
@@ -127,17 +143,7 @@ export default async function RootLayout({
         {children}
         <CookieBanner />
         </DeviceProvider>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js');
-                });
-              }
-            `,
-          }}
-        />
+        <PwaLifecycle />
       </body>
     </html>
   );

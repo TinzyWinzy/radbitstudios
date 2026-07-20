@@ -1,16 +1,23 @@
-const CACHE_NAME = 'radbit-sme-v1';
+const CACHE_NAME = 'radbit-shell-v3';
+const RUNTIME_CACHE = 'radbit-runtime-v3';
 const STATIC_ASSETS = [
   '/',
+  '/offline.html',
   '/manifest.json',
+  '/icon.svg',
+  '/icons/icon-72x72.png',
+  '/icons/icon-96x96.png',
+  '/icons/icon-152x152.png',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
-  '/icons/badge-72x72.png',
 ];
 
 /// Install: precache shell assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.allSettled(STATIC_ASSETS.map((asset) => cache.add(asset)))
+    )
   );
   self.skipWaiting();
 });
@@ -19,7 +26,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((key) => ![CACHE_NAME, RUNTIME_CACHE].includes(key)).map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
@@ -35,31 +42,60 @@ self.addEventListener('fetch', (event) => {
   // Skip cross-origin
   if (url.origin !== location.origin) return;
 
-  // API routes: network-first with offline fallback
+  // Never cache authenticated API responses. App features use IndexedDB for
+  // explicit offline state instead of leaking private responses into CacheStorage.
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(networkFirst(request));
+    event.respondWith(networkOnly(request));
     return;
   }
 
-  // Static assets & pages: cache-first, stale-while-revalidate
-  event.respondWith(cacheFirstStaleRevalidate(request));
+  if (request.mode === 'navigate') {
+    event.respondWith(navigationNetworkFirst(request));
+    return;
+  }
+
+  if (url.pathname.startsWith('/_next/static/') || request.destination === 'font' || request.destination === 'image') {
+    event.respondWith(cacheFirstStaleRevalidate(request));
+    return;
+  }
+
+  event.respondWith(networkFirst(request));
 });
 
-async function networkFirst(request) {
+async function networkOnly(request) {
   try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
-    }
-    return response;
+    return await fetch(request);
   } catch {
-    const cached = await caches.match(request);
-    if (cached) return cached;
     return new Response(JSON.stringify({ error: 'Offline' }), {
       status: 503,
       headers: { 'Content-Type': 'application/json' },
     });
+  }
+}
+
+async function navigationNetworkFirst(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok && response.type === 'basic') {
+      const cache = await caches.open(RUNTIME_CACHE);
+      await cache.put(request, response.clone());
+    }
+    return response;
+  } catch {
+    return (await caches.match(request)) || (await caches.match('/offline.html'));
+  }
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok && response.type === 'basic') {
+      const cache = await caches.open(RUNTIME_CACHE);
+      await cache.put(request, response.clone());
+    }
+    return response;
+  } catch {
+    return (await caches.match(request)) || new Response('', { status: 504 });
   }
 }
 
@@ -68,58 +104,14 @@ async function cacheFirstStaleRevalidate(request) {
   if (cached) {
     fetch(request)
       .then((response) => {
-        if (response.ok) caches.open(CACHE_NAME).then((c) => c.put(request, response));
+        if (response.ok && response.type === 'basic') caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, response));
       })
       .catch(() => {});
     return cached;
   }
   return fetch(request).then((response) => {
-    if (response.ok) caches.open(CACHE_NAME).then((c) => c.put(request, response.clone()));
+    if (response.ok && response.type === 'basic') caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, response.clone()));
     return response;
-  });
-}
-
-/// Background Sync: retry queued requests on reconnect
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-queued') {
-    event.waitUntil(syncQueuedRequests());
-  }
-});
-
-async function syncQueuedRequests() {
-  const db = await openIndexedDB();
-  const tx = db.transaction('queuedRequests', 'readonly');
-  const store = tx.objectStore('queuedRequests');
-  const requests = await store.getAll();
-
-  for (const req of requests) {
-    try {
-      const response = await fetch(req.url, {
-        method: req.method,
-        headers: req.headers,
-        body: req.body,
-      });
-      if (response.ok) {
-        await store.delete(req.id);
-      }
-    } catch {
-      // Will retry on next sync event
-      break;
-    }
-  }
-}
-
-function openIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open('RadbitSW', 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains('queuedRequests')) {
-        db.createObjectStore('queuedRequests', { keyPath: 'id' });
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
   });
 }
 
@@ -132,8 +124,8 @@ self.addEventListener('push', (event) => {
     self.registration.showNotification(data.title || 'Radbit SME Hub', {
       body: data.body || '',
       icon: '/icons/icon-192x192.png',
-      badge: '/icons/badge-72x72.png',
-      data: data.url ? { url: data.url } : undefined,
+      badge: '/icons/icon-72x72.png',
+      data: { url: data.url || data.data?.url || '/' },
     })
   );
 });
@@ -141,11 +133,17 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (clientList) => {
+      const targetUrl = new URL(event.notification.data?.url || '/', self.location.origin).href;
       for (const client of clientList) {
-        if (client.url === '/' && 'focus' in client) return client.focus();
+        if ('navigate' in client) await client.navigate(targetUrl);
+        if ('focus' in client) return client.focus();
       }
-      if (clients.openWindow) return clients.openWindow('/');
+      if (clients.openWindow) return clients.openWindow(targetUrl);
     })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });

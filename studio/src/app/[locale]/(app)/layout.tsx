@@ -38,6 +38,9 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -174,26 +177,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const canUseInvestor = !isStaff;
 
     const menuItems = [
-      { href: "/dashboard", label: "Dashboard", icon: <Home />, show: true },
-      { href: "/dashboard/checklist", label: "Onboarding", icon: <ClipboardList />, show: true },
-      { href: "/dashboard/projects", label: "My Projects", icon: <Kanban />, show: true },
-      { href: "/assessment", label: "Assessment", icon: <FileText />, show: true },
-      { href: "/budget-calculator", label: "Budget Calculator", icon: <Calculator />, show: true },
-      { href: "/news", label: "Business News", icon: <Newspaper />, show: true },
-      { href: "/tenders", label: "Tenders", icon: <Briefcase />, show: true },
-      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale />, show: canUsePraz },
-      { href: "/community", label: "Community", icon: <Users />, show: true },
-      ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send />, show: true }] : []),
-      { href: "/resources", label: "Resources", icon: <BookOpen />, show: true },
-      { href: "/export-assessment", label: "Export Assessment", icon: <FileCheck />, show: canUseExport },
-      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, show: canUseInvestor },
-      ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Blog Manager", icon: <PenSquare />, show: true }] : []),
+      { href: "/dashboard", label: "Today", icon: <Home />, domain: "Command", show: true },
+      { href: "/dashboard/actions", label: "Action Centre", icon: <ClipboardList />, domain: "Command", show: true },
+      { href: "/dashboard/checklist", label: "Onboarding", icon: <ClipboardList />, domain: "Command", show: true },
+      { href: "/dashboard/projects", label: "Projects", icon: <Kanban />, domain: "Operations", show: true },
+      { href: "/assessment", label: "Business Health", icon: <FileText />, domain: "Operations", show: true },
+      { href: "/budget-calculator", label: "Budget", icon: <Calculator />, domain: "Operations", show: true },
+      { href: "/news", label: "Business News", icon: <Newspaper />, domain: "Intelligence", show: true },
+      { href: "/tenders", label: "Tenders", icon: <Briefcase />, domain: "Intelligence", show: true },
+      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale />, domain: "Intelligence", show: canUsePraz },
+      { href: "/community", label: "Community", icon: <Users />, domain: "Network", show: true },
+      ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send />, domain: "Network", show: true }] : []),
+      { href: "/resources", label: "Resources", icon: <BookOpen />, domain: "Network", show: true },
+      { href: "/export-assessment", label: "Export Readiness", icon: <FileCheck />, domain: "Intelligence", show: canUseExport },
+      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, domain: "Intelligence", show: canUseInvestor },
+      ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Publishing", icon: <PenSquare />, domain: "Administration", show: true }] : []),
       ...(isAdmin ? [
-        { href: "/dashboard/faq", label: "FAQ Manager", icon: <HelpCircle />, show: true },
-        { href: "/dashboard/guides", label: "Guides Manager", icon: <BookOpen />, show: true },
-        { href: "/dashboard/seo-pages", label: "SEO Pages", icon: <FileText />, show: true },
-        { href: "/dashboard/media", label: "Media Library", icon: <ImageIcon aria-hidden="true" />, show: true },
-        { href: "/dashboard/admin", label: "Admin Panel", icon: <Shield />, show: true },
+        { href: "/dashboard/faq", label: "FAQ", icon: <HelpCircle />, domain: "Administration", show: true },
+        { href: "/dashboard/guides", label: "Guides", icon: <BookOpen />, domain: "Administration", show: true },
+        { href: "/dashboard/seo-pages", label: "SEO Pages", icon: <FileText />, domain: "Administration", show: true },
+        { href: "/dashboard/media", label: "Media", icon: <ImageIcon aria-hidden="true" />, domain: "Administration", show: true },
+        { href: "/dashboard/admin", label: "Admin", icon: <Shield />, domain: "Administration", show: true },
       ] : []),
     ].filter(item => item.show);
 
@@ -207,16 +211,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar aria-label="Navigation menu">
-        <SidebarHeader>
+      <Sidebar aria-label="Navigation menu" className="border-r border-border/60">
+        <SidebarHeader className="border-b border-border/60 px-3 py-4">
           <div className="flex items-center gap-3 px-2">
             <Icons.radbit className="size-7 shrink-0" />
-            <span className="font-headline text-lg font-bold tracking-wide">RADBIT</span>
+            <span><span className="block font-headline text-base font-semibold tracking-[0.08em]">RADBIT</span><span className="block text-[0.62rem] uppercase tracking-[0.17em] text-muted-foreground">Business system</span></span>
           </div>
         </SidebarHeader>
-        <SidebarContent>
-          <SidebarMenu>
-            {menuItems.map((item) => (
+        <SidebarContent className="py-3">
+          {["Command", "Operations", "Intelligence", "Network", "Administration"].map(domain => {
+            const items = menuItems.filter(item => item.domain === domain);
+            if (!items.length) return null;
+            return <SidebarGroup key={domain} className="py-1">
+              <SidebarGroupLabel className="px-3 text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground/70">{domain}</SidebarGroupLabel>
+              <SidebarGroupContent><SidebarMenu>
+            {items.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     asChild
@@ -230,6 +239,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
             ))}
+              </SidebarMenu></SidebarGroupContent>
+            </SidebarGroup>;
+          })}
+          <SidebarMenu className="px-2">
             {showAiTools && (
               <Collapsible defaultOpen className="group/collapsible">
                 <SidebarMenuItem>
@@ -300,7 +313,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/95 md:bg-background/80 md:backdrop-blur-xl md:supports-[backdrop-filter]:bg-background/60">
+        <header className="frost-surface sticky top-0 z-40 w-full rounded-none border-x-0 border-t-0 shadow-none">
           <div className="container flex h-14 max-w-7xl items-center">
             <SidebarTrigger className="mr-4" />
             <div className="flex-1 flex items-center gap-2">
@@ -358,7 +371,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main 
             id="main-content"
             key={pathname}
-            className="flex-1 flex flex-col p-4 md:p-8 pb-20 md:pb-8 animate-[fadeSlideIn_0.3s_ease-out]"
+            className="flex-1 flex flex-col p-4 md:p-8 lg:p-10 pb-20 md:pb-8 animate-[fadeSlideIn_0.3s_ease-out]"
         >
           <div className="container max-w-7xl w-full mx-auto flex-1 flex flex-col min-h-0">
             {children}
