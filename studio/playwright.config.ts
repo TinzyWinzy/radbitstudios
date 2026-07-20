@@ -6,8 +6,10 @@ export default defineConfig({
   retries: 1,
   reporter: [["html", { outputFolder: "playwright-report" }]],
   use: {
-    baseURL: "http://localhost:9002",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:9002",
     trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
   projects: [
     {
@@ -23,7 +25,7 @@ export default defineConfig({
       use: { ...devices["iPhone 13"] },
     },
   ],
-  webServer: {
+  webServer: process.env.PLAYWRIGHT_BASE_URL ? undefined : {
     command: "npm run dev",
     url: "http://localhost:9002",
     reuseExistingServer: true,

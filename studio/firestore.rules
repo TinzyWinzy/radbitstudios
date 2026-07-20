@@ -185,6 +185,11 @@ service cloud.firestore {
       allow list: if request.auth != null;
     }
 
+    // Device push endpoints are managed only through authenticated server routes.
+    match /push_subscriptions/{subscriptionId} {
+      allow read, write: if false;
+    }
+
     // ─── AFFILIATE CLICK LOGS ────────────────────────────────────────────────
     // Written server-side via Admin SDK (redirect route). No client access.
     match /affiliate_clicks/{clickId} {

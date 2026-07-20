@@ -144,6 +144,28 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
+self.addEventListener('pushsubscriptionchange', (event) => {
+  const applicationServerKey = event.oldSubscription?.options?.applicationServerKey;
+  if (!applicationServerKey) return;
+  event.waitUntil(
+    self.registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey })
+      .then((subscription) => {
+        const value = subscription.toJSON();
+        return fetch('/api/notifications/push-subscriptions', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            endpoint: value.endpoint,
+            expirationTime: value.expirationTime || null,
+            keys: value.keys,
+            device: { userAgent: 'service-worker', platform: 'unknown', standalone: true },
+          }),
+        });
+      })
+  );
+});
+
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });

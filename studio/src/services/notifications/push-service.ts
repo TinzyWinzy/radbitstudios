@@ -19,7 +19,7 @@ let vapidInitialized = false;
 function ensureVapid(): void {
   if (vapidInitialized) return;
   webpush.setVapidDetails(
-    'mailto:brandontinoz@gmail.com',
+    'mailto:hello@radbitstudios.co.zw',
     VAPID_PUBLIC_KEY,
     getVapidPrivateKey(),
   );
@@ -43,12 +43,19 @@ export async function sendPush(
   try {
     ensureVapid();
 
-    const userDoc = await adminDb.collection('users').doc(userId).get();
-    const pushSub = userDoc.data()?.pushSubscription as PushSubscriptionData | undefined;
-
-    if (!pushSub?.endpoint) {
-      return false;
+    const deviceSnapshot = await adminDb.collection('push_subscriptions')
+      .where('userId', '==', userId)
+      .get();
+    const subscriptions = deviceSnapshot.docs
+      .filter(doc => doc.data().active === true)
+      .map(doc => ({ ref: doc.ref, subscription: doc.data().subscription as PushSubscriptionData }));
+    if (subscriptions.length === 0) {
+      // Temporary migration fallback for subscriptions saved by older clients.
+      const userDoc = await adminDb.collection('users').doc(userId).get();
+      const legacy = userDoc.data()?.pushSubscription as PushSubscriptionData | undefined;
+      if (legacy?.endpoint) subscriptions.push({ ref: userDoc.ref, subscription: legacy });
     }
+    if (subscriptions.length === 0) return false;
 
     const payload = JSON.stringify({
       title,
@@ -61,11 +68,23 @@ export async function sendPush(
       },
     });
 
-    await webpush.sendNotification(pushSub as any, payload, {
-      TTL: 86400,
-    });
-
-    return true;
+    let delivered = 0;
+    await Promise.all(subscriptions.map(async ({ ref, subscription }) => {
+      try {
+        await webpush.sendNotification(subscription as any, payload, { TTL: 86400 });
+        delivered++;
+        if (ref.parent.id === 'push_subscriptions') await ref.update({ lastDeliveredAt: new Date(), updatedAt: new Date() });
+      } catch (error: unknown) {
+        const statusCode = (error as { statusCode?: number })?.statusCode;
+        if (statusCode === 404 || statusCode === 410) {
+          if (ref.parent.id === 'push_subscriptions') await ref.delete();
+          else await ref.update({ pushSubscription: null });
+        } else {
+          log.error({ userId, statusCode, err: error }, 'Push delivery failed for device');
+        }
+      }
+    }));
+    return delivered > 0;
   } catch (err: unknown) {
     const statusCode = (err as any)?.statusCode;
     if (statusCode === 410 || statusCode === 404) {
@@ -87,14 +106,12 @@ export async function sendPushToAll(
 ): Promise<number> {
   ensureVapid();
 
-  const snapshot = await adminDb
-    .collection('users')
-    .where('pushSubscription', '!=', null)
-    .get();
+  const snapshot = await adminDb.collection('push_subscriptions').get();
+  const userIds = [...new Set(snapshot.docs.filter(doc => doc.data().active === true).map(doc => doc.data().userId as string).filter(Boolean))];
 
   let sent = 0;
-  for (const doc of snapshot.docs) {
-    const ok = await sendPush(doc.id, title, body, link);
+  for (const userId of userIds) {
+    const ok = await sendPush(userId, title, body, link);
     if (ok) sent++;
   }
 

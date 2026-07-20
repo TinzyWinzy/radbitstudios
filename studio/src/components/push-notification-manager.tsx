@@ -1,18 +1,48 @@
 "use client";
 
-import { useEffect, useState, useContext } from "react";
+import { useCallback, useEffect, useState, useContext } from "react";
 import { AuthContext } from "@/contexts/auth-context";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase/firebase";
 import { BellRing } from "lucide-react";
+import { resilientMutation } from "@/services/offline";
 
 const VAPID_PUBLIC_KEY = "BCyIqROE6j9cAdFTDhbGJSh8GZZZQSWIdY_XTYQER3eTQWy6F4kjbm0F9wFKnvrLTRfk71pFcfJ-A1BFN2eGCmE";
+
+async function persistSubscription(subscription: PushSubscription, userId: string): Promise<void> {
+  const subJson = subscription.toJSON() as { endpoint?: string; expirationTime?: number | null; keys?: { auth?: string; p256dh?: string } };
+  if (!subJson.endpoint || !subJson.keys?.auth || !subJson.keys.p256dh) return;
+  await resilientMutation({
+    userId,
+    url: "/api/notifications/push-subscriptions",
+    method: "POST",
+    body: {
+      endpoint: subJson.endpoint,
+      expirationTime: subJson.expirationTime ?? null,
+      keys: { auth: subJson.keys.auth, p256dh: subJson.keys.p256dh },
+      device: {
+        userAgent: navigator.userAgent,
+        platform: navigator.userAgentData?.platform || navigator.platform || "unknown",
+        standalone: window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true,
+      },
+    },
+  });
+}
 
 export function PushNotificationManager() {
   const { user } = useContext(AuthContext);
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [subscribed, setSubscribed] = useState(false);
   const [supported, setSupported] = useState(false);
+
+  const checkSubscription = useCallback(async () => {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      setSubscribed(!!sub);
+      if (sub && user) await persistSubscription(sub, user.uid);
+    } catch {
+      // Service worker or PushManager is not ready on this platform.
+    }
+  }, [user]);
 
   useEffect(() => {
     const canPush = "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
@@ -22,17 +52,7 @@ export function PushNotificationManager() {
     if (Notification.permission === "granted" && user) {
       checkSubscription();
     }
-  }, [user]);
-
-  const checkSubscription = async () => {
-    try {
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.getSubscription();
-      setSubscribed(!!sub);
-    } catch {
-      // service worker not ready
-    }
-  };
+  }, [checkSubscription, user]);
 
   useEffect(() => {
     const subscribe = async () => {
@@ -43,10 +63,7 @@ export function PushNotificationManager() {
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as any,
         });
-        const subJson = sub.toJSON();
-        await updateDoc(doc(db, "users", user.uid), {
-          pushSubscription: subJson,
-        });
+        await persistSubscription(sub, user.uid);
         setSubscribed(true);
       } catch {
         // permission denied or failed

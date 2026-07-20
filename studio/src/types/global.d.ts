@@ -12,11 +12,16 @@ interface NetworkInformation {
 }
 
 declare global {
+  interface NavigatorUAData {
+    platform?: string;
+  }
+
   interface Navigator {
     connection?: NetworkInformation;
     mozConnection?: NetworkInformation;
     webkitConnection?: NetworkInformation;
     deviceMemory?: number;
+    userAgentData?: NavigatorUAData;
   }
 
   interface Window {
