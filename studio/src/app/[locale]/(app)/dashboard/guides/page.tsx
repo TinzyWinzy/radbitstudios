@@ -54,7 +54,7 @@ export default function AdminGuidesPage() {
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-8">
+      <div className="mb-8 flex flex-wrap items-center gap-3 sm:gap-4">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/dashboard">
             <ArrowLeft className="h-4 w-4" />
@@ -89,9 +89,9 @@ export default function AdminGuidesPage() {
           {guides.map(guide => (
             <div
               key={guide.id}
-              className="flex items-center justify-between rounded-lg border border-border/50 bg-card p-4 hover:border-primary/20 transition-colors"
+              className="flex flex-col items-stretch gap-3 rounded-lg border border-border/50 bg-card p-4 transition-colors hover:border-primary/20 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="flex-1 min-w-0 mr-4">
+              <div className="min-w-0 flex-1 sm:mr-4">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono text-muted-foreground">{guide.icon}</span>
                   <h3 className="font-medium truncate">{guide.title}</h3>

@@ -41,6 +41,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -83,6 +84,14 @@ import { PushNotificationManager } from "@/components/push-notification-manager"
 import type { AppUser } from "@/types/user";
 import { UserNav } from "@/components/user-nav";
 import { BottomNav } from "@/components/bottom-nav";
+
+function CloseMobileNavigationOnRouteChange({ pathname }: { pathname: string }) {
+  const { isMobile, setOpenMobile } = useSidebar();
+  useEffect(() => {
+    if (isMobile) setOpenMobile(false);
+  }, [isMobile, pathname, setOpenMobile]);
+  return null;
+}
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const { user, loading, role } = useContext(AuthContext);
@@ -211,14 +220,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
+      <CloseMobileNavigationOnRouteChange pathname={pathname} />
       <Sidebar aria-label="Navigation menu" className="border-r border-border/60">
-        <SidebarHeader className="border-b border-border/60 px-3 py-4">
+        <SidebarHeader className="border-b border-border/60 px-3 py-4 pr-14 md:pr-3">
           <div className="flex items-center gap-3 px-2">
             <Icons.radbit className="size-7 shrink-0" />
             <span><span className="block font-headline text-base font-semibold tracking-[0.08em]">RADBIT</span><span className="block text-[0.62rem] uppercase tracking-[0.17em] text-muted-foreground">Business system</span></span>
           </div>
         </SidebarHeader>
-        <SidebarContent className="py-3">
+        <SidebarContent className="overscroll-contain py-3">
           {["Command", "Operations", "Intelligence", "Network", "Administration"].map(domain => {
             const items = menuItems.filter(item => item.domain === domain);
             if (!items.length) return null;
@@ -314,15 +324,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </Sidebar>
       <SidebarInset>
         <header className="frost-surface sticky top-0 z-40 w-full rounded-none border-x-0 border-t-0 shadow-none">
-          <div className="container flex h-14 max-w-7xl items-center">
-            <SidebarTrigger className="mr-4" />
-            <div className="flex-1 flex items-center gap-2">
+          <div className="container flex h-14 max-w-7xl min-w-0 items-center gap-1 px-2 sm:gap-2 sm:px-4">
+            <SidebarTrigger className="mr-1 size-10 shrink-0 sm:mr-2" />
+            <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
               {user && (
                 <>
                   <Link
                     href="/settings?tab=account"
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium border transition-colors",
+                      "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-2 text-xs font-medium transition-colors sm:px-3",
                       (user as AppUser).plan === 'Free'
                         ? "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/60"
                         : (user as AppUser).plan === 'Growth'
@@ -339,7 +349,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     ) : (
                       <BadgeCheck className="size-3" />
                     )}
-                    {(user as AppUser).plan === 'Free' ? 'Upgrade' : (user as AppUser).plan}
+                    <span className="hidden min-[380px]:inline">{(user as AppUser).plan === 'Free' ? 'Upgrade' : (user as AppUser).plan}</span>
                   </Link>
                   {(user as AppUser).plan === 'Free' && (() => {
                     const usage = (user as AppUser).usage || {};
@@ -351,7 +361,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     return (
                       <Link
                         href="/settings?tab=account"
-                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                        className="hidden items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-2.5 py-0.5 text-[11px] font-medium text-red-400 transition-colors hover:bg-red-500/20 sm:inline-flex"
                       >
                         <AlertTriangle className="size-2.5" />
                         Only {lowest[1].remaining} {lowest[0].replace(/([A-Z])/g, ' $1').trim().toLowerCase()} {lowest[1].remaining === 1 ? 'credit' : 'credits'} left
@@ -361,7 +371,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </>
               )}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
               {user && <NotificationBell userId={user.uid} />}
               <PushNotificationManager />
               <UserNav />
@@ -371,9 +381,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main 
             id="main-content"
             key={pathname}
-            className="flex-1 flex flex-col p-4 md:p-8 lg:p-10 pb-20 md:pb-8 animate-[fadeSlideIn_0.3s_ease-out]"
+            className="flex min-w-0 flex-1 flex-col overflow-x-clip px-3 pb-24 pt-4 sm:px-5 md:p-8 lg:p-10 md:pb-8 motion-safe:animate-[fadeSlideIn_0.3s_ease-out]"
         >
-          <div className="container max-w-7xl w-full mx-auto flex-1 flex flex-col min-h-0">
+          <div className="container mx-auto flex min-h-0 w-full min-w-0 max-w-7xl flex-1 flex-col px-0">
             {children}
           </div>
         </main>

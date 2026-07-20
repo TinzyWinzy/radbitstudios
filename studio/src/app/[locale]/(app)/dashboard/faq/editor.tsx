@@ -58,7 +58,7 @@ export default function FaqEditor({ initial }: Props) {
 
   return (
     <div className="max-w-2xl">
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-headline text-2xl font-bold">
           {initial ? 'Edit FAQ' : 'New FAQ'}
         </h1>

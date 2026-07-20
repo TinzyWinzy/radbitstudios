@@ -160,7 +160,7 @@ export default function NotificationsClientPage() {
       </div>
 
       <Tabs value={filter} onValueChange={setFilter}>
-        <TabsList className="flex-wrap h-auto">
+        <TabsList className="w-full justify-start">
           {FILTER_TABS.map((t) => (
             <TabsTrigger key={t.value} value={t.value} className="text-xs">
               {t.label}

@@ -128,11 +128,11 @@ export default function BlogEditor({ initial }: Props) {
 
   return (
     <div className="max-w-4xl">
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-headline text-2xl font-bold">
           {initial ? 'Edit Post' : 'New Post'}
         </h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           {initial?.id && (
             <VersionsDialog
               collectionName="blog_posts"

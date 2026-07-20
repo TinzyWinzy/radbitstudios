@@ -50,7 +50,7 @@ export default function AdminSeoPagesPage() {
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-8">
+      <div className="mb-8 flex flex-wrap items-center gap-3 sm:gap-4">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/dashboard">
             <ArrowLeft className="h-4 w-4" />
@@ -104,8 +104,8 @@ function Section({
       <h2 className="font-headline text-lg font-semibold mb-3 text-muted-foreground">{title}</h2>
       <div className="space-y-2">
         {pages.map(page => (
-          <div key={page.id} className="flex items-center justify-between rounded-lg border border-border/50 bg-card p-4 hover:border-primary/20 transition-colors">
-            <div className="flex-1 min-w-0 mr-4">
+          <div key={page.id} className="flex flex-col items-stretch gap-3 rounded-lg border border-border/50 bg-card p-4 transition-colors hover:border-primary/20 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0 flex-1 sm:mr-4">
               <h3 className="font-medium truncate">{page.h1}</h3>
               <p className="text-sm text-muted-foreground truncate mt-0.5">
                 /{page.type === 'industry' ? 'solutions' : 'use-cases'}/{page.slug}

@@ -64,17 +64,17 @@ export default function AdminBlogPage() {
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-8">
+      <div className="mb-8 flex flex-wrap items-center gap-3 sm:gap-4">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/dashboard">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
-        <div>
+        <div className="min-w-0 flex-1">
           <h1 className="font-headline text-2xl font-bold">Editorial pipeline</h1>
           <p className="text-sm text-muted-foreground mt-1">Draft, review, approve and publish Radbit Insights</p>
         </div>
-        <Button asChild className="ml-auto">
+        <Button asChild className="w-full sm:ml-auto sm:w-auto">
           <Link href="/dashboard/blog/new">
             <Plus className="mr-2 h-4 w-4" /> New Post
           </Link>
@@ -105,9 +105,9 @@ export default function AdminBlogPage() {
           {posts.map(post => (
             <div
               key={post.id}
-              className="flex items-center justify-between rounded-lg border border-border/50 bg-card p-4 hover:border-primary/20 transition-colors"
+              className="flex flex-col items-stretch gap-3 rounded-lg border border-border/50 bg-card p-4 transition-colors hover:border-primary/20 sm:flex-row sm:items-center sm:justify-between"
             >
-              <div className="flex-1 min-w-0 mr-4">
+              <div className="min-w-0 flex-1 sm:mr-4">
                 <div className="flex items-center gap-2">
                   <h3 className="font-medium truncate">{post.title}</h3>
                   <span className="text-xs capitalize px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{resolveEditorialStatus(post)}</span>
@@ -116,7 +116,7 @@ export default function AdminBlogPage() {
                 </div>
                 <p className="text-sm text-muted-foreground truncate mt-0.5">/blog/{post.slug}</p>
               </div>
-              <div className="flex items-center gap-1 shrink-0">
+              <div className="flex shrink-0 items-center justify-end gap-1">
                 <Button
                   variant="ghost"
                   size="icon"
