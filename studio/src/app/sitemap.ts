@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/use-cases`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
     { url: `${SITE_URL}/pricing`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.8 },
     { url: `${SITE_URL}/founders`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: `${SITE_URL}/research/sentinel-zero`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.65 },
     { url: `${SITE_URL}/contact`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.4 },
     { url: `${SITE_URL}/consultancy`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
     { url: `${SITE_URL}/partners`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.4 },

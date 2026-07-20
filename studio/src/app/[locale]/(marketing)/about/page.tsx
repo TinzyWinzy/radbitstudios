@@ -68,11 +68,10 @@ export default function AboutPage() {
           <h3 className="font-headline font-bold text-foreground">Founder</h3>
           <div className="space-y-3 text-sm text-muted-foreground">
             <p><strong className="text-foreground">Tinotenda Brandon Duma</strong> &mdash; Engineer and systems architect.</p>
-            <p>Full-stack engineer and AI-augmented systems architect. Operating from Zimbabwe, building for local and international markets.</p>
+            <p>Full-stack product engineer combining software implementation, applied AI, product thinking and direct stakeholder delivery.</p>
             <ul className="space-y-1">
-              <li className="flex items-start gap-2"><BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" /> SAQA-evaluated</li>
-              <li className="flex items-start gap-2"><BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" /> IITPSA member</li>
-
+              <li className="flex items-start gap-2"><BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" /> BSc Applied Computer Technology, USIU–Africa</li>
+              <li className="flex items-start gap-2"><BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" /> Public project evidence with explicit proof states</li>
             </ul>
             <Link href="/founders" className="text-primary hover:underline text-xs font-medium inline-block mt-1">
               Full bio and background &rarr;
@@ -92,9 +91,9 @@ export default function AboutPage() {
             <Phone className="h-4 w-4 text-primary mt-0.5 shrink-0" />
             <span>+263 78 133 4474</span>
           </a>
-          <a href="mailto:hanzohanic@gmail.com" className="flex items-start gap-3 text-sm text-foreground/60 hover:text-primary transition-colors">
+          <a href="mailto:hello@radbitstudios.co.zw" className="flex items-start gap-3 text-sm text-foreground/60 hover:text-primary transition-colors">
             <Mail className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-            <span>hanzohanic@gmail.com</span>
+            <span>hello@radbitstudios.co.zw</span>
           </a>
         </div>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-foreground/60">

@@ -1,0 +1,27 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { breadcrumbSchema } from "@/lib/seo";
+
+export const metadata: Metadata = { title: "Sentinel Zero Security Research | Radbit Studios", description: "An evidence-led security research practice using invariant analysis, controlled testing, false-positive rejection and remediation-focused reporting.", alternates: { canonical: "/research/sentinel-zero" } };
+
+const method = [
+  { title: "Define the invariant", body: "State the security property that must always hold—ownership, authorization, accounting, contract state or consensus correctness." },
+  { title: "Create a controlled mutation", body: "Change one relevant variable at a time and retain a valid baseline for comparison." },
+  { title: "Test repeatability", body: "Reject findings that cannot be reproduced or whose observed difference does not violate the invariant." },
+  { title: "Build a proof artifact", body: "Use a focused test, code-level demonstration or structured request comparison that another reviewer can inspect." },
+  { title: "Write remediation", body: "Explain the missing control and propose a bounded fix without overstating business impact." },
+] as const;
+
+export default function SentinelZeroPage() { const crumbs = breadcrumbSchema([{ name: "Home", url: "/" }, { name: "Research", url: "/research/sentinel-zero" }, { name: "Sentinel Zero", url: "/research/sentinel-zero" }]); return <main>
+  <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
+  <header className="border-b border-border/60"><div className="container py-14 md:py-24"><nav aria-label="Breadcrumb" className="text-sm text-muted-foreground"><Link href="/">Home</Link><span aria-hidden> / </span><Link href="/founders">Founder evidence</Link><span aria-hidden> / </span><span>Sentinel Zero</span></nav><p className="mt-12 text-xs font-semibold uppercase tracking-[.2em] text-primary">Independent security research</p><h1 className="mt-5 max-w-4xl font-headline text-5xl font-semibold tracking-tight md:text-6xl">Sentinel Zero</h1><p className="mt-6 max-w-2xl text-xl leading-8 text-muted-foreground">A research workflow for turning suspected vulnerabilities into reproducible evidence—or discarding them when the evidence does not hold.</p></div></header>
+
+  <section className="container grid gap-10 py-12 md:grid-cols-[.7fr_1.5fr] md:py-20"><div><p className="text-sm text-muted-foreground">Research position</p><h2 className="mt-2 font-headline text-3xl font-semibold">Do not guess. Prove.</h2></div><div className="space-y-5 text-lg leading-8 text-foreground/80"><p>The method begins with a system invariant rather than an automated scanner result. A finding survives only when controlled testing shows a repeatable violation and the report explains both impact and remediation.</p><p>This work includes local tooling, audit notes, proof-of-concept tests and remediation reports across web APIs and smart-contract or consensus review exercises.</p></div></section>
+
+  <section className="border-y border-border/60 bg-muted/20"><div className="container py-12 md:py-20"><p className="text-sm text-muted-foreground">Validation sequence</p><h2 className="mt-2 font-headline text-3xl font-semibold">From hypothesis to defensible report</h2><ol className="mt-9 divide-y divide-border border-y border-border">{method.map((item, index) => <li key={item.title} className="grid gap-3 py-6 md:grid-cols-[3rem_1fr_2fr]"><span className="text-sm tabular-nums text-primary">0{index + 1}</span><h3 className="font-headline text-lg font-semibold">{item.title}</h3><p className="text-sm leading-6 text-muted-foreground">{item.body}</p></li>)}</ol></div></section>
+
+  <section className="container grid gap-10 py-12 md:grid-cols-2 md:py-20"><div><p className="text-sm text-muted-foreground">Artifacts in the private research archive</p><ul className="mt-6 divide-y divide-border border-y border-border">{["Invariant and scope notes", "Static-analysis and manual-review records", "Foundry and Python proof tests", "False-positive review", "Severity rationale", "Remediation guidance"].map(item => <li className="py-4" key={item}>{item}</li>)}</ul></div><aside className="border-l-2 border-primary bg-muted/20 p-7"><p className="text-xs font-semibold uppercase tracking-wider text-primary">Proof boundary</p><h2 className="mt-3 font-headline text-2xl font-semibold">Research is not third-party validation.</h2><p className="mt-4 leading-7 text-muted-foreground">Radbit does not claim that a target accepted a report, paid a bounty, remediated a finding or confirmed a severity unless independent evidence exists. Sensitive exploit details and target information remain private or follow coordinated-disclosure rules.</p></aside></section>
+
+  <section className="border-t border-border"><div className="container py-14"><div className="max-w-3xl border-l-2 border-primary pl-7"><h2 className="font-headline text-3xl font-semibold">Need a security-minded systems review?</h2><p className="mt-4 text-muted-foreground">Radbit can review authorization boundaries, data handling and workflow risks as part of application architecture. This is scoped separately from certified penetration testing.</p><Link href="/contact?interest=security-review" className="mt-6 inline-flex items-center gap-2 font-medium text-primary">Discuss the system boundary <ArrowRight className="size-4" /></Link></div></div></section>
+</main>; }

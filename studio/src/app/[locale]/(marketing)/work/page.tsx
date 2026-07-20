@@ -16,6 +16,15 @@ export const metadata: Metadata = {
 
 const projects = [
   {
+    name: "Sentinel Zero",
+    domain: "Private research archive",
+    href: "/research/sentinel-zero",
+    outcome: "Invariant-led security research workflow with reproducible proof artifacts and remediation reporting.",
+    stacks: ["Python", "Foundry", "Static analysis", "Invariant testing"],
+    status: "Researched",
+    desc: "An original security research system covering controlled mutation, repeatability checks, false-positive rejection and evidence-led reporting. No claim of third-party acceptance or bounty payment.",
+  },
+  {
     name: "City View Guest House",
     domain: "cityviewguesthouse.co.zw",
     href: "https://cityviewguesthouse.co.zw",
@@ -84,6 +93,7 @@ const statusColors: Record<string, string> = {
   "Live": "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
   "Built + Deployed": "border-blue-500/30 text-blue-400 bg-blue-500/10",
   "Built + Deployed (Pilot)": "border-amber-500/30 text-amber-400 bg-amber-500/10",
+  "Researched": "border-violet-500/30 text-violet-400 bg-violet-500/10",
 };
 
 export default function WorkPage() {
@@ -115,7 +125,7 @@ export default function WorkPage() {
                     {project.status}
                   </span>
                 </div>
-                <a
+                <Link
                   href={project.href}
                   target={project.href.startsWith("http") ? "_blank" : undefined}
                   rel={project.href.startsWith("http") ? "noopener noreferrer" : undefined}
@@ -123,7 +133,7 @@ export default function WorkPage() {
                   className="rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary shrink-0"
                 >
                   <ExternalLink className="h-4 w-4" />
-                </a>
+                </Link>
               </div>
               <h2 className="font-headline text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
                 {project.name}

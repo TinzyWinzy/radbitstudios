@@ -4,6 +4,7 @@ import { canAdvanceEditorialStatus, estimateReadingMinutes, isStalePost, resolve
 import { SERVICE_PAGES, INDUSTRY_PAGES } from "@/data/commercial-content";
 import { DIAGNOSTIC_TOOLS } from "@/data/diagnostic-tools";
 import { Timestamp } from "firebase/firestore";
+import { FOUNDER_EXPERIENCE, PROJECT_EVIDENCE } from "@/data/evidence-ledger";
 
 describe("editorial content architecture", () => {
   it("defines four unique pillar clusters with substantial topic maps", () => {
@@ -29,6 +30,19 @@ describe("commercial architecture", () => {
 
   it("keeps proof boundaries and FAQs on every commercial page", () => {
     expect([...SERVICE_PAGES, ...INDUSTRY_PAGES].every(page => page.exclusions.length >= 3 && page.faq.length >= 3)).toBe(true);
+  });
+});
+
+describe("evidence ledger", () => {
+  it("uses explicit proof states and avoids unsupported security validation", () => {
+    expect(FOUNDER_EXPERIENCE.length).toBeGreaterThanOrEqual(5);
+    const security = PROJECT_EVIDENCE.find(project => project.name === "Sentinel Zero");
+    expect(security?.state).toBe("Researched");
+    expect(security?.evidence).toMatch(/No claim of third-party acceptance/i);
+  });
+
+  it("keeps public project evidence addressable", () => {
+    expect(PROJECT_EVIDENCE.filter(project => project.state === "Deployed").every(project => project.href.startsWith("https://"))).toBe(true);
   });
 });
 

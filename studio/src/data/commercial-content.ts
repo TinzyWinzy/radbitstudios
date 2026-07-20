@@ -25,7 +25,7 @@ export const SERVICE_PAGES: CommercialPage[] = [
       { question: "When is custom software justified?", answer: "When a recurring, valuable workflow cannot be handled safely or efficiently by configurable software and the cost of the current process is understood." },
       { question: "Who owns the system?", answer: "Ownership, source-code access, infrastructure credentials and third-party licences are defined explicitly in the written scope." },
       { question: "Can Radbit replace a spreadsheet gradually?", answer: "Yes. A staged migration is often safer than replacing every process at once." },
-    ], related: [{ label: "Business process automation", href: "/services/business-process-automation" }, { label: "SME systems", href: "/solutions/small-medium-businesses" }], tool: { label: "Estimate a software project", href: "/resources/tools/zimbabwe-website-cost-calculator" },
+    ], related: [{ label: "Business process automation", href: "/services/business-process-automation" }, { label: "SME systems", href: "/solutions/small-medium-businesses" }, { label: "Sentinel Zero security research", href: "/research/sentinel-zero" }], tool: { label: "Estimate a software project", href: "/resources/tools/zimbabwe-website-cost-calculator" },
   },
   {
     slug: "web-application-development", name: "Web Application Development", title: "Web Application Development for Operational Workflows",
