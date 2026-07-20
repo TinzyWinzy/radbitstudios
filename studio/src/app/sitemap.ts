@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { adminDb } from "@/lib/firebase/firebase-admin";
+import { CONTENT_CLUSTERS } from "@/data/content-clusters";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/resources`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.8 },
     { url: `${SITE_URL}/resources/faq`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
     { url: `${SITE_URL}/blog`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
+    { url: `${SITE_URL}/insights`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
+    ...CONTENT_CLUSTERS.map(cluster => ({ url: `${SITE_URL}/insights/${cluster.slug}`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.85 })),
     { url: `${SITE_URL}/services`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.8 },
     { url: `${SITE_URL}/work`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.8 },
     { url: `${SITE_URL}/pilot`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.9 },

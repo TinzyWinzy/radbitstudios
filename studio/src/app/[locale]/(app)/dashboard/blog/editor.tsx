@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { blogService, type BlogPost } from "@/services/blog.service";
+import { blogService, type BlogPost, type EditorialStatus } from "@/services/blog.service";
+import { Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Loader2, Eye } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ARTICLE_CATEGORIES, CONTENT_CLUSTERS } from "@/data/content-clusters";
+import { estimateReadingMinutes, resolveEditorialStatus } from "@/lib/editorial";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { VersionsDialog } from "@/components/editor/versions-dialog";
@@ -38,8 +41,18 @@ export default function BlogEditor({ initial }: Props) {
     excerpt: initial?.excerpt || '',
     content: initialJson,
     tags: initial?.tags?.join(', ') || '',
-    published: initial?.published ?? false,
-    authorName: initial?.authorName || 'Radbit',
+    status: initial ? resolveEditorialStatus(initial) : 'draft' as EditorialStatus,
+    category: initial?.category || ARTICLE_CATEGORIES[0],
+    cluster: initial?.cluster || CONTENT_CLUSTERS[0].slug,
+    metaTitle: initial?.metaTitle || initial?.title || '',
+    metaDescription: initial?.metaDescription || initial?.editorial?.metaDescription || '',
+    canonicalUrl: initial?.canonicalUrl || '',
+    scheduledAt: initial?.scheduledAt?.toDate?.().toISOString().slice(0, 16) || '',
+    relatedSlugs: initial?.relatedSlugs?.join(', ') || '',
+    serviceLinks: initial?.serviceLinks?.join(', ') || '',
+    industryLinks: initial?.industryLinks?.join(', ') || '',
+    authorName: initial?.authorName || 'Tinotenda Brandon Duma',
+    authorBio: initial?.authorBio || 'Founder and systems architect at Radbit Studios.',
     imageUrl: initial?.imageUrl || '',
     editorial: initial?.editorial,
   });
@@ -61,8 +74,23 @@ export default function BlogEditor({ initial }: Props) {
         excerpt: form.excerpt,
         content: form.content || null,
         tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
-        published: form.published,
-        authorName: form.authorName || 'Radbit',
+        status: form.status,
+        published: form.status === 'published',
+        category: form.category,
+        cluster: form.cluster,
+        metaTitle: form.metaTitle || form.title,
+        metaDescription: form.metaDescription || form.excerpt,
+        canonicalUrl: form.canonicalUrl,
+        scheduledAt: form.status === 'scheduled' && form.scheduledAt
+          ? Timestamp.fromDate(new Date(form.scheduledAt)) : null,
+        publishedAt: form.status === 'published'
+          ? (initial?.publishedAt || Timestamp.now()) : initial?.publishedAt,
+        readingMinutes: estimateReadingMinutes(form.content),
+        relatedSlugs: form.relatedSlugs.split(',').map(t => t.trim()).filter(Boolean),
+        serviceLinks: form.serviceLinks.split(',').map(t => t.trim()).filter(Boolean),
+        industryLinks: form.industryLinks.split(',').map(t => t.trim()).filter(Boolean),
+        authorName: form.authorName || 'Tinotenda Brandon Duma',
+        authorBio: form.authorBio,
         imageUrl: form.imageUrl,
         editorial: form.editorial,
       };
@@ -101,7 +129,7 @@ export default function BlogEditor({ initial }: Props) {
           </Button>
           <Button onClick={save} disabled={saving}>
             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {initial ? 'Update' : 'Publish'}
+            {initial ? 'Save changes' : 'Save draft'}
           </Button>
         </div>
       </div>
@@ -125,10 +153,66 @@ export default function BlogEditor({ initial }: Props) {
             </div>
           </div>
 
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <Label>Editorial status</Label>
+              <Select value={form.status} onValueChange={v => update('status', v as EditorialStatus)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="review">Ready for review</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Category</Label>
+              <Select value={form.category} onValueChange={v => update('category', v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{ARTICLE_CATEGORIES.map(item => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Content cluster</Label>
+              <Select value={form.cluster} onValueChange={v => update('cluster', v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{CONTENT_CLUSTERS.map(item => <SelectItem key={item.slug} value={item.slug}>{item.name}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {form.status === 'scheduled' && (
+            <div className="space-y-2 max-w-sm">
+              <Label htmlFor="scheduledAt">Publication date and time</Label>
+              <Input id="scheduledAt" type="datetime-local" value={form.scheduledAt} onChange={e => update('scheduledAt', e.target.value)} />
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="excerpt">Excerpt</Label>
             <Textarea id="excerpt" rows={2} value={form.excerpt} onChange={e => update('excerpt', e.target.value)} />
           </div>
+
+          <section className="space-y-4 rounded-xl border border-border/60 bg-muted/20 p-5">
+            <div>
+              <h2 className="font-headline text-lg font-semibold">Search presentation</h2>
+              <p className="text-sm text-muted-foreground">Control how this article appears in search and social previews.</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="metaTitle">Meta title <span className="text-muted-foreground">({form.metaTitle.length}/60)</span></Label>
+              <Input id="metaTitle" value={form.metaTitle} onChange={e => update('metaTitle', e.target.value)} maxLength={70} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="metaDescription">Meta description <span className="text-muted-foreground">({form.metaDescription.length}/160)</span></Label>
+              <Textarea id="metaDescription" rows={3} value={form.metaDescription} onChange={e => update('metaDescription', e.target.value)} maxLength={180} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="canonicalUrl">Canonical URL override</Label>
+              <Input id="canonicalUrl" value={form.canonicalUrl} onChange={e => update('canonicalUrl', e.target.value)} placeholder="Leave blank to use /blog/article-slug" />
+            </div>
+          </section>
 
           <div className="space-y-2">
             <Label>Content</Label>
@@ -160,13 +244,23 @@ export default function BlogEditor({ initial }: Props) {
               <Label htmlFor="authorName">Author</Label>
               <Input id="authorName" value={form.authorName} onChange={e => update('authorName', e.target.value)} />
             </div>
-            <div className="flex items-end pb-2">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <Switch checked={form.published} onCheckedChange={v => update('published', v)} />
-                <span className="text-sm">Published</span>
-              </label>
+            <div className="space-y-2">
+              <Label htmlFor="authorBio">Author bio</Label>
+              <Input id="authorBio" value={form.authorBio} onChange={e => update('authorBio', e.target.value)} />
             </div>
           </div>
+
+          <section className="space-y-4 rounded-xl border border-border/60 p-5">
+            <div>
+              <h2 className="font-headline text-lg font-semibold">Internal link plan</h2>
+              <p className="text-sm text-muted-foreground">Use URL paths or article slugs, separated by commas. Each article should connect to its pillar, a service, an industry solution and two related articles.</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2"><Label>Related article slugs</Label><Input value={form.relatedSlugs} onChange={e => update('relatedSlugs', e.target.value)} /></div>
+              <div className="space-y-2"><Label>Service links</Label><Input value={form.serviceLinks} onChange={e => update('serviceLinks', e.target.value)} placeholder="/services/custom-software" /></div>
+            </div>
+            <div className="space-y-2"><Label>Industry solution links</Label><Input value={form.industryLinks} onChange={e => update('industryLinks', e.target.value)} placeholder="/solutions/hospitality" /></div>
+          </section>
         </div>
       )}
     </div>

@@ -8,6 +8,7 @@ import { ArrowLeft, Plus, Edit, Trash2, Eye, EyeOff, Loader2 } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { AuthContext } from "@/contexts/auth-context";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { resolveEditorialStatus } from "@/lib/editorial";
 
 export default function AdminBlogPage() {
   const { role } = useContext(AuthContext);
@@ -41,7 +42,10 @@ export default function AdminBlogPage() {
   if (role !== 'admin' && role !== 'super_admin') return null;
 
   const togglePublish = async (id: string, current: boolean) => {
-    await blogService.update(id, { published: !current });
+    await blogService.update(id, {
+      published: !current,
+      status: current ? 'draft' : 'published',
+    });
     const all = await blogService.listAll();
     setPosts(all);
   };
@@ -67,8 +71,8 @@ export default function AdminBlogPage() {
           </Link>
         </Button>
         <div>
-          <h1 className="font-headline text-2xl font-bold">Blog Posts</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage your blog content</p>
+          <h1 className="font-headline text-2xl font-bold">Editorial pipeline</h1>
+          <p className="text-sm text-muted-foreground mt-1">Draft, review, approve and publish Radbit Insights</p>
         </div>
         <Button asChild className="ml-auto">
           <Link href="/dashboard/blog/new">
@@ -100,9 +104,8 @@ export default function AdminBlogPage() {
               <div className="flex-1 min-w-0 mr-4">
                 <div className="flex items-center gap-2">
                   <h3 className="font-medium truncate">{post.title}</h3>
-                  {!post.published && (
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">Draft</span>
-                  )}
+                  <span className="text-xs capitalize px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{resolveEditorialStatus(post)}</span>
+                  {post.category && <span className="hidden sm:inline text-xs text-muted-foreground">{post.category}</span>}
                 </div>
                 <p className="text-sm text-muted-foreground truncate mt-0.5">/blog/{post.slug}</p>
               </div>

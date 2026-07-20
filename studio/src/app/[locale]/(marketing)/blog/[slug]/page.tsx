@@ -1,165 +1,60 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { blogService, type BlogPost } from "@/services/blog.service";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { AdBanner } from "@/components/ads/ad-banner";
-import { InArticleAd } from "@/components/ads/in-article-ad";
-import { MatchedContent } from "@/components/ads/matched-content";
+import { ArrowRight, Clock3 } from "lucide-react";
+import { adminDb } from "@/lib/firebase/firebase-admin";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
+import { estimateReadingMinutes } from "@/lib/editorial";
+import type { BlogPost } from "@/services/blog.service";
 
-function splitContent(content: string): string[] {
-  const parts = content.split(/(?=^#{2,3}\s)/m);
-  if (parts.length <= 1) return [content];
-  return parts.filter(Boolean);
+async function getPost(slug: string) {
+  const snap = await adminDb.collection("blog_posts").where("slug", "==", slug).where("published", "==", true).limit(1).get();
+  if (snap.empty) return null;
+  const data = snap.docs[0].data();
+  return {
+    id: snap.docs[0].id, ...data,
+    createdAtIso: data.createdAt?.toDate?.()?.toISOString?.() || null,
+    updatedAtIso: data.updatedAt?.toDate?.()?.toISOString?.() || null,
+    publishedAtIso: data.publishedAt?.toDate?.()?.toISOString?.() || data.createdAt?.toDate?.()?.toISOString?.() || null,
+  } as BlogPost & { createdAtIso: string | null; updatedAtIso: string | null; publishedAtIso: string | null };
 }
 
-function renderMarkdown(md: string): string {
-  const bold = /\*\*(.+?)\*\*/g;
-  const italic = /\*(.+?)\*/g;
-  const code = /`(.+?)`/g;
-  const link = /\[(.+?)\]\((.+?)\)/g;
-  const img = /!\[(.+?)\]\((.+?)\)/g;
-  const h2 = /^## (.+)/gm;
-  const h3 = /^### (.+)/gm;
-  const hr = /^---$/gm;
-  const ul = /^- (.+)/gm;
-  const ol = /^\d+\. (.+)/gm;
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await getPost(params.slug).catch(() => null);
+  if (!post) notFound();
+  const readingMinutes = post.readingMinutes || estimateReadingMinutes(post.content);
+  const clusterUrl = post.cluster ? `/insights/${post.cluster}` : "/insights";
 
-  let html = md
-    .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(img, '<img src="$2" alt="$1" loading="lazy" class="rounded-xl w-full my-6" />')
-    .replace(link, '<a href="$2" class="text-primary underline underline-offset-2">$1</a>')
-    .replace(bold, '<strong>$1</strong>')
-    .replace(italic, '<em>$1</em>')
-    .replace(code, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
-    .replace(h2, '</p><h2 class="font-headline text-2xl font-bold mt-10 mb-4">$1</h2><p class="mb-4">')
-    .replace(h3, '</p><h3 class="font-headline text-xl font-semibold mt-8 mb-3">$1</h3><p class="mb-4">')
-    .replace(hr, '</p><hr class="my-8 border-border/50" /><p class="mb-4">')
-    .replace(ul, '</p><ul class="list-disc pl-6 mb-4 space-y-1"><li>$1</li></ul><p class="mb-4">')
-    .replace(ol, '</p><ol class="list-decimal pl-6 mb-4 space-y-1"><li>$1</li></ol><p class="mb-4">');
-
-  if (!html.startsWith('<')) html = `<p class="mb-4">${html}`;
-  html += '</p>';
-
-  html = html
-    .replace(/<\/p><p class="mb-4"><\/p><h2/g, '</p><h2')
-    .replace(/<\/p><p class="mb-4"><\/p><h3/g, '</p><h3')
-    .replace(/<\/p><p class="mb-4"><\/p><hr/g, '</p><hr')
-    .replace(/<\/p><p class="mb-4"><\/p><ul/g, '</p><ul')
-    .replace(/<\/ul><p class="mb-4"><\/p>/g, '</ul>')
-    .replace(/<\/ol><p class="mb-4"><\/p>/g, '</ol>')
-    .replace(/<p class="mb-4"><\/p>/g, '');
-
-  return html;
-}
-
-export default function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    blogService.getBySlug(slug)
-      .then(p => {
-        setPost(p);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
-  }, [slug]);
-
-  if (loading) return null;
-  if (error || !post) notFound();
-
-  const isRichText = post.content !== null && typeof post.content === 'object';
-
-  return (
-    <article className="container max-w-3xl py-8 md:py-16">
-      <Link
-        href="/blog"
-        className="text-sm text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"
-      >
-        &larr; Back to blog
-      </Link>
-
-      {post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary"
-            >
-              {tag}
-            </span>
-          ))}
+  return <main>
+    <article className="container max-w-4xl py-10 md:py-20">
+      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground"><Link href="/">Home</Link><span aria-hidden> / </span><Link href="/insights">Insights</Link><span aria-hidden> / </span><span>{post.category || "Business Systems"}</span></nav>
+      <header className="mt-10 border-b border-border pb-10">
+        <Link href={clusterUrl} className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{post.category || "Radbit Insights"}</Link>
+        <h1 className="mt-5 max-w-4xl font-headline text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">{post.title}</h1>
+        <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">{post.excerpt}</p>
+        <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{post.authorName || "Tinotenda Brandon Duma"}</span>
+          {post.publishedAtIso && <time dateTime={post.publishedAtIso}>Published {new Date(post.publishedAtIso).toLocaleDateString("en-ZW", { year: "numeric", month: "long", day: "numeric" })}</time>}
+          {post.updatedAtIso && post.updatedAtIso !== post.publishedAtIso && <time dateTime={post.updatedAtIso}>Updated {new Date(post.updatedAtIso).toLocaleDateString("en-ZW", { year: "numeric", month: "short", day: "numeric" })}</time>}
+          <span className="flex items-center gap-1"><Clock3 className="size-4" /> {readingMinutes} min read</span>
         </div>
-      )}
+      </header>
 
-      <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight mb-4">
-        {post.title}
-      </h1>
+      {post.imageUrl && <Image src={post.imageUrl} alt="" width={1200} height={675} className="mt-10 aspect-[16/9] w-full object-cover" />}
 
-      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8 flex-wrap">
-        {post.authorName && <span>{post.authorName}</span>}
-        {post.createdAt && (
-          <time dateTime={post.createdAt.toDate().toISOString()}>
-            {post.createdAt.toDate().toLocaleDateString("en-ZW", {
-              year: "numeric", month: "long", day: "numeric",
-            })}
-          </time>
-        )}
+      <aside className="my-10 border-l-2 border-primary bg-muted/20 px-6 py-5"><p className="font-medium">Is this problem showing up in your operation?</p><Link href="/contact" className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-primary">Request a systems assessment <ArrowRight className="size-4" /></Link></aside>
+
+      <div className="mx-auto max-w-[72ch] text-[1.05rem] leading-8">
+        {post.content && typeof post.content === "object" ? <RichTextRenderer content={post.content as Record<string, unknown>} /> : <div className="whitespace-pre-wrap text-muted-foreground">{String(post.content || "")}</div>}
       </div>
 
-      {post.imageUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={post.imageUrl}
-          alt={post.title}
-          className="w-full rounded-xl mb-8 aspect-[16/9] object-cover"
-        />
-      )}
+      {(post.serviceLinks?.length || post.industryLinks?.length || post.relatedSlugs?.length) ? <section className="mt-14 border-t border-border pt-8"><h2 className="font-headline text-2xl font-semibold">Continue exploring</h2><div className="mt-5 grid gap-3 sm:grid-cols-2">
+        {post.serviceLinks?.map(path => <Link className="border-b border-border py-3 hover:text-primary" key={path} href={path}>Relevant Radbit service <ArrowRight className="ml-2 inline size-3.5" /></Link>)}
+        {post.industryLinks?.map(path => <Link className="border-b border-border py-3 hover:text-primary" key={path} href={path}>Industry solution <ArrowRight className="ml-2 inline size-3.5" /></Link>)}
+        {post.relatedSlugs?.map(slug => <Link className="border-b border-border py-3 hover:text-primary" key={slug} href={`/blog/${slug}`}>{slug.replace(/-/g, " ")} <ArrowRight className="ml-2 inline size-3.5" /></Link>)}
+      </div></section> : null}
 
-      <AdBanner />
-
-      {isRichText ? (
-        <RichTextRenderer content={post.content as Record<string, unknown>} />
-      ) : (
-        <div className="prose prose-neutral dark:prose-invert max-w-none">
-          {splitContent((post.content as string) || '').map((section, i) => (
-            <div key={i}>
-              <div
-                className="[&_h2]:font-headline [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-headline [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4 [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1 [&_li]:text-muted-foreground [&_img]:rounded-xl [&_img]:w-full [&_hr]:border-border/50"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(section) }}
-              />
-              {i === 0 && <InArticleAd />}
-            </div>
-          ))}
-        </div>
-      )}
-
-      <MatchedContent />
-
-      {post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-8 md:mt-12 pt-6 md:pt-8 border-t border-border/50">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-      )}
+      <footer className="mt-14 border-l-2 border-primary bg-muted/20 p-7 md:p-9"><p className="font-headline text-2xl font-semibold">The sensible next step is a clear diagnosis.</p><p className="mt-3 text-muted-foreground">Map the workflow and quantify the delay before choosing a platform or commissioning software.</p><Link href="/contact" className="mt-5 inline-flex items-center gap-2 font-medium text-primary">Discuss your current workflow <ArrowRight className="size-4" /></Link></footer>
     </article>
-  );
+  </main>;
 }

@@ -23,23 +23,26 @@ export async function generateMetadata({
     }
 
     const post = snap.docs[0].data();
-    const title = post.title as string;
-    const description = (post.excerpt as string) || `Read ${title} on Radbit.`;
+    if (post.published !== true) return { title: "Post Not Found", robots: { index: false, follow: false } };
+    const title = (post.metaTitle as string) || post.title as string;
+    const description = (post.metaDescription as string) || (post.editorial?.metaDescription as string) || (post.excerpt as string) || `Read ${title} on Radbit Studios.`;
     const imageUrl = (post.imageUrl as string) || undefined;
-    const authorName = (post.authorName as string) || "Radbit";
-    const publishedAt = post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString();
+    const authorName = (post.authorName as string) || "Tinotenda Brandon Duma";
+    const publishedAt = post.publishedAt?.toDate?.()?.toISOString?.() || post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString();
+    const modifiedAt = post.updatedAt?.toDate?.()?.toISOString?.() || publishedAt;
     const url = `${SITE_URL}/blog/${slug}`;
 
     return {
       title,
       description,
-      alternates: { canonical: `/blog/${slug}` },
+      alternates: { canonical: (post.canonicalUrl as string) || `/blog/${slug}` },
       openGraph: {
         title: `${title} | Radbit`,
         description,
         url,
         type: "article",
         publishedTime: publishedAt,
+        modifiedTime: modifiedAt,
         authors: [authorName],
         images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630 }] : [],
       },
@@ -75,15 +78,18 @@ export default async function BlogPostLayout({
       .limit(1)
       .get();
 
-    if (!snap.empty) {
+      if (!snap.empty && snap.docs[0].data().published === true) {
       const post = snap.docs[0].data();
       articleLd = articleSchema({
         title: post.title as string,
-        description: (post.excerpt as string) || '',
+        description: (post.metaDescription as string) || (post.excerpt as string) || '',
         url: `${SITE_URL}/blog/${params.slug}`,
         image: (post.imageUrl as string) || undefined,
-        authorName: (post.authorName as string) || "Radbit",
-        publishedTime: post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString(),
+        authorName: (post.authorName as string) || "Tinotenda Brandon Duma",
+        publishedTime: post.publishedAt?.toDate?.()?.toISOString?.() || post.createdAt?.toDate?.()?.toISOString?.() || new Date().toISOString(),
+        modifiedTime: post.updatedAt?.toDate?.()?.toISOString?.(),
+        section: post.category as string | undefined,
+        keywords: [post.editorial?.primaryKeyword, ...(post.editorial?.secondaryKeywords || []), ...(post.tags || [])].filter(Boolean) as string[],
       });
     }
   } catch {

@@ -39,7 +39,7 @@ const navLinks = [
   { href: "/pilot", label: "Pilot", icon: Receipt },
   { href: "/solutions", label: "Solutions", icon: Shield },
   { href: "/about", label: "About", icon: BookOpen },
-  { href: "/blog", label: "Blog", icon: Newspaper },
+  { href: "/insights", label: "Insights", icon: Newspaper },
 ];
 
 export default function MarketingLayout({

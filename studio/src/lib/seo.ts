@@ -3,8 +3,8 @@
    across staging / production without hard-coded domains.
    ───────────────────────────────────────────────────────────────────
 
-   BRAND NOTE: Radbit Studios is a B2B SaaS platform for Zimbabwean SMEs
-   (AI tools, tender intelligence, assessments, PRAZ compliance).
+   BRAND NOTE: Radbit Studios is a software, AI and business systems company
+   serving Zimbabwean and African organisations.
    This is NOT related to "Bad Rabbit Studio" — an award-winning Zimbabwean
    film production company (documentaries, conservation storytelling, video).
    For AdWords / SEM: add negative keywords → documentary, film, video
@@ -17,11 +17,12 @@ export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Radbit',
+    name: 'Radbit Studios',
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-192x192.png`,
-    description: 'AI-powered business platform for Zimbabwean entrepreneurs — readiness assessment, AI tools, tender matching, and community.',
+    description: 'Zimbabwean software development and AI systems company building operational systems, web applications and business automation.',
     foundingDate: '2025',
+    founder: { '@type': 'Person', name: 'Tinotenda Brandon Duma' },
     areaServed: [
       { '@type': 'Country', name: 'Zimbabwe' },
       { '@type': 'Country', name: 'South Africa' },
@@ -52,13 +53,13 @@ export function websiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Radbit',
+    name: 'Radbit Studios',
     url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+        urlTemplate: `${SITE_URL}/insights?q={search_term_string}`,
       },
       queryInput: 'required name=search_term_string',
     },
@@ -72,11 +73,11 @@ export function localBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${SITE_URL}/#localbusiness`,
-    name: 'Radbit',
+    name: 'Radbit Studios',
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-192x192.png`,
     image: `${SITE_URL}/opengraph-image`,
-    description: 'AI-powered digital infrastructure platform for Zimbabwean SMEs — readiness assessment, AI tools, tender matching, PRAZ compliance.',
+    description: 'Custom software, AI automation and business systems consultancy for Zimbabwean organisations.',
     foundingDate: '2025',
     email: 'hello@radbitstudios.co.zw',
     telephone: '+263786344899',
@@ -187,6 +188,9 @@ export function articleSchema(params: {
   authorName: string;
   publishedTime: string;
   modifiedTime?: string;
+  section?: string;
+  keywords?: string[];
+  wordCount?: number;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -195,15 +199,18 @@ export function articleSchema(params: {
     description: params.description,
     url: params.url.startsWith('http') ? params.url : `${SITE_URL}${params.url}`,
     image: params.image,
-    author: { '@type': 'Person', name: params.authorName },
+    author: { '@type': 'Person', name: params.authorName, url: `${SITE_URL}/about` },
     publisher: {
       '@type': 'Organization',
-      name: 'Radbit',
+      name: 'Radbit Studios',
       logo: { '@type': 'ImageObject', url: `${SITE_URL}/icons/icon-192x192.png` },
     },
     datePublished: params.publishedTime,
     dateModified: params.modifiedTime || params.publishedTime,
     inLanguage: 'en',
+    articleSection: params.section,
+    keywords: params.keywords?.join(', '),
+    wordCount: params.wordCount,
     mainEntityOfPage: { '@type': 'WebPage', '@id': params.url },
   };
 }

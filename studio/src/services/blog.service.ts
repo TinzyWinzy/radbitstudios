@@ -3,6 +3,9 @@ import {
   collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, doc,
   query, where, orderBy, limit, Timestamp, serverTimestamp,
 } from 'firebase/firestore';
+import type { ArticleCategory, ContentClusterSlug } from '@/data/content-clusters';
+
+export type EditorialStatus = 'draft' | 'review' | 'approved' | 'scheduled' | 'published';
 
 export interface BlogPost {
   id?: string;
@@ -12,7 +15,22 @@ export interface BlogPost {
   content: string | Record<string, unknown> | null;
   tags: string[];
   published: boolean;
+  status?: EditorialStatus;
+  category?: ArticleCategory;
+  cluster?: ContentClusterSlug;
+  pillarSlug?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  scheduledAt?: Timestamp | null;
+  publishedAt?: Timestamp;
+  readingMinutes?: number;
+  relatedSlugs?: string[];
+  serviceLinks?: string[];
+  industryLinks?: string[];
+  faq?: Array<{ question: string; answer: string }>;
   authorName: string;
+  authorBio?: string;
   imageUrl?: string;
   editorial?: {
     metaDescription: string;

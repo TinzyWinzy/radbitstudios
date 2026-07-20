@@ -66,7 +66,7 @@ export function MarketingFooter() {
               links: [
                 { href: "/about", label: "About" },
                 { href: "/founders", label: "Founders" },
-                { href: "/blog", label: "Blog" },
+                { href: "/insights", label: "Insights" },
                 { href: "/contact", label: "Contact" },
                 { href: "/privacy", label: "Privacy" },
                 { href: "/terms", label: "Terms" },
