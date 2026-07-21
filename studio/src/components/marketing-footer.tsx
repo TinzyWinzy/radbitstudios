@@ -98,6 +98,9 @@ export function MarketingFooter() {
         <div className="mt-16 pt-8 border-t border-foreground/10 text-center text-sm text-foreground/40">
           <p>&copy; {new Date().getFullYear()} Radbit Studios. All rights reserved.</p>
           <p className="mt-2 text-xs text-foreground/30">Your data is encrypted and stored securely. We never share or sell your information.</p>
+          <p className="mt-4 text-[11px] text-foreground/20 max-w-xl mx-auto leading-relaxed">
+            <strong>Trademark notice:</strong> Radbit Studios is a software, AI and business systems company. We are not affiliated with Bad Rabbit Studio (film production, documentaries, conservation storytelling).
+          </p>
         </div>
       </div>
     </footer>

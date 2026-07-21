@@ -29,6 +29,8 @@ export default function robots(): MetadataRoute.Robots {
           '/consultancy',
           '/contact',
           '/diaspora',
+          '/escrow',
+          '/features/',
           '/services',
           '/work',
           '/pilot',

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -6,6 +7,8 @@ import { adminDb } from "@/lib/firebase/firebase-admin";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
 import { estimateReadingMinutes } from "@/lib/editorial";
 import type { BlogPost } from "@/services/blog.service";
+
+const SITE_URL = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/\/$/, '');
 
 async function getPost(slug: string) {
   const snap = await adminDb.collection("blog_posts").where("slug", "==", slug).where("published", "==", true).limit(1).get();
@@ -17,6 +20,34 @@ async function getPost(slug: string) {
     updatedAtIso: data.updatedAt?.toDate?.()?.toISOString?.() || null,
     publishedAtIso: data.publishedAt?.toDate?.()?.toISOString?.() || data.createdAt?.toDate?.()?.toISOString?.() || null,
   } as BlogPost & { createdAtIso: string | null; updatedAtIso: string | null; publishedAtIso: string | null };
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = await getPost(params.slug).catch(() => null);
+  if (!post) return {};
+  return {
+    title: post.title,
+    description: post.excerpt || `Read about ${post.title} — Radbit Studios Zimbabwe`,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `${SITE_URL}/blog/${post.slug}`,
+      type: "article",
+      publishedTime: post.publishedAtIso || undefined,
+      modifiedTime: post.updatedAtIso || undefined,
+      authors: [post.authorName || "Tinotenda Brandon Duma"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
