@@ -3,6 +3,7 @@ import { adminDb } from "@/lib/firebase/firebase-admin";
 import { CONTENT_CLUSTERS } from "@/data/content-clusters";
 import { INDUSTRY_PAGES, SERVICE_PAGES } from "@/data/commercial-content";
 import { DIAGNOSTIC_TOOLS } from "@/data/diagnostic-tools";
+import { ALL_SADC } from "@/data/sadc-countries";
 
 export const dynamic = 'force-dynamic';
 
@@ -48,6 +49,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/features/tax-copilot`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/features/bid-writer`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/guides/zimra-tax-calendar-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${SITE_URL}/sadc`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.8 },
+    ...ALL_SADC.map(c => ({ url: `${SITE_URL}/sadc/${c.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.75 })),
     ...SERVICE_PAGES.map(page => ({ url: `${SITE_URL}/services/${page.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.85 })),
     ...INDUSTRY_PAGES.map(page => ({ url: `${SITE_URL}/solutions/${page.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.8 })),
     ...DIAGNOSTIC_TOOLS.map(tool => ({ url: `${SITE_URL}/resources/tools/${tool.slug}`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.75 })),

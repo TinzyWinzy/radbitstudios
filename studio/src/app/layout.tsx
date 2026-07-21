@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { getLocale } from 'next-intl/server';
-import { organizationSchema, websiteSchema, localBusinessSchema, faqPageSchema, FAQ_DATA } from "@/lib/seo";
+import { organizationSchema, websiteSchema, localBusinessSchema } from "@/lib/seo";
 import { aggregateRatingSchema } from "@/data/testimonials";
 import { CookieBanner } from "@/components/cookie-banner";
 import { GA4Script } from "@/components/analytics/ga4";
@@ -134,8 +134,6 @@ export default async function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
           crossOrigin="anonymous"
         />
-        <script type="application/ld+json" suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema(FAQ_DATA)) }} />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }} />
         <script type="application/ld+json" suppressHydrationWarning

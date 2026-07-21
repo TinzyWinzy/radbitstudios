@@ -1,0 +1,34 @@
+# Radbit Studios — Systems & AI for Southern African Business
+
+> Custom software, AI automation, compliance systems, and tender intelligence for businesses in Zimbabwe, SADC, and the diaspora.
+
+## Key pages
+- Homepage: https://radbitstudios.co.zw/
+- Blog: https://radbitstudios.co.zw/blog
+- Insights: https://radbitstudios.co.zw/insights
+- Services: https://radbitstudios.co.zw/services
+- Solutions by industry: https://radbitstudios.co.zw/solutions
+- Use cases: https://radbitstudios.co.zw/use-cases
+- Pricing: https://radbitstudios.co.zw/pricing
+- About: https://radbitstudios.co.zw/about
+- Contact: https://radbitstudios.co.zw/contact
+- Work / Portfolio: https://radbitstudios.co.zw/work
+
+## Compliance & tax resources
+- ZIMRA Fiscal Device Registration: https://radbitstudios.co.zw/zimra-fiscal-device-registration
+- VAT Threshold Alerts: https://radbitstudios.co.zw/vat-threshold-alerts
+- Tax Calendar 2026: https://radbitstudios.co.zw/guides/zimra-tax-calendar-2026
+- Tender Compliance Bridge: https://radbitstudios.co.zw/tender-compliance-bridge
+- PRAZ Compliance: https://radbitstudios.co.zw/features/praz-compliance
+
+## Diaspora resources
+- Diaspora Overview: https://radbitstudios.co.zw/diaspora
+- Invest from abroad: https://radbitstudios.co.zw/diaspora/invest
+- Start a business remotely: https://radbitstudios.co.zw/diaspora/start-business
+- Diaspora Matchmaking: https://radbitstudios.co.zw/diaspora-matchmaking
+
+## Product features
+- AI Tax Co-Pilot: https://radbitstudios.co.zw/features/tax-copilot
+- AI Bid Writer: https://radbitstudios.co.zw/features/bid-writer
+- Offline Mode: https://radbitstudios.co.zw/offline-mode
+- Escrow Protection: https://radbitstudios.co.zw/escrow

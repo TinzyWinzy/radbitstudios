@@ -52,6 +52,7 @@ export default function robots(): MetadataRoute.Robots {
           '/vat-threshold-alerts',
           '/zimra-fiscal-device-registration',
           '/guides/',
+          '/sadc/',
         ],
       },
     ],
