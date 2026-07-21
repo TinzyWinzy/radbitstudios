@@ -63,3 +63,8 @@ firebase-debug.log
 # Binary spreadsheet documents
 *.xls
 *.xlsx
+
+# Tool / agent artifacts
+.kilo/
+.idx/
+workspace/
