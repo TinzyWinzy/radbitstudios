@@ -90,7 +90,8 @@ studio/
 - **JSON-LD**: Organization, Service, HowTo, FAQPage, Article, BreadcrumbList schemas
 - **AdSense**: 4 lazy-loaded ad components (banner, in-article, matched-content)
 - **Newsletter**: Subscription/unsubscription API with Resend email delivery
-- **Lead Magnets**: ZIMRA Tax Calendar, Diaspora Investment Checklist
+ - **Lead Magnets**: ZIMRA Tax Calendar, Diaspora Investment Checklist
+ - **IndexNow**: Bing/IndexNow submission API at `POST /api/seo/indexnow`. Verification file served at `/BingSiteAuth.xml`. Enable via `BING_INDEXNOW_KEY` env var.
 
 ### Business Logic
 - **Lead Management**: Multi-form lead capture (`/contact`, `/pilot`, `/consultancy`, diagnostic tools) → `POST /api/leads`

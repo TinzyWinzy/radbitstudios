@@ -29,6 +29,7 @@
 - **Robots**: Googlebot-specific allow rules in `app/robots.ts`. Add new public pages to both sitemap and robots.
 - **JSON-LD**: 7+ schema types (Organization, WebSite, LocalBusiness, FAQPage, AggregateRating, BreadcrumbList, Article, Service, HowTo, WebPage).
 - **Lead Magnet pages**: Static guide pages at `/guides/[slug]` — add to sitemap and robots when created.
+- **IndexNow**: Bing/IndexNow API at `POST /api/seo/indexnow`. Verification file at `/BingSiteAuth.xml`. Enable with `BING_INDEXNOW_KEY`.
 
 ## Notes for this repo
 - Plan values should be normalized to the canonical display format: Free, Growth, Tender Starter, Pro, Enterprise.
