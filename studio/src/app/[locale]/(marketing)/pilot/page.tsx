@@ -36,6 +36,7 @@ export default function PilotPage() {
         body: JSON.stringify({
           fullName: name,
           workEmail: email,
+          companyName: business,
           phone,
           message: `Pilot Application\nBusiness: ${business}\nIndustry: ${industry}\nPain point: ${painPoint}\nCurrent tools: ${currentTools}`,
           source: "pilot",

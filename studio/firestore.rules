@@ -274,6 +274,13 @@ service cloud.firestore {
       allow create, update, delete: if false;
     }
 
+    // ─── LEADS ────────────────────────────────────────────────────────────
+    // Server-side only via Admin SDK. No client access.
+    match /leads/{leadId} {
+      allow read, list: if false;
+      allow create, update, delete: if false;
+    }
+
     // ─── PROJECTS (Client Consultancy Projects) ─────────────────────────
     // Clients read their own; admins read all; admin SDK handles writes.
     match /projects/{projectId} {

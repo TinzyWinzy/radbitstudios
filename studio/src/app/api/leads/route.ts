@@ -5,8 +5,6 @@ import { validateBody, CreateLeadSchema } from '@/lib/api-validation';
 import { createProject } from '@/services/project-service-admin';
 import { generateOnboardingChecklist } from '@/services/onboarding-engine';
 import { adminDb } from '@/lib/firebase/firebase-admin';
-import { db } from '@/lib/firebase/firebase';
-import { collection, query, where, getDocs, limit as fbLimit } from 'firebase/firestore';
 import { sendEmail } from '@/services/email-service';
 import { sendWhatsAppMessage } from '@/services/whatsapp/whatsapp-handler';
 
@@ -85,12 +83,7 @@ function leadEmailHtml(data: {
 
 async function getFirebaseUserByEmail(email: string): Promise<string | null> {
   try {
-    const q = query(
-      collection(db, 'users'),
-      where('email', '==', email),
-      fbLimit(1),
-    );
-    const snap = await getDocs(q);
+    const snap = await adminDb.collection('users').where('email', '==', email).limit(1).get();
     if (snap.empty) return null;
     return snap.docs[0].id;
   } catch {
@@ -125,6 +118,10 @@ function parseBudget(budgetRange?: string, budget?: string): { value: number; cu
     '5000-10000': 7500,
     'over-10000': 15000,
     '10000+': 15000,
+    '<$5k': 2500,
+    '$5k-$15k': 10000,
+    '$15k-$50k': 32500,
+    '$50k+': 75000,
   };
   return { value: map[range] || 0, currency: 'USD' };
 }
@@ -148,15 +145,20 @@ export const POST = withIpRateLimit(
         referralSource: referralSource || null,
       };
 
-      // 1. Store in Firestore leads collection
-      const leadRef = await adminDb.collection('leads').add({
-        ...leadData,
-        audience: audience || null,
-        need: need || null,
-        budget: budget || null,
-        createdAt: new Date(),
-        status: 'new',
-      });
+      // 1. Store in Firestore leads collection (non-blocking)
+      let leadRef: { id: string } | null = null;
+      try {
+        leadRef = await adminDb.collection('leads').add({
+          ...leadData,
+          audience: audience || null,
+          need: need || null,
+          budget: budget || null,
+          createdAt: new Date(),
+          status: 'new',
+        });
+      } catch (firestoreError) {
+        console.warn('[Leads API] Firestore leads write failed (non-blocking):', firestoreError);
+      }
 
       // 2. Try PostgreSQL (non-blocking fallback)
       const postgresId = await tryInsertLead(leadData);
@@ -200,9 +202,9 @@ export const POST = withIpRateLimit(
 
         if (audience && need && firebaseUid) {
           await generateOnboardingChecklist(firebaseUid, {
-            audience,
-            need,
-            budget: budget || 'not-sure',
+            audience: audience as 'myself' | 'my-business' | 'not-sure',
+            need: need as 'website' | 'online-store' | 'business-software' | 'consulting' | 'ai-tools' | 'not-sure',
+            budget: (budget || 'not-sure') as 'under-500' | '500-2000' | '2000-10000' | 'over-10000' | 'not-sure',
             name: fullName,
             email: workEmail,
             company: companyName,
@@ -216,14 +218,14 @@ export const POST = withIpRateLimit(
           message: 'Thank you! We have received your inquiry and will be in touch shortly.',
           projectId,
           postgresId,
-          leadId: leadRef.id,
+          leadId: leadRef?.id,
         });
       } catch (firestoreError) {
         console.warn('[Leads API] Firestore project creation failed (non-blocking):', firestoreError);
         return NextResponse.json({
           success: true,
           message: 'Thank you! We have received your inquiry and will be in touch shortly.',
-          leadId: leadRef.id,
+          leadId: leadRef?.id,
         });
       }
     } catch (error: unknown) {

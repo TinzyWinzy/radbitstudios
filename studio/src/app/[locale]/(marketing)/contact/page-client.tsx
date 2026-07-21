@@ -137,7 +137,7 @@ export default function ContactPage() {
         ? {
             fullName: name,
             workEmail: email,
-            company,
+            companyName: company,
             phone,
             message: `Budget: ${budget || refinement.budget || 'not specified'}\nTimeline: ${timeline}\n\n${message || description}`,
             source: 'hire',
@@ -150,7 +150,7 @@ export default function ContactPage() {
         : {
             fullName: name,
             workEmail: email,
-            company,
+            companyName: company,
             phone,
             message: `Pilot Application\nIndustry pain point: ${painPoint || description}\nCurrent tools: ${currentTools}`,
             source: 'pilot',
