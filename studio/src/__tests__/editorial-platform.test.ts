@@ -9,8 +9,13 @@ import { FOUNDER_EXPERIENCE, PROJECT_EVIDENCE } from "@/data/evidence-ledger";
 describe("editorial content architecture", () => {
   it("defines four unique pillar clusters with substantial topic maps", () => {
     expect(CONTENT_CLUSTERS).toHaveLength(4);
-    expect(new Set(CONTENT_CLUSTERS.map(item => item.slug)).size).toBe(4);
-    expect(CONTENT_CLUSTERS.every(item => item.topics.length >= 6)).toBe(true);
+    expect(new Set(CONTENT_CLUSTERS.map((item) => item.slug)).size).toBe(4);
+    expect(CONTENT_CLUSTERS.every((item) => item.topics.length >= 6)).toBe(true);
+    for (const cluster of CONTENT_CLUSTERS) {
+      expect(new Set(cluster.topics.map((topic) => topic.slug)).size).toBe(cluster.topics.length);
+      expect(new Set(cluster.topics.map((topic) => topic.title)).size).toBe(cluster.topics.length);
+      expect(cluster.topics.every((topic) => topic.content && topic.content.trim().length > 0)).toBe(true);
+    }
   });
 
   it("keeps the required publication categories", () => {
