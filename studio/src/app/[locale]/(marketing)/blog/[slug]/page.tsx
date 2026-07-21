@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Clock3 } from "lucide-react";
 import { adminDb } from "@/lib/firebase/firebase-admin";
 import { RichTextRenderer } from "@/components/editor/rich-text-renderer";
+import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { estimateReadingMinutes } from "@/lib/editorial";
 import type { BlogPost } from "@/services/blog.service";
 
@@ -76,7 +77,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       <aside className="my-10 border-l-2 border-primary bg-muted/20 px-6 py-5"><p className="font-medium">Is this problem showing up in your operation?</p><Link href="/contact" className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-primary">Request a systems assessment <ArrowRight className="size-4" /></Link></aside>
 
       <div className="mx-auto max-w-[72ch] text-[1.05rem] leading-8">
-        {post.content && typeof post.content === "object" ? <RichTextRenderer content={post.content as Record<string, unknown>} /> : <div className="whitespace-pre-wrap text-muted-foreground">{String(post.content || "")}</div>}
+        {post.content && typeof post.content === "object" ? <RichTextRenderer content={post.content as Record<string, unknown>} /> : <MarkdownRenderer content={String(post.content || "")} />}
       </div>
 
       {(post.serviceLinks?.length || post.industryLinks?.length || post.relatedSlugs?.length) ? <section className="mt-14 border-t border-border pt-8"><h2 className="font-headline text-2xl font-semibold">Continue exploring</h2><div className="mt-5 grid gap-3 sm:grid-cols-2">
