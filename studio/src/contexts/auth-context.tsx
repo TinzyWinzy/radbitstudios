@@ -19,7 +19,6 @@ import { subscriptionPlans, normalizePlanName } from '@/lib/subscriptions';
 import type { UserRole } from '@/services/permissions';
 import type { AppUser } from '@/types/user';
 import { withRetry } from '@/lib/retry';
-import { welcomeEmail, sendEmail } from '@/services/email-service';
 import { getCachedUser, setCachedUser, invalidateUserCache } from '@/services/user-cache';
 
 export interface AuthContextType {
@@ -201,8 +200,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             if (createdAt && Date.now() - createdAt.getTime() < 120000) {
               welcomeSentRef.current = true;
               const name = authUser.displayName || authUser.email?.split('@')[0] || 'Entrepreneur';
-              const { subject, html } = welcomeEmail(name);
-              sendEmail(authUser.email || '', subject, html).catch(() => {});
+              fetch('/api/email/welcome', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: authUser.email, name }),
+              }).catch(() => {});
             }
           }
         }
