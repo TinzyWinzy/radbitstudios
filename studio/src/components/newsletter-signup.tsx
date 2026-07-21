@@ -35,14 +35,14 @@ export function NewsletterSignup({
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, frequency: 'weekly' }),
+        body: JSON.stringify({ email, frequency: 'weekly', leadMagnet }),
       });
 
       if (res.ok) {
         setStatus('success');
         setMessage(leadMagnet
-          ? `Check your inbox for your free ${leadMagnet}!`
-          : 'You\'re subscribed! Check your inbox for a confirmation.'
+          ? `Welcome email sent — includes your free ${leadMagnet}.`
+          : 'You\'re subscribed! Welcome email is on its way.'
         );
       } else {
         const data = await res.json();

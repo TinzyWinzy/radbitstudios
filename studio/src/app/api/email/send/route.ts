@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { verifySession } from '@/lib/api-auth';
 import { withRateLimit } from '@/services/api-rate-limit';
 import { RateLimits } from '@/services/rate-limiter';
+import { sendEmail } from '@/services/email-service';
 import { z } from 'zod';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const FROM = 'Radbit <brandontinoz@gmail.com>';
 
 const ALLOWED_RECIPIENTS = new Set([
   'brandontinoz@gmail.com',
@@ -33,10 +29,6 @@ export const POST = withRateLimit(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!process.env.RESEND_API_KEY) {
-    return NextResponse.json({ error: 'Email service not configured' }, { status: 503 });
-  }
-
   try {
     const body = await req.json();
     const validation = SendEmailSchema.safeParse(body);
@@ -56,19 +48,9 @@ export const POST = withRateLimit(
       );
     }
 
-    const { data, error } = await resend.emails.send({
-      from: FROM,
-      to: [to],
-      subject,
-      html,
-    });
+    await sendEmail(to, subject, html);
 
-    if (error) {
-      console.error('[Email] Resend error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ success: true, id: data?.id });
+    return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error('[Email] Send error:', error);
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });

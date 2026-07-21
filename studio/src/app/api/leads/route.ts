@@ -167,7 +167,7 @@ export const POST = withIpRateLimit(
           email,
           `New lead: ${fullName}`,
           leadEmailHtml({ ...leadData, fullName, workEmail }),
-        ).catch(() => {});
+        ).catch((err) => console.error('[Leads API] Email notification failed:', err));
       }
 
       // 4. Notify admin via WhatsApp

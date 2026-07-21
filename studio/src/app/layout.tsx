@@ -78,6 +78,7 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'XuoZg3JKm--RR2ak1v3OosORY7Gz0f_xJxxPAViBNfE',
+    other: { 'msvalidate.01': 'C20E454F7F62316E2798EEA1FAEDF700' },
   },
   applicationName: "Radbit Studios",
   category: "business",

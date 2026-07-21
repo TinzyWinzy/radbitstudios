@@ -84,11 +84,22 @@ env:
   #     - BUILD
   #     - RUNTIME
 
-  # ── Email — Resend ──────────────────────────────────────────────────
-  - variable: RESEND_API_KEY
-    secret: RESEND_API_KEY
+  # ── Email — SMTP (Gmail App Password) ──────────────────────────────
+  - variable: SMTP_HOST
+    value: smtp.gmail.com
     availability:
-      - BUILD
+      - RUNTIME
+  - variable: SMTP_PORT
+    value: "587"
+    availability:
+      - RUNTIME
+  - variable: SMTP_USER
+    value: brandontinoz@gmail.com
+    availability:
+      - RUNTIME
+  - variable: SMTP_PASS
+    secret: SMTP_PASS
+    availability:
       - RUNTIME
 
   # ── Database — Supabase PostgreSQL (optional; falls back to Firestore) ──

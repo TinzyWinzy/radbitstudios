@@ -1,8 +1,19 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const FROM = 'Radbit <noreply@radbitstudios.co.zw>';
 
-const FROM = 'Radbit <brandontinoz@gmail.com>';
+function getTransporter() {
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  if (!user || !pass) return null;
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: false,
+    auth: { user, pass },
+  });
+}
+
 const FRONTEND_URL = process.env.FRONTEND_URL || 'https://radbitstudios.co.zw';
 const BRAND = '#1A8A7A';
 
@@ -51,9 +62,10 @@ export function usageWarningEmail(userName: string, feature: string, remaining: 
 }
 
 export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
-  if (!resend || !to) return;
+  const transport = getTransporter();
+  if (!transport || !to) return;
   try {
-    await resend.emails.send({ from: FROM, to: [to], subject, html });
+    await transport.sendMail({ from: FROM, to, subject, html });
   } catch (err) {
     console.error('[EmailService] Failed:', err);
   }
