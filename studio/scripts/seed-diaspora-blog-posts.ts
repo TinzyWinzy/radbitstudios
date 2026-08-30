@@ -121,8 +121,8 @@ On a USD 100,000 property, expect to pay:
 - Transfer duty: 6 percent (USD 6,000)
 - Legal fees: 2.5 percent (USD 2,500)
 - Estate agent commission: 2.5 percent (USD 2,500)
-- VAT on legal fees: 15 percent (USD 375)
-- Total closing costs: approximately USD 11,375
+- VAT on legal fees: 15.5 percent (USD 387.50)
+- Total closing costs: approximately USD 11,387.50
 
 **Rental Yields**
 Harare residential properties yield 6 to 12 percent annually in USD terms. Commercial properties yield higher but have more vacancy risk. Short-term rentals (Airbnb) in popular areas can yield 15 to 20 percent but require active management.

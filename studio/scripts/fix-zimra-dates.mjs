@@ -48,6 +48,11 @@ const fixes = [
     re: /The certificate is valid for 12 months\./gi,
     to: 'The certificate is valid for 6 months for large taxpayers and 3 months for medium and small taxpayers (tiered validity since 22 December 2025).',
   },
+  {
+    id: 'legal-fees-vat',
+    re: /VAT on legal fees: 15 percent \(USD 375\)/gi,
+    to: 'VAT on legal fees: 15.5 percent (USD 387.50)',
+  },
 ];
 
 function applyReplacement(content) {
