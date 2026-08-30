@@ -157,6 +157,46 @@ create_scheduler \
   "${BASE_URL}/api/cron/rag-index" \
   "RAG: Re-index all knowledge base sources (Constitution, NDS2, ZIDA, fiscal, etc.) into pgvector"
 
+# ─── 6. SADC Tender Scraper ─────────────────────────────────────────────────
+# Runs daily at 07:00 Harare to ingest PPADB, ZPPA, CNU, PPDA opportunities
+create_scheduler \
+  "radbit-sadc-tenders" \
+  "0 7 * * *" \
+  "${BASE_URL}/api/cron/sadc-tenders" \
+  "SADC: Scrape PPADB Botswana, ZPPA Zambia, CNU Mozambique and PPDA Malawi tender portals"
+
+# ─── 7. Compliance Alerts ───────────────────────────────────────────────────
+# Runs daily at 08:00 Harare to dispatch compliance expiry alerts
+create_scheduler \
+  "radbit-compliance-alerts" \
+  "0 8 * * *" \
+  "${BASE_URL}/api/cron/compliance-alerts" \
+  "Compliance: Dispatch PRAZ/ZIMRA/NSSA expiry alerts to subscribed users"
+
+# ─── 8. Daily Business Brief ─────────────────────────────────────────────────
+# Runs daily at 06:00 Harare to generate and deliver bulk daily briefs
+create_scheduler \
+  "radbit-daily-brief" \
+  "0 6 * * *" \
+  "${BASE_URL}/api/cron/daily-brief" \
+  "Brief: Generate and deliver daily business briefs to opted-in users"
+
+# ─── 9. Newsletter Digest (daily) ───────────────────────────────────────────
+# Runs daily at 09:00 Harare with frequency=daily
+create_scheduler \
+  "radbit-newsletter-daily" \
+  "0 9 * * *" \
+  "${BASE_URL}/api/cron/newsletter-dispatch?frequency=daily" \
+  "Newsletter: Dispatch daily digest to daily subscribers"
+
+# ─── 10. Newsletter Digest (weekly) ─────────────────────────────────────────
+# Runs every Monday at 09:00 Harare with frequency=weekly
+create_scheduler \
+  "radbit-newsletter-weekly" \
+  "0 9 * * 1" \
+  "${BASE_URL}/api/cron/newsletter-dispatch?frequency=weekly" \
+  "Newsletter: Dispatch weekly digest to weekly subscribers"
+
 echo ""
 echo "🎉 All cron jobs deployed successfully!"
 echo ""
@@ -166,6 +206,11 @@ echo "   news-scraper       - Every 4 hours    - News feed ingestion"
 echo "   rag-index          - Every Sunday 3AM - Knowledge base re-index"
 echo "   tender-scraper     - Every 6 hours    - Tender opportunity scraping"
 echo "   whatsapp-queue     - Every 5 minutes  - WhatsApp message dispatch"
+echo "   sadc-tenders       - Daily 07:00      - SADC tender portal ingestion"
+echo "   compliance-alerts  - Daily 08:00      - Compliance expiry alerts"
+echo "   daily-brief        - Daily 06:00      - Business brief delivery"
+echo "   newsletter-daily   - Daily 09:00      - Daily newsletter digest"
+echo "   newsletter-weekly  - Mon 09:00        - Weekly newsletter digest"
 echo ""
 echo "   Timezone: $TIMEZONE"
 echo "   View in console: https://console.cloud.google.com/cloudscheduler?project=$PROJECT_ID"

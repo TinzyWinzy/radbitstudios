@@ -103,17 +103,19 @@ export function MarketSnapshotCard() {
             {/* Gold Price */}
             <MetricCard
               label="Gold Price"
-              value={`$${data.economicIndicators.goldPriceUSD.toLocaleString()}`}
-              sub="per oz"
+              value={data.economicIndicators.goldPriceUSD !== null ? `$${data.economicIndicators.goldPriceUSD.toLocaleString()}` : "—"}
+              sub={data.economicIndicators.goldPriceUSD === null ? "unavailable" : "per oz"}
             />
             {/* RBZ Policy Rate */}
             <MetricCard
               label="RBZ Policy Rate"
-              value={`${data.economicIndicators.rbzPolicyRate}%`}
+              value={data.economicIndicators.rbzPolicyRate !== null ? `${data.economicIndicators.rbzPolicyRate}%` : "—"}
               sub={
-                data.economicIndicators.cpiMonthOverMonth !== null
-                  ? `CPI: ${data.economicIndicators.cpiMonthOverMonth.toFixed(2)}% (MoM)`
-                  : undefined
+                data.economicIndicators.rbzPolicyRate === null
+                  ? "unavailable"
+                  : data.economicIndicators.cpiMonthOverMonth !== null
+                    ? `CPI: ${data.economicIndicators.cpiMonthOverMonth.toFixed(2)}% (MoM)`
+                    : undefined
               }
             />
           </div>

@@ -79,14 +79,14 @@ export function InvestPage() {
               <Shield className="h-5 w-5 text-primary shrink-0" />
               <div>
                 <p className="font-semibold text-sm">Every SME is <strong>Verified by Radbit</strong></p>
-                <p className="text-xs text-muted-foreground">Compliance, revenue, and operations independently verified &mdash; not self-reported</p>
+                <p className="text-xs text-muted-foreground">Compliance status, revenue range, and readiness &mdash; shown where data has been provided and reviewed</p>
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Zimbabwe&apos;s diaspora sends over US$1.5 billion annually in remittances, yet most flows to family support rather than productive enterprise. Radbit&apos;s investment marketplace bridges that gap by connecting diaspora capital with vetted Zimbabwean SMEs that are ready to scale.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Every SME on our platform has a <strong>live operational snapshot</strong> showing their compliance status (PRAZ, ZIMRA, NSSA), revenue trajectory, tender history, and digital readiness score. This is not self-reported data &mdash; Radbit verifies each business through document review, compliance database checks, and ongoing monitoring.
+              SMEs that complete a verification request carry an <strong>operational snapshot</strong> showing their compliance status (PRAZ, ZIMRA, NSSA), revenue range, tender history, and digital readiness score where an assessment has been completed. Verification is based on document review of self-reported business data &mdash; it is not a regulatory audit.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Investment opportunities span agriculture, technology, manufacturing, healthcare, real estate, and tourism — all sectors recognised by <strong>ZIDA (Zimbabwe Investment and Development Agency)</strong>. Special Economic Zone (SEZ) incentives apply for qualifying investments, including tax holidays and duty-free imports. </p>

@@ -10,7 +10,7 @@ const SADC_SOURCES = TENDER_SOURCES.filter(s => ['PPADB Botswana', 'ZPPA Zambia'
 export async function GET(req: Request) {
   const authHeader = req.headers.get('authorization');
   const expectedToken = process.env.CRON_SECRET;
-  if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+  if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

@@ -7,8 +7,6 @@ import { scrapeAllEntities, storeEntityTenders } from '@/services/tender/entity-
 import { generateContentId } from '@/lib/content-classification';
 import {
   type Tender,
-  MOCK_TENDERS,
-  enrichTender,
   isQualityTender,
 } from './types';
 import { scrapeSource } from './scrape-engine';
@@ -36,8 +34,7 @@ export async function scrapeAllTenders(): Promise<{ scraped: number; errors: num
   }
 
   if (allTenders.length === 0) {
-    console.log('[TenderScraper] All sources failed — falling back to mock data');
-    allTenders.push(...MOCK_TENDERS.map(raw => enrichTender({ ...raw, region: 'Zimbabwe' })));
+    console.warn('[TenderScraper] All sources failed — no tenders ingested this run (no mock fallback)');
   } else {
     console.log(`[TenderScraper] Total scraped from all sources: ${allTenders.length}`);
   }

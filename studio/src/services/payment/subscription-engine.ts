@@ -1,13 +1,13 @@
 import { db } from '@/lib/firebase/firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { normalizePlanName, normalizeSubscriptionPlanId, getPlanCredits } from '@/lib/subscriptions';
+import { normalizePlanName, normalizeSubscriptionPlanId } from '@/lib/subscriptions';
 import type { PlanName } from '@/types/user';
 import { PaymentOrchestrator } from './payment-orchestrator';
 import { InvoiceService } from './invoice.service';
 
 export type SubscriptionPlanId = 'free' | 'growth' | 'tender_starter' | 'pro' | 'enterprise';
 export type BillingPeriod = 'monthly' | 'quarterly' | 'annual';
-export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled' | 'expired';
+export type SubscriptionStatus = 'trialing' | 'pending_payment' | 'active' | 'past_due' | 'canceled' | 'expired';
 
 export interface ActiveSubscription {
   id: string;
@@ -61,12 +61,12 @@ export class SubscriptionEngine {
       userId,
       metadata: { country, plan, billingPeriod },
       returnUrl: `${process.env.FRONTEND_URL}/settings?payment=success`,
-      notifyUrl: `${process.env.API_URL}/api/webhooks/payment`,
+      notifyUrl: `${process.env.API_URL}/api/webhooks/paynow`,
     });
 
     if (!payment.success) throw new Error(payment.errorMessage || 'Payment initiation failed');
 
-    // Create subscription document in Firestore
+    // Create subscription document in Firestore — PENDING until payment is confirmed
     const now = new Date();
     const periodEnd = this.calculatePeriodEnd(now, billingPeriod);
 
@@ -75,7 +75,7 @@ export class SubscriptionEngine {
       id: payment.transactionId,
       userId,
       plan: normalizedPlanName,
-      status: 'active',
+      status: 'pending_payment',
       billingPeriod,
       currency,
       currentPeriodStart: now,
@@ -87,7 +87,7 @@ export class SubscriptionEngine {
 
     await setDoc(subscriptionRef, subscription);
 
-    // Generate invoice
+    // Generate an unpaid invoice; it is settled when payment is confirmed
     await this.invoices.generateInvoice({
       userId,
       subscriptionId: payment.transactionId,
@@ -96,21 +96,6 @@ export class SubscriptionEngine {
       description: `Radbit ${plan} plan - ${billingPeriod}`,
       country,
       paymentProviderRef: payment.providerRef,
-      paidAt: now,
-    });
-
-    // Update user's subscription plan in their profile
-    const planCredits = getPlanCredits(normalizedPlanName);
-    const usageUpdates = Object.entries(planCredits).reduce((acc, [key, value]) => {
-      acc[`usage.${key}.total`] = value.total;
-      acc[`usage.${key}.remaining`] = value.remaining;
-      return acc;
-    }, {} as Record<string, number>);
-
-    await updateDoc(doc(db, 'users', userId), {
-      plan: normalizedPlanName,
-      subscriptionId: payment.transactionId,
-      ...usageUpdates,
     });
 
     return { subscription, redirectUrl: payment.redirectUrl };
@@ -147,10 +132,11 @@ export class SubscriptionEngine {
       userId: data.userId,
       metadata: { country: 'ZW', plan: data.plan, billingPeriod: data.billingPeriod },
       returnUrl: `${process.env.FRONTEND_URL}/settings?payment=success`,
+      notifyUrl: `${process.env.API_URL}/api/webhooks/paynow`,
     });
 
     if (payment.success) {
-      await updateDoc(subRef, { status: 'active', currentPeriodEnd: this.calculatePeriodEnd(new Date(), data.billingPeriod), updated: new Date() });
+      await updateDoc(subRef, { status: 'pending_payment', updated: new Date() });
     }
 
     return { success: payment.success, redirectUrl: payment.redirectUrl };

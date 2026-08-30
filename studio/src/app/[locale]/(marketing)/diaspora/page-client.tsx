@@ -116,7 +116,7 @@ export function DiasporaLanding() {
             Zimbabweans abroad represent one of the country&apos;s most powerful economic assets. Beyond the US$1.5 billion in annual remittances, the diaspora holds expertise in global supply chains, technology, finance, and professional services that can accelerate SME development back home. Our platform turns that potential into action &mdash; connecting you with verified businesses, real-time market intelligence, and the tools to manage operations across time zones.
           </p>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center">
-            Whether you want to invest in an agri-processing start-up, help a family member formalise their business, or launch your own Zimbabwe-registered company from abroad, Radbit provides the infrastructure to do it with confidence. Every SME on our platform is PRAZ-compliant and carries a verified digital readiness score &mdash; so you know exactly what you&apos;re stepping into before you commit.
+            Whether you want to invest in an agri-processing start-up, help a family member formalise their business, or launch your own Zimbabwe-registered company from abroad, Radbit provides the infrastructure to do it with confidence. Businesses on our platform are reviewed through document checks, and carry a digital readiness score where an assessment has been completed &mdash; so you know what you&apos;re stepping into before you commit.
           </p>
         </div>
       </section>

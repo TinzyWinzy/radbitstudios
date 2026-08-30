@@ -35,7 +35,7 @@ export interface OperationalSnapshot {
   description: string;
   revenue: string;
   prazStatus: string;
-  readiness: number;
+  readiness: number | null;
   complianceStatus: {
     praz: 'valid' | 'expiring' | 'expired';
     zimraTaxClearance: 'valid' | 'expiring' | 'expired';
@@ -167,7 +167,7 @@ export async function getVerifiedSmes(): Promise<OperationalSnapshot[]> {
       description: u.businessDescription || '',
       revenue: revenueLabel(u.revenue),
       prazStatus: u.prazVerified ? 'Verified' : 'Pending',
-      readiness: u.maturityScore || Math.floor(Math.random() * 25) + 55,
+      readiness: u.maturityScore ?? null,
       complianceStatus: {
         praz: u.prazExpiry ? checkDateStatus(u.prazExpiry.toDate()) : 'expired',
         zimraTaxClearance: u.taxClearanceExpiry ? checkDateStatus(u.taxClearanceExpiry.toDate()) : 'expired',
@@ -209,7 +209,7 @@ export async function getSmeSnapshot(smeUserId: string): Promise<OperationalSnap
     description: u.businessDescription || '',
     revenue: revenueLabel(u.revenue),
     prazStatus: u.prazVerified ? 'Verified' : 'Pending',
-    readiness: u.maturityScore || Math.floor(Math.random() * 25) + 55,
+    readiness: u.maturityScore ?? null,
     complianceStatus: {
       praz: u.prazExpiry ? checkDateStatus(u.prazExpiry.toDate()) : 'expired',
       zimraTaxClearance: u.taxClearanceExpiry ? checkDateStatus(u.taxClearanceExpiry.toDate()) : 'expired',

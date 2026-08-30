@@ -30,8 +30,14 @@ export class PayFastProvider implements PaymentProvider {
     };
   }
 
-  async verifyPayment(providerRef: string): Promise<PaymentResponse> {
-    return { success: true, transactionId: providerRef, providerRef, status: 'completed' };
+  async verifyPayment(_providerRef: string): Promise<PaymentResponse> {
+    return {
+      success: false,
+      transactionId: _providerRef,
+      providerRef: _providerRef,
+      status: 'pending',
+      errorMessage: 'PayFast confirmation is only available via the ITN callback; on-demand verification is not supported',
+    };
   }
 
   async refundPayment(_transactionId: string, _amount?: number): Promise<PaymentResponse> {

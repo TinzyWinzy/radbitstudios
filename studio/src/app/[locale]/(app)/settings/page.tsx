@@ -404,16 +404,10 @@ export default function SettingsPage() {
       }
     } catch (error: unknown) {
       console.error('Error initiating payment:', error);
-      // If payment fails (no provider configured), upgrade plan directly
-      const userDocRef = doc(db, 'users', user.uid);
-      await updateDoc(userDocRef, {
-        plan: normalizePlanName(newPlan.name),
-        usage: newPlan.credits,
-      });
-      await refreshUserData();
       toast({
-        title: 'Plan Updated',
-        description: `You are now on the ${newPlan.name} plan. Payment setup will be configured separately.`,
+        title: 'Payment Not Initiated',
+        description: `Could not start payment for ${newPlan.name}. No payment provider is configured — your plan was NOT changed.`,
+        variant: 'destructive',
       });
     } finally {
       setIsChangingPlan(false);

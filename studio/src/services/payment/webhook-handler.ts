@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { PayNowProvider } from './providers/paynow.provider';
+import { getPlanCredits, normalizePlanName } from '@/lib/subscriptions';
 import { paymentConfirmationEmail, sendEmail } from '@/services/email-service';
 import { createCommissionOnPayment } from '@/services/commission-engine.service';
 
@@ -82,41 +83,62 @@ export class WebhookHandler {
 
   private async handlePaymentCompleted(event: { data: any }): Promise<void> {
     const data = event.data;
-    const subscriptionId = data.metadata?.reference || data.m_payment_id || data.id;
+    const subscriptionId = data.metadata?.reference || data.m_payment_id || data.reference || data.id;
 
     const subRef = adminDb.doc(`subscriptions/${subscriptionId}`);
     const sub = await subRef.get();
     if (!sub.exists) return;
 
+    const subData = sub.data()!;
+
     await subRef.update({
       status: 'active',
-      currentPeriodEnd: this.calculateNewPeriodEnd(sub.data()!.currentPeriodEnd?.toDate() || new Date(), sub.data()!.billingPeriod || 'monthly'),
+      currentPeriodEnd: this.calculateNewPeriodEnd(subData.currentPeriodEnd?.toDate() || new Date(), subData.billingPeriod || 'monthly'),
       updated: new Date(),
     });
 
-    const subData = sub.data()!;
-      if (subData.userId) {
-        const userDoc = await adminDb.collection('users').doc(subData.userId).get();
-        const userData = userDoc.data();
-        if (userData?.email) {
-          const name = (userData.displayName || userData.email.split('@')[0] || 'there') as string;
-          const planName = (subData.plan || 'Growth') as string;
-          const price = subData.price || 5;
-          const { subject, html } = paymentConfirmationEmail(name, planName, price);
-          sendEmail(userData.email as string, subject, html).catch(() => {});
-        }
+    if (subData.userId) {
+      // Grant the purchased plan and credits only now that payment is confirmed.
+      const planName = normalizePlanName(subData.plan);
+      const planCredits = getPlanCredits(planName);
+      const usageUpdates = Object.entries(planCredits).reduce((acc, [key, value]) => {
+        acc[`usage.${key}.total`] = value.total;
+        acc[`usage.${key}.remaining`] = value.remaining;
+        return acc;
+      }, {} as Record<string, number>);
 
-        // Partner attribution — auto-create commission if user was referred
-        createCommissionOnPayment(
-          subData.userId,
-          subscriptionId,
-          subData.plan || 'Growth',
-          subData.price || 0,
-          subData.billingPeriod || 'monthly',
-        ).catch((err) => {
-          console.error('[WebhookHandler] Commission creation failed:', err);
-        });
+      await adminDb.collection('users').doc(subData.userId).update({
+        plan: planName,
+        subscriptionId,
+        ...usageUpdates,
+      });
+
+      // Settle any unpaid invoices created for this subscription.
+      const invoices = await adminDb.collection('invoices').where('subscriptionId', '==', subscriptionId).get();
+      for (const inv of invoices.docs) {
+        await inv.ref.update({ status: 'paid', paidAt: new Date(), updated: new Date() });
       }
+
+      const userDoc = await adminDb.collection('users').doc(subData.userId).get();
+      const userData = userDoc.data();
+      if (userData?.email) {
+        const name = (userData.displayName || userData.email.split('@')[0] || 'there') as string;
+        const price = subData.price || 5;
+        const { subject, html } = paymentConfirmationEmail(name, planName, price);
+        sendEmail(userData.email as string, subject, html).catch(() => {});
+      }
+
+      // Partner attribution — auto-create commission if user was referred
+      createCommissionOnPayment(
+        subData.userId,
+        subscriptionId,
+        subData.plan || 'Growth',
+        subData.price || 0,
+        subData.billingPeriod || 'monthly',
+      ).catch((err) => {
+        console.error('[WebhookHandler] Commission creation failed:', err);
+      });
+    }
   }
 
   private async handlePaymentFailed(event: { data: any }): Promise<void> {

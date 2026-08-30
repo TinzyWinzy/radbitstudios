@@ -119,6 +119,23 @@ describe('economic-indicators-scraper: formatIndicatorSummary', () => {
     expect(result).toContain('M-o-M 0.51%');
     expect(result).toContain('Y-o-Y 1.30%');
   });
+
+  it('reports unavailable when no live values were fetched', () => {
+    const result = formatIndicatorSummary({
+      goldPriceUSD: null,
+      rbzPolicyRate: null,
+      cpiMonthOverMonth: null,
+      cpiYearOverYear: null,
+      cpiMonth: null,
+      fetchedAt: new Date('2026-06-09T10:00:00Z'),
+      sources: [],
+    });
+
+    expect(result).toContain('Gold Price: unavailable');
+    expect(result).toContain('RBZ Policy Rate: unavailable');
+    expect(result).toContain('CPI: unavailable');
+    expect(result).toContain('Sources: none');
+  });
 });
 
 describe('context-service: formatBusinessContext', () => {

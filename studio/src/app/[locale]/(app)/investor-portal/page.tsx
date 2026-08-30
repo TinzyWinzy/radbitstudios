@@ -47,7 +47,7 @@ interface SmeProfile {
   description: string;
   revenue: string;
   prazStatus: string;
-  readiness: number;
+  readiness: number | null;
   trustSeal: TrustSeal | null;
 }
 
@@ -517,10 +517,16 @@ export default function InvestorPortalPage() {
                   <CardContent>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                       <span>Readiness:</span>
-                      <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${sme.readiness}%` }} />
-                      </div>
-                      <span className="font-medium">{sme.readiness}%</span>
+                      {sme.readiness !== null ? (
+                        <>
+                          <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                            <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${sme.readiness}%` }} />
+                          </div>
+                          <span className="font-medium">{sme.readiness}%</span>
+                        </>
+                      ) : (
+                        <span className="text-xs italic">awaiting assessment</span>
+                      )}
                     </div>
 
                     {/* Trust Seal breakdown */}
