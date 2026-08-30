@@ -1,0 +1,43 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    - cron: "0 8 * * 1,3,5"
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    name: Ping Database Heartbeat
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Trigger Heartbeat
+        run: |
+          curl -f -s -X GET "${{ secrets.APP_URL }}/api/heartbeat" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -w "\nHTTP Status: %{http_code}\n"
+
+  alert-on-failure:
+    name: Alert on Failure
+    needs: keepalive
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Failure Alert
+        run: |
+          curl -X POST "${{ secrets.SENTRY_DSN }}/envelope/" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "event_id": "'"$(uuidgen)"'",
+              "level": "error",
+              "exception": {
+                "values": [{
+                  "type": "KeepAliveFailed",
+                  "value": "Supabase keep-alive heartbeat failed at $(date -u)"
+                }]
+              },
+              "tags": {
+                "environment": "production",
+                "check": "heartbeat"
+              }
+            }'
