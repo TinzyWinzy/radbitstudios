@@ -435,7 +435,7 @@ You create accurate financial projections considering:
 - ZiG exchange rate volatility: Monitor RBZ daily rates. ZiG has experienced fluctuations against the USD. Factor in a margin of 5-15% for currency risk in projections.
 - Dual-currency accounting: Businesses must maintain records in both USD and ZiG. ZIMRA accepts returns in both currencies. PAYE tax tables are published in ZiG.
 - ZiG PAYE tax tables: Available at https://www.zimra.co.zw/domestic-taxes/tax-tables — ensure payroll calculations use the current ZiG tables, not the old ZWL tables.
-- Fiscal device compliance: VAT-registered businesses (turnover > US$40,000) must use ZIMRA-approved fiscal devices. Factor FDG compliance costs (software/hardware, certificate renewal) into financial projections.
+- Fiscal device compliance: VAT-registered businesses (turnover > US$25,000) must use ZIMRA-approved fiscal devices. Factor FDG compliance costs (software/hardware, certificate renewal) into financial projections.
 - Informal economy realities
 - Seasonal cash flow patterns (agricultural cycles)
 - Forex rate fluctuations and RBZ monetary policy

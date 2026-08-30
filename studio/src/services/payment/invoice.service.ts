@@ -33,9 +33,9 @@ export class InvoiceService {
       providerRef: data.paymentProviderRef || null,
       billingAddress: null,
       // ZIMRA fields
-      vatRate: data.country === 'ZW' ? 0.15 : 0,
-      vatAmount: data.country === 'ZW' ? data.amount * 0.15 / 1.15 : 0,
-      taxExclusiveAmount: data.country === 'ZW' ? data.amount / 1.15 : data.amount,
+      vatRate: data.country === 'ZW' ? 0.155 : 0,
+      vatAmount: data.country === 'ZW' ? data.amount * 0.155 / 1.155 : 0,
+      taxExclusiveAmount: data.country === 'ZW' ? data.amount / 1.155 : data.amount,
       created: serverTimestamp(),
     };
 
@@ -46,8 +46,8 @@ export class InvoiceService {
   generateInvoiceHtml(invoice: { invoiceNumber: string; amount: number; currency: string; description: string; paidAt?: Date; dueAt?: Date }): string {
     const paidDate = invoice.paidAt ? invoice.paidAt.toLocaleDateString('en-ZW') : '—';
     const dueDate = invoice.dueAt ? invoice.dueAt.toLocaleDateString('en-ZW') : '—';
-    const vatExcl = (invoice.amount / 1.15).toFixed(2);
-    const vat = (invoice.amount - invoice.amount / 1.15).toFixed(2);
+    const vatExcl = (invoice.amount / 1.155).toFixed(2);
+    const vat = (invoice.amount - invoice.amount / 1.155).toFixed(2);
     const status = invoice.paidAt ? 'Paid' : 'Pending';
 
     return `
@@ -65,7 +65,7 @@ export class InvoiceService {
         <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
           <tr style="background: #f5f5f5;"><th style="padding: 8px; text-align: left;">Item</th><th style="padding: 8px; text-align: right;">Amount</th></tr>
           <tr><td style="padding: 8px;">${invoice.description}</td><td style="padding: 8px; text-align: right;">${vatExcl} ${invoice.currency}</td></tr>
-          <tr><td style="padding: 8px;">VAT (15%)</td><td style="padding: 8px; text-align: right;">${vat} ${invoice.currency}</td></tr>
+          <tr><td style="padding: 8px;">VAT (15.5%)</td><td style="padding: 8px; text-align: right;">${vat} ${invoice.currency}</td></tr>
           <tr style="font-weight: bold;"><td style="padding: 8px;">Total</td><td style="padding: 8px; text-align: right;">${invoice.amount.toFixed(2)} ${invoice.currency}</td></tr>
         </table>
         <p style="color: gray; font-size: 12px;">ZIMRA Registration: 0000000 | VAT Number: ZV-0000000</p>

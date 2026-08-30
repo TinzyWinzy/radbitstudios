@@ -4,11 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { Calculator } from "lucide-react";
 
-const RATE = 0.15;
+const RATE = 0.155;
 
 export default function VatCalculatorPage() {
   const [exclusive, setExclusive] = useState<number>(100);
-  const [inclusive, setInclusive] = useState<number>(115);
+  const [inclusive, setInclusive] = useState<number>(115.5);
 
   const vatAmount = exclusive * RATE;
   const totalInclusive = exclusive * (1 + RATE);
@@ -28,7 +28,7 @@ export default function VatCalculatorPage() {
         </div>
         <div>
           <h1 className="font-headline text-3xl font-bold tracking-tight">VAT Calculator</h1>
-          <p className="text-muted-foreground">Zimbabwe &mdash; 15% standard VAT (ZIMRA)</p>
+          <p className="text-muted-foreground">Zimbabwe &mdash; 15.5% standard VAT (ZIMRA, from 1 Jan 2026)</p>
         </div>
       </div>
 
@@ -50,7 +50,7 @@ export default function VatCalculatorPage() {
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="rounded-lg bg-muted/50 p-4">
-              <p className="text-muted-foreground mb-1">VAT (15%)</p>
+              <p className="text-muted-foreground mb-1">VAT (15.5%)</p>
               <p className="text-xl font-bold">US${vatAmount.toFixed(2)}</p>
             </div>
             <div className="rounded-lg bg-primary/10 p-4">
@@ -101,31 +101,31 @@ export default function VatCalculatorPage() {
           <h2 className="font-headline font-semibold text-lg">Understanding VAT in Zimbabwe</h2>
           <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
             <p>
-              Value-Added Tax (VAT) is Zimbabwe&apos;s primary consumption tax, administered by the Zimbabwe Revenue Authority (ZIMRA). The standard rate is 15% on most goods and services. Businesses registered for VAT must charge this rate on their taxable supplies and can claim input credits on qualifying business purchases.
+              Value-Added Tax (VAT) is Zimbabwe&apos;s primary consumption tax, administered by the Zimbabwe Revenue Authority (ZIMRA). The standard rate is 15.5% on most goods and services since 1 January 2026 (raised from 15% by Finance Act No. 7 of 2025). Businesses registered for VAT must charge this rate on their taxable supplies and can claim input credits on qualifying business purchases.
             </p>
             <p>
-              <strong className="text-foreground">VAT registration threshold.</strong> As of 2026, any business with an annual turnover exceeding US$40,000 (or equivalent in ZiG) must register for VAT with ZIMRA. Businesses below this threshold may voluntarily register, which can be beneficial if you supply to VAT-registered customers who need compliant invoices to claim their own input credits.
+              <strong className="text-foreground">VAT registration threshold.</strong> As of 2026, any business with an annual turnover exceeding US$25,000 (or equivalent in ZiG) must register for VAT with ZIMRA. Businesses below this threshold may voluntarily register, which can be beneficial if you supply to VAT-registered customers who need compliant invoices to claim their own input credits.
             </p>
             <p>
-              <strong className="text-foreground">Zero-rated supplies (0% VAT).</strong> Certain goods and services attract a zero rate rather than the standard 15%. These include exported goods, unprocessed agricultural products (raw maize, tobacco, cotton, unprocessed meat and fish), and unbranded/organic pesticides and fertilisers. While no VAT is charged on these supplies, the supplier can still claim input credits on related purchases &mdash; which often results in a VAT refund from ZIMRA.
+              <strong className="text-foreground">Zero-rated supplies (0% VAT).</strong> Certain goods and services attract a zero rate rather than the standard 15.5%. These include exported goods, unprocessed agricultural products (raw maize, tobacco, cotton, unprocessed meat and fish), and unbranded/organic pesticides and fertilisers. While no VAT is charged on these supplies, the supplier can still claim input credits on related purchases &mdash; which often results in a VAT refund from ZIMRA.
             </p>
             <p>
               <strong className="text-foreground">Exempt supplies (no VAT).</strong> Some goods and services are entirely exempt from VAT, meaning no VAT is charged and no input credits can be claimed. These include financial services (insurance, lending), residential property rentals, medical services, educational services, and passenger transport by road or rail.
             </p>
             <p>
-              <strong className="text-foreground">VAT filing requirements.</strong> Registered businesses must submit VAT returns electronically through ZIMRA&apos;s e-services portal. Returns are typically due on or before the 25th of the month following the tax period. Late submissions attract penalties of 5% of the tax due plus interest at the prescribed rate. Our <Link href="/resources/tools/vat-calculator" className="text-primary hover:underline">tax compliance tools</Link> can help you stay on top of deadlines.
+              <strong className="text-foreground">VAT filing requirements.</strong> Registered businesses must submit VAT returns electronically through ZIMRA&apos;s e-services portal. Under SI 81 of 2025 the return is due by the 10th of the month following the tax period, with payment shortly afterwards (recent 2026 notices: the 15th). Late VAT returns attract penalties of up to 25% of the tax due plus interest at the prescribed rate. Our <Link href="/resources/tools/vat-calculator" className="text-primary hover:underline">tax compliance tools</Link> can help you stay on top of deadlines.
             </p>
             <p>
               <strong className="text-foreground">Record-keeping.</strong> ZIMRA requires VAT-registered businesses to retain all tax invoices, credit notes, import documents, and accounting records for at least six years. Digital records are acceptable, provided they are accessible for inspection. Proper record-keeping is essential for substantiating input claims and surviving a ZIMRA audit.
             </p>
             <p>
-              Notable: Zimbabwe operates a dual-currency system where transactions may be in US$ or ZiG. VAT calculations apply consistently regardless of currency &mdash; the 15% rate is applied to the VAT-exclusive amount in whatever currency the transaction is denominated.
+              Notable: Zimbabwe operates a dual-currency system where transactions may be in US$ or ZiG. VAT calculations apply consistently regardless of currency &mdash; the 15.5% rate is applied to the VAT-exclusive amount in whatever currency the transaction is denominated.
             </p>
           </div>
         </div>
 
         <p className="text-xs text-muted-foreground text-center">
-          Rate: 15% standard VAT per ZIMRA. Zero-rated and exempt categories apply. This tool is for estimation only &mdash; consult a ZIMRA-accredited tax practitioner for your specific situation.
+          Rate: 15.5% standard VAT (2026) per ZIMRA. Zero-rated and exempt categories apply. This tool is for estimation only &mdash; consult a ZIMRA-accredited tax practitioner for your specific situation.
         </p>
       </div>
     </div>

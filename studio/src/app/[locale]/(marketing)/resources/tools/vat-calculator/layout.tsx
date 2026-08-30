@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "VAT Calculator Zimbabwe — Free ZIMRA 15% VAT Tool",
-  description: "Calculate VAT-inclusive and VAT-exclusive prices at the ZIMRA 15% rate. Free online VAT calculator for Zimbabwean businesses.",
+  title: "VAT Calculator Zimbabwe — Free ZIMRA 15.5% VAT Tool",
+  description: "Calculate VAT-inclusive and VAT-exclusive prices at the ZIMRA 15.5% rate. Free online VAT calculator for Zimbabwean businesses.",
   alternates: { canonical: "/resources/tools/vat-calculator" },
 };
 

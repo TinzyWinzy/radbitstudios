@@ -451,7 +451,7 @@ Most diaspora-owned businesses in Zimbabwe are registered as Zimbabwean companie
 
 **The Three Taxes You Need to Know About**
 1. **Corporate Income Tax**: 24.72 percent of net profit (including AIDS levy). Returns due by 30 April each year for the prior tax year.
-2. **VAT**: 15 percent on goods and services. Registration is mandatory if annual turnover exceeds USD 40,000. Returns are due every two months.
+2. **VAT**: 15.5 percent on goods and services since 1 January 2026. Registration is mandatory if annual turnover exceeds USD 25,000 (or the ZiG equivalent). Returns are due by the 10th of the month following each period, with payment shortly afterwards — some categories file a combined return for a two-month period, so confirm your filing category.
 3. **PAYE**: Deducted from employee salaries. Due on the 10th of each month if you have staff.
 
 **Quarterly Payment Dates (QPDs)**
@@ -479,10 +479,10 @@ Requirements for diaspora applicants:
 - All taxes must be paid (or on a payment plan)
 - Your business must be registered for income tax
 
-The certificate is valid for 12 months.
+The certificate is valid for 6 months for large taxpayers and 3 months for medium and small taxpayers (tiered validity since 22 December 2025).
 
 **Common Mistakes Diaspora Business Owners Make**
-Mistake 1: Not registering for VAT when turnover exceeds USD 40,000. The penalties are backdated to the date you should have registered.
+Mistake 1: Not registering for VAT when turnover exceeds USD 25,000. The penalties are backdated to the date you should have registered.
 
 Mistake 2: Filing returns late. The penalty is USD 200 per month per overdue return. If you miss four returns in a year, the penalties add up to more than the tax.
 

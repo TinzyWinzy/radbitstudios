@@ -156,7 +156,7 @@ Even a failed bid can teach you where the business is not yet ready. The key is 
     tags: ["ZIMRA", "tax", "deadlines", "compliance", "SME"],
     authorName: "Radbit Editorial",
     imageUrl: "/blog/placeholder.svg",
-    content: `What surprises most SME owners about ZIMRA deadlines is not how many there are. It is how quickly penalties add up when you miss one. The four main deadlines repeat every year — Quarterly Payment Dates on 25 March, 25 June, 25 September, and 20 December, monthly PAYE by the 10th and VAT by the 25th of each following month, and the annual income tax return by 30 April. Missing any of these triggers penalty charges that compound and can block tax clearance certificates needed for tenders, supplier accounts, and bank facilities.
+    content: `What surprises most SME owners about ZIMRA deadlines is not how many there are. It is how quickly penalties add up when you miss one. The four main deadlines repeat every year — Quarterly Payment Dates on 25 March, 25 June, 25 September, and 20 December, monthly PAYE by the 10th and VAT returns by the 10th (with payment by the 15th) of each following month, and the annual income tax return by 30 April. Missing any of these triggers penalty charges that compound and can block tax clearance certificates needed for tenders, supplier accounts, and bank facilities.
 
 The most common mistake I see is people relying on outdated figures from blog posts. VAT thresholds, penalty rates, and filing categories change periodically. What worked last year may not work this year. Set up a shared calendar with multiple reminders, assign one person to monitor ZIMRA public notices, and confirm key dates with your tax adviser before each filing period. If you cannot pay on time, engage ZIMRA before the deadline to arrange a payment plan. It is not as complicated as it sounds, but it does require consistent attention.
 
@@ -168,12 +168,12 @@ If you are on the Quarterly Payment Date system, the common planning dates are:
 - QPD 3: 25 September
 - QPD 4: 20 December
 
-You pay your estimated tax in four instalments. The trick is to estimate correctly. If you underpay by more than 10 percent, you get charged interest. If you overpay, ZIMRA refunds you but it takes months.
+You pay your estimated tax in four instalments. The trick is to estimate correctly. If you underpay by more than 10 percent, you get charged interest. If you overpay, ZIMRA refunds you but it takes months. Under SI 81 of 2025 the QPD return (ITF12B) is due by the 20th of each instalment month.
 
 **VAT Returns**
 Do not rely on an old VAT threshold copied from a blog post. Confirm the current VAT registration threshold and filing category with ZIMRA or your accountant.
 
-Per ZIMRA's Tax Payment Calendar, VAT returns and payments are due on the 25th of each month. Use this as a planning reminder, then verify against the latest ZIMRA public notice before filing.
+Under SI 81 of 2025, VAT returns are due on the 10th of each month, with payment shortly afterwards (recent 2026 notices: the 15th). Use this as a planning reminder, then verify against the latest ZIMRA public notice before filing.
 
 **PAYE**
 If you have employees, PAYE is commonly planned around the 10th of every month. The return covers the previous month's salaries. Confirm penalty and interest rules against current ZIMRA guidance.

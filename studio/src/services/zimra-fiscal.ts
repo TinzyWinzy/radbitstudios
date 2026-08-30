@@ -81,8 +81,8 @@ interface SubmittedReceipt {
 }
 
 const FISCAL_THRESHOLDS = {
-  vatRegistrationTurnoverUsd: 40000,
-  fiscalDeviceMandatoryTurnoverUsd: 40000,
+  vatRegistrationTurnoverUsd: 25000,
+  fiscalDeviceMandatoryTurnoverUsd: 25000,
   quarterlyFilingTurnoverUsd: 200000,
   penaltyLateSubmissionUsd: 200,
   penaltyNonComplianceUsd: 500,
@@ -109,7 +109,7 @@ export function isVatRegistered(annualRevenueUsd: number): boolean {
 
 export function getFiscalComplianceGuide(): string[] {
   return [
-    'VAT-registered businesses (turnover > US$40,000) must use a ZIMRA-approved fiscal device or fiscalised software.',
+    'VAT-registered businesses (turnover > US$25,000) must use a ZIMRA-approved fiscal device or fiscalised software.',
     'All receipts and invoices must be submitted to ZIMRA through the Fiscal Device Gateway (FDG) in real-time.',
     'Fiscal days must be opened at the start of trading and closed at the end — all receipts are batched within a fiscal day.',
     'Offline mode is supported: receipts are queued locally and synced when the fiscal device reconnects to the FDG.',
@@ -491,10 +491,10 @@ export async function submitFiscalReceipt(
     const submissionMode = params.submissionMode || data.operatingMode || 'online';
 
     const totalCents = cents(params.totalAmount);
-    const vatCents = params.vatAmount !== undefined ? cents(params.vatAmount) : cents(params.totalAmount * 0.15);
+    const vatCents = params.vatAmount !== undefined ? cents(params.vatAmount) : cents(params.totalAmount * 0.155);
 
     const taxLines: TaxLine[] = params.taxLines || [
-      { taxID: 1, taxCode: 'VAT', taxPercent: 15, taxAmountCents: vatCents, salesAmountWithTaxCents: totalCents },
+      { taxID: 1, taxCode: 'VAT', taxPercent: 15.5, taxAmountCents: vatCents, salesAmountWithTaxCents: totalCents },
     ];
 
     const nextGlobalNo = (data.receiptGlobalNo || 0) + 1;

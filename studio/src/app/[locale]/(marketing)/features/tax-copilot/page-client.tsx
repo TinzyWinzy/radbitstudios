@@ -24,7 +24,7 @@ const features = [
   {
     icon: Calculator,
     title: "VAT & Tax Calculator",
-    description: "Calculate VAT at 15%, PAYE, corporate tax, and capital gains instantly. Supports both USD and ZiG with live exchange rates.",
+    description: "Calculate VAT at 15.5%, PAYE, corporate tax, and capital gains instantly. Supports both USD and ZiG with live exchange rates.",
   },
   {
     icon: Calendar,

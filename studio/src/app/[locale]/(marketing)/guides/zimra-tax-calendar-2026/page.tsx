@@ -4,30 +4,30 @@ import { faqPageSchema } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "ZIMRA Tax Deadline Calendar 2026 — QPD, PAYE & VAT Due Dates | Radbit",
   description:
-    "All 2026 ZIMRA dates in one place: QPDs on 25 Mar, 25 Jun, 25 Sep & 20 Dec; PAYE by the 10th; VAT by the 25th; annual returns and penalties.",
+    "All 2026 ZIMRA dates in one place: QPDs on 25 Mar, 25 Jun, 25 Sep & 20 Dec; PAYE by the 10th; VAT returns by the 10th and payments by the 15th (SI 81/2025); annual returns and penalties.",
   alternates: { canonical: "/guides/zimra-tax-calendar-2026" },
 };
 
 const monthByMonth = [
-  { m: "Jan", paye: "9 Jan (10th is Sat)", vat: "23 Jan (25th is Sun)", other: "" },
-  { m: "Feb", paye: "10 Feb", vat: "25 Feb", other: "" },
-  { m: "Mar", paye: "10 Mar", vat: "25 Mar", other: "QPD 1 — 25 Mar (10%)" },
-  { m: "Apr", paye: "10 Apr", vat: "24 Apr (25th is Sat)", other: "Income tax return (2025) — 30 Apr" },
-  { m: "May", paye: "8 May (10th is Sun)", vat: "25 May", other: "" },
-  { m: "Jun", paye: "10 Jun", vat: "25 Jun", other: "QPD 2 — 25 Jun (25%)" },
-  { m: "Jul", paye: "10 Jul", vat: "24 Jul (25th is Sat)", other: "" },
-  { m: "Aug", paye: "10 Aug", vat: "25 Aug", other: "" },
-  { m: "Sep", paye: "10 Sep", vat: "25 Sep", other: "QPD 3 — 25 Sep (30%)" },
-  { m: "Oct", paye: "9 Oct (10th is Sat)", vat: "23 Oct (25th is Sun)", other: "" },
-  { m: "Nov", paye: "10 Nov", vat: "25 Nov", other: "" },
-  { m: "Dec", paye: "10 Dec", vat: "23 Dec (25th is Christmas)", other: "QPD 4 — 20 Dec (35%; Sun)" },
+  { m: "Jan", paye: "9 Jan (10th is Sat)", vat: "9 Jan (10th is Sat)", other: "" },
+  { m: "Feb", paye: "10 Feb", vat: "10 Feb", other: "" },
+  { m: "Mar", paye: "10 Mar", vat: "10 Mar", other: "QPD 1 — return 20 Mar; pay 25 Mar (10%)" },
+  { m: "Apr", paye: "10 Apr", vat: "10 Apr", other: "Income tax return (2025) — 30 Apr" },
+  { m: "May", paye: "8 May (10th is Sun)", vat: "8 May (10th is Sun)", other: "" },
+  { m: "Jun", paye: "10 Jun", vat: "10 Jun", other: "QPD 2 — return 20 Jun; pay 25 Jun (25%)" },
+  { m: "Jul", paye: "10 Jul", vat: "10 Jul", other: "" },
+  { m: "Aug", paye: "10 Aug", vat: "10 Aug", other: "" },
+  { m: "Sep", paye: "10 Sep", vat: "10 Sep", other: "QPD 3 — return 20 Sep; pay 25 Sep (30%)" },
+  { m: "Oct", paye: "9 Oct (10th is Sat)", vat: "9 Oct (10th is Sat)", other: "" },
+  { m: "Nov", paye: "10 Nov", vat: "10 Nov", other: "" },
+  { m: "Dec", paye: "10 Dec", vat: "10 Dec", other: "QPD 4 — return 20 Dec; pay 20 Dec (35%; Sun)" },
 ];
 
 const faq = [
   {
     question: "What are the QPD dates for 2026 in Zimbabwe?",
     answer:
-      "Quarterly Payment Dates for 2026 are 25 March (10%), 25 June (25%), 25 September (30%) and 20 December (35%) of estimated annual tax. These are the payment dates in ZIMRA's official Tax Payment Calendar; the return itself is often due earlier in the same month under current public notices.",
+      "Quarterly Payment Dates for 2026 are 25 March (10%), 25 June (25%), 25 September (30%) and 20 December (35%) of estimated annual tax. Under SI 81 of 2025 the QPD return (ITF12B) is due by the 20th of each payment month, and the payment itself falls due on the 25th (20 December for QPD 4) per Public Notice 17 of 2026 and ZIMRA's Tax Payment Calendar.",
   },
   {
     question: "When is PAYE due to ZIMRA?",
@@ -36,7 +36,7 @@ const faq = [
   {
     question: "When are VAT returns due in Zimbabwe?",
     answer:
-      "VAT returns and payments are due by the 25th day of the month following the return period, per ZIMRA's Tax Payment Calendar. Some 2026 public notices list specific VAT due dates, so confirm the current notice before filing.",
+      "Under the Finance (Due Dates for Submission of Returns) Regulations, 2025 (SI 81 of 2025), effective 28 August 2025, the VAT return is due by the 10th day of the month following the tax period. The VAT payment is due shortly afterwards: recent monthly public notices (e.g. Public Notice 43 of 2026) set the payment date at the 15th, while some earlier 2026 notices listed it at the 10th. Confirm the current month's notice in TaRMS before filing.",
   },
   {
     question: "What happens if I miss a ZIMRA deadline?",
@@ -86,7 +86,7 @@ export default function ZimraTaxCalendarPage() {
               </thead>
               <tbody className="divide-y divide-border/50">
                 <tr><td className="p-3">PAYE (Employees&apos; Tax)</td><td className="p-3 font-medium">10th of the following month</td><td className="p-3 text-muted-foreground">Monthly</td></tr>
-                <tr><td className="p-3">VAT</td><td className="p-3 font-medium">25th of the following month</td><td className="p-3 text-muted-foreground">Monthly</td></tr>
+                <tr><td className="p-3">VAT</td><td className="p-3 font-medium">Return: 10th of following month; payment by the 15th (SI 81/2025)</td><td className="p-3 text-muted-foreground">Monthly</td></tr>
                 <tr><td className="p-3">QPD 1 (10%)</td><td className="p-3 font-medium">25 March 2026</td><td className="p-3 text-muted-foreground">Quarterly</td></tr>
                 <tr><td className="p-3">QPD 2 (25%)</td><td className="p-3 font-medium">25 June 2026</td><td className="p-3 text-muted-foreground">Quarterly</td></tr>
                 <tr><td className="p-3">QPD 3 (30%)</td><td className="p-3 font-medium">25 September 2026</td><td className="p-3 text-muted-foreground">Quarterly</td></tr>
@@ -121,9 +121,9 @@ export default function ZimraTaxCalendarPage() {
             </table>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            In 2026, returns and payments are filed separately: ZIMRA public notices (e.g. Public Notice 17 of 2026)
-            require the QPD return earlier in the same month, then the payment by the date above. Confirm both dates in
-            the latest notice before filing.
+            In 2026, returns and payments are filed separately: under SI 81 of 2025 the QPD return (ITF12B) is due by the
+            20th of each payment month, then the payment itself falls due on the date above (Public Notice 17 of 2026).
+            Confirm both dates in the latest notice before filing.
           </p>
         </section>
 
@@ -135,7 +135,7 @@ export default function ZimraTaxCalendarPage() {
                 <tr className="bg-muted/50">
                   <th className="text-left p-3 font-medium">Month</th>
                   <th className="text-left p-3 font-medium">PAYE (due 10th)</th>
-                  <th className="text-left p-3 font-medium">VAT (due 25th)</th>
+                  <th className="text-left p-3 font-medium">VAT return (due 10th)</th>
                   <th className="text-left p-3 font-medium">QPD &amp; Other</th>
                 </tr>
               </thead>
@@ -153,7 +153,9 @@ export default function ZimraTaxCalendarPage() {
           </div>
           <p className="text-xs text-muted-foreground mt-2">
             Where a due date falls on a weekend or public holiday, common practice is to file on the nearest preceding
-            business day (the nominal date is shown in brackets). Confirm adjusted dates with your tax adviser.
+            business day (the nominal date is shown in brackets). Confirm adjusted dates with your tax adviser. The VAT
+            payment falls due a few days after the 10th return date (recent 2026 notices: the 15th) — confirm the
+            current month&apos;s notice in TaRMS.
           </p>
         </section>
 

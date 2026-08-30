@@ -99,7 +99,7 @@ describe('InvoiceService', () => {
     });
 
     expect(html).toContain('INV-2026-000001');
-    expect(html).toContain('VAT (15%)');
+    expect(html).toContain('VAT (15.5%)');
     expect(html).toContain('Tax Invoice');
     expect(html).toContain('Paid');
   });

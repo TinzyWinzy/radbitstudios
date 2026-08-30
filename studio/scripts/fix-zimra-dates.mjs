@@ -19,19 +19,34 @@ const fixes = [
     to: 'on 25 March, 25 June, 25 September, and 20 December',
   },
   {
-    id: 'paye-vat-10th',
-    re: /PAYE\s+and\s+VAT\s+by\s+the\s+10th/gi,
-    to: 'PAYE by the 10th and VAT by the 25th',
+    id: 'paye-vat-25th',
+    re: /PAYE\s+by\s+the\s+10th\s+and\s+VAT\s+by\s+the\s+25th/gi,
+    to: 'monthly PAYE by the 10th and VAT returns by the 10th (with payment by the 15th)',
   },
   {
-    id: 'vat-due-10th',
-    re: /VAT\s+returns\s+and\s+payments\s+as\s+due\s+on\s+the\s+10th/gi,
-    to: 'VAT returns and payments as due on the 25th',
+    id: 'vat-due-25th',
+    re: /VAT\s+returns\s+and\s+payments\s+are\s+due\s+on\s+the\s+25th\s+of\s+each\s+month/gi,
+    to: 'VAT returns are due on the 10th of each month, with payment shortly afterwards (recent 2026 notices: the 15th)',
   },
   {
     id: 'qpd4-25dec',
     re: /(QPD\s*4\s*[:.-]\s*)25(?:th|st|nd|rd)?\s*(?:of\s+)?December\b/gi,
     to: undefined,
+  },
+  {
+    id: 'vat-rate-15-40k',
+    re: /(\*\*VAT\*\*: )15 percent on goods and services\. Registration is mandatory if annual turnover exceeds USD 40,000\. Returns are due every two months\./gi,
+    to: '${1}15.5 percent on goods and services since 1 January 2026. Registration is mandatory if annual turnover exceeds USD 25,000 (or the ZiG equivalent). Returns are due by the 10th of the month following each period, with payment shortly afterwards — some categories file a combined return for a two-month period, so confirm your filing category.',
+  },
+  {
+    id: 'diaspora-vat-40k',
+    re: /(Not registering for VAT when turnover exceeds )USD 40,000/gi,
+    to: '${1}USD 25,000',
+  },
+  {
+    id: 'tcc-validity',
+    re: /The certificate is valid for 12 months\./gi,
+    to: 'The certificate is valid for 6 months for large taxpayers and 3 months for medium and small taxpayers (tiered validity since 22 December 2025).',
   },
 ];
 
@@ -84,7 +99,7 @@ for (const d of snap.docs) {
   } else {
     await d.ref.update({
       content: out,
-      lastZimraCorrection: '2026-08-30: QPD4 -> 20 Dec; VAT due -> 25th (per ZIMRA Tax Payment Calendar)',
+      lastZimraCorrection: '2026-08-30: VAT returns 10th / payment 15th (SI 81/2025); VAT 15.5%, threshold USD 25k; TCC tiered 6/3 months',
       updatedAt: FieldValue.serverTimestamp(),
     });
     touched++;

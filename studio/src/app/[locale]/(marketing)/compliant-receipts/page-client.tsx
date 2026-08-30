@@ -39,7 +39,7 @@ const features = [
   {
     icon: Shield,
     title: "Automatic Compliance",
-    description: "Receipt numbering follows FDG sequential format. VAT is calculated automatically at 15%. No manual errors.",
+    description: "Receipt numbering follows FDG sequential format. VAT is calculated automatically at 15.5%. No manual errors.",
   },
   {
     icon: Printer,
@@ -115,7 +115,7 @@ export default function CompliantReceiptsPageClient() {
               <p>--------------------------------</p>
               <p>Item: Consultation Services</p>
               <p>Total: USD $57.50</p>
-              <p>VAT (15%): USD $7.50</p>
+              <p>VAT (15.5%): USD $7.75</p>
               <p>--------------------------------</p>
               <p className="text-xs text-muted-foreground">Signature: a1b2c3d4e5f6...</p>
               <p className="text-xs text-muted-foreground">Powered by Radbit — ZIMRA compliant</p>

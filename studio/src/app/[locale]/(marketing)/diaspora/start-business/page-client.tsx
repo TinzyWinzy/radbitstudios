@@ -84,7 +84,7 @@ export function StartBusinessPage() {
           <div className="grid gap-4 sm:grid-cols-2 text-left">
             {[
               { q: "Can I register remotely?", a: "Yes — you can register a company through ZIMRA's e-services portal and appoint a local representative." },
-              { q: "What taxes apply?", a: "Corporate tax (24%), VAT (15%), PAYE, and withholding taxes. Our Tax Co-Pilot helps you stay compliant." },
+              { q: "What taxes apply?", a: "Corporate tax (24%), VAT (15.5%), PAYE, and withholding taxes. Our Tax Co-Pilot helps you stay compliant." },
               { q: "Can I open a bank account?", a: "Yes, but you may need to visit in person or work with banks that offer diaspora accounts (Stanbic, CABS, Steward Bank)." },
               { q: "How do I manage from abroad?", a: "Use Radbit's AI platform for tender alerts, budget tracking, compliance checks, and business insights." },
             ].map((item) => (

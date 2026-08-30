@@ -7,27 +7,27 @@ import { indexDocument } from '@/services/ai/rag.server';
 const ZIMRA_KNOWLEDGE = [
   {
     title: "QPD – Quarterly Payment Declaration",
-    content: "All registered taxpayers must submit QPD returns quarterly (March, June, September, December). The QPD is used to declare and pay provisional taxes for income not subject to third-party withholding. Returns must be filed by the 10th day of the month following the quarter end. Late submissions attract a penalty of 5% of the tax due plus interest at the prescribed rate. SMEs can file online via the ZIMRA e-services portal or visit any ZIMRA office. Supporting documents include proof of income and expense records for the quarter.",
+    content: "All taxpayers liable to provisional tax must submit QPD returns each quarter to declare and pay income tax instalments for income not covered by third-party withholding. The 2026 QPD calendar: QPD 1 due 25 March (10%), QPD 2 due 25 June (25%), QPD 3 due 25 September (30%), QPD 4 due 20 December (35%) of estimated annual tax. Under SI 81 of 2025 returns and payments are filed separately: the QPD return (ITF12B) is due by the 20th of each payment month, with the payment falling due on the 25th (20 December for QPD 4) — see Public Notice 17 of 2026 and the ZIMRA Tax Payment Calendar. Underestimating annual tax by more than 10% attracts interest on the shortfall; a late QPD instalment attracts a 10% penalty plus interest. SMEs can file online via the ZIMRA e-services portal (TaRMS) or visit any ZIMRA office. Supporting documents include proof of income and expense records for the quarter.",
     category: "zimra-qpd",
-    source: "ZIMRA Guidelines",
+    source: "ZIMRA Tax Payment Calendar; SI 81 of 2025; Public Notice 17 of 2026",
   },
   {
     title: "VAT Registration Thresholds",
-    content: "Businesses with annual turnover exceeding USD 40,000 must register for VAT with ZIMRA. Voluntary registration is permitted for businesses below the threshold. VAT is charged at the standard rate of 14.5% on taxable supplies. Zero-rated supplies include exported goods and certain basic commodities. Exempt supplies include financial services and certain educational services. Registered businesses must file VAT returns monthly by the 10th of the following month. Input VAT can be claimed on qualifying business purchases, but not on exempt supplies. Non-compliance penalties include a 5% late filing penalty and interest on outstanding amounts.",
+    content: "Businesses with annual turnover exceeding USD 25,000 (or the equivalent in ZiG) in any consecutive 12-month period must register for VAT with ZIMRA — effective 1 January 2024. Registration thresholds vary by category (Category C: USD 240,000; Category D: USD 120,000) and voluntary registration is possible below the threshold. VAT is charged at the standard rate of 15.5% on taxable supplies from 1 January 2026 (Finance Act No. 7 of 2025; Public Notice 7 of 2026). Zero-rated supplies include exported goods and certain basic commodities; exempt supplies include financial and certain educational services. Under SI 81 of 2025 the VAT return is due by the 10th of the month following the tax period, and the payment shortly afterwards (recent 2026 notices: the 15th — confirm the current month's notice in TaRMS). Filing frequency depends on the taxpayer category; some categories file a combined return for a two-month period. Input VAT can be claimed on qualifying business purchases but not on exempt supplies. Non-compliance penalties: a late VAT return attracts up to 25% penalty plus interest, and late payment 15% plus interest.",
     category: "zimra-vat",
-    source: "ZIMRA Guidelines",
+    source: "ZIMRA VAT Registration page; Finance Act No. 7 of 2025; Public Notice 7 of 2026; SI 81 of 2025",
   },
   {
     title: "PAYE – Pay As You Earn",
-    content: "Employers must deduct PAYE from employees' remuneration monthly and remit to ZIMRA by the 10th of the following month. PAYE is calculated using a graduated tax table with tax-free thresholds. For 2024, the tax-free threshold is approximately ZWL 100,000 per month (adjusted periodically for inflation). Employers must register for PAYE within 30 days of becoming an employer. Monthly PAYE returns must include employee details, gross remuneration, deductions, and tax calculated. Failure to deduct or remit PAYE attracts penalties of up to 100% of the tax due plus interest. Employers must also issue annual tax certificates (ITF 263) to employees.",
+    content: "Employers must deduct PAYE from employees' remuneration each month and remit it to ZIMRA by the 10th day of the following month. The 2026 PAYE structure: a tax-free threshold of US$1,200 per year (about US$100 per month), then progressive marginal rates up to a top rate of 40%, plus a 3% AIDS levy. Employers must register for PAYE within 30 days of becoming an employer and file the monthly PAYE return (REV5) with employee details, gross remuneration, deductions and tax calculated. Failure to deduct or remit PAYE attracts penalties of up to 100% of the tax due plus interest. Employers must also issue annual tax certificates (ITF263) to employees.",
     category: "zimra-paye",
-    source: "ZIMRA Guidelines",
+    source: "ZIMRA Employer Compliance Guidelines (2026)",
   },
   {
     title: "Corporate Income Tax (CIT)",
-    content: "Companies registered in Zimbabwe pay CIT at 24.72% of taxable income (including AIDS levy). The tax year runs from 1 January to 31 December. Provisional tax payments are due quarterly: 10 March, 10 June, 10 September, and 10 December. Final tax returns (ITF 12C) are due by 30 April following the tax year. SMEs with annual turnover below USD 500,000 may qualify for simplified tax regimes. Deductible expenses include operating costs, depreciation, interest, and repairs. Non-deductible expenses include fines, penalties, and donations (unless through approved channels). Losses can be carried forward for up to 6 years.",
+    content: "Companies registered in Zimbabwe pay corporate income tax at 24.72% of taxable income (24% CIT plus 3% AIDS levy). The tax year runs from 1 January to 31 December. Provisional tax is paid in quarterly instalments on the QPD calendar — 25 March, 25 June, 25 September and 20 December — with the accompanying ITF12B return due by the 20th of each of those months (SI 81 of 2025). The final income tax return (ITF 12C) is due by 30 April following the tax year. Qualifying small businesses may elect the BKPO regime at a flat 15% CIT. Deductible expenses include operating costs, depreciation, interest and repairs; fines, penalties and most donations are not deductible. Tax losses can be carried forward for up to 6 years.",
     category: "zimra-cit",
-    source: "ZIMRA Guidelines",
+    source: "ZIMRA Corporate Tax Guidelines; SI 81 of 2025",
   },
   {
     title: "Presumptive Tax for SMEs",
@@ -43,15 +43,15 @@ const ZIMRA_KNOWLEDGE = [
   },
   {
     title: "Withholding Tax",
-    content: "Payments to non-residents for certain services attract withholding tax at rates specified in the Zimbabwe tax legislation or applicable Double Taxation Agreements (DTAs). Withholding tax rates for residents include: 10% on dividends, 15% on interest (20% for non-residents), 10% on royalties, 10% on management/consultancy fees, and 15% on commissions paid to agents. The person making the payment must deduct the tax at source and remit to ZIMRA within 10 days of the month following payment. A withholding tax certificate (ITF 5) must be issued to the recipient. Failure to withhold and remit attracts a penalty of 100% of the tax not withheld. SMEs engaging foreign consultants or paying dividends must ensure compliance.",
+    content: "Payments to residents and non-residents for certain services attract withholding tax at the rates in the Income Tax Act or an applicable Double Taxation Agreement (DTA). Common resident rates include 15% on interest, 10% on royalties, and withholding on dividends, management/consultancy fees and commissions; non-resident and DTA rates differ, so confirm the current rate. The person making the payment must deduct the tax at source and remit it to ZIMRA within 10 days of the payment or credit date, and issue a withholding tax certificate (ITF 5) to the recipient. Failure to withhold and remit attracts a penalty of 100% of the tax not withheld. Under SI 81 of 2025 withholding tax returns have their own due dates — confirm in TaRMS. SMEs engaging foreign consultants or paying dividends must ensure compliance.",
     category: "zimra-withholding",
-    source: "ZIMRA Guidelines",
+    source: "ZIMRA Guidelines; SI 81 of 2025",
   },
   {
     title: "Tax Clearance Certificate",
-    content: "A valid tax clearance certificate (TCC) is required for government tenders, import/export clearance, license renewals, and bank financing. TCCs are valid for 6 months from the date of issue. To qualify, a business must have filed all tax returns and paid all amounts due, or have a valid payment plan. Applications are submitted online through the ZIMRA e-services portal. ZIMRA will verify compliance across all tax types (CIT, PAYE, VAT, withholding tax). Processing typically takes 5-10 working days. SMEs must ensure all returns are up to date before applying. A TCC can be revoked if new tax liabilities arise and are not settled. There is no fee for the TCC itself, but all outstanding taxes must be paid first.",
+    content: "A valid tax clearance certificate (ITF 263) is required for government tenders, import/export clearance, license renewals, and bank financing. Since the reversal of Public Notice 69 of 2025 (22 December 2025), TCC validity is tiered: 6 months for large taxpayers and 3 months for medium and small taxpayers. To qualify, a business must have filed all tax returns and paid all amounts due, or have a valid payment plan. Applications are submitted online through the ZIMRA e-services portal. ZIMRA will verify compliance across all tax types (CIT, PAYE, VAT, withholding tax). Processing typically takes 5-10 working days. SMEs must ensure all returns are up to date before applying. A TCC can be revoked if new tax liabilities arise and are not settled. There is no fee for the TCC itself, but all outstanding taxes must be paid first.",
     category: "zimra-compliance",
-    source: "ZIMRA Guidelines",
+    source: "ZIMRA Guidelines; Public Notice 69 of 2025 and its reversal (22 December 2025)",
   },
   {
     title: "SADC Rules of Origin",
@@ -73,9 +73,9 @@ const ZIMRA_KNOWLEDGE = [
   },
   {
     title: "ZIMRA Public Notices 2026 - Key Compliance Deadlines",
-    content: "ZIMRA public notices for 2026 (PN 21 to PN 39) cover critical compliance deadlines. Key dates: VAT and Digital Services Withholding Tax Returns due 10 June 2026 (PN 34). Returns and Payments due 5th of each month (PN 33, 27, 22). VAT Returns and Payments due 10th of each month (PN 23, 28). Income Tax Returns (ITF12C) for the tax year ended 31 December 2025 have an extended deadline per PN 26. Excise Special Surtax Returns have multiple due dates (PN 21, 29, 31, 36, 39). Other important notices: PN 37 - New FDMS Support Emails per Region; PN 35 - Confirmation of Customs Clearance Details for Motor Vehicles Before Purchase; PN 32 - Forfeiture of Unclaimed Funds; PN 25 - Voluntary Disclosure program; PN 24 - Obligations to account for tax on payments to non-residents; PN 30 - WhatsApp Number Change; Notice of 9th ZIMRA Annual General Meeting on 19 June 2026; and Notice on Repatriation of Zimbabweans.",
+    content: "ZIMRA public notices across 2026 (PN 1 to PN 44) set monthly compliance deadlines under SI 81 of 2025, which separates return filing dates from payment dates. VAT returns are generally due the 10th of the following month (PN 23, 28, 43) with payments due 10th-15th per the month's notice (PN 43: payment 15 August 2026). Value Added Withholding Tax returns are due by the 5th (PN 33, 27, 22). QPD returns (ITF12B) are due the 20th of the payment month with payments on 25 Mar, 25 Jun, 25 Sep and 20 Dec (PN 17, 36). Income Tax Returns (ITF12C) for the tax year ended 31 December 2025 have an extended deadline per PN 26. Excise Special Surtax Returns have multiple due dates (PN 21, 29, 31, 36, 39). Other notices: PN 37 - New FDMS Support Emails per Region; PN 35 - Confirmation of Customs Clearance Details for Motor Vehicles Before Purchase; PN 32 - Forfeiture of Unclaimed Funds; PN 25 - Voluntary Disclosure program; PN 24 - Obligations to account for tax on payments to non-residents; PN 30 - WhatsApp channel change. Always confirm the current month's notice in TaRMS.",
     category: "zimra-public-notices",
-    source: "ZIMRA Public Notices",
+    source: "ZIMRA Public Notices 2026; SI 81 of 2025",
   },
   {
     title: "ZIDA Q1 2026 Quarterly Report",

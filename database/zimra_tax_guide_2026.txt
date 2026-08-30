@@ -19,10 +19,11 @@ Special rates:
 Tax registration: All businesses must register on TaRMS platform at https://mytaxselfservice.zimra.co.zw to obtain a Tax Identification Number (TIN) and Business Partner (BP) Number.
 
 Quarterly Payment Dates (QPDs) for provisional tax:
-- 25 March (30% of estimated tax)
-- 25 June (30% of estimated tax)
+- 25 March (10% of estimated tax)
+- 25 June (25% of estimated tax)
 - 25 September (30% of estimated tax)
-- 20 December (balance)
+- 20 December (35%) (balance)
+Under SI 81 of 2025: QPD return (ITF12B) due the 20th of each payment month; payment due the 25th (20 December for QPD 4). Public Notice 17 of 2026 confirms this for the first QPD of 2026.
 
 Annual corporate tax return (ITF14): Due within 6 months of financial year-end.
 For companies with December year-end: deadline is 30 June.
@@ -48,7 +49,7 @@ Requirements:
 - Valid TIN number
 - Active TaRMS account for online applications
 
-Validity: 1 month from date of issue (changed from 6 months in December 2025). Must apply for a fresh certificate each month.
+Validity: tiered since 22 December 2025 — 6 months for large taxpayers and 3 months for medium and small taxpayers. A proposed 1-month validity in Public Notice 69 of 2025 (17 December 2025) was reversed on 22 December 2025 after stakeholder feedback.
 
 Consequences of non-compliance: 30% withholding on amounts payable to payees who fail to furnish valid tax clearance certificates (Section 80 of Income Tax Act Chapter 23:06). Applies to contracts with obligation to pay amounts totalling US$1,000 or ZiG equivalent or more.
 
@@ -99,8 +100,8 @@ Registration threshold: Taxable supplies exceeding or expected to exceed US$25,0
 
 Voluntary registration: Available for traders whose taxable supplies do not meet the threshold.
 
-VAT return (VAT7): Due 25th of the month following the end of the tax period.
-VAT Categories: Category A (monthly), Category B (bi-monthly), Category C, Category D.
+VAT return (VAT7): Due the 10th of the month following the end of the tax period, with payment shortly afterwards (recent 2026 notices: the 15th), under SI 81 of 2025. Confirm the current month's notice in TaRMS.
+VAT Categories: Category A, B, C and D — filing is not strictly monthly; per Public Notice 7 of 2026 Category A filed a combined December/January return. Confirm your category's filing period in TaRMS.
 
 Key 2026 changes:
 - VAT rate increased from 15% to 15.5%

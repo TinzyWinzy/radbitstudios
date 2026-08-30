@@ -37,7 +37,7 @@ const tools = [
   {
     slug: "vat-calculator",
     title: "VAT Calculator Zimbabwe",
-    excerpt: "Calculate VAT-inclusive and VAT-exclusive prices for any transaction using the current ZIMRA 15% rate.",
+    excerpt: "Calculate VAT-inclusive and VAT-exclusive prices for any transaction using the current ZIMRA 15.5% rate.",
     icon: <Calculator className="h-5 w-5 text-secondary" />,
   },
   {

@@ -301,14 +301,14 @@ export async function handleIncomingMessage(
       receiptType: 'FISCALINVOICE',
       currency: 'USD',
       totalAmount: amount,
-      vatAmount: Math.round(amount * 0.15 * 100) / 100,
+      vatAmount: Math.round(amount * 0.155 * 100) / 100,
       description,
       taxLines: [
-        { taxID: 1, taxCode: 'VAT', taxPercent: 15, taxAmountCents: Math.round(amount * 0.15 * 100), salesAmountWithTaxCents: Math.round(amount * 100) },
+        { taxID: 1, taxCode: 'VAT', taxPercent: 15.5, taxAmountCents: Math.round(amount * 0.155 * 100), salesAmountWithTaxCents: Math.round(amount * 100) },
       ],
     });
     if (result.success) {
-      await sendWhatsAppMessage(from, `🧾 Receipt issued!\n\nReceipt: ${result.receiptNumber}\nAmount: $${amount.toFixed(2)}\nVAT (15%): $${(amount * 0.15).toFixed(2)}\nSignature: ${result.receiptDeviceSignature?.slice(-8) || 'N/A'}\nQR: ${result.receiptQrCode || 'N/A'}\n\nPowered by Radbit — ZIMRA FDG compliant`);
+      await sendWhatsAppMessage(from, `🧾 Receipt issued!\n\nReceipt: ${result.receiptNumber}\nAmount: $${amount.toFixed(2)}\nVAT (15.5%): $${(amount * 0.155).toFixed(2)}\nSignature: ${result.receiptDeviceSignature?.slice(-8) || 'N/A'}\nQR: ${result.receiptQrCode || 'N/A'}\n\nPowered by Radbit — ZIMRA FDG compliant`);
     } else {
       await sendWhatsAppMessage(from, `❌ ${result.error || 'Failed to issue receipt.'}`);
     }

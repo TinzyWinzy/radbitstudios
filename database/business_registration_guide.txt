@@ -144,7 +144,7 @@ ONGOING COMPLIANCE
 ========================================
 
 - Annual Returns: File within 21 days of incorporation anniversary. Late filing incurs penalties.
-- Tax Returns: Corporate tax return due within 6 months of financial year-end. Monthly PAYE (REV5) by 10th. Monthly VAT by 25th. Quarterly provisional tax on 25 Mar, 25 Jun, 25 Sep, 20 Dec.
+- Tax Returns: Corporate tax return due within 6 months of financial year-end. Monthly PAYE (REV5) by 10th. VAT returns by the 10th, payments by the 15th (SI 81 of 2025). Quarterly provisional tax on 25 Mar, 25 Jun, 25 Sep, 20 Dec.
 - Notify Registrar of any changes to directors, address, or company structure within 1 month
 - Maintain registered office address in Zimbabwe
 - Keep accounting records for at least 6 years

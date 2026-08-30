@@ -22,7 +22,7 @@ const ALL_LINKS: RelatedLink[] = [
   { title: "EcoCash Business vs Personal", href: "/resources/guides/ecocash-business-vs-personal", description: "Limits, fees, and when to upgrade your EcoCash wallet.", type: "guide" },
   { title: "Load-Shedding Solutions", href: "/resources/guides/load-shedding-solutions-smes", description: "Solar, inverters, generators — cost-benefit for SMEs.", type: "guide" },
   { title: "Business Planning in Zimbabwe", href: "/resources/guides/zim-business-planning", description: "Templates and local market insights for your business plan.", type: "guide" },
-  { title: "VAT Calculator", href: "/resources/tools/vat-calculator", description: "Calculate VAT-inclusive and VAT-exclusive prices at 15%.", type: "tool" },
+  { title: "VAT Calculator", href: "/resources/tools/vat-calculator", description: "Calculate VAT-inclusive and VAT-exclusive prices at the 15.5% ZIMRA rate.", type: "tool" },
   { title: "Business Name Generator", href: "/resources/tools/business-name-generator", description: "Shona, English, and bilingual name suggestions.", type: "tool" },
   { title: "AI Tender Matching", href: "/use-cases/tender-matching", description: "Find government tenders automatically with AI.", type: "use-case" },
   { title: "Digital Readiness Assessment", href: "/use-cases/business-assessment", description: "Score your business digital maturity in 15 minutes.", type: "use-case" },
