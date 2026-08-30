@@ -1,0 +1,473 @@
+import { v4 as uuidv4 } from 'uuid';
+import {
+  Holon,
+  VincentRule,
+  Opportunity,
+  EvidenceItem,
+  Hypothesis,
+  Policy,
+} from '../types';
+
+export interface AehmlSeedStructure {
+  id: string;
+  version: string;
+  description: string;
+  holon_graph: Record<string, string[]>;
+  communication_graph: Record<string, string[]>;
+  authority_graph: Record<string, string[]>;
+  status: string;
+  activated_at: string;
+}
+
+export interface AehmlSeedData {
+  holons: Holon[];
+  vincentRules: VincentRule[];
+  structure: AehmlSeedStructure;
+  policy: Policy;
+  opportunities: Opportunity[];
+  evidenceItems: EvidenceItem[];
+  hypotheses: Hypothesis[];
+}
+
+let cachedSeed: AehmlSeedData | null = null;
+
+export function buildAehmlSeed(): AehmlSeedData {
+  if (cachedSeed) return cachedSeed;
+
+  const now = () => new Date().toISOString();
+
+  const holons: Holon[] = [
+    {
+      id: '11111111-1111-1111-1111-111111111101',
+      name: 'Executive Holon',
+      slug: 'executive',
+      type: 'executive',
+      objective: 'Synthesize multi-holon perspectives and coordinate human handoff packages.',
+      authority_scope: { read: ['all'], write: ['decisions', 'episodes'], execute: ['escalate_to_human'] },
+      capabilities: ['synthesis', 'priority_weighting', 'decision_framing'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111102',
+      name: 'Intelligence Holon',
+      slug: 'intelligence',
+      type: 'operational',
+      objective: 'Observe market signals, extract verified claims, generate competing hypotheses.',
+      authority_scope: { read: ['public_data', 'documents'], write: ['evidence_items', 'hypotheses'], execute: [] },
+      capabilities: ['claim_extraction', 'source_validation', 'hypothesis_generation'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111103',
+      name: 'Sales Holon',
+      slug: 'sales',
+      type: 'operational',
+      objective: 'Diagnose buyer state and recommend lowest-cost next commercial action.',
+      authority_scope: { read: ['opportunity', 'evidence'], write: ['recommendations'], execute: [] },
+      capabilities: ['buyer_state_modeling', 'next_action_selection'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111104',
+      name: 'Delivery Holon',
+      slug: 'delivery',
+      type: 'operational',
+      objective: 'Assess technical feasibility, protect gross margin, gate reckless proposals.',
+      authority_scope: { read: ['technical_requirements'], write: ['feasibility_assessments'], execute: [] },
+      capabilities: ['feasibility_analysis', 'effort_estimation', 'scope_gating'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111105',
+      name: 'Vincent H4 Governance',
+      slug: 'vincent_h4',
+      type: 'governance',
+      objective: 'Enforce constitutional rules, compute 100-pt opportunity scores, execute kill rules.',
+      authority_scope: { read: ['all'], write: ['governance_verdicts', 'scores'], execute: ['proposal_kill_gate'] },
+      capabilities: ['constitutional_auditing', 'score_calculation', 'pricing_governance'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111106',
+      name: 'Red Team Holon',
+      slug: 'red_team',
+      type: 'red_team',
+      objective: 'Uncover fatal assumptions, formulate CFO/procurement challenges, design disconfirming tests.',
+      authority_scope: { read: ['all'], write: ['adversarial_challenges'], execute: [] },
+      capabilities: ['adversarial_reasoning', 'assumption_invalidation'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111107',
+      name: 'Monitor Holon',
+      slug: 'monitor',
+      type: 'monitor',
+      objective: 'Detect stage inflation, deal stalls, evidence decay, trigger workflow interrupts.',
+      authority_scope: { read: ['all_traces'], write: ['monitor_interventions'], execute: ['interrupt_workflow'] },
+      capabilities: ['drift_detection', 'stall_monitoring', 'anomaly_interception'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+    {
+      id: '11111111-1111-1111-1111-111111111108',
+      name: 'Evaluator Holon',
+      slug: 'evaluator',
+      type: 'evaluator',
+      objective: 'Perform retrospective post-mortems, calculate regret, classify failure categories.',
+      authority_scope: { read: ['episodes', 'outcomes'], write: ['evaluations'], execute: [] },
+      capabilities: ['post_mortem_analysis', 'regret_quantification', 'failure_taxonomy'],
+      status: 'active',
+      policy_version: 'v0.1.0',
+      harness_version: 'v0.1.0',
+      created_at: now(),
+      updated_at: now(),
+    },
+  ];
+
+  const vincentRules: VincentRule[] = [
+    {
+      id: '33333333-3333-3333-3333-333333333301',
+      category: 'Epistemic Integrity',
+      name: 'No Fabricated Capability',
+      description: 'System must not claim deployed capability unless evidence status = verified or deployed.',
+      rule_type: 'constitutional',
+      severity: 'hard',
+      active: true,
+      rule_expression: { require: "evidence.validation_status in ['verified', 'deployed']" },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+    {
+      id: '33333333-3333-3333-3333-333333333302',
+      category: 'Commercial Ethics',
+      name: 'No Fabricated Testimonials',
+      description: 'System must never produce or imply endorsements without verified signed release.',
+      rule_type: 'constitutional',
+      severity: 'hard',
+      active: true,
+      rule_expression: { prohibit: 'unverified_testimonials' },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+    {
+      id: '33333333-3333-3333-3333-333333333303',
+      category: 'Commercial Ethics',
+      name: 'No False Scarcity',
+      description: 'Never manufacture synthetic deadlines or artificial capacity limits.',
+      rule_type: 'constitutional',
+      severity: 'hard',
+      active: true,
+      rule_expression: { prohibit: 'synthetic_scarcity' },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+    {
+      id: '33333333-3333-3333-3333-333333333304',
+      category: 'Safety & Governance',
+      name: 'No Autonomous External Messages',
+      description: 'All external communications require human operator review and explicit sign-off.',
+      rule_type: 'constitutional',
+      severity: 'hard',
+      active: true,
+      rule_expression: { require: 'human_approval_required == true' },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+    {
+      id: '33333333-3333-3333-3333-333333333305',
+      category: 'Delivery Governance',
+      name: 'Proposal Gate: Delivery Feasibility & Margin',
+      description: 'Proposals cannot be issued if delivery is infeasible or delivery risk exceeds 0.85.',
+      rule_type: 'proposal_gate',
+      severity: 'hard',
+      active: true,
+      rule_expression: { gate: 'delivery_feasible == true && delivery_risk <= 0.85' },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+    {
+      id: '33333333-3333-3333-3333-333333333306',
+      category: 'Pricing Governance',
+      name: 'No Hidden Pricing or Unfunded Scope',
+      description: 'All proposals must explicitly itemize delivery cost, support expectations, and payment schedule.',
+      rule_type: 'pricing',
+      severity: 'hard',
+      active: true,
+      rule_expression: { require: ['delivery_cost', 'payment_milestones', 'scope_boundaries'] },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+    {
+      id: '33333333-3333-3333-3333-333333333307',
+      category: 'Commercial Discipline',
+      name: 'Kill Rule: Score Threshold < 50',
+      description: 'Opportunities scoring below 50 must be deprioritized unless fresh economic evidence exists.',
+      rule_type: 'kill_rule',
+      severity: 'advisory',
+      active: true,
+      rule_expression: { trigger: 'opportunity_score < 50', recommended_action: 'DISQUALIFY' },
+      version: 'v0.1.0',
+      created_at: now(),
+    },
+  ];
+
+  const structure: AehmlSeedStructure = {
+    id: '22222222-2222-2222-2222-222222222201',
+    version: 'v0.1.0',
+    description: 'Initial baseline flat-holarchy with centralized Vincent H4 governance and Human-in-the-Loop decision gate.',
+    holon_graph: {
+      executive: ['intelligence', 'sales', 'delivery', 'vincent_h4', 'red_team', 'monitor', 'evaluator'],
+    },
+    communication_graph: {
+      intelligence: ['executive', 'sales'],
+      sales: ['delivery', 'vincent_h4', 'red_team'],
+      vincent_h4: ['executive', 'sales'],
+      delivery: ['executive', 'sales'],
+      red_team: ['executive'],
+    },
+    authority_graph: {
+      human: ['final_external_action'],
+      vincent_h4: ['proposal_kill_gate', 'scoring_gate'],
+      monitor: ['interrupt_workflow'],
+    },
+    status: 'active',
+    activated_at: now(),
+  };
+
+  const policy: Policy = {
+    id: '44444444-4444-4444-4444-444444444401',
+    holon_id: '11111111-1111-1111-1111-111111111103',
+    name: 'Baseline Sales Action Policy',
+    version: 'v0.1.0',
+    policy_type: 'rule_based',
+    configuration: {
+      matrix: [
+        { buyer_state: 'problem_unaware', min_score: 0, action: 'RESEARCH' },
+        { buyer_state: 'problem_aware', min_score: 50, action: 'QUESTION' },
+        { buyer_state: 'solution_aware', min_score: 65, action: 'QUANTIFY' },
+        { buyer_state: 'vendor_comparing', min_score: 75, action: 'DEMONSTRATE' },
+        { buyer_state: 'commercially_ready', min_score: 80, action: 'PROPOSE' },
+        { buyer_state: 'politically_blocked', min_score: 0, action: 'ESCALATE' },
+        { buyer_state: 'interested_unfunded', min_score: 0, action: 'WAIT' },
+      ],
+    },
+    training_data_window: {},
+    evaluation_metrics: {},
+    status: 'active',
+    created_at: now(),
+  };
+
+  const opp1Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+  const opp2Id = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+  const opp3Id = 'cccccccc-cccc-cccc-cccc-cccccccccccc';
+
+  const opportunities: Opportunity[] = [
+    {
+      id: opp1Id,
+      organization_name: 'ZimGold Mining Logistics',
+      website: 'https://zimgold-example.co.zw',
+      sector: 'Mining',
+      country: 'Zimbabwe',
+      source: 'Direct Inbound',
+      stage: 'discovery',
+      status: 'active',
+      estimated_contract_value: 45000,
+      estimated_gross_margin: 0.65,
+      estimated_delivery_cost: 15750,
+      probability_win: 0.65,
+      expected_value: 29250,
+      opportunity_score: 82,
+      confidence: 'high',
+      economic_buyer: 'Tafadzwa Moyo (MD)',
+      champion: 'Kudzai Chiwenga (Ops Dir)',
+      problem_owner: 'Logistics Superintendent',
+      technical_buyer: 'Lead Architect',
+      buyer_state: 'solution_aware',
+      decision_window: 'Q3 2026',
+      next_action: 'QUANTIFY',
+      next_action_owner: 'Tinotenda Duma',
+      primary_risk: 'High legacy ERP integration latency',
+      loss_condition: 'Client opts for internal in-house spreadsheet patch',
+      created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+      updated_at: now(),
+    },
+    {
+      id: opp2Id,
+      organization_name: 'Harare Hospitality Group',
+      website: 'https://hhg-example.co.zw',
+      sector: 'Hospitality',
+      country: 'Zimbabwe',
+      source: 'Referral',
+      stage: 'qualified',
+      status: 'active',
+      estimated_contract_value: 22000,
+      estimated_gross_margin: 0.7,
+      estimated_delivery_cost: 6600,
+      probability_win: 0.45,
+      expected_value: 9900,
+      opportunity_score: 68,
+      confidence: 'moderate',
+      economic_buyer: 'Sarah Henderson (CFO)',
+      champion: 'Tendai Mutasa (GM)',
+      problem_owner: 'Front Office Head',
+      technical_buyer: 'IT Contractor',
+      buyer_state: 'vendor_comparing',
+      decision_window: '30 Days',
+      next_action: 'DEMONSTRATE',
+      next_action_owner: 'Tinotenda Duma',
+      primary_risk: 'Cashflow constraints on upfront setup deposit',
+      loss_condition: 'Budget freeze until tourist high-season',
+      created_at: new Date(Date.now() - 86400000 * 12).toISOString(),
+      updated_at: now(),
+    },
+    {
+      id: opp3Id,
+      organization_name: 'AgriFresh Export Hub',
+      website: 'https://agrifresh-example.co.zw',
+      sector: 'Agriculture',
+      country: 'Zimbabwe',
+      source: 'ZIDA Quarterly Report',
+      stage: 'target',
+      status: 'active',
+      estimated_contract_value: 14000,
+      estimated_gross_margin: 0.6,
+      estimated_delivery_cost: 5600,
+      probability_win: 0.2,
+      expected_value: 2800,
+      opportunity_score: 48,
+      confidence: 'low',
+      economic_buyer: 'Unknown',
+      champion: 'Export Coordinator',
+      problem_owner: 'Packhouse Manager',
+      technical_buyer: 'None',
+      buyer_state: 'problem_unaware',
+      decision_window: 'Unknown',
+      next_action: 'RESEARCH',
+      next_action_owner: 'Sales Holon',
+      primary_risk: 'No direct authority access yet',
+      loss_condition: 'Unreachable decision maker',
+      created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+      updated_at: now(),
+    },
+  ];
+
+  const ev1Id = uuidv4();
+  const ev2Id = uuidv4();
+  const ev3Id = uuidv4();
+
+  const evidenceItems: EvidenceItem[] = [
+    {
+      id: ev1Id,
+      opportunity_id: opp1Id,
+      claim: 'Client loses $8,200/mo due to manual truck weighbridge reconciliation delays.',
+      evidence_type: 'verified_operational_data',
+      source: 'Operations Audit Log provided by Kudzai Chiwenga',
+      confidence: 'high',
+      confidence_score: 0.92,
+      validation_status: 'verified',
+      supporting_or_contradicting: 'supporting',
+      originating_holon_id: '11111111-1111-1111-1111-111111111102',
+      is_untrusted_external: false,
+      created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
+    },
+    {
+      id: ev2Id,
+      opportunity_id: opp1Id,
+      claim: 'Managing Director has pre-allocated $50k discretionary capital expenditure budget.',
+      evidence_type: 'direct_client_statement',
+      source: 'Discovery Call Transcript with Tafadzwa Moyo',
+      confidence: 'high',
+      confidence_score: 0.88,
+      validation_status: 'verified',
+      supporting_or_contradicting: 'supporting',
+      originating_holon_id: '11111111-1111-1111-1111-111111111102',
+      is_untrusted_external: false,
+      created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+    },
+    {
+      id: ev3Id,
+      opportunity_id: opp1Id,
+      claim: 'Internal IT is advocating for building a custom in-house Python script rather than external vendor.',
+      evidence_type: 'observed_behavior',
+      source: 'Technical Buyer Email response',
+      confidence: 'moderate',
+      confidence_score: 0.65,
+      validation_status: 'verified',
+      supporting_or_contradicting: 'contradicting',
+      originating_holon_id: '11111111-1111-1111-1111-111111111106',
+      is_untrusted_external: false,
+      created_at: new Date(Date.now() - 86400000 * 1).toISOString(),
+    },
+  ];
+
+  const hypotheses: Hypothesis[] = [
+    {
+      id: uuidv4(),
+      opportunity_id: opp1Id,
+      statement: 'H1: Automated weighbridge synchronization will eliminate $8.2k/mo leakage and secure 6-month ROI.',
+      status: 'supported',
+      supporting_evidence_ids: [ev1Id, ev2Id],
+      contradicting_evidence_ids: [],
+      missing_evidence: 'Exact network latency at remote Beitbridge weighbridge site',
+      verification_action: 'Run 1-day telemetry benchmark on gateway edge device',
+      commercial_consequence: 'Enables premium pricing without competitive RFP pushback',
+      confidence: 'high',
+      created_by_holon_id: '11111111-1111-1111-1111-111111111102',
+      created_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+      updated_at: now(),
+    },
+    {
+      id: uuidv4(),
+      opportunity_id: opp1Id,
+      statement: 'H2: In-house IT will stall decision by 4+ months unless we position Radbit as an enabler for IT rather than a replacement.',
+      status: 'supported',
+      supporting_evidence_ids: [ev3Id],
+      contradicting_evidence_ids: [],
+      missing_evidence: 'IT Lead salary / KPI alignment details',
+      verification_action: 'Host dedicated technical architecture session with IT Lead Architect',
+      commercial_consequence: 'Prevents political veto from technical gatekeeper',
+      confidence: 'moderate',
+      created_by_holon_id: '11111111-1111-1111-1111-111111111106',
+      created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+      updated_at: now(),
+    },
+  ];
+
+  cachedSeed = {
+    holons,
+    vincentRules,
+    structure,
+    policy,
+    opportunities,
+    evidenceItems,
+    hypotheses,
+  };
+  return cachedSeed;
+}
