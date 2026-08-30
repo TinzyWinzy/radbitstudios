@@ -56,7 +56,8 @@ tags = ["stripe", "webhook"]
 [[rules]]
 id = "paynow-integration-key"
 description = "PayNow integration key/ID"
-regex = '''\b\d{4,10}\b(?=.*paynow|.*payment)'''
+regex = '''PAYNOW_INTEGRATION_KEY\s*=\s*[^\s]{8,}'''
+keywords = ["paynow"]
 tags = ["paynow", "payment"]
 
 [[rules]]

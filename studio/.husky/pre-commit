@@ -1,1 +1,11 @@
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --redact --config-path ../.gitleaks.toml
+  if [ $? -ne 0 ]; then
+    echo "gitleaks: secret scan found staged secrets. Fix or allowlist before committing."
+    exit 1
+  fi
+else
+  echo "gitleaks: not installed — skipping local secret scan (enforced in CI security-scan.yml)."
+fi
+
 npm test
