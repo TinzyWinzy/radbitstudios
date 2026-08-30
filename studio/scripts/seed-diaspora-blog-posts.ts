@@ -46,7 +46,7 @@ Buying property from abroad is easier now than it was five years ago. The deeds 
 4. Transfer funds through a licensed bureau de change or bank
 5. Your lawyer registers the transfer at the deeds office
 
-The costs are roughly 10 percent of the purchase price — 6 percent transfer duty, 2 percent legal fees, and 2 percent agency fees. Rental yields in Harare range from 6 to 12 percent depending on location and property type.
+The costs are roughly 8 percent of the purchase price — 3 percent transfer duty, 2 percent legal fees, and 2 percent agency fees. Rental yields in Harare range from 6 to 12 percent depending on location and property type.
 
 **Stock Market: ZSE for Diaspora**
 The Zimbabwe Stock Exchange allows diaspora investors to open accounts through stockbroking firms. You need a ZIMRA tax clearance certificate, proof of identity, and proof of address. The minimum investment is about USD 100.
@@ -118,11 +118,11 @@ Once the full payment is made, your lawyer lodges the transfer at the deeds offi
 
 **Costs Breakdown**
 On a USD 100,000 property, expect to pay:
-- Transfer duty: 6 percent (USD 6,000)
+- Transfer duty: 3 percent (USD 3,000)
 - Legal fees: 2.5 percent (USD 2,500)
 - Estate agent commission: 2.5 percent (USD 2,500)
 - VAT on legal fees: 15.5 percent (USD 387.50)
-- Total closing costs: approximately USD 11,387.50
+- Total closing costs: approximately USD 8,387.50
 
 **Rental Yields**
 Harare residential properties yield 6 to 12 percent annually in USD terms. Commercial properties yield higher but have more vacancy risk. Short-term rentals (Airbnb) in popular areas can yield 15 to 20 percent but require active management.
@@ -461,7 +461,7 @@ ZIMRA operates a quarterly payment system for income tax:
 - QPD 3: 25 September
 - QPD 4: 20 December
 
-You estimate your annual profit and pay one quarter of the estimated tax each QPD. If you underpay by more than 10 percent, ZIMRA charges interest at 3 percent per month.
+You estimate your annual profit and pay one quarter of the estimated tax each QPD. Underpaid tax attracts interest at the prescribed rate (SI 26 of 2025): 10 percent per annum on foreign-currency debt, or the Bank Policy Rate plus 5 percentage points on local-currency debt.
 
 **Managing ZIMRA From Abroad**
 Here is the system that works for me:
@@ -484,7 +484,7 @@ The certificate is valid for 6 months for large taxpayers and 3 months for mediu
 **Common Mistakes Diaspora Business Owners Make**
 Mistake 1: Not registering for VAT when turnover exceeds USD 25,000. The penalties are backdated to the date you should have registered.
 
-Mistake 2: Filing returns late. The penalty is USD 200 per month per overdue return. If you miss four returns in a year, the penalties add up to more than the tax.
+Mistake 2: Filing returns late. The penalty is up to USD 30 per day per overdue return (capped at 181 days), plus interest. If you miss four returns in a year, the penalties add up to more than the tax.
 
 Mistake 3: Using personal bank accounts for business transactions. ZIMRA can and does audit personal accounts if they suspect business activity. Always use a business bank account.
 

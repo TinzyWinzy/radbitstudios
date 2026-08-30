@@ -143,7 +143,7 @@ describe('Pattern B — JSON mode with parse/fallback', () => {
   it('generateTaxAnswer returns parsed tax response', async () => {
     const { generateTaxAnswer } = await import('@/ai/flows/tax-copilot');
     setMockJsonResponse({
-      answer: 'VAT is due on the 25th',
+      answer: 'VAT returns are due by the 10th',
       regulations: ['VAT Act Section 15'],
       disclaimers: ['Consult a practitioner'],
     });

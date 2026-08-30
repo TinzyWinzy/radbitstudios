@@ -25,15 +25,14 @@ Quarterly Payment Dates (QPDs) for provisional tax:
 - 20 December (35%) (balance)
 Under SI 81 of 2025: QPD return (ITF12B) due the 20th of each payment month; payment due the 25th (20 December for QPD 4). Public Notice 17 of 2026 confirms this for the first QPD of 2026.
 
-Annual corporate tax return (ITF14): Due within 6 months of financial year-end.
-For companies with December year-end: deadline is 30 June.
+Annual corporate tax return (ITF12C Self-Assessment): Due 30 April after the end of the tax year (Public Notice 26 of 2026 extended the 2026 deadline to 30 May 2026).
 
 Self-assessment regime: All clients must furnish self-assessment returns.
 Tax year runs 1 January to 31 December.
 
 Domestic Minimum Top-Up Tax (DMTT): Effective 1 January 2026. Applies to multinational enterprises with consolidated annual turnover exceeding €750 million (€760 million per draft bill). Ensures minimum 15% effective tax rate on Zimbabwean profits.
 
-Assessed loss carry forward for mining: Limited to 30% per annum (effective 1 Jan 2026).
+Assessed loss carry forward for mining: Deduction of carried-forward assessed losses limited to 30% per annum (effective 1 Jan 2026); the balance is carried forward.
 
 ========================================
 ITF263 — TAX CLEARANCE CERTIFICATE
@@ -81,7 +80,7 @@ AIDS levy: 3% on net tax after credit
 | ZiG 100,801 — 1,008,000 | 25% |
 | Above ZiG 1,008,000 | 40% |
 
-Monthly PAYE return (REV5): Due 10th of following month.
+Monthly PAYE remittance (P2 Remittance Advice Form): Due 10th of following month.
 Individual Income Tax return (ITF1): Due 30 April.
 
 Employers must segregate income by currency and apply the relevant schedule. Separate tax tables for USD and ZiG.

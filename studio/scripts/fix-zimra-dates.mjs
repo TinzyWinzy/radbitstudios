@@ -53,6 +53,31 @@ const fixes = [
     re: /VAT on legal fees: 15 percent \(USD 375\)/gi,
     to: 'VAT on legal fees: 15.5 percent (USD 387.50)',
   },
+  {
+    id: 'underpayment-interest-3pct',
+    re: /interest at 3 percent per month/gi,
+    to: 'interest at the prescribed rate (SI 26 of 2025): 10 percent per annum on foreign-currency debt, or the Bank Policy Rate plus 5 percentage points on local-currency debt',
+  },
+  {
+    id: 'penalty-200-30day',
+    re: /The penalty is USD 200 per month per overdue return\./gi,
+    to: 'The penalty is up to USD 30 per day per overdue return (capped at 181 days), plus interest',
+  },
+  {
+    id: 'transfer-duty-6pct',
+    re: /Transfer duty: 6 percent \(USD 6,000\)/gi,
+    to: 'Transfer duty: 3 percent (USD 3,000)',
+  },
+  {
+    id: 'closing-costs-total',
+    re: /Total closing costs: approximately USD 11,387\.50/gi,
+    to: 'Total closing costs: approximately USD 8,387.50',
+  },
+  {
+    id: 'costs-10pct-6pct',
+    re: /The costs are roughly 10 percent of the purchase price — 6 percent transfer duty, 2 percent legal fees, and 2 percent agency fees\./gi,
+    to: 'The costs are roughly 8 percent of the purchase price — 3 percent transfer duty, 2 percent legal fees, and 2 percent agency fees.',
+  },
 ];
 
 function applyReplacement(content) {
@@ -89,6 +114,7 @@ for (const d of snap.docs) {
   const before = data.content;
   const { out, changed } = applyReplacement(before);
   if (!changed) continue;
+  touched++;
 
   if (mode === 'scan') {
     console.log(`\n[scan] ${d.id} | slug=${data.slug} | title=${data.title.slice(0, 60)}`);
@@ -104,10 +130,9 @@ for (const d of snap.docs) {
   } else {
     await d.ref.update({
       content: out,
-      lastZimraCorrection: '2026-08-30: VAT returns 10th / payment 15th (SI 81/2025); VAT 15.5%, threshold USD 25k; TCC tiered 6/3 months',
+      lastZimraCorrection: '2026-08-30: VAT returns 10th / payment 15th (SI 81/2025); VAT 15.5%, threshold USD 25k; TCC tiered 6/3 months; interest 10% p.a. FX (BPR+5% ZiG), penalty USD 30/day capped 181 days, transfer duty max 3% (USD 3,000 at 100k)',
       updatedAt: FieldValue.serverTimestamp(),
     });
-    touched++;
     console.log(`[fix] ${d.id} (slug=${data.slug}) updated`);
   }
 }

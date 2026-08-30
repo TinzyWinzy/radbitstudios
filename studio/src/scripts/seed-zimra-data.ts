@@ -19,7 +19,7 @@ const ZIMRA_KNOWLEDGE = [
   },
   {
     title: "PAYE – Pay As You Earn",
-    content: "Employers must deduct PAYE from employees' remuneration each month and remit it to ZIMRA by the 10th day of the following month. The 2026 PAYE structure: a tax-free threshold of US$1,200 per year (about US$100 per month), then progressive marginal rates up to a top rate of 40%, plus a 3% AIDS levy. Employers must register for PAYE within 30 days of becoming an employer and file the monthly PAYE return (REV5) with employee details, gross remuneration, deductions and tax calculated. Failure to deduct or remit PAYE attracts penalties of up to 100% of the tax due plus interest. Employers must also issue annual tax certificates (ITF263) to employees.",
+    content: "Employers must deduct PAYE from employees' remuneration each month and remit it to ZIMRA by the 10th day of the following month. The 2026 PAYE structure: a tax-free threshold of US$1,200 per year (about US$100 per month), then progressive marginal rates up to a top rate of 40%, plus a 3% AIDS levy. Employers must register for PAYE within 30 days of becoming an employer and file the monthly PAYE remittance (P2 Remittance Advice Form) with employee details, gross remuneration, deductions and tax calculated. Failure to deduct or remit PAYE attracts penalties of up to 100% of the tax due plus interest. Employers must also issue annual tax certificates (ITF263) to employees.",
     category: "zimra-paye",
     source: "ZIMRA Employer Compliance Guidelines (2026)",
   },
