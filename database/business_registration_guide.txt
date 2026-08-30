@@ -9,7 +9,7 @@ Company registration in Zimbabwe is governed by the Companies and Other Business
 
 Registration timeline: 1-2 weeks (local), a few weeks (diaspora from abroad).
 
-Offline company registration under the old Companies Act (pre-February 2024) ended. All entities registered under the old Act must re-register on the new CIPZ (Centralised Integrated Platform for the Administration of Business Entities) portal by 20 April 2026 (SI 108 of 2025). Failure results in automatic deregistration.
+Offline company registration under the old Companies Act (pre-February 2024) ended. All entities registered under the old Act must re-register on the new CIPZ (Centralised Integrated Platform for the Administration of Business Entities) portal by 20 April 2028 (SI 108 of 2025 originally set 20 April 2026; the deadline was extended by SI 76 of 2026). Failure results in automatic deregistration.
 
 ========================================
 BUSINESS ENTITY TYPES
@@ -153,7 +153,7 @@ ONGOING COMPLIANCE
 MANDATORY RE-REGISTRATION DEADLINE
 ========================================
 
-All companies and PBCs registered before February 2024 under the old Companies Act must re-register on the CIPZ portal by 20 April 2026. This is a statutory obligation under Section 303(9) of the COBE Act, formalised through SI 108 of 2025.
+All companies and PBCs registered before February 2024 under the old Companies Act must re-register on the CIPZ portal by 20 April 2028 (SI 108 of 2025 originally set the deadline at 20 April 2026; SI 76 of 2026 extended it). This is a statutory obligation under Section 303 of the COBE Act.
 
 Requirements for re-registration:
 - File all outstanding annual returns (with backdated fees and penalties if applicable)
@@ -166,4 +166,4 @@ Requirements for re-registration:
 - Shareholder special resolution agreeing to re-registration
 - Affidavit of Authority from a director or authorised representative
 
-Consequences of non-compliance by 20 April 2026: Automatic striking off and dissolution of the company. The company ceases to exist as a legal person.
+Consequences of non-compliance by 20 April 2028: Automatic striking off and dissolution of the company. The company ceases to exist as a legal person.

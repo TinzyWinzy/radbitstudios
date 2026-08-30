@@ -49,12 +49,12 @@ Buying property from abroad is easier now than it was five years ago. The deeds 
 The costs are roughly 8 percent of the purchase price — 3 percent transfer duty, 2 percent legal fees, and 2 percent agency fees. Rental yields in Harare range from 6 to 12 percent depending on location and property type.
 
 **Stock Market: ZSE for Diaspora**
-The Zimbabwe Stock Exchange allows diaspora investors to open accounts through stockbroking firms. You need a ZIMRA tax clearance certificate, proof of identity, and proof of address. The minimum investment is about USD 100.
+The Zimbabwe Stock Exchange allows diaspora investors to open accounts through stockbroking firms. You need a ZIMRA tax clearance certificate, proof of identity, and proof of address. Minimum account funding is set by each stockbroking firm — confirm the current minimum with your chosen broker.
 
 The ZSE has performed well in USD terms over the past two years, with many counters paying dividends. Liquidity is improving but still not at emerging market levels.
 
 **Government Bonds and Treasury Bills**
-The Reserve Bank of Zimbabwe issues treasury bills and bonds open to diaspora investors. Yields are attractive — between 12 and 25 percent in local currency — but the currency risk is real. Only invest what you can afford to lose.
+The Reserve Bank of Zimbabwe issues treasury bills and bonds open to diaspora investors. Returns have at times been high in local currency, but they vary by instrument and holding period — and the currency risk is real. Only invest what you can afford to lose.
 
 **The Legal Framework**
 The Zimbabwe Investment and Development Agency handles investment licensing. Most sectors are open to foreign investment up to 100 percent. Some sectors like agriculture and mining have specific requirements. ZIDA has a diaspora desk that can guide you through the process.
@@ -128,12 +128,12 @@ On a USD 100,000 property, expect to pay:
 Harare residential properties yield 6 to 12 percent annually in USD terms. Commercial properties yield higher but have more vacancy risk. Short-term rentals (Airbnb) in popular areas can yield 15 to 20 percent but require active management.
 
 **Tax Implications for Diaspora Owners**
-If you rent out the property, you must register for rental income tax with ZIMRA. The tax rate is 20 percent on net rental income. You can deduct expenses like maintenance, agent fees, and insurance.
+If you rent out the property, you have tax obligations with ZIMRA. For commercial and business premises, a new presumptive rental income tax applies from 1 January 2026: 15 percent of gross rent, a final tax with no deductions (Public Notice 08 of 2026). Residential rentals are excluded from the presumptive tax and are taxed under the normal income tax rules. Non-resident landlords must appoint a resident representative in Zimbabwe.
 
-When you sell, capital gains tax is 20 percent on the profit. However, if you hold the property for more than two years and are a Zimbabwean resident abroad, you may qualify for exemptions. Talk to a tax consultant.
+When you sell, capital gains tax is 20 percent on the profit after allowable costs. Exemptions exist in limited circumstances, such as the principal-residence relief, so confirm whether you qualify with a tax consultant.
 
 **Financing Options**
-Zimbabwean banks offer mortgage facilities to diaspora buyers, but interest rates are high — 15 to 25 percent in local currency. Most diaspora buyers pay cash because financing costs eat into the returns.
+Zimbabwean banks offer mortgage facilities to diaspora buyers, but local-currency interest rates have been high in recent years. Most diaspora buyers pay cash because financing costs eat into the returns.
 
 Some sellers offer vendor financing where you pay in instalments over 6 to 12 months. This is common in the diaspora market because both parties understand the need for trust-based arrangements.
 
@@ -725,7 +725,7 @@ A: Yes, in most sectors. ZIDA and the Companies Act allow 100 percent foreign ow
 A: Four to six weeks for a general license. Strategic investments may take longer.
 
 **Q: Is there a minimum investment amount**
-A: No formal minimum for diaspora investors. The USD 1 million threshold applies to ZIDA licensing requirements, not to the ability to invest.
+A: No formal minimum for diaspora investors. ZIDA licensing applies above certain investment thresholds, so confirm the current threshold with ZIDA — most diaspora investments do not need a licence.
 
 ZIDA has improved significantly in recent years. The diaspora desk is responsive, the online systems work, and the staff understand the unique needs of Zimbabweans abroad. If you are making a significant investment, engage with them early.`,
   },
@@ -1029,7 +1029,7 @@ You cannot manage rental properties from overseas yourself. You need a property 
 Good property managers are worth the fee. Bad ones will cost you tenants and money. Ask for references from other diaspora investors before hiring.
 
 **Tax on Rental Income for Diaspora Owners**
-Rental income is taxed at 20 percent of net profit (gross rent minus allowable expenses). Allowable expenses include:
+Rental income from residential property is taxed under the normal income tax rules rather than the new presumptive rental income tax, which applies to commercial and business premises from 1 January 2026 at 15 percent of gross rent with no deductions (Public Notice 08 of 2026). You report the profit (gross rent minus allowable expenses) through a ZIMRA return. Allowable expenses include:
 - Property management fees
 - Maintenance and repairs
 - Insurance premiums
@@ -1037,7 +1037,7 @@ Rental income is taxed at 20 percent of net profit (gross rent minus allowable e
 - Agent fees for finding tenants
 - Interest on mortgage payments (if applicable)
 
-You must file a rental income tax return with ZIMRA annually. Your property manager can help, or you can hire a tax consultant.
+You must file a rental income tax return with ZIMRA annually, and non-resident landlords must appoint a resident representative in Zimbabwe. Your property manager can help, or you can hire a tax consultant.
 
 **Capital Gains Tax When You Sell**
 When you sell a property in Zimbabwe, capital gains tax is 20 percent of the profit (selling price minus purchase price minus allowable costs). Allowable costs include purchase costs, renovation costs, and agent fees.
@@ -1045,9 +1045,9 @@ When you sell a property in Zimbabwe, capital gains tax is 20 percent of the pro
 There is relief for diaspora investors: if you hold the property for more than five years and reinvest the proceeds in another Zimbabwe property within 12 months, the capital gains tax is deferred.
 
 **Financing Options for Diaspora Property Buyers**
-Most diaspora buyers pay cash because Zimbabwe mortgage rates are high (15 to 25 percent in local currency). But there are options:
+Most diaspora buyers pay cash because Zimbabwe mortgage rates have been high in local currency in recent years. But there are options:
 
-CABS Diaspora Mortgage: Up to 60 percent loan-to-value. Interest rate around 15 percent in ZWG. Requires proof of overseas income.
+CABS Diaspora Mortgage: Loan-to-value up to 60 percent. Interest rates vary with prevailing market conditions and are often quoted in ZWG. Requires proof of overseas income.
 
 NMB Diaspora Property Loan: Similar terms to CABS. Requires a 40 percent deposit.
 

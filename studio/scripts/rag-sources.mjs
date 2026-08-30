@@ -301,7 +301,7 @@ export const RAG_SOURCES = [
     path: '../../database/business_registration_guide.txt',
     trust: 'compiled-guide',
     freshness: '2026',
-    claimGuidance: 'Use for company registration steps, entity types, CIPAZ portal guidance, diaspora registration, and post-registration compliance. The re-registration deadline of 20 April 2026 is critical.',
+    claimGuidance: 'Use for company registration steps, entity types, CIPAZ portal guidance, diaspora registration, and post-registration compliance. The re-registration deadline is 20 April 2028 (SI 108 of 2025 set 20 April 2026; SI 76 of 2026 extended it).',
   },
   {
     id: 'national-budget-2026',

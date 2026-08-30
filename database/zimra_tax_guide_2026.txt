@@ -86,7 +86,7 @@ Individual Income Tax return (ITF1): Due 30 April.
 Employers must segregate income by currency and apply the relevant schedule. Separate tax tables for USD and ZiG.
 
 Withholding Tax Rates 2026:
-- Resident: Fees for services 10%, Dividends 10%, Interest 15%, Rental income 10%, Tender payments (government) 10%
+- Resident: Fees for services 10%, Dividends 10%, Interest 15% (final for individuals), Rental income 10% of gross, Tender payments (government) 30% under Section 80 where the payee has no valid tax clearance
 - Non-Resident: Dividends 10% (may be reduced by DTA), Interest 15%, Royalties 15%, Fees for technical/management services 15%, Remittances by branches 15%
 
 ========================================
@@ -109,7 +109,7 @@ Key 2026 changes:
 - Zero-rating for transfers of business as a going concern: restricted to transactions involving the Public Service Pension Fund only (effective 1 Jan 2026)
 - Three new VAT-exempt categories: prescribed electrification services to rural communities (Rural Electrification Fund), healthcare services, and other prescribed categories
 - VAT on imported services: must be declared and paid in the currency of trade
-- Digital Services Withholding Tax of 15% introduced for payments to offshore digital platforms (Netflix, Spotify, AWS, Starlink, etc.)
+- Digital Services Withholding Tax (DSWT) for payments to offshore digital platforms (Netflix, Spotify, AWS, Starlink, etc.): 15.5% where the non-resident supplier is not registered for VAT in Zimbabwe, or a 3/23 tax fraction of the payment where the supplier is VAT-registered (Public Notice 5 of 2026, applied from 1 January 2026; the 2026 Budget announcement had said 15%)
 - Electronic commerce: qualifying threshold removed for Electronic Commerce Operators' Tax of 5%
 
 TaRMS compliance: From January 2026, TaRMS automatically populates VAT Input Tax schedule based on data from suppliers' fiscal devices. Non-compliant invoices (no fiscal device interfaced with FDMS) will be automatically denied.
@@ -134,7 +134,8 @@ Definition of Financial Institution expanded to include Microfinance Institution
 OTHER KEY TAXES
 ========================================
 
-Presumptive Tax: 10% of turnover for qualifying small businesses.
+Presumptive Tax: payable by informal traders and operators who do not keep proper books, based on assessed categories set by ZIMRA (confirm the current rate for your category).
+Presumptive Rental Income Tax: 15% of GROSS rental income from commercial/business premises — a final tax with no deductions (Public Notice 08 of 2026, effective 1 January 2026). Residential rentals are excluded. Landlords must register by 1 January 2026 or within 30 days of first letting; returns are due by the 5th and payment by the 10th of each month. Non-resident landlords must appoint a resident representative. Example: US$5,000/month rent pays US$750/month tax. Landlords already on self-assessment for the property before 31 December 2025 remain on the normal income tax regime.
 Capital Gains Tax: 20% on disposal of specified assets.
 Special Capital Gains Tax: 20% on offshore disposal of specified assets (shares whose underlying value is derived from immovable property).
 Bookmakers Tax: increased from 3% to 20% of gross revenues (final tax).
@@ -142,8 +143,8 @@ Tax on winnings by punters: increased from 10% to 25%.
 Non-Resident Tax on Interest: reintroduced at 15% (effective 1 Jan 2026).
 Corporate Social Responsibility Levy: 2% on gross value of coal.
 Permanent Establishment threshold: reduced from 183 days to 90 days for construction/building/installation projects (effective 1 Jan 2026).
-Export tax on un-beneficiated minerals: 10% on antimony, 5% on ferro-chrome (must be paid in foreign currency).
-Cash withdrawal levy: progressive tiered structure.
+Export tax on un-beneficiated minerals (payable in foreign currency): 10% on lithium ore and antimony, 5% on ferro-chrome (based on the value of ferro-alloys); beneficiated lithium products (e.g. lithium sulphate) are taxed at 0%.
+Cash withdrawal levy: tiered rates within monthly withdrawal limits; limits and rates were reviewed in the 2026 Budget — confirm the current tier with your bank.
 
 ========================================
 TAX ADMINISTRATION
@@ -155,9 +156,9 @@ FDMS (Fiscalisation Data Management System): Real-time transaction monitoring sy
 Automatic linking: New business bank accounts and merchant wallets on mobile network operator platforms automatically linked to ZIMRA. Transaction details automatically transmitted to ZIMRA.
 
 Penalties:
-- Late filing of returns: up to 100% of tax + interest
-- Late payment: 15% penalty + interest
-- Late VAT return: 25% of VAT + interest
-- Late QPD instalment: 10% of instalment + interest
+- Late filing: US$30 per day per overdue return, capped at 181 days (SI 97 of 2013), plus interest
+- Late QPD instalment: 10% penalty on the overdue instalment plus interest
+- Late payment interest: 10% per annum on foreign-currency amounts; for ZiG, the Bank Policy Rate plus 5 percentage points (SI 26 of 2025)
+- Under-assessed amounts (on audit or where returns are not filed): additional tax up to 100% of the amount at stake (200% for repeat offences), plus interest
 
 All returns and payments must be made in the currency of trade.

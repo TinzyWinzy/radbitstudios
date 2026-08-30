@@ -1,0 +1,13 @@
+# Binary / non-text files — keep out of text diffs and let tooling treat them as binary
+*.docx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
