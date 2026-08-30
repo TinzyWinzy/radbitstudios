@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Pool } from 'pg';
 import { withIpRateLimit } from '@/services/api-rate-limit';
+import { getPool as getPgPool } from '@/lib/sqlite';
 import { validateBody, CreateLeadSchema } from '@/lib/api-validation';
 import { createProject } from '@/services/project-service-admin';
 import { generateOnboardingChecklist } from '@/services/onboarding-engine';
@@ -11,22 +11,12 @@ import { sendWhatsAppMessage } from '@/services/whatsapp/whatsapp-handler';
 const ADMIN_EMAILS = ['brandontinoz@gmail.com', 'hanzohanic@gmail.com'];
 const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || '263781334474';
 
-function getPool(): Pool | null {
-  if (!process.env.DATABASE_URL) return null;
-  const g = globalThis as unknown as { __radbitPgPool?: Pool };
-  if (g.__radbitPgPool) return g.__radbitPgPool;
-
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
-  });
-
-  pool.on('error', (err) => {
-    console.error('[PostgreSQL] Pool error:', err);
-  });
-
-  g.__radbitPgPool = pool;
-  return pool;
+function tryGetPool() {
+  try {
+    return getPgPool();
+  } catch {
+    return null;
+  }
 }
 
 async function tryInsertLead(data: {
@@ -39,7 +29,7 @@ async function tryInsertLead(data: {
   message?: string | null;
   referralSource?: string | null;
 }): Promise<string | null> {
-  const pool = getPool();
+  const pool = tryGetPool();
   if (!pool) return null;
 
   try {
