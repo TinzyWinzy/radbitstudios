@@ -1,9 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
 vi.mock('@/services/reti-monitor', () => ({
   checkForThreatEvents: vi.fn(),
   initializeMonitorSources: vi.fn(),
+}));
+
+vi.mock('@/services/api-rate-limit', () => ({
+  withIpRateLimit: (_config: unknown, handler: (...args: unknown[]) => Promise<Response>) => handler,
 }));
 
 vi.mock('@/ai/flows/generate-threat-assessment', async (importOriginal) => {
@@ -19,6 +23,19 @@ import { POST as GenPOST, GET as GenGET } from '@/app/api/reti/generate/route';
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { checkForThreatEvents, initializeMonitorSources } from '@/services/reti-monitor';
 import { generateThreatAssessment } from '@/ai/flows/generate-threat-assessment';
+
+const CRON_SECRET_TEST = 'test-cron-secret';
+
+function authedRequest(url: string, method: 'POST' | 'GET', body?: unknown): NextRequest {
+  return new NextRequest(url, {
+    method,
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    headers: {
+      authorization: `Bearer ${CRON_SECRET_TEST}`,
+      'content-type': 'application/json',
+    },
+  });
+}
 
 function mockFirestoreSnapshot(docs: { id: string; data: () => Record<string, unknown> }[]) {
   return { docs, empty: docs.length === 0, size: docs.length };
@@ -60,13 +77,25 @@ const mockHolon = {
 describe('POST /api/reti/scan', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.CRON_SECRET = CRON_SECRET_TEST;
+  });
+  afterEach(() => {
+    delete process.env.CRON_SECRET;
+  });
+
+  it('returns 401 without an internal token', async () => {
+    const response = await ScanPOST(
+      new NextRequest('http://localhost/api/reti/scan', { method: 'POST' }),
+    );
+    expect(response.status).toBe(401);
+    expect(checkForThreatEvents).not.toHaveBeenCalled();
   });
 
   it('returns assessmentsGenerated count on success', async () => {
     vi.mocked(initializeMonitorSources).mockResolvedValue([]);
     vi.mocked(checkForThreatEvents).mockResolvedValue(3);
 
-    const response = await ScanPOST();
+    const response = await ScanPOST(authedRequest('http://localhost/api/reti/scan', 'POST'));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -79,7 +108,7 @@ describe('POST /api/reti/scan', () => {
     vi.mocked(initializeMonitorSources).mockResolvedValue([]);
     vi.mocked(checkForThreatEvents).mockResolvedValue(0);
 
-    const response = await ScanPOST();
+    const response = await ScanPOST(authedRequest('http://localhost/api/reti/scan', 'POST'));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -90,7 +119,7 @@ describe('POST /api/reti/scan', () => {
     vi.mocked(initializeMonitorSources).mockResolvedValue([]);
     vi.mocked(checkForThreatEvents).mockRejectedValue(new Error('RSS fetch failed'));
 
-    const response = await ScanPOST();
+    const response = await ScanPOST(authedRequest('http://localhost/api/reti/scan', 'POST'));
     const body = await response.json();
 
     expect(response.status).toBe(500);
@@ -111,7 +140,7 @@ describe('GET /api/reti/scan', () => {
     const mockCollection = vi.fn().mockReturnValue({ get: mockFirestoreGet(mockFirestoreSnapshot(mockDocs)) });
     vi.mocked(adminDb.collection).mockReturnValue(mockCollection() as never);
 
-    const response = await ScanGET();
+    const response = await ScanGET(new NextRequest('http://localhost/api/reti/scan'));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -124,7 +153,7 @@ describe('GET /api/reti/scan', () => {
     const mockCollection = vi.fn().mockReturnValue({ get: mockFirestoreGet(mockFirestoreSnapshot([])) });
     vi.mocked(adminDb.collection).mockReturnValue(mockCollection() as never);
 
-    const response = await ScanGET();
+    const response = await ScanGET(new NextRequest('http://localhost/api/reti/scan'));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -135,7 +164,7 @@ describe('GET /api/reti/scan', () => {
     const mockCollection = vi.fn().mockReturnValue({ get: vi.fn().mockRejectedValue(new Error('connection refused')) });
     vi.mocked(adminDb.collection).mockReturnValue(mockCollection() as never);
 
-    const response = await ScanGET();
+    const response = await ScanGET(new NextRequest('http://localhost/api/reti/scan'));
     const body = await response.json();
 
     expect(response.status).toBe(500);
@@ -154,6 +183,21 @@ describe('POST /api/reti/generate', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.CRON_SECRET = CRON_SECRET_TEST;
+  });
+  afterEach(() => {
+    delete process.env.CRON_SECRET;
+  });
+
+  it('returns 401 without an internal token', async () => {
+    const req = new NextRequest('http://localhost/api/reti/generate', {
+      method: 'POST',
+      body: JSON.stringify(validInput),
+    });
+    const response = await GenPOST(req);
+
+    expect(response.status).toBe(401);
+    expect(generateThreatAssessment).not.toHaveBeenCalled();
   });
 
   it('generates and stores threat assessment on valid input', async () => {
@@ -163,11 +207,7 @@ describe('POST /api/reti/generate', () => {
     const mockCollection = vi.fn().mockReturnValue({ doc: mockDoc } as never);
     vi.mocked(adminDb.collection).mockReturnValue(mockCollection() as never);
 
-    const req = new NextRequest('http://localhost/api/reti/generate', {
-      method: 'POST',
-      body: JSON.stringify(validInput),
-    });
-    const response = await GenPOST(req);
+    const response = await GenPOST(authedRequest('http://localhost/api/reti/generate', 'POST', validInput));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -182,25 +222,19 @@ describe('POST /api/reti/generate', () => {
     const mockSet = vi.fn().mockResolvedValue(undefined as never);
     vi.mocked(adminDb.collection).mockReturnValue({ doc: vi.fn().mockReturnValue({ set: mockSet }) } as never);
 
-    const req = new NextRequest('http://localhost/api/reti/generate', {
-      method: 'POST',
-      body: JSON.stringify({
+    const response = await GenPOST(
+      authedRequest('http://localhost/api/reti/generate', 'POST', {
         ...validInput,
         triggerTitle: 'SADC Digital Transformation & AI Strategy 2026',
       }),
-    });
-    const response = await GenPOST(req);
+    );
     const body = await response.json();
 
     expect(body.slug).toBe('sadc-digital-transformation-ai-strategy-2026');
   });
 
   it('returns 400 when required field is missing', async () => {
-    const req = new NextRequest('http://localhost/api/reti/generate', {
-      method: 'POST',
-      body: JSON.stringify({ triggerTitle: '' }),
-    });
-    const response = await GenPOST(req);
+    const response = await GenPOST(authedRequest('http://localhost/api/reti/generate', 'POST', { triggerTitle: '' }));
     const body = await response.json();
 
     expect(response.status).toBe(400);
@@ -209,11 +243,12 @@ describe('POST /api/reti/generate', () => {
   });
 
   it('returns 400 when triggerCategory is invalid', async () => {
-    const req = new NextRequest('http://localhost/api/reti/generate', {
-      method: 'POST',
-      body: JSON.stringify({ ...validInput, triggerCategory: 'invalid-category' }),
-    });
-    const response = await GenPOST(req);
+    const response = await GenPOST(
+      authedRequest('http://localhost/api/reti/generate', 'POST', {
+        ...validInput,
+        triggerCategory: 'invalid-category',
+      }),
+    );
     const body = await response.json();
 
     expect(response.status).toBe(400);
@@ -224,6 +259,7 @@ describe('POST /api/reti/generate', () => {
     const req = new NextRequest('http://localhost/api/reti/generate', {
       method: 'POST',
       body: '{invalid json',
+      headers: { authorization: `Bearer ${CRON_SECRET_TEST}` },
     });
     const response = await GenPOST(req);
     const body = await response.json();
@@ -237,11 +273,7 @@ describe('POST /api/reti/generate', () => {
     const mockSet = vi.fn().mockResolvedValue(undefined as never);
     vi.mocked(adminDb.collection).mockReturnValue({ doc: vi.fn().mockReturnValue({ set: mockSet }) } as never);
 
-    const req = new NextRequest('http://localhost/api/reti/generate', {
-      method: 'POST',
-      body: JSON.stringify(validInput),
-    });
-    const response = await GenPOST(req);
+    const response = await GenPOST(authedRequest('http://localhost/api/reti/generate', 'POST', validInput));
     const body = await response.json();
 
     expect(response.status).toBe(500);
@@ -253,11 +285,7 @@ describe('POST /api/reti/generate', () => {
     const mockSet = vi.fn().mockRejectedValue(new Error('permission denied') as never);
     vi.mocked(adminDb.collection).mockReturnValue({ doc: vi.fn().mockReturnValue({ set: mockSet }) } as never);
 
-    const req = new NextRequest('http://localhost/api/reti/generate', {
-      method: 'POST',
-      body: JSON.stringify(validInput),
-    });
-    const response = await GenPOST(req);
+    const response = await GenPOST(authedRequest('http://localhost/api/reti/generate', 'POST', validInput));
     const body = await response.json();
 
     expect(response.status).toBe(500);
@@ -307,7 +335,7 @@ describe('GET /api/reti/generate', () => {
     ]);
     vi.mocked(adminDb.collection).mockReturnValue(chain);
 
-    const response = await GenGET();
+    const response = await GenGET(new NextRequest('http://localhost/api/reti/generate'));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -320,7 +348,7 @@ describe('GET /api/reti/generate', () => {
     const chain = mockAssessmentCollection([]);
     vi.mocked(adminDb.collection).mockReturnValue(chain);
 
-    const response = await GenGET();
+    const response = await GenGET(new NextRequest('http://localhost/api/reti/generate'));
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -337,7 +365,7 @@ describe('GET /api/reti/generate', () => {
     } as never;
     vi.mocked(adminDb.collection).mockReturnValue(chain);
 
-    const response = await GenGET();
+    const response = await GenGET(new NextRequest('http://localhost/api/reti/generate'));
     const body = await response.json();
 
     expect(response.status).toBe(500);

@@ -22,33 +22,24 @@ vi.mock('@/components/ui/sidebar', () => ({
   useSidebar: () => ({ toggleSidebar: mockToggleSidebar }),
 }));
 
-vi.mock('lucide-react', () => ({
-  Home: () => React.createElement('span', null, 'Home'),
-  Briefcase: () => React.createElement('span', null, 'Briefcase'),
-  Wand2: () => React.createElement('span', null, 'Wand2'),
-  Users: () => React.createElement('span', null, 'Users'),
-  Handshake: () => React.createElement('span', null, 'Handshake'),
-  PanelLeft: () => React.createElement('span', null, 'PanelLeft'),
-}));
+vi.mock('lucide-react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('lucide-react')>();
+  return actual;
+});
 
 describe('BottomNav', () => {
   it('renders all navigation items', () => {
     render(React.createElement(BottomNav));
     expect(screen.getAllByText('Home').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('Tenders')).toBeTruthy();
-    expect(screen.getByText('Toolkit')).toBeTruthy();
-    expect(screen.getByText('Invest')).toBeTruthy();
-    expect(screen.getByText('Community')).toBeTruthy();
-    expect(screen.getByText('Menu')).toBeTruthy();
+    expect(screen.getByText('Actions')).toBeTruthy();
+    expect(screen.getByText('Projects')).toBeTruthy();
   });
 
   it('renders nav links with correct hrefs', () => {
     render(React.createElement(BottomNav));
     const links = screen.getAllByRole('link');
     expect(links.find(l => l.getAttribute('href') === '/dashboard')).toBeTruthy();
-    expect(links.find(l => l.getAttribute('href') === '/tenders')).toBeTruthy();
-    expect(links.find(l => l.getAttribute('href') === '/toolkit')).toBeTruthy();
-    expect(links.find(l => l.getAttribute('href') === '/investor-portal')).toBeTruthy();
-    expect(links.find(l => l.getAttribute('href') === '/community')).toBeTruthy();
+    expect(links.find(l => l.getAttribute('href') === '/dashboard/actions')).toBeTruthy();
+    expect(links.find(l => l.getAttribute('href') === '/dashboard/projects')).toBeTruthy();
   });
 });

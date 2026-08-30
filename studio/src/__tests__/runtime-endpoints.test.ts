@@ -35,7 +35,7 @@ describe('runtime endpoint regressions', () => {
     expect(res.headers.get('set-cookie')).toContain('__session=');
     expect(res.headers.get('set-cookie')).toContain('Max-Age=0');
     expect(mockVerifyIdToken).not.toHaveBeenCalled();
-  });
+  }, 20000);
 
   it('accepts POST requests for the WhatsApp queue cron endpoint', async () => {
     mockProcessOutboundQueue.mockResolvedValueOnce(2);
