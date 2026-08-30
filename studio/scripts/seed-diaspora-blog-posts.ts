@@ -459,7 +459,7 @@ ZIMRA operates a quarterly payment system for income tax:
 - QPD 1: 25 March
 - QPD 2: 25 June
 - QPD 3: 25 September
-- QPD 4: 25 December
+- QPD 4: 20 December
 
 You estimate your annual profit and pay one quarter of the estimated tax each QPD. If you underpay by more than 10 percent, ZIMRA charges interest at 3 percent per month.
 

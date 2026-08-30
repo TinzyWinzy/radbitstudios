@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { withIpRateLimit } from '@/services/api-rate-limit';
 
 const BING_INDEXNOW_URL = 'https://www.bing.com/indexnow';
-const INDEXNOW_KEY = process.env.BING_INDEXNOW_KEY || 'e9f0c9ea2f934beb84c222f903d1a419';
+const INDEXNOW_KEY = process.env.BING_INDEXNOW_KEY;
 const SITE_HOST = (process.env.FRONTEND_URL || 'https://radbitstudios.co.zw').replace(/^https?:\/\//, '').replace(/\/$/, '');
 
 export const POST = withIpRateLimit(
   { windowMs: 60 * 60 * 1000, maxRequests: 20, keyPrefix: 'seo:indexnow' },
   async (request: NextRequest): Promise<NextResponse> => {
     try {
+      if (!INDEXNOW_KEY) {
+        return NextResponse.json({ error: 'IndexNow is not configured (missing BING_INDEXNOW_KEY)' }, { status: 503 });
+      }
+
       const body = await request.json();
       const urlList = Array.isArray(body.urlList) ? body.urlList : [];
 

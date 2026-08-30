@@ -4,6 +4,7 @@ firebase-debug.log
 
 service-account.json
 *.service-account.json
+*firebase-adminsdk*.json
 
 # PDFs (large binary files)
 *.pdf
