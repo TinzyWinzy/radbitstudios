@@ -1,10 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { checkForThreatEvents, initializeMonitorSources } from '@/services/reti-monitor';
 import { logger } from '@/lib/logger';
+import { withIpRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
 const log = logger.child({ module: 'RETIScan' });
 
-export async function POST() {
+function isAuthorized(req: NextRequest): boolean {
+  const authHeader = req.headers.get('authorization');
+  const expectedToken = process.env.CRON_SECRET || process.env.INTERNAL_API_KEY;
+  if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) return false;
+  return true;
+}
+
+export const POST = withIpRateLimit(RateLimits.mutation, async (req: NextRequest) => {
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     await initializeMonitorSources();
     const count = await checkForThreatEvents();
@@ -20,9 +33,9 @@ export async function POST() {
     log.error({ err }, message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
 
-export async function GET() {
+export const GET = withIpRateLimit(RateLimits.apiDefault, async () => {
   try {
     const { adminDb } = await import('@/lib/firebase/firebase-admin');
     const snap = await adminDb.collection('reti_monitor_sources').get();
@@ -40,4 +53,4 @@ export async function GET() {
     const message = err instanceof Error ? err.message : 'Failed to list sources';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});

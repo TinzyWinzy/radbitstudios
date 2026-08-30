@@ -39,11 +39,13 @@ const protectedPaths = [
   '/tax-copilot',
   '/bid-writer',
   '/resource-center',
+  '/ops',
 ];
 
 const adminOnlyPaths = [
   '/dashboard/blog',
   '/dashboard/admin',
+  '/ops',
 ];
 
 async function verifyAuth(request: NextRequest): Promise<{ authenticated: boolean; role: string | null }> {

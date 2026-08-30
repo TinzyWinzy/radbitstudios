@@ -200,11 +200,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             if (createdAt && Date.now() - createdAt.getTime() < 120000) {
               welcomeSentRef.current = true;
               const name = authUser.displayName || authUser.email?.split('@')[0] || 'Entrepreneur';
-              fetch('/api/email/welcome', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: authUser.email, name }),
-              }).catch(() => {});
+              try {
+                const idToken = await authUser.getIdToken();
+                fetch('/api/email/welcome', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+                  body: JSON.stringify({ email: authUser.email, name }),
+                }).catch(() => {});
+              } catch {
+                // Token refresh failed — skip welcome email; it is non-critical.
+              }
             }
           }
         }

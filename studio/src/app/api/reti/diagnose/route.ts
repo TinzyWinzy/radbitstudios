@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { aiGateway } from '@/services/ai/ai-gateway';
+import { withIpRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
 interface DiagnoseRequest {
   workflowDescription: string;
@@ -14,7 +16,7 @@ interface DiagnoseRequest {
   };
 }
 
-export async function POST(req: NextRequest) {
+export const POST = withIpRateLimit(RateLimits.aiGenerate, async (req: NextRequest) => {
   try {
     const body: DiagnoseRequest = await req.json();
 
@@ -82,4 +84,4 @@ Identify the critical gaps between their current workflow and what is required. 
     const message = err instanceof Error ? err.message : 'Failed to run diagnostic';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});

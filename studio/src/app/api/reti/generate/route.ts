@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateThreatAssessment, ThreatAssessmentInputSchema } from '@/ai/flows/generate-threat-assessment';
 import { adminDb } from '@/lib/firebase/firebase-admin';
+import { withIpRateLimit } from '@/services/api-rate-limit';
+import { RateLimits } from '@/services/rate-limiter';
 
 function slugify(text: string): string {
   return text
@@ -12,7 +14,18 @@ function slugify(text: string): string {
     .slice(0, 80);
 }
 
-export async function POST(req: NextRequest) {
+function isAuthorized(req: NextRequest): boolean {
+  const authHeader = req.headers.get('authorization');
+  const expectedToken = process.env.CRON_SECRET || process.env.INTERNAL_API_KEY;
+  if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) return false;
+  return true;
+}
+
+export const POST = withIpRateLimit(RateLimits.mutation, async (req: NextRequest) => {
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const parsed = ThreatAssessmentInputSchema.safeParse(body);
@@ -52,9 +65,9 @@ export async function POST(req: NextRequest) {
     const message = err instanceof Error ? err.message : 'Failed to generate threat assessment';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
 
-export async function GET() {
+export const GET = withIpRateLimit(RateLimits.apiDefault, async () => {
   try {
     const snap = await adminDb.collection('threat_assessments')
       .where('published', '==', true)
@@ -77,4 +90,4 @@ export async function GET() {
     const message = err instanceof Error ? err.message : 'Failed to list assessments';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
