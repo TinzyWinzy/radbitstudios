@@ -35,7 +35,7 @@ export default function AboutPage() {
             We build systems that work in the environments our clients actually operate in. Whether it is cloud infrastructure for a fintech startup, a RAG pipeline for document-heavy compliance work, or an internal tool that replaces spreadsheets and WhatsApp threads.
           </p>
           <p>
-            Radbit Studios operates alongside Nexus Agronomics, an agri-tech venture focused on data-driven farming solutions for smallholder cooperatives.
+            Radbit Studios is the software and systems brand operated by Nexus Agronomics. Nexus is the service provider behind Radbit&apos;s website, accounts and client work.
           </p>
         </div>
       </section>

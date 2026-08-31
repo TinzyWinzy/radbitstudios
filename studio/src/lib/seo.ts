@@ -1,3 +1,5 @@
+import { RADBIT_BRAND, RADBIT_POSITIONING } from '@/lib/brand';
+
 /* ── SEO structured data generators ──────────────────────────────────
    All schemas use process.env.FRONTEND_URL so they stay correct
    across staging / production without hard-coded domains.
@@ -17,10 +19,10 @@ export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Radbit Studios',
+    name: RADBIT_BRAND.name,
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-192x192.png`,
-    description: 'Zimbabwean software development and AI systems company building operational systems, web applications and business automation.',
+    description: `${RADBIT_POSITIONING.summary} ${RADBIT_BRAND.operatorStatement}`,
     foundingDate: '2025',
     founder: { '@type': 'Person', name: 'Tinotenda Brandon Duma' },
     areaServed: [
@@ -35,8 +37,8 @@ export function organizationSchema() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer support',
-      email: 'hello@radbitstudios.co.zw',
-      telephone: '+263786344899',
+      email: RADBIT_BRAND.contactEmail,
+      telephone: RADBIT_BRAND.phone,
     },
     sameAs: [
       'https://www.facebook.com/people/Radbit-Studios/61573716592102/',
@@ -53,7 +55,7 @@ export function websiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Radbit Studios',
+    name: RADBIT_BRAND.name,
     url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',
@@ -73,14 +75,14 @@ export function localBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${SITE_URL}/#localbusiness`,
-    name: 'Radbit Studios',
+    name: RADBIT_BRAND.name,
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-192x192.png`,
     image: `${SITE_URL}/opengraph-image`,
-    description: 'Custom software, AI automation and business systems consultancy for Zimbabwean organisations.',
+    description: RADBIT_POSITIONING.summary,
     foundingDate: '2025',
-    email: 'hello@radbitstudios.co.zw',
-    telephone: '+263786344899',
+    email: RADBIT_BRAND.contactEmail,
+    telephone: RADBIT_BRAND.phone,
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Harare',

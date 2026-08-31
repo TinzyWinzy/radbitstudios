@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withIpRateLimit } from '@/services/api-rate-limit';
-import { adminDb } from '@/lib/firebase/firebase-admin';
+import { adminDb, adminStorage } from '@/lib/firebase/firebase-admin';
 import { verifySession } from '@/lib/api-auth';
 import { validateBody, PrazDocumentSchema, PrazDeleteSchema } from '@/lib/api-validation';
 
@@ -16,14 +16,17 @@ export const POST = withIpRateLimit(
     const validation = await validateBody(req, PrazDocumentSchema);
     if (!validation.success) return validation.response;
 
-    const { docType, fileName, fileUrl, expiresAt } = validation.data;
+    const { docType, fileName, storagePath, expiresAt } = validation.data;
+    if (!storagePath.startsWith(`praz/${user.uid}/`)) {
+      return NextResponse.json({ error: 'Invalid storage owner' }, { status: 403 });
+    }
 
     const docRef = adminDb.collection('praz_documents').doc(`${user.uid}_${docType}`);
     await docRef.set({
       userId: user.uid,
       docType,
       fileName,
-      fileUrl,
+      storagePath,
       uploadedAt: new Date(),
       expiresAt: expiresAt ? new Date(expiresAt) : null,
       status: 'valid',
@@ -52,7 +55,13 @@ export const DELETE = withIpRateLimit(
       return NextResponse.json({ error: 'docType required' }, { status: 400 });
     }
 
-    await adminDb.collection('praz_documents').doc(`${user.uid}_${validation.data.docType}`).delete();
+    const docRef = adminDb.collection('praz_documents').doc(`${user.uid}_${validation.data.docType}`);
+    const doc = await docRef.get();
+    const storagePath = doc.data()?.storagePath;
+    if (typeof storagePath === 'string' && storagePath.startsWith(`praz/${user.uid}/`)) {
+      await adminStorage.bucket().file(storagePath).delete({ ignoreNotFound: true });
+    }
+    await docRef.delete();
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {

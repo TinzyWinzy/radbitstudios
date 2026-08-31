@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useConsent } from "@/hooks/use-consent";
 
 interface MatchedContentProps {
   slot?: string;
 }
 
 export function MatchedContent({ slot = "blog-matched" }: MatchedContentProps) {
+  const { preferences, isLoaded } = useConsent();
   const containerRef = useRef<HTMLDivElement>(null);
   const loaded = useRef(false);
 
@@ -31,6 +33,8 @@ export function MatchedContent({ slot = "blog-matched" }: MatchedContentProps) {
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+
+  if (!isLoaded || !preferences.marketing) return null;
 
   return (
     <div ref={containerRef} className="my-8">

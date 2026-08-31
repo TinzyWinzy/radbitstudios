@@ -1,25 +1,43 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Public read for all files
-    match /{allPaths=**} {
-      allow read: if true;
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Media library & blog images: authenticated admins can upload
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    function ownsProject(projectId) {
+      return isSignedIn()
+        && firestore.get(/databases/(default)/documents/projects/$(projectId)).data.clientId == request.auth.uid;
+    }
+
+    // Public marketing assets only.
     match /media/{fileName} {
-      allow write: if request.auth != null
-        && request.auth.token.role in ['admin', 'super_admin'];
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     match /blog/{fileName} {
-      allow write: if request.auth != null
-        && request.auth.token.role in ['admin', 'super_admin'];
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Project uploads: authenticated users can upload to their own projects
+    // Project files are private to the project client and administrators.
     match /projects/{projectId}/{fileName} {
-      allow write: if request.auth != null;
+      allow read, write: if isAdmin() || ownsProject(projectId);
+    }
+
+    // User-owned PRAZ readiness documents are not public.
+    match /praz/{userId}/{fileName} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Everything else is private by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

@@ -18,7 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Portfolio | Radbit",
   description:
-    "Selected websites and digital work by Radbit Studios, including City View Guest House, Wobic, Traamand, Unikvilla, Cultural Coder, and Nexus Agronomics.",
+    "Selected client work and internal product work by Radbit Studios, including City View Guest House, Wobic, Traamand, Unikvilla and Cultural Coder.",
   alternates: { canonical: "/portfolio" },
   openGraph: {
     title: "Portfolio | Radbit",
@@ -94,7 +94,7 @@ const projects = [
     name: "Nexus Agronomics",
     domain: "nexusagronomics.co.zw",
     href: "https://nexusagronomics.co.zw",
-    category: "Agriculture",
+    category: "Operator Project · Agriculture",
     summary:
       "A sector-focused website for an agronomy business, designed to make services, credibility, and contact details easier to understand.",
     icon: Globe2,

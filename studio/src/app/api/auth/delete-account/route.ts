@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withIpRateLimit } from '@/services/api-rate-limit';
-import { adminDb } from '@/lib/firebase/firebase-admin';
+import { adminDb, adminStorage } from '@/lib/firebase/firebase-admin';
 import { verifyIdToken } from '@/lib/api-auth';
 
 const USER_COLLECTIONS = [
-  'assessments',
-  'generations',
-  'budgets',
-  'bookmarks',
-  'conversations',
-  'messages',
-  'notifications',
-  'export_assessments',
-  'invoices',
-  'referral_codes',
-  'newsletter_subscriptions',
-  'praz_documents',
-  'whatsapp_sessions',
-  'analytics_events',
-  'bruteforce_attempts',
-  'ai_semantic_cache',
+  { name: 'assessments', field: 'userId' },
+  { name: 'generations', field: 'userId' },
+  { name: 'messages', field: 'userId' },
+  { name: 'notifications', field: 'userId' },
+  { name: 'export_assessments', field: 'userId' },
+  { name: 'invoices', field: 'userId' },
+  { name: 'referral_codes', field: 'userId' },
+  { name: 'praz_documents', field: 'userId' },
+  { name: 'whatsapp_sessions', field: 'userId' },
+  { name: 'analytics_events', field: 'userId' },
+  { name: 'ai_semantic_cache', field: 'userId' },
+  { name: 'push_subscriptions', field: 'userId' },
+  { name: 'onboarding_checklists', field: 'userId' },
+  { name: 'business_actions', field: 'userId' },
+  { name: 'fiscal_compliance', field: 'userId' },
+  { name: 'diaspora_interests', field: 'investorUid' },
+] as const;
+
+const USER_DOCUMENTS = (uid: string) => [
+  `budgets/${uid}`,
+  `newsletter_subscriptions/${uid}`,
+  `diaspora_investors/${uid}`,
+  `agent_threads/${uid}`,
 ];
 
 async function exportUserData(uid: string): Promise<Record<string, unknown>> {
@@ -28,13 +35,34 @@ async function exportUserData(uid: string): Promise<Record<string, unknown>> {
     userId: uid,
   };
 
-  for (const col of USER_COLLECTIONS) {
+  for (const { name, field } of USER_COLLECTIONS) {
     try {
-      const snap = await adminDb.collection(col).where('userId', '==', uid).get();
-      data[col] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const snap = await adminDb.collection(name).where(field, '==', uid).get();
+      data[name] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     } catch {
-      data[col] = [];
+      data[name] = [];
     }
+  }
+
+  for (const path of USER_DOCUMENTS(uid)) {
+    try {
+      const snap = await adminDb.doc(path).get();
+      data[path.replace('/', '_')] = snap.exists ? { id: snap.id, ...snap.data() } : null;
+    } catch {
+      data[path.replace('/', '_')] = null;
+    }
+  }
+
+  try {
+    const projects = await adminDb.collection('projects').where('clientId', '==', uid).get();
+    data.projects = projects.docs.map(d => ({ id: d.id, ...d.data() }));
+    const taskGroups = await Promise.all(projects.docs.map(project =>
+      adminDb.collection('project_tasks').where('projectId', '==', project.id).get()
+    ));
+    data.project_tasks = taskGroups.flatMap(snap => snap.docs.map(d => ({ id: d.id, ...d.data() })));
+  } catch {
+    data.projects = [];
+    data.project_tasks = [];
   }
 
   // Also export nested conversation threads/messages
@@ -74,20 +102,48 @@ async function deleteUserData(uid: string): Promise<string[]> {
   const deleted: string[] = [];
 
   // Delete top-level user-scoped collections
-  for (const col of USER_COLLECTIONS) {
+  for (const { name, field } of USER_COLLECTIONS) {
     try {
-      const snap = await adminDb.collection(col).where('userId', '==', uid).get();
+      const snap = await adminDb.collection(name).where(field, '==', uid).get();
       if (snap.empty) continue;
-
-      const batch = adminDb.batch();
-      snap.forEach(docSnap => batch.delete(adminDb.doc(`${col}/${docSnap.id}`)));
-      await batch.commit();
-      deleted.push(`${col}: ${snap.size} docs`);
+      await Promise.all(snap.docs.map(docSnap => adminDb.recursiveDelete(docSnap.ref)));
+      deleted.push(`${name}: ${snap.size} docs`);
     } catch (err) {
-      console.warn(`[DeleteAccount] Error deleting ${col}:`, err);
-      deleted.push(`${col}: error`);
+      console.warn(`[DeleteAccount] Error deleting ${name}:`, err);
+      deleted.push(`${name}: error`);
     }
   }
+
+  for (const path of USER_DOCUMENTS(uid)) {
+    try {
+      const ref = adminDb.doc(path);
+      const snap = await ref.get();
+      if (snap.exists) {
+        await adminDb.recursiveDelete(ref);
+        deleted.push(`${path}: 1 doc`);
+      }
+    } catch (err) {
+      console.warn(`[DeleteAccount] Error deleting ${path}:`, err);
+      deleted.push(`${path}: error`);
+    }
+  }
+
+  // Delete customer projects, their task records and private storage objects.
+  try {
+    const projects = await adminDb.collection('projects').where('clientId', '==', uid).get();
+    for (const project of projects.docs) {
+      const tasks = await adminDb.collection('project_tasks').where('projectId', '==', project.id).get();
+      await Promise.all(tasks.docs.map(task => adminDb.recursiveDelete(task.ref)));
+      await adminStorage.bucket().deleteFiles({ prefix: `projects/${project.id}/` }).catch(() => {});
+      await adminDb.recursiveDelete(project.ref);
+    }
+    deleted.push(`projects: ${projects.size} docs with tasks and stored files`);
+  } catch (err) {
+    console.warn('[DeleteAccount] Error deleting projects:', err);
+    deleted.push('projects: error');
+  }
+
+  await adminStorage.bucket().deleteFiles({ prefix: `praz/${uid}/` }).catch(() => {});
 
   // Delete nested conversation threads and messages
   try {
@@ -164,6 +220,13 @@ export const POST = withIpRateLimit(
     }
 
     const deleted = await deleteUserData(uid);
+
+    if (deleted.some(entry => entry.endsWith(': error'))) {
+      return NextResponse.json(
+        { error: 'Some account records could not be deleted. The account remains active so the request can be retried.', deleted },
+        { status: 500 },
+      );
+    }
 
     const response = NextResponse.json({
       success: true,

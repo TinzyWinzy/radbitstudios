@@ -68,7 +68,7 @@ export const industries: IndustryPage[] = [
     ],
     solutions: [
       { title: 'Automated Invoicing', description: 'Generate professional invoices, send via WhatsApp/email, and track payment status. EcoCash and PayNow integration.' },
-      { title: 'Compliance Calendar', description: 'Automated reminders for ZIMRA QPD, VAT, PRAZ renewals, and annual returns. Never miss a deadline.' },
+      { title: 'Deadline Calendar', description: 'Keep ZIMRA QPD, VAT, PRAZ renewal and annual-return dates visible for review and follow-up.' },
       { title: 'Client Portal', description: 'Give clients a self-service portal for documents, invoices, and project status.' },
       { title: 'AI Bid Writer', description: 'Generate tender proposals in minutes using your company profile and past performance data.' },
     ],
@@ -203,7 +203,7 @@ export const useCases: UseCasePage[] = [
   {
     slug: 'praz-compliance',
     title: 'PRAZ Compliance Guide for Zimbabwean Businesses | Radbit',
-    metaDescription: 'Stay PRAZ-compliant with automated registration tracking, document management, and renewal reminders. Never miss a PRAZ deadline again.',
+    metaDescription: 'Organise PRAZ registration records, documents and renewal reminders for tender preparation.',
     h1: 'PRAZ Compliance Tracking for Tender Teams',
     intro: 'PRAZ registration is mandatory for businesses bidding on government tenders in Zimbabwe. But tracking expiry dates, required documents, and renewal deadlines across multiple registrations is a nightmare. Radbit automates it all.',
     steps: [
@@ -225,7 +225,7 @@ export const useCases: UseCasePage[] = [
     steps: [
       { title: 'AI Business Plan Generator', description: 'Generate a professional business plan tailored to Zimbabwean market conditions. Includes financial projections in USD/ZWL.' },
       { title: 'AI Bid Writer', description: 'Create tender proposals in minutes. Paste the tender requirements, and the AI drafts a response using your company profile.' },
-      { title: 'AI Tax Copilot', description: 'Get answers to ZIMRA questions, calculate VAT, and understand your tax obligations in plain language.' },
+      { title: 'Tax Information Tools', description: 'Review general ZIMRA information and indicative calculations, then confirm material decisions with the original authority or a qualified adviser.' },
       { title: 'AI Business Mentor', description: 'Ask business questions and get a practical draft answer you can review against your own context.' },
     ],
     benefits: ['Generate business plans in 10 minutes', 'Write tender proposals 5x faster', 'Understand your tax obligations clearly', 'Get Zimbabwe-specific business advice'],

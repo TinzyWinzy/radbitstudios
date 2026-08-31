@@ -71,7 +71,7 @@ export async function savePrazDocument(
   userId: string,
   docType: DocumentId,
   fileName: string,
-  fileUrl: string,
+  storagePath: string,
   expiresAt: string | null,
 ): Promise<void> {
   const docRef = adminDb.collection('praz_documents').doc(`${userId}_${docType}`);
@@ -79,7 +79,7 @@ export async function savePrazDocument(
     userId,
     docType,
     fileName,
-    fileUrl,
+    storagePath,
     uploadedAt: new Date(),
     expiresAt: expiresAt ? new Date(expiresAt) : null,
     status: 'valid',

@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useConsent } from "@/hooks/use-consent";
 
 interface InArticleAdProps {
   slot?: string;
 }
 
 export function InArticleAd({ slot = "blog-in-article" }: InArticleAdProps) {
+  const { preferences, isLoaded } = useConsent();
   const containerRef = useRef<HTMLDivElement>(null);
   const loaded = useRef(false);
 
@@ -31,6 +33,8 @@ export function InArticleAd({ slot = "blog-in-article" }: InArticleAdProps) {
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+
+  if (!isLoaded || !preferences.marketing) return null;
 
   return (
     <div ref={containerRef} className="my-8 flex justify-center">

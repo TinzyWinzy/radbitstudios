@@ -1014,8 +1014,7 @@ export default function SettingsPage() {
                   <a href="mailto:hanzohanic@gmail.com" className="text-primary hover:underline">
                     hanzohanic@gmail.com
                   </a>
-                  . For POPIA enquiries, contact the Information Regulator (South Africa). For Zimbabwe Cyber Act
-                  enquiries, contact POTRAZ.
+                  . You may also raise a concern with the data-protection authority that applies to your circumstances.
                 </p>
               </div>
             </CardContent>

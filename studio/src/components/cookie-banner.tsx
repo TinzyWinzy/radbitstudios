@@ -1,24 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { X, Cookie, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Cookie, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
-import { useConsent } from '@/hooks/use-consent';
+import { CONSENT_REVIEW_EVENT, useConsent } from '@/hooks/use-consent';
 
 export function CookieBanner() {
-  const { showBanner, acceptAll, acceptNecessary, updatePreferences } = useConsent();
-  const [showDetails, setShowDetails] = useState(false);
+  const { showBanner, preferences, acceptAll, acceptNecessary, updatePreferences } = useConsent();
   const [analyticsConsent, setAnalyticsConsent] = useState(false);
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
+  const [reviewRequested, setReviewRequested] = useState(false);
 
-  if (!showBanner) return null;
+  useEffect(() => {
+    const handleReview = () => {
+      setAnalyticsConsent(preferences.analytics);
+      setMarketingConsent(preferences.marketing);
+      setReviewRequested(true);
+      setShowCustomize(true);
+    };
+    window.addEventListener(CONSENT_REVIEW_EVENT, handleReview);
+    return () => window.removeEventListener(CONSENT_REVIEW_EVENT, handleReview);
+  }, [preferences.analytics, preferences.marketing]);
+
+  if (!showBanner && !reviewRequested) return null;
 
   const handleSaveCustom = () => {
     updatePreferences({ analytics: analyticsConsent, marketing: marketingConsent });
     setShowCustomize(false);
+    setReviewRequested(false);
   };
 
   return (
@@ -93,8 +105,8 @@ export function CookieBanner() {
           {!showCustomize ? (
             <>
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowDetails(!showDetails)} aria-expanded={showDetails}>
-                  {showDetails ? <ChevronUp className="h-3 w-3 mr-1" /> : <ChevronDown className="h-3 w-3 mr-1" />}
+                <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowCustomize(true)} aria-expanded={showCustomize}>
+                  <ChevronDown className="h-3 w-3 mr-1" />
                   Customize
                 </Button>
               </div>
@@ -109,7 +121,7 @@ export function CookieBanner() {
             </>
           ) : (
             <div className="flex gap-2 w-full justify-end">
-              <Button variant="outline" size="sm" className="text-xs" onClick={acceptNecessary}>
+              <Button variant="outline" size="sm" className="text-xs" onClick={() => { acceptNecessary(); setReviewRequested(false); }}>
                 Reject All
               </Button>
               <Button size="sm" className="text-xs" onClick={handleSaveCustom}>
@@ -118,24 +130,6 @@ export function CookieBanner() {
             </div>
           )}
         </CardFooter>
-        {showDetails && !showCustomize && (
-          <div className="px-4 pb-4 -mt-2">
-            <div className="space-y-2 text-xs text-muted-foreground border-t border-border pt-2">
-              <div className="flex justify-between items-center">
-                <span><strong>__session</strong> — Authentication</span>
-                <span className="text-green-600">Necessary</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span><strong>cookie_consent</strong> — Consent preference</span>
-                <span className="text-green-600">Necessary</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span><strong>sidebar_state</strong> — UI preference</span>
-                <span className="text-green-600">Necessary</span>
-              </div>
-            </div>
-          </div>
-        )}
       </Card>
     </div>
   );

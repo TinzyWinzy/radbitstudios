@@ -12,6 +12,9 @@ export interface ConsentPreferences {
 
 const CONSENT_COOKIE = 'cookie_consent';
 const CONSENT_EXPIRY_DAYS = 365;
+const CONSENT_VERSION = '2026-08-30';
+const CONSENT_CHANGED_EVENT = 'radbit:consent-changed';
+export const CONSENT_REVIEW_EVENT = 'radbit:consent-review';
 
 function getCookie(name: string): string | null {
   if (typeof document === 'undefined') return null;
@@ -23,6 +26,23 @@ function setCookie(name: string, value: string, days: number): void {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   const secure = location.protocol === 'https:' ? '; Secure' : '';
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax${secure}`;
+}
+
+function storeConsent(preferences: ConsentPreferences): void {
+  setCookie(
+    CONSENT_COOKIE,
+    JSON.stringify({
+      ...preferences,
+      version: CONSENT_VERSION,
+      updatedAt: new Date().toISOString(),
+    }),
+    CONSENT_EXPIRY_DAYS,
+  );
+  window.dispatchEvent(new CustomEvent(CONSENT_CHANGED_EVENT, { detail: preferences }));
+}
+
+export function requestConsentReview(): void {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(CONSENT_REVIEW_EVENT));
 }
 
 function parseConsent(raw: string | null): ConsentPreferences | null {
@@ -50,25 +70,32 @@ export function useConsent() {
 
   useEffect(() => {
     const stored = parseConsent(getCookie(CONSENT_COOKIE));
-    setPreferences(stored || DEFAULT_CONSENT);
+    setPreferences(stored);
     setIsLoaded(true);
+
+    const handleConsentChange = (event: Event) => {
+      const customEvent = event as CustomEvent<ConsentPreferences>;
+      setPreferences(customEvent.detail || parseConsent(getCookie(CONSENT_COOKIE)));
+    };
+    window.addEventListener(CONSENT_CHANGED_EVENT, handleConsentChange);
+    return () => window.removeEventListener(CONSENT_CHANGED_EVENT, handleConsentChange);
   }, []);
 
   const acceptAll = useCallback(() => {
     const all: ConsentPreferences = { necessary: true, analytics: true, marketing: true };
-    setCookie(CONSENT_COOKIE, JSON.stringify(all), CONSENT_EXPIRY_DAYS);
+    storeConsent(all);
     setPreferences(all);
   }, []);
 
   const acceptNecessary = useCallback(() => {
-    setCookie(CONSENT_COOKIE, JSON.stringify(DEFAULT_CONSENT), CONSENT_EXPIRY_DAYS);
+    storeConsent(DEFAULT_CONSENT);
     setPreferences(DEFAULT_CONSENT);
   }, []);
 
   const updatePreferences = useCallback((prefs: Partial<ConsentPreferences>) => {
     const current = preferences || DEFAULT_CONSENT;
     const updated: ConsentPreferences = { ...current, ...prefs, necessary: true };
-    setCookie(CONSENT_COOKIE, JSON.stringify(updated), CONSENT_EXPIRY_DAYS);
+    storeConsent(updated);
     setPreferences(updated);
   }, [preferences]);
 

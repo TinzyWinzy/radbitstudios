@@ -197,12 +197,12 @@ const projects = [
     url: "https://nexusagronomics.co.zw",
     outcome: "Sector-focused agronomy website with service structure and credibility content.",
     stacks: ["Next.js", "Tailwind", "Firebase"],
-    status: "Built + Deployed",
+    status: "Operator Project",
   },
   {
     name: "Radbit Ops",
     url: "/pilot",
-    outcome: "Compliance and tender-readiness tool for Zimbabwean SMEs. Currently in pilot.",
+    outcome: "Operational records and tender-preparation workflow for Zimbabwean SMEs. Currently in pilot.",
     stacks: ["Next.js", "Firebase", "Genkit", "Supabase"],
     status: "Built + Deployed (Pilot)",
   },
@@ -356,8 +356,8 @@ function TrustSection() {
   const trustItems = [
     {
       icon: <Shield className="h-4 w-4" />,
-      title: "Secured with Modern Controls",
-      body: "We use Firebase, TLS 1.3, and modern web security controls to protect account and business data in transit and at rest.",
+      title: "Practical Security Controls",
+      body: "We use authenticated access, private project storage and provider security controls appropriate to the services currently offered.",
     },
     {
       icon: <Server className="h-4 w-4" />,
@@ -366,13 +366,13 @@ function TrustSection() {
     },
     {
       icon: <Database className="h-4 w-4" />,
-      title: "Never Shared or Sold",
-      body: "We do not sell your business data. Product access is designed around accounts, roles, and permissions.",
+      title: "Limited Provider Access",
+      body: "We do not sell personal information. Selected providers process only the information needed to host, secure and deliver the service.",
     },
     {
       icon: <BadgeCheck className="h-4 w-4" />,
-      title: "Regulatory Alignment",
-      body: "Built to help you organize the documents and reminders commonly needed for ZIMRA, PRAZ, NSSA, and other local workflows.",
+      title: "Workflow Support",
+      body: "Tools can help organise records and reminders used in local business workflows. They do not provide regulatory approval or guaranteed compliance.",
     },
   ];
 
@@ -444,7 +444,7 @@ const caseStudies = [
     result: "An agri-tech business working with data, growers, and operational records.",
     industry: "Agri-tech",
     established: "2022",
-    badge: "Parent Company",
+    badge: "Operator",
   },
 ];
 

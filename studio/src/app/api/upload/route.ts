@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/api-auth";
 import { withIpRateLimit } from '@/services/api-rate-limit';
+import { adminDb, adminStorage } from '@/lib/firebase/firebase-admin';
 
 const ALLOWED_TYPES = new Set([
   'image/jpeg', 'image/png', 'image/webp', 'image/gif',
@@ -34,24 +35,30 @@ export const POST = withIpRateLimit(
       );
     }
 
+    const project = await adminDb.collection('projects').doc(projectId).get();
+    if (!project.exists) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+    const projectData = project.data();
+    if (projectData?.clientId !== userId) {
+      return NextResponse.json({ error: 'You do not have access to this project' }, { status: 403 });
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const ext = file.name.split(".").pop() || "bin";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     const storagePath = `projects/${projectId}/${filename}`;
 
-    const { storage } = await import("@/lib/firebase/firebase");
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
-
-    const storageRef = ref(storage, storagePath);
-    await uploadBytes(storageRef, buffer, {
+    const storageFile = adminStorage.bucket().file(storagePath);
+    await storageFile.save(buffer, {
+      resumable: false,
       contentType: file.type,
-      customMetadata: { uploadedBy: userId, originalName: file.name },
+      metadata: { metadata: { uploadedBy: userId, originalName: file.name } },
     });
-    const url = await getDownloadURL(storageRef);
 
     return NextResponse.json({
       success: true,
-      url,
+      url: storagePath,
       filename,
       storagePath,
     });

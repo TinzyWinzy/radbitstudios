@@ -19,10 +19,8 @@ const PAGE_TITLES: Record<string, string> = {
   "/settings": "Settings — Radbit",
   "/notifications": "Notifications — Radbit",
   "/export-assessment": "Export Assessment — Radbit",
-  "/praz-compliance": "PRAZ Compliance — Radbit",
-  "/tax-copilot": "Tax Co-Pilot — Radbit",
+  "/praz-compliance": "PRAZ Records — Radbit",
   "/bid-writer": "Bid Writer — Radbit",
-  "/investor-portal": "Investor Portal — Radbit",
 };
 import {
   SidebarProvider,
@@ -64,7 +62,6 @@ import {
   Newspaper,
   FileCheck,
   Scale,
-  TrendingUp,
   BadgeCheck,
   Sparkles,
   AlertTriangle,
@@ -183,7 +180,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const showAiTools = true;
     const canUsePraz = !isStaff;
     const canUseExport = !isStaff;
-    const canUseInvestor = !isStaff;
 
     const menuItems = [
       { href: "/dashboard", label: "Today", icon: <Home />, domain: "Command", show: true },
@@ -194,12 +190,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       { href: "/budget-calculator", label: "Budget", icon: <Calculator />, domain: "Operations", show: true },
       { href: "/news", label: "Business News", icon: <Newspaper />, domain: "Intelligence", show: true },
       { href: "/tenders", label: "Tenders", icon: <Briefcase />, domain: "Intelligence", show: true },
-      { href: "/praz-compliance", label: "PRAZ Compliance", icon: <Scale />, domain: "Intelligence", show: canUsePraz },
+      { href: "/praz-compliance", label: "PRAZ Records", icon: <Scale />, domain: "Intelligence", show: canUsePraz },
       { href: "/community", label: "Community", icon: <Users />, domain: "Network", show: true },
       ...(showMessages ? [{ href: "/messages", label: "Messages", icon: <Send />, domain: "Network", show: true }] : []),
       { href: "/resources", label: "Resources", icon: <BookOpen />, domain: "Network", show: true },
       { href: "/export-assessment", label: "Export Readiness", icon: <FileCheck />, domain: "Intelligence", show: canUseExport },
-      { href: "/investor-portal", label: "Investor Portal", icon: <TrendingUp />, domain: "Intelligence", show: canUseInvestor },
       ...(canViewBlog ? [{ href: "/dashboard/blog", label: "Publishing", icon: <PenSquare />, domain: "Administration", show: true }] : []),
       ...(isAdmin ? [
         { href: "/dashboard/faq", label: "FAQ", icon: <HelpCircle />, domain: "Administration", show: true },
@@ -274,13 +269,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild isActive={pathname === "/bid-writer"}>
                             <Link href="/bid-writer">Bid Writer</Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      )}
-                      {!isStaff && (
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild isActive={pathname === "/tax-copilot"}>
-                            <Link href="/tax-copilot">Tax Co-Pilot</Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       )}

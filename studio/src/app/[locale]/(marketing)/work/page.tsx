@@ -75,7 +75,7 @@ const projects = [
     href: "https://nexusagronomics.co.zw",
     outcome: "Sector-focused agronomy website with service structure and credibility content.",
     stacks: ["Next.js", "Tailwind", "Firebase"],
-    status: "Built + Deployed",
+    status: "Operator Project",
     desc: "An agri-tech business website designed to make services, credibility, and contact details easier to understand.",
   },
   {

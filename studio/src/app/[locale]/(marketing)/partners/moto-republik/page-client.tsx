@@ -47,7 +47,7 @@ function HeroSection() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/20 bg-purple-500/10 text-sm font-medium text-purple-400 mb-8"
         >
           <Music className="h-3.5 w-3.5" />
-          Official Moto Republik Partner
+          Moto Republik programme
         </motion.div>
         <motion.h1
           variants={fadeUp}

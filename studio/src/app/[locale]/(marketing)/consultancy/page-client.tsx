@@ -453,7 +453,7 @@ export function ConsultancyClient() {
               { name: "Cultural Coder", url: "https://culturalcoder.co.zw", tag: "Brand / Dev", desc: "Personal brand site showcasing software engineering portfolio." },
               { name: "Indigenous Ingredients", url: "https://indigenousingredients.com", tag: "E-Commerce", desc: "Marketplace for indigenous ingredients and African superfoods." },
               { name: "Jewels by Alice", url: "https://jewelsbyalice.com", tag: "E-Commerce", desc: "Online jewellery store with product catalog and checkout." },
-              { name: "Nexus Agronomics", url: "https://nexusagronomics.co.zw", tag: "Agri-Tech", desc: "Agri-tech MVP for farm management and crop analytics." },
+              { name: "Radbit Ops", url: "/pilot", tag: "Internal Product", desc: "Operational workflow pilot developed within the Nexus Agronomics product portfolio." },
             ].map((site) => {
               return (
                 <StaggerItem key={site.name} direction="up">

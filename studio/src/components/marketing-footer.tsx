@@ -4,6 +4,8 @@ import Link from "next/link";
 import { GyeNyame, Sankofa, Dwennimmen } from "@/components/adinkra-symbols";
 import { ChevronPattern } from "@/components/chevron-pattern";
 import { MapPin, Mail, Linkedin, Phone } from "lucide-react";
+import { RADBIT_BRAND, RADBIT_POSITIONING } from "@/lib/brand";
+import { requestConsentReview } from "@/hooks/use-consent";
 
 export function MarketingFooter() {
   return (
@@ -16,20 +18,20 @@ export function MarketingFooter() {
               <span className="font-headline text-xl font-bold tracking-wide text-foreground">RADBIT</span>
             </Link>
             <p className="text-sm text-foreground/50 leading-relaxed">
-              Systems architecture and AI integration for African businesses.
+              {RADBIT_POSITIONING.summary}
             </p>
             <div className="space-y-2 text-xs text-foreground/40">
               <div className="flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 text-primary/60" />
-                <span>Harare, Zimbabwe</span>
+                <span>{RADBIT_BRAND.location}</span>
               </div>
-              <a href="tel:+263781334474" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <a href={RADBIT_BRAND.phoneHref} className="flex items-center gap-2 hover:text-primary transition-colors">
                 <Phone className="h-3.5 w-3.5 text-primary/60" />
-                +263 78 133 4474
+                {RADBIT_BRAND.phone}
               </a>
-              <a href="mailto:hanzohanic@gmail.com" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <a href={`mailto:${RADBIT_BRAND.contactEmail}`} className="flex items-center gap-2 hover:text-primary transition-colors">
                 <Mail className="h-3.5 w-3.5 text-primary/60" />
-                hanzohanic@gmail.com
+                {RADBIT_BRAND.contactEmail}
               </a>
               <a href="https://www.linkedin.com/company/radbitstudios" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
                 <Linkedin className="h-3.5 w-3.5 text-primary/60" />
@@ -96,11 +98,12 @@ export function MarketingFooter() {
           ))}
         </div>
         <div className="mt-16 pt-8 border-t border-foreground/10 text-center text-sm text-foreground/40">
-          <p>&copy; {new Date().getFullYear()} Radbit Studios. All rights reserved.</p>
-          <p className="mt-2 text-xs text-foreground/30">Your data is encrypted and stored securely. We never share or sell your information.</p>
-          <p className="mt-4 text-[11px] text-foreground/20 max-w-xl mx-auto leading-relaxed">
-            <strong>Trademark notice:</strong> Radbit Studios is a software, AI and business systems company. We are not affiliated with Bad Rabbit Studio (film production, documentaries, conservation storytelling).
-          </p>
+          <p>&copy; {new Date().getFullYear()} {RADBIT_BRAND.name}. All rights reserved.</p>
+          <p className="mt-2 text-xs text-foreground/40">{RADBIT_BRAND.operatorStatement}</p>
+          <p className="mt-3 text-xs text-foreground/30 max-w-2xl mx-auto leading-relaxed">{RADBIT_POSITIONING.advisoryBoundary}</p>
+          <button type="button" onClick={requestConsentReview} className="mt-4 text-xs text-foreground/50 underline underline-offset-4 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            Cookie preferences
+          </button>
         </div>
       </div>
     </footer>

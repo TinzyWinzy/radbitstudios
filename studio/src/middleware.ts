@@ -3,6 +3,11 @@ import createMiddleware from 'next-intl/middleware';
 import { jwtVerify } from 'jose/jwt/verify';
 import { createRemoteJWKSet } from 'jose/jwks/remote';
 import { buildCspWithNonce } from '@/lib/csp-nonce';
+import {
+  DISABLED_API_PREFIXES,
+  DISABLED_PAGE_PREFIXES,
+  matchesDisabledPrefix,
+} from '@/lib/product-availability';
 
 const i18nMiddleware = createMiddleware({
   locales: ['en', 'sn', 'nd', 'pt'],
@@ -82,6 +87,23 @@ export default async function middleware(request: NextRequest) {
   }
 
   const isApiRoute = pathname.startsWith('/api/');
+
+  if (matchesDisabledPrefix(pathname, DISABLED_API_PREFIXES)) {
+    return NextResponse.json(
+      { error: 'This capability is not currently offered as a production service.' },
+      { status: 503, headers: { 'Cache-Control': 'no-store' } },
+    );
+  }
+
+  if (matchesDisabledPrefix(pathname, DISABLED_PAGE_PREFIXES)) {
+    return new NextResponse('Not Found', {
+      status: 404,
+      headers: {
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex, nofollow',
+      },
+    });
+  }
 
   if (!isApiRoute) {
     const isProtected = protectedPaths.some(path => pathname.startsWith(path));

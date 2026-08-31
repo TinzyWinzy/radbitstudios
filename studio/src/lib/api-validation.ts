@@ -39,8 +39,8 @@ export const CreateLeadSchema = z.object({
 export const PrazDocumentSchema = z.object({
   docType: z.string().min(1, 'docType is required'),
   fileName: z.string().min(1, 'fileName is required').max(500),
-  fileUrl: z.string().url('Valid URL required').max(2000),
-  expiresAt: z.string().datetime().optional(),
+  storagePath: z.string().regex(/^praz\/[a-zA-Z0-9_-]+\//, 'Valid private storage path required').max(1000),
+  expiresAt: z.string().datetime().nullable().optional(),
 });
 
 export const PrazDeleteSchema = z.object({

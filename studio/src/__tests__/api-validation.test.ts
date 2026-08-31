@@ -166,16 +166,16 @@ describe('API Validation Schemas', () => {
       const result = PrazDocumentSchema.safeParse({
         docType: 'tax_clearance',
         fileName: 'tax.pdf',
-        fileUrl: 'https://example.com/tax.pdf',
+        storagePath: 'praz/user-123/tax.pdf',
       });
       expect(result.success).toBe(true);
     });
 
-    it('should reject invalid URL', () => {
+    it('should reject a public URL in place of a private storage path', () => {
       const result = PrazDocumentSchema.safeParse({
         docType: 'tax_clearance',
         fileName: 'tax.pdf',
-        fileUrl: 'not-a-url',
+        storagePath: 'https://example.com/tax.pdf',
       });
       expect(result.success).toBe(false);
     });

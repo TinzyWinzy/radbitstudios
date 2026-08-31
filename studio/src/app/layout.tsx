@@ -8,6 +8,8 @@ import { CookieBanner } from "@/components/cookie-banner";
 import { GA4Script } from "@/components/analytics/ga4";
 import { DeviceProvider } from "@/contexts/device-context";
 import { PwaLifecycle } from "@/components/pwa-lifecycle";
+import { RADBIT_POSITIONING } from "@/lib/brand";
+import { AdSenseScript } from "@/components/adsense";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,15 +31,15 @@ export const metadata: Metadata = {
     template: "%s | Radbit Studios Zimbabwe",
   },
   description:
-    "Zimbabwean software development and AI systems company. Custom business software, compliance automation, tender intelligence and AI workflows for Zimbabwean SMEs and enterprises.",
+    RADBIT_POSITIONING.summary,
   keywords: [
     "software development Zimbabwe", "AI integration Zimbabwe",
     "Radbit Studios", "Radbit Zimbabwe",
     "Zimbabwe tech company", "business automation Zimbabwe",
-    "custom software Zimbabwe", "ZIMRA compliance system",
-    "tender intelligence Zimbabwe", "PRAZ compliance Zimbabwe",
+    "custom software Zimbabwe", "workflow software Zimbabwe",
+    "tender information Zimbabwe", "record management Zimbabwe",
     "Zimbabwe SME software", "business systems Zimbabwe",
-    "compliance automation Zimbabwe", "Harare software company",
+    "business workflow tools Zimbabwe", "Harare software company",
   ],
   alternates: {
     canonical: SITE_URL,
@@ -51,7 +53,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Radbit Studios | Software & AI Systems for Zimbabwean Business",
-    description: "Zimbabwean software development and AI systems company. Custom business software, compliance automation, and AI workflows.",
+    description: RADBIT_POSITIONING.summary,
     url: SITE_URL,
     siteName: "Radbit Studios",
     locale: "en_ZW",
@@ -61,7 +63,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Radbit Studios | Software & AI Systems for Zimbabwean Business",
-    description: "Zimbabwean software development and AI systems company. Custom business software, compliance automation, and AI workflows.",
+    description: RADBIT_POSITIONING.summary,
     site: "@radbitzw",
     creator: "@radbitzw",
   },
@@ -120,21 +122,15 @@ export default async function RootLayout({
         <link rel="icon" href="/icons/icon-192x192.png" sizes="192x192" type="image/png" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="alternate" type="application/rss+xml" title="Radbit Blog RSS Feed" href="/blog/feed.xml" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
         <link rel="preconnect" href="https://firestore.googleapis.com" />
         <link rel="preconnect" href="https://identitytoolkit.googleapis.com" />
         <link rel="preconnect" href="https://securetoken.googleapis.com" />
         <link rel="preconnect" href="https://apis.google.com" />
         <link rel="preconnect" href="https://generativelanguage.googleapis.com" />
         <link rel="preconnect" href="https://js.stripe.com" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
         <GA4Script />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8600120936743760"
-          crossOrigin="anonymous"
-        />
+        <AdSenseScript />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }} />
         <script type="application/ld+json" suppressHydrationWarning

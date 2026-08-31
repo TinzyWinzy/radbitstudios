@@ -65,12 +65,6 @@ const tools = [
     icon: <Banknote className="h-6 w-6" />,
   },
   {
-    slug: "fiscal-compliance",
-    title: "Fiscal Device Compliance",
-    excerpt: "ZIMRA fiscal device requirements explained: FDG API, VAT thresholds, penalties, and how to stay compliant without hardware.",
-    icon: <ReceiptText className="h-6 w-6" />,
-  },
-  {
     slug: "zida-invest",
     title: "ZIDA Invest Guide",
     excerpt: "Zimbabwe Investment and Development Agency guide: investment pathways, key sectors, SEZ incentives, and how to invest with confidence.",

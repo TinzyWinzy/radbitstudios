@@ -12,7 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { AuthContext } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { storage } from '@/lib/firebase/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes } from 'firebase/storage';
 import { format, addYears } from 'date-fns';
 import { Upload, CheckCircle2, AlertTriangle, XCircle, FileText, Shield, Clock, ArrowRight, CalendarIcon } from 'lucide-react';
 import type { AppUser } from '@/types/user';
@@ -90,14 +90,13 @@ export default function PrazCompliancePage() {
       const storagePath = `praz/${user.uid}/${docType}_${Date.now()}_${file.name}`;
       const storageRef = ref(storage, storagePath);
       await uploadBytes(storageRef, file);
-      const downloadUrl = await getDownloadURL(storageRef);
 
       const expiresAtStr = noExpiry || !selectedDate ? null : selectedDate.toISOString();
 
       await fetch('/api/praz/document', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.uid, docType, fileName: file.name, fileUrl: downloadUrl, expiresAt: expiresAtStr }),
+        body: JSON.stringify({ docType, fileName: file.name, storagePath, expiresAt: expiresAtStr }),
       });
 
       setDocuments(prev => ({
@@ -170,10 +169,13 @@ export default function PrazCompliancePage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
           <Shield className="h-7 w-7 text-primary" />
-          PRAZ Compliance
+          PRAZ Records
         </h1>
         <p className="text-muted-foreground mt-2">
-          Upload and manage documents required for Procurement Regulatory Authority of Zimbabwe (PRAZ) registration and tender bidding.
+          Privately organise documents commonly used for PRAZ registration and tender preparation.
+        </p>
+        <p className="mt-2 max-w-3xl text-xs leading-5 text-muted-foreground">
+          This checklist is a record-management aid, not PRAZ approval or a certification of eligibility. Confirm current requirements with PRAZ and the original tender notice.
         </p>
       </div>
 
@@ -306,7 +308,7 @@ export default function PrazCompliancePage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <AlertTriangle className={`h-3 w-3 shrink-0 ${readinessScore >= 100 ? 'text-green-500' : 'text-amber-500'}`} />
-                  {readinessScore >= 100 ? 'Ready for PRAZ registration' : `${REQUIRED_DOCUMENTS.length - uploadedCount} documents remaining`}
+                  {readinessScore >= 100 ? 'Checklist complete — external review still required' : `${REQUIRED_DOCUMENTS.length - uploadedCount} checklist items remaining`}
                 </li>
               </ul>
             </CardContent>
@@ -318,7 +320,7 @@ export default function PrazCompliancePage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <p className="text-muted-foreground">
-                Once all documents are uploaded, you can register with PRAZ and start bidding on government tenders.
+                Once the checklist is complete, confirm the current registration and tender requirements directly with PRAZ and the procuring entity.
               </p>
               <a
                 href="/tenders"

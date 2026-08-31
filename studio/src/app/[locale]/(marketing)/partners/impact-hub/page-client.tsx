@@ -46,7 +46,7 @@ function HeroSection() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-500/20 bg-green-500/10 text-sm font-medium text-green-400 mb-8"
         >
           <Leaf className="h-3.5 w-3.5" />
-          Official Impact Hub Harare Partner
+          Impact Hub Harare programme
         </motion.div>
         <motion.h1
           variants={fadeUp}

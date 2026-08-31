@@ -16,13 +16,13 @@ const features = [
   {
     icon: <BarChart className="h-5 w-5" />,
     title: "Manage Remotely",
-    body: "AI-powered tools to run your Zimbabwe business from abroad. Generate reports, track tenders, and stay compliant — all from your phone.",
+    body: "Use workflow tools to review records, reports and tender information while operating from abroad.",
     link: "/diaspora/start-business",
   },
   {
     icon: <Briefcase className="h-5 w-5" />,
     title: "Tender Alerts",
-    body: "Get notified when government and corporate tenders match your business sector. Never miss an opportunity, even when you're thousands of miles away.",
+    body: "Receive tender alerts matched to your selected sector and review each opportunity against the original notice.",
     link: "/sign-up",
   },
 ];
@@ -37,7 +37,7 @@ const trustPoints = [
   "PRAZ-compliant SME verification",
   "Team on the ground in Harare",
   "Secure payments via Stripe & EcoCash",
-  "POPIA, GDPR & Zimbabwe Cyber Act compliant",
+  "Privacy choices and authenticated account access",
 ];
 
 export function DiasporaLanding() {

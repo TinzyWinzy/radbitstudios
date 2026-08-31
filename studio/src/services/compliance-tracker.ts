@@ -130,7 +130,7 @@ export async function sendComplianceAlerts(): Promise<{ sent: number }> {
       '',
       alert.daysLeft <= 0
         ? `Your ${alert.label} has expired. Renew immediately to avoid penalties.`
-        : `Your ${alert.label} expires in ${alert.daysLeft} days. Renew now to stay compliant.`,
+        : `Your ${alert.label} expires in ${alert.daysLeft} days. Review or renew it now to keep the record current.`,
       '',
       `_Reply RENEW to get renewal assistance_`,
       `_Radbit Compliance Tracker_`,

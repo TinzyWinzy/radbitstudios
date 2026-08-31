@@ -33,20 +33,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/contact`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.4 },
     { url: `${SITE_URL}/consultancy`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
     { url: `${SITE_URL}/partners`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.4 },
-    { url: `${SITE_URL}/zimra-fiscal-device-registration`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.9 },
-    { url: `${SITE_URL}/compliant-receipts`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${SITE_URL}/vat-threshold-alerts`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${SITE_URL}/offline-mode`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${SITE_URL}/penalty-protection`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${SITE_URL}/tender-compliance-bridge`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.7 },
     { url: `${SITE_URL}/diaspora`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/diaspora/invest`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/diaspora/start-business`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${SITE_URL}/diaspora-matchmaking`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
-    { url: `${SITE_URL}/escrow`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
     { url: `${SITE_URL}/events/zimbabwe-business-expo-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.5 },
-    { url: `${SITE_URL}/features/praz-compliance`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${SITE_URL}/features/tax-copilot`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/features/bid-writer`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.6 },
     { url: `${SITE_URL}/guides/zimra-tax-calendar-2026`, lastModified: lastMod, changeFrequency: "monthly" as const, priority: 0.7 },
     { url: `${SITE_URL}/sadc`, lastModified: lastMod, changeFrequency: "weekly" as const, priority: 0.8 },
@@ -91,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let seoPages: MetadataRoute.Sitemap = [];
   try {
     const seoSnap = await adminDb.collection("seo_pages").where("published", "==", true).get();
-    seoPages = seoSnap.docs.map((d) => {
+    seoPages = seoSnap.docs.filter(d => d.data().slug !== 'praz-compliance').map((d) => {
       const p = d.data();
       const prefix = p.type === "industry" ? "solutions" : "use-cases";
       return {

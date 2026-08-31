@@ -23,7 +23,7 @@ const features = [
   },
   {
     icon: Shield,
-    title: "PRAZ Auto-Compliance",
+    title: "Document Readiness Prompts",
     description: "Every bid is checked against PRAZ requirements. No more disqualifications for missing clauses or incorrect formatting.",
   },
   {
@@ -34,7 +34,7 @@ const features = [
   {
     icon: Clock,
     title: "Deadline Tracker",
-    description: "Never miss a bid deadline. Radbit tracks tender closing dates and prioritizes your pipeline so you always submit on time.",
+    description: "Keep tender closing dates visible and prioritise the pipeline. Users remain responsible for confirming and submitting on time.",
   },
   {
     icon: FileText,
@@ -75,8 +75,8 @@ export default function BidWriterPageClient() {
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href="/tender-compliance-bridge" className="inline-flex h-12 items-center gap-2 rounded-xl border border-border bg-background px-8 text-sm font-medium">
-                  See Tender Compliance
+                <Link href="/resources" className="inline-flex h-12 items-center gap-2 rounded-xl border border-border bg-background px-8 text-sm font-medium">
+                  Review Tender Resources
                 </Link>
               </Button>
             </motion.div>
