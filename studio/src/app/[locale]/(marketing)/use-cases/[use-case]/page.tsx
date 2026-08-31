@@ -27,6 +27,7 @@ async function getPage(slug: string): Promise<SeoPageDoc | null> {
       .collection("seo_pages")
       .where("slug", "==", slug)
       .where("type", "==", "usecase")
+      .where("published", "==", true)
       .limit(1)
       .get();
     if (snap.empty) return null;
@@ -151,7 +152,7 @@ export default async function UseCasePage({
         <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 md:p-12">
           <h2 className="font-headline text-2xl md:text-3xl font-bold mb-4">{page.cta}</h2>
           <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-            Join thousands of Zimbabwean entrepreneurs using Radbit to grow their businesses.
+            Create an account to evaluate whether this workflow fits your business.
           </p>
           <Link href="/sign-up" className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
             Sign Up Free <ArrowRight className="h-4 w-4" />

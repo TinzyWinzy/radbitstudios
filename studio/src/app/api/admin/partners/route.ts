@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from 'firebase-admin/auth';
-import { adminApp, adminDb } from '@/lib/firebase/firebase-admin';
+import { adminApp } from '@/lib/firebase/firebase-admin';
 import { partnerService } from '@/services/partner.service';
 import { commissionService } from '@/services/commission.service';
 import { payoutService } from '@/services/payout.service';
@@ -10,8 +10,7 @@ import { approveCommission } from '@/services/commission-engine.service';
 async function verifyAdmin(token: string): Promise<string | null> {
   try {
     const decoded = await getAuth(adminApp).verifyIdToken(token);
-    const userDoc = await adminDb.collection('users').doc(decoded.uid).get();
-    const role = userDoc.data()?.role;
+    const role = decoded.role;
     if (role === 'admin' || role === 'super_admin') return decoded.uid;
     return null;
   } catch {

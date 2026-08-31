@@ -298,7 +298,7 @@ function FounderSection() {
               <p className="text-sm text-muted-foreground">Engineer and systems architect</p>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Full-stack engineer and AI-augmented systems architect. Operating from Zimbabwe, building for local and international markets. SAQA-evaluated. IITPSA member.
+              Full-stack engineer and AI-augmented systems architect. Operating from Zimbabwe and building software for local and international markets.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Radbit Studios exists at the intersection of technical capability and local business infrastructure. Every system we build is designed to work in the environments our clients actually operate in.
@@ -321,7 +321,7 @@ function PlatformScopeSection() {
           className="grid md:grid-cols-3 gap-0 bg-card border border-border rounded-xl overflow-hidden divide-y md:divide-y-0 md:divide-x divide-border"
         >
           {[
-            { value: "12+", label: "Government Data Sources", sub: "Tender intelligence across PRAZ, ministries, and state enterprises", icon: <Zap className="h-4 w-4 text-secondary" /> },
+            { value: "Public", label: "Data References", sub: "Links and records drawn from available public-sector sources", icon: <Zap className="h-4 w-4 text-secondary" /> },
             { value: "4", label: "Regulatory Workflows", sub: "ZIMRA, PRAZ, NSSA, and RBZ records kept easier to track", icon: <Shield className="h-4 w-4 text-primary" /> },
             { value: "3", label: "Platform Layers", sub: "Assessment, AI tools, and compliance records working together", icon: <BarChart className="h-4 w-4 text-accent" /> },
           ].map((metric, i) => (

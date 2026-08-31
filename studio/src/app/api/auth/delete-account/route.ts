@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withIpRateLimit } from '@/services/api-rate-limit';
-import { adminDb, adminStorage } from '@/lib/firebase/firebase-admin';
+import { adminAuth, adminDb, adminStorage } from '@/lib/firebase/firebase-admin';
 import { verifyIdToken } from '@/lib/api-auth';
 
 const USER_COLLECTIONS = [
@@ -22,18 +22,54 @@ const USER_COLLECTIONS = [
   { name: 'diaspora_interests', field: 'investorUid' },
 ] as const;
 
-const USER_DOCUMENTS = (uid: string) => [
+const USER_ROOT_DOCUMENTS = (uid: string) => [
   `budgets/${uid}`,
   `newsletter_subscriptions/${uid}`,
   `diaspora_investors/${uid}`,
   `agent_threads/${uid}`,
+  `financial_oracle/${uid}`,
+  `operational_mirror/${uid}`,
+  `whatsapp_briefs/${uid}`,
+  `conversations/${uid}`,
 ];
+
+async function exportDocumentTree(
+  ref: FirebaseFirestore.DocumentReference,
+): Promise<Record<string, unknown> | null> {
+  const snap = await ref.get();
+  const result: Record<string, unknown> = snap.exists
+    ? { id: snap.id, ...snap.data() }
+    : { id: snap.id };
+  const subcollections = await ref.listCollections();
+
+  for (const collection of subcollections) {
+    const children = await collection.get();
+    result[collection.id] = await Promise.all(
+      children.docs.map(child => exportDocumentTree(child.ref)),
+    );
+  }
+
+  return snap.exists || subcollections.length > 0 ? result : null;
+}
 
 async function exportUserData(uid: string): Promise<Record<string, unknown>> {
   const data: Record<string, unknown> = {
     exportedAt: new Date().toISOString(),
     userId: uid,
   };
+
+  try {
+    const authUser = await adminAuth.getUser(uid);
+    const accountEmail = authUser.email?.toLowerCase();
+    if (accountEmail) {
+      const subscribers = await adminDb.collection('newsletter_subscribers')
+        .where('email', '==', accountEmail)
+        .get();
+      data.newsletter_subscribers = subscribers.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+  } catch {
+    data.newsletter_subscribers = [];
+  }
 
   for (const { name, field } of USER_COLLECTIONS) {
     try {
@@ -44,10 +80,9 @@ async function exportUserData(uid: string): Promise<Record<string, unknown>> {
     }
   }
 
-  for (const path of USER_DOCUMENTS(uid)) {
+  for (const path of USER_ROOT_DOCUMENTS(uid)) {
     try {
-      const snap = await adminDb.doc(path).get();
-      data[path.replace('/', '_')] = snap.exists ? { id: snap.id, ...snap.data() } : null;
+      data[path.replace('/', '_')] = await exportDocumentTree(adminDb.doc(path));
     } catch {
       data[path.replace('/', '_')] = null;
     }
@@ -100,6 +135,8 @@ async function exportUserData(uid: string): Promise<Record<string, unknown>> {
 
 async function deleteUserData(uid: string): Promise<string[]> {
   const deleted: string[] = [];
+  const profile = await adminDb.doc(`users/${uid}`).get();
+  const accountEmail = profile.data()?.email as string | undefined;
 
   // Delete top-level user-scoped collections
   for (const { name, field } of USER_COLLECTIONS) {
@@ -114,14 +151,11 @@ async function deleteUserData(uid: string): Promise<string[]> {
     }
   }
 
-  for (const path of USER_DOCUMENTS(uid)) {
+  for (const path of USER_ROOT_DOCUMENTS(uid)) {
     try {
       const ref = adminDb.doc(path);
-      const snap = await ref.get();
-      if (snap.exists) {
-        await adminDb.recursiveDelete(ref);
-        deleted.push(`${path}: 1 doc`);
-      }
+      await adminDb.recursiveDelete(ref);
+      deleted.push(`${path}: deleted`);
     } catch (err) {
       console.warn(`[DeleteAccount] Error deleting ${path}:`, err);
       deleted.push(`${path}: error`);
@@ -172,7 +206,7 @@ async function deleteUserData(uid: string): Promise<string[]> {
 
   // Delete user profile
   try {
-    await adminDb.doc(`users/${uid}`).delete();
+    await profile.ref.delete();
     deleted.push('users: 1 doc');
   } catch (err) {
     console.warn('[DeleteAccount] Error deleting user doc:', err);
@@ -193,6 +227,19 @@ async function deleteUserData(uid: string): Promise<string[]> {
     }
   } catch {
     // Non-critical
+  }
+
+  if (accountEmail) {
+    try {
+      const subscribers = await adminDb.collection('newsletter_subscribers')
+        .where('email', '==', accountEmail.toLowerCase())
+        .get();
+      await Promise.all(subscribers.docs.map(doc => adminDb.recursiveDelete(doc.ref)));
+      deleted.push(`newsletter_subscribers: ${subscribers.size} docs`);
+    } catch (err) {
+      console.warn('[DeleteAccount] Error deleting newsletter subscriber:', err);
+      deleted.push('newsletter_subscribers: error');
+    }
   }
 
   return deleted;
@@ -224,6 +271,17 @@ export const POST = withIpRateLimit(
     if (deleted.some(entry => entry.endsWith(': error'))) {
       return NextResponse.json(
         { error: 'Some account records could not be deleted. The account remains active so the request can be retried.', deleted },
+        { status: 500 },
+      );
+    }
+
+    try {
+      await adminAuth.deleteUser(uid);
+      deleted.push('firebase_auth: deleted');
+    } catch (error) {
+      console.error('[DeleteAccount] Error deleting Firebase Auth user:', error);
+      return NextResponse.json(
+        { error: 'Account data was removed, but authentication deletion failed. Please contact support.', deleted },
         { status: 500 },
       );
     }

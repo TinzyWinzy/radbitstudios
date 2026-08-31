@@ -2,13 +2,23 @@
 
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useConsent } from '@/hooks/use-consent';
+import { hasConsent, useConsent } from '@/hooks/use-consent';
 import { onCLS, onLCP, onINP, onFCP, onTTFB } from 'web-vitals';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export function GA4Script() {
   const { preferences, isLoaded } = useConsent();
+
+  useEffect(() => {
+    if (!isLoaded || typeof window.gtag !== 'function') return;
+    window.gtag('consent', 'update', {
+      analytics_storage: preferences.analytics ? 'granted' : 'denied',
+      ad_storage: preferences.marketing ? 'granted' : 'denied',
+      ad_user_data: preferences.marketing ? 'granted' : 'denied',
+      ad_personalization: preferences.marketing ? 'granted' : 'denied',
+    });
+  }, [isLoaded, preferences.analytics, preferences.marketing]);
 
   if (!GA_ID || !isLoaded || !preferences.analytics) return null;
 
@@ -38,19 +48,20 @@ export function GA4Script() {
 export function GA4PageView() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { preferences, isLoaded } = useConsent();
 
   useEffect(() => {
-    if (!GA_ID || typeof window.gtag !== 'function') return;
+    if (!GA_ID || !isLoaded || !preferences.analytics || typeof window.gtag !== 'function') return;
 
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
     window.gtag('config', GA_ID, { page_path: url });
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isLoaded, preferences.analytics]);
 
   return null;
 }
 
 export function trackEvent(action: string, category: string, label?: string, value?: number) {
-  if (!GA_ID || typeof window === 'undefined' || typeof window.gtag !== 'function') return;
+  if (!GA_ID || typeof window === 'undefined' || !hasConsent('analytics') || typeof window.gtag !== 'function') return;
 
   window.gtag('event', action, {
     event_category: category,
@@ -66,9 +77,10 @@ declare global {
 }
 
 function reportWebVitalsToGA4() {
-  if (!GA_ID || typeof window.gtag !== 'function') return;
+  if (!GA_ID || !hasConsent('analytics') || typeof window.gtag !== 'function') return;
 
   const send = (name: string, value: number) => {
+    if (!hasConsent('analytics')) return;
     window.gtag('event', name, {
       event_category: 'Web Vitals',
       event_label: name,

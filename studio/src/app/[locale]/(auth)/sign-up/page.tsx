@@ -14,6 +14,12 @@ import { auth } from '@/lib/firebase/firebase';
 import { z } from 'zod';
 import { useUtm, getStoredUtm } from '@/hooks/use-utm';
 import { useRefTracking, getAttributionRef } from '@/hooks/use-ref-tracking';
+import { serverTimestamp } from 'firebase/firestore';
+
+const LEGAL_ACCEPTANCE = {
+  termsVersion: '1.1',
+  privacyVersion: '1.1',
+};
 
 const signUpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -105,7 +111,11 @@ export default function SignUpPage() {
     }
 
     try {
-      await signUp(email, password, { phone: phone?.trim() || '' });
+      await signUp(email, password, {
+        phone: phone?.trim() || '',
+        ...LEGAL_ACCEPTANCE,
+        termsAcceptedAt: serverTimestamp(),
+      });
     } catch (error: unknown) {
       toast({
         title: 'Sign Up Failed',
@@ -118,9 +128,16 @@ export default function SignUpPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!acceptedPrivacy) {
+      toast({ title: 'Agreement Required', description: 'Please accept the Terms and acknowledge the Privacy Policy to continue.', variant: 'destructive' });
+      return;
+    }
     setIsGoogleLoading(true);
     try {
-        await signInWithGoogle();
+        await signInWithGoogle({
+          ...LEGAL_ACCEPTANCE,
+          termsAcceptedAt: serverTimestamp(),
+        });
     } catch (error: unknown) {
         toast({
             title: 'Google Sign In Failed',
@@ -153,7 +170,7 @@ export default function SignUpPage() {
         variant="outline"
         className="w-full h-11 font-medium border-primary/20 text-primary/80 hover:text-primary hover:border-primary/40 hover:bg-primary/5"
         onClick={handleGoogleSignIn}
-        disabled={isGoogleLoading || isLoading}
+        disabled={isGoogleLoading || isLoading || !acceptedPrivacy}
       >
         {isGoogleLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -245,7 +262,7 @@ export default function SignUpPage() {
             <Link href="/terms" className="text-primary hover:underline font-medium" target="_blank">
               Terms of Service
             </Link>
-            . I consent to the collection and processing of my personal data as described.
+            . I acknowledge the account data processing described in the Privacy Policy. Marketing messages require separate opt-in.
           </label>
         </div>
         <Button type="submit" className="w-full h-11 font-headline tracking-wider border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/60" disabled={isLoading || isGoogleLoading || !acceptedPrivacy}>

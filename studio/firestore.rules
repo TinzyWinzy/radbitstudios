@@ -34,7 +34,25 @@ service cloud.firestore {
 
     // ─── USERS ────────────────────────────────────────────────────────────────
     match /users/{userId} {
-      allow read, write: if request.auth.uid == userId;
+      allow get: if request.auth.uid == userId;
+      allow create: if request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'displayName', 'photoURL', 'createdAt',
+          'businessName', 'industry', 'businessDescription', 'plan', 'usage',
+          'phone', 'whatsappOptIn', 'name', 'termsAcceptedAt',
+          'termsVersion', 'privacyVersion'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.plan == 'Free';
+      allow update: if request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'photoURL', 'phone', 'whatsappOptIn',
+          'businessName', 'industry', 'businessDescription',
+          'notifyAssessment', 'notifyInsights', 'notifyTender',
+          'notifyNews', 'notifySystem', 'notifyPush',
+          'termsAcceptedAt', 'termsVersion', 'privacyVersion'
+        ]);
+      allow delete: if false;
       allow list: if request.auth.token.role in ['admin', 'super_admin'];
     }
 
@@ -63,7 +81,8 @@ service cloud.firestore {
     match /export_assessments/{assessmentId} {
       allow create: if request.auth.uid == request.resource.data.userId;
       allow get, delete: if request.auth.uid == resource.data.userId;
-      allow list: if request.auth != null;
+      allow list: if request.auth != null
+        && resource.data.userId == request.auth.uid;
     }
 
     // ─── REFERRAL CODES ────────────────────────────────────────────────────

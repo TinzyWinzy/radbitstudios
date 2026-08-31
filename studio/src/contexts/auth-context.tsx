@@ -27,7 +27,7 @@ export interface AuthContextType {
   role: UserRole | null;
   signUp: (email: string, pass: string, extraData?: Record<string, unknown>) => Promise<UserCredential>;
   signIn: (email: string, pass: string) => Promise<UserCredential>;
-  signInWithGoogle: () => Promise<UserCredential>;
+  signInWithGoogle: (extraData?: Record<string, unknown>) => Promise<UserCredential>;
   logout: () => Promise<void>;
   refreshUserData: () => Promise<void>;
   deleteAccount: () => Promise<{ success: boolean; error?: string }>;
@@ -113,14 +113,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (!mountedRef.current) return;
         const mergedUser = { ...authUser, ...cached } as AppUser;
         setUser(mergedUser);
-        const docRole = cached.role as UserRole | undefined;
-        if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
-          setRole(docRole);
-        } else {
-          const idTokenResult = await authUser.getIdTokenResult();
-          if (!mountedRef.current) return;
-          setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
-        }
+        const idTokenResult = await authUser.getIdTokenResult();
+        if (!mountedRef.current) return;
+        setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
         return;
       }
     }
@@ -133,14 +128,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const rawData = userDoc.data();
       const mergedUser = { ...authUser, ...rawData, plan: normalizePlanName(rawData.plan as string | undefined) } as AppUser;
       setUser(mergedUser);
-      const docRole = rawData.role as UserRole | undefined;
-      if (docRole && ['sme_owner', 'sme_staff', 'admin', 'super_admin'].includes(docRole)) {
-        setRole(docRole);
-      } else {
-        const idTokenResult = await authUser.getIdTokenResult();
-        if (!mountedRef.current) return;
-        setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
-      }
+      const idTokenResult = await authUser.getIdTokenResult();
+      if (!mountedRef.current) return;
+      setRole((idTokenResult.claims['role'] as UserRole) ?? 'sme_owner');
       const cacheData: Record<string, unknown> = {};
       for (const key in rawData) {
         if (Object.prototype.hasOwnProperty.call(rawData, key)) {
@@ -278,10 +268,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return signInWithEmailAndPassword(auth, email, pass);
   }, []);
 
-  const signInWithGoogle = useCallback(() => {
+  const signInWithGoogle = useCallback(async (extraData?: Record<string, unknown>) => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
-  }, []);
+    const credential = await signInWithPopup(auth, provider);
+    await createUserDocument(credential.user, extraData);
+    if (extraData) {
+      await setDoc(doc(db, 'users', credential.user.uid), extraData, { merge: true });
+    }
+    await fetchAndSetUser(credential.user, extraData);
+    return credential;
+  }, [fetchAndSetUser]);
 
   const logout = useCallback(async () => {
     const currentUid = auth.currentUser?.uid;

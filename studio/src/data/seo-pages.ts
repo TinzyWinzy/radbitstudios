@@ -81,7 +81,7 @@ export const industries: IndustryPage[] = [
     title: 'Construction & Contracting Business Software Zimbabwe | Radbit',
     metaDescription: 'Tender tracking, project management, and compliance tools for Zimbabwean construction companies and contractors. Win more government contracts.',
     h1: 'Construction & Contracting Tools for Zimbabwe',
-    intro: 'Zimbabwe\'s construction industry runs on tenders, compliance, and tight margins. Radbit helps you find tenders faster, stay PRAZ-compliant, and manage projects from a single dashboard.',
+    intro: 'Zimbabwe\'s construction industry runs on tenders, documentation, and tight margins. Radbit helps you track opportunities, organise tender records, and manage projects from a single dashboard. Confirm submission requirements with the issuing authority.',
     problems: [
       { title: 'Missed tenders', description: 'Government and private tenders are published across dozens of portals. By the time you find them, the deadline has passed.' },
       { title: 'PRAZ compliance gaps', description: 'Lapsed registrations or missing documents disqualify you from bidding.' },

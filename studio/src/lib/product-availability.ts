@@ -9,6 +9,7 @@ export const DISABLED_PAGE_PREFIXES = [
   '/compliant-receipts',
   '/tender-compliance-bridge',
   '/diaspora-matchmaking',
+  '/diaspora',
   '/features/praz-compliance',
   '/features/tax-copilot',
   '/resources/tools/fiscal-compliance',
@@ -26,6 +27,8 @@ export const DISABLED_API_PREFIXES = [
   '/api/fi/trust-seal',
   '/api/compliance/certificates',
   '/api/diaspora',
+  '/api/tender/armor',
+  '/api/payments',
 ] as const;
 
 export function matchesDisabledPrefix(pathname: string, prefixes: readonly string[]): boolean {

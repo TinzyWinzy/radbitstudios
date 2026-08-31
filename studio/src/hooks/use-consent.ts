@@ -49,13 +49,17 @@ function parseConsent(raw: string | null): ConsentPreferences | null {
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw);
-    if (parsed.necessary === true) {
+    if (parsed.necessary === true && parsed.version === CONSENT_VERSION) {
       return parsed as ConsentPreferences;
     }
     return null;
   } catch {
     return null;
   }
+}
+
+export function hasConsent(category: 'analytics' | 'marketing'): boolean {
+  return parseConsent(getCookie(CONSENT_COOKIE))?.[category] === true;
 }
 
 const DEFAULT_CONSENT: ConsentPreferences = {

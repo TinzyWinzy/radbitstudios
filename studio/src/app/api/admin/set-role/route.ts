@@ -24,12 +24,8 @@ export const POST = withRateLimit(
     const adminAuth = getAuth(adminApp);
 
     const decoded = await adminAuth.verifyIdToken(idToken);
-    const callerUid = decoded.uid;
-
-    const callerDoc = await getFirestore(adminApp).collection('users').doc(callerUid).get();
-    const callerData = callerDoc.data();
-    if (!callerData || (callerData.role !== 'admin' && callerData.role !== 'super_admin')) {
-      return NextResponse.json({ error: 'Forbidden: admin role required' }, { status: 403 });
+    if (decoded.role !== 'super_admin') {
+      return NextResponse.json({ error: 'Forbidden: super-admin claim required' }, { status: 403 });
     }
 
     const validation = await validateBody(request, SetRoleSchema);
@@ -37,7 +33,9 @@ export const POST = withRateLimit(
 
     const { uid, role } = validation.data;
 
-    await adminAuth.setCustomUserClaims(uid, { role });
+    const target = await adminAuth.getUser(uid);
+    await adminAuth.setCustomUserClaims(uid, { ...target.customClaims, role });
+    await adminAuth.revokeRefreshTokens(uid);
     await getFirestore(adminApp).collection('users').doc(uid).set({ role }, { merge: true });
 
     return NextResponse.json({ success: true, uid, role });

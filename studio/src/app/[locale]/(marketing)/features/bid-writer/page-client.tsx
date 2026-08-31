@@ -65,7 +65,7 @@ export default function BidWriterPageClient() {
               <span className="text-gradient">10x Faster</span>
             </motion.h1>
             <motion.p variants={itemVariants} className="mt-6 text-lg text-muted-foreground">
-              Radbit&apos;s AI Bid Writer generates professional, PRAZ-compliant bid proposals from a simple description. Stop spending days on paperwork — start winning more tenders.
+              Radbit&apos;s AI Bid Writer helps draft proposals and check user-provided requirements. Review every output against the original tender documents before submission; Radbit does not certify PRAZ compliance or guarantee an award.
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <Button asChild>

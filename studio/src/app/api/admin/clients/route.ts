@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllProjects, getClientProjects, getClientNotes, createNote, deleteNote } from "@/services/project-service-admin";
-import { withAuth } from "@/lib/api-auth";
+import { withRole } from "@/lib/api-auth";
 import { withIpRateLimit } from '@/services/api-rate-limit';
 
 const apiRead = { maxRequests: 100, windowMs: 60 * 1000, keyPrefix: 'ratelimit:admin-clients' };
 const apiWrite = { maxRequests: 20, windowMs: 60 * 1000, keyPrefix: 'ratelimit:admin-clients-write' };
 
-export const GET = withIpRateLimit(apiRead, withAuth(async (request: NextRequest) => {
+export const GET = withIpRateLimit(apiRead, withRole(['admin', 'super_admin'], async (request: NextRequest) => {
   try {
     const url = new URL(request.url);
     const clientId = url.searchParams.get("clientId");
@@ -27,7 +27,7 @@ export const GET = withIpRateLimit(apiRead, withAuth(async (request: NextRequest
   }
 }));
 
-export const POST = withIpRateLimit(apiWrite, withAuth(async (request: NextRequest, userId: string) => {
+export const POST = withIpRateLimit(apiWrite, withRole(['admin', 'super_admin'], async (request: NextRequest, userId: string) => {
   try {
     const { clientId, content } = await request.json();
     if (!clientId || !content) {
@@ -45,7 +45,7 @@ export const POST = withIpRateLimit(apiWrite, withAuth(async (request: NextReque
   }
 }));
 
-export const DELETE = withIpRateLimit(apiWrite, withAuth(async (request: NextRequest) => {
+export const DELETE = withIpRateLimit(apiWrite, withRole(['admin', 'super_admin'], async (request: NextRequest) => {
   try {
     const { noteId } = await request.json();
     if (!noteId) {

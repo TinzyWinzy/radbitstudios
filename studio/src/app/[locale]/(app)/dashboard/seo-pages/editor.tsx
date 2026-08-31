@@ -38,7 +38,7 @@ export default function SeoPageEditor({ initial }: Props) {
     benefits: initial?.benefits || [] as string[],
     cta: initial?.cta || '',
     keywords: initial?.keywords?.join(', ') || '',
-    published: initial?.published ?? true,
+    published: initial?.published ?? false,
   });
 
   const update = (key: string, value: any) => {

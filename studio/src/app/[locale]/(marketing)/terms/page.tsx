@@ -21,12 +21,13 @@ export default function TermsPage() {
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Legal information</p>
       <h1 className="mt-4 font-headline text-fluid-3xl font-semibold tracking-tight">Terms of Service</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">Clear boundaries for the Radbit website, accounts and currently available software services.</p>
-      <p className="mt-5 text-sm text-muted-foreground">Effective 30 August 2026 · Version 1.0</p>
+      <p className="mt-5 text-sm text-muted-foreground">Effective 31 August 2026 · Version 1.1</p>
 
       <div className="mt-12 space-y-8">
         <Section title="1. The service provider">
           <p>{RADBIT_BRAND.operatorStatement} In these terms, “Nexus,” “Radbit,” “we” and “us” refer to Nexus Agronomics when it provides the Radbit service.</p>
-          <p>Business contact: {RADBIT_BRAND.location} · <a className="underline underline-offset-4" href={`mailto:${RADBIT_BRAND.contactEmail}`}>{RADBIT_BRAND.contactEmail}</a>.</p>
+          <p>Business contact: {RADBIT_BRAND.location} · <a className="underline underline-offset-4" href={`mailto:${RADBIT_BRAND.contactEmail}`}>{RADBIT_BRAND.contactEmail}</a> · <a className="underline underline-offset-4" href={RADBIT_BRAND.phoneHref}>{RADBIT_BRAND.phone}</a>.</p>
+          <p>Before a paid engagement begins, the written proposal or invoice will identify the contracting supplier, service address, scope, complete price and taxes or fees, delivery timing, payment method, cancellation terms and dispute contact. Automated online purchasing is currently unavailable.</p>
         </Section>
 
         <Section title="2. Acceptance and eligibility">
@@ -55,7 +56,8 @@ export default function TermsPage() {
         </Section>
 
         <Section title="7. Plans, payments and cancellation">
-          <p>Prices, billing intervals and included features are shown before purchase or in the applicable written proposal. Third-party payment providers may apply their own terms.</p>
+          <p>Displayed plan prices are indicative until confirmed in a written proposal or invoice. Plan changes and paid work are currently confirmed in writing before billing or access changes occur. Third-party payment providers may apply their own terms.</p>
+          <p>We provide a transaction record by email or invoice. The written offer states the service commencement or delivery period, total price including applicable taxes and fees, minimum recurring period if any, and the applicable cancellation, refund and dispute process.</p>
           <p>You may cancel a recurring plan before its next renewal. Unless a mandatory consumer right applies, fees already earned for a completed billing period are not automatically refundable. We will correct duplicate or erroneous charges and consider other refund requests reasonably in light of the service delivered.</p>
           <p>We will give reasonable notice of material price or plan changes where practicable. Changes do not remove rights that cannot lawfully be excluded.</p>
         </Section>

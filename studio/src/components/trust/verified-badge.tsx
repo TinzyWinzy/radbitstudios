@@ -33,7 +33,7 @@ export function VerifiedByRadbit({ level = 'standard', size = 'md', showDetails,
           </div>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          This business has completed Radbit&apos;s verification process. Financials, compliance status, and operational records are independently verified.
+          This business has provided records to Radbit. The badge is not independent assurance, regulatory approval, or investment due diligence.
         </p>
         <a href="/diaspora/invest" className="inline-flex items-center gap-1 text-xs text-primary hover:underline font-medium">
           View snapshot <ExternalLink size={10} />

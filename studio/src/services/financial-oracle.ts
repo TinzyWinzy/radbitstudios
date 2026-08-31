@@ -34,7 +34,6 @@ export interface BankStatement {
   openingBalance: number;
   closingBalance: number;
   uploadedAt: string;
-  rawText: string;
 }
 
 export interface FinancialSummary {
@@ -431,7 +430,9 @@ export async function parseAndStoreStatement(
     id: statementId,
     userId,
     bankName: bankInfo?.bankName || 'Unknown',
-    accountNumber: accountInfo.accountNumber,
+    accountNumber: accountInfo.accountNumber === 'Unknown'
+      ? 'Unknown'
+      : `••••${accountInfo.accountNumber.replace(/\D/g, '').slice(-4)}`,
     accountHolder: accountInfo.accountHolder,
     currency: bankInfo?.currency || 'USD',
     statementPeriod: period,
@@ -439,7 +440,6 @@ export async function parseAndStoreStatement(
     openingBalance: openingBalance || 0,
     closingBalance: closingBalance || 0,
     uploadedAt: new Date().toISOString(),
-    rawText: text,
   };
 
   const lastBalance = transactions.length > 0 && transactions[transactions.length - 1].balanceAfter
@@ -453,8 +453,8 @@ export async function parseAndStoreStatement(
   try {
     await adminDb.collection('financial_oracle').doc(userId).collection('statements').doc(statementId).set({
       ...statement,
-      rawText: text.slice(0, 50000),
       uploadedAt: new Date(),
+      retentionExpiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
     });
 
     if (transactions.length > 0) {

@@ -1,8 +1,3 @@
-import { getOrCreateSession, addExchange, linkSessionToUser, setActiveFlow } from './session-store';
-import { aiGateway } from '@/services/ai/ai-gateway';
-import { adminDb } from '@/lib/firebase/firebase-admin';
-
-const gateway = aiGateway;
 const BASE_URL = 'https://graph.facebook.com/v21.0';
 
 export async function sendWhatsAppMessage(to: string, text: string): Promise<boolean> {
@@ -14,7 +9,7 @@ export async function sendWhatsAppMessage(to: string, text: string): Promise<boo
     const res = await fetch(`${BASE_URL}/${phoneNumberId}/messages`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -25,8 +20,7 @@ export async function sendWhatsAppMessage(to: string, text: string): Promise<boo
       }),
     });
     if (!res.ok) {
-      const errText = await res.text();
-      console.error('[WhatsApp] Send failed:', errText);
+      console.error('[WhatsApp] Send failed:', await res.text());
     }
     return res.ok;
   } catch (error) {
@@ -44,7 +38,7 @@ export async function sendWhatsAppTemplate(
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   if (!token || !phoneNumberId) return false;
 
-  const bodyParams = Object.entries(params).map(([_, value]) => ({
+  const bodyParams = Object.values(params).map((value) => ({
     type: 'text',
     text: value,
   }));
@@ -53,7 +47,7 @@ export async function sendWhatsAppTemplate(
     const res = await fetch(`${BASE_URL}/${phoneNumberId}/messages`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -68,8 +62,7 @@ export async function sendWhatsAppTemplate(
       }),
     });
     if (!res.ok) {
-      const errText = await res.text();
-      console.error('[WhatsApp] Template send failed:', errText);
+      console.error('[WhatsApp] Template send failed:', await res.text());
     }
     return res.ok;
   } catch (error) {
@@ -78,324 +71,19 @@ export async function sendWhatsAppTemplate(
   }
 }
 
-function extractEmail(text: string): string | null {
-  const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  return match ? match[0] : null;
-}
-
-function isLinkingCommand(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('link') || lower.startsWith('connect') || lower.startsWith('account');
-}
-
-function isTenderSearch(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('search tender') || lower.startsWith('find tender') || lower.startsWith('tender');
-}
-
-function isTaxQuery(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('tax') || lower.startsWith('zimra') || lower.startsWith('vat');
-}
-
-function isShowSme(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('show me ') || lower.startsWith('show ');
-}
-
-function isVerifySme(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('verify ');
-}
-
-function isDepositCommand(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('deposit $') || lower.startsWith('deposit usd');
-}
-
-function isAlertCommand(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return (lower.startsWith('alert me') || lower.startsWith('alert ')) && lower.includes('drop');
-}
-
-function isFdgRegister(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower === 'register fdg' || lower.startsWith('register fiscal');
-}
-
-function isIssueReceipt(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower.startsWith('issue receipt');
-}
-
-function isComplianceStatus(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower === 'my compliance status' || lower === 'compliance status' || lower === 'my status';
-}
-
-function isVatThreshold(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower === 'vat threshold' || lower === 'vat status' || lower.startsWith('what\'s my vat');
-}
-
-function isSyncReceipts(text: string): boolean {
-  const lower = text.toLowerCase().trim();
-  return lower === 'sync receipts' || lower === 'sync';
-}
-
-function extractSmeName(text: string, prefix: string): string {
-  const lower = text.toLowerCase();
-  const idx = lower.indexOf(prefix);
-  if (idx === -1) return text.trim();
-  return text.slice(idx + prefix.length).trim().replace(/\s+(below|\$)\s*.*/i, '').trim();
-}
-
-function extractAmount(text: string): number | null {
-  const match = text.match(/\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/);
-  if (match) return parseFloat(match[1].replace(/,/g, ''));
-  const second = text.match(/\b(\d{3,})\b/);
-  return second ? parseInt(second[1]) : null;
-}
-
-function extractThreshold(text: string): number | null {
-  const match = text.match(/below\s*(\d+)/i);
-  return match ? parseInt(match[1]) : null;
-}
-
+/**
+ * Inbound WhatsApp automation is suspended until account ownership can be
+ * verified with an authenticated, expiring challenge. Keeping this denial at
+ * the service layer prevents alternate webhook routes from bypassing it.
+ */
 export async function handleIncomingMessage(
   from: string,
-  text: string,
+  _text: string,
   _displayPhoneNumber: string,
   _phoneNumberId: string,
 ): Promise<void> {
-  const session = await getOrCreateSession(from);
-
-  await addExchange(from, 'user', text);
-
-  const lower = text.toLowerCase().trim();
-
-  if (isLinkingCommand(lower)) {
-    const email = extractEmail(text);
-    if (email) {
-      const userSnap = await adminDb.collection('users').where('email', '==', email).get();
-      if (userSnap.empty) {
-        await sendWhatsAppMessage(from, 'No account found with that email. Please sign up at https://radbitstudios.co.zw first, then try again.');
-        await addExchange(from, 'assistant', 'No account found response');
-        return;
-      }
-
-      const userId = userSnap.docs[0].id;
-      await linkSessionToUser(from, userId);
-      await adminDb.doc(`users/${userId}`).update({ phone: from, whatsappOptIn: true });
-      await setActiveFlow(from, undefined);
-
-      const welcomeMsg = '✅ Account linked! You can now ask me about:\n' +
-        '• Business advice 📊\n' +
-        '• Tender opportunities 🔍\n' +
-        '• Tax / ZIMRA questions 💰\n' +
-        '• Any SME-related question\n\n' +
-        'Try: "What tenders are available for construction?" or "How do I register for VAT?"';
-      await sendWhatsAppMessage(from, welcomeMsg);
-      await addExchange(from, 'assistant', welcomeMsg);
-    } else {
-      await sendWhatsAppMessage(from, 'To link your account, send: Link account: your@email.com');
-      await addExchange(from, 'assistant', 'Prompt for email');
-    }
-    return;
-  }
-
-  if (!session.userId) {
-    await sendWhatsAppMessage(from,
-      'Welcome to Radbit! 🇿🇼\n\n' +
-      'To get started, link your account:\n' +
-      '  Link account: your@email.com\n\n' +
-      'If you don\'t have an account yet, sign up at:\n' +
-      'https://radbitstudios.co.zw'
-    );
-    await addExchange(from, 'assistant', 'Welcome - account linking prompt');
-    return;
-  }
-
-  if (isShowSme(lower)) {
-    const smeName = extractSmeName(text, 'show me ');
-    const { handleShowSme } = await import('@/services/diaspora-commands');
-    const reply = await handleShowSme(session.userId, smeName || text.replace(/^show\s+/i, ''));
-    await sendWhatsAppMessage(from, reply);
-    await addExchange(from, 'assistant', reply);
-    return;
-  }
-
-  if (isVerifySme(lower)) {
-    const smeName = extractSmeName(text, 'verify ');
-    const { handleVerifyDeliveries } = await import('@/services/diaspora-commands');
-    const reply = await handleVerifyDeliveries(session.userId, smeName);
-    await sendWhatsAppMessage(from, reply);
-    await addExchange(from, 'assistant', reply);
-    return;
-  }
-
-  if (isDepositCommand(lower)) {
-    const amount = extractAmount(text);
-    if (!amount || amount <= 0) {
-      await sendWhatsAppMessage(from, 'Please specify a valid amount. Example: Deposit $500 to Mutare Trucking');
-      await addExchange(from, 'assistant', 'Invalid amount');
-      return;
-    }
-    const smeName = text.replace(/deposit\s+\$?[\d,]+\.?\d*\s*(?:to|for|in)?\s*/i, '').trim();
-    if (!smeName) {
-      await sendWhatsAppMessage(from, 'Please specify which SME. Example: Deposit $500 to Mutare Trucking');
-      await addExchange(from, 'assistant', 'No SME specified');
-      return;
-    }
-    const { handleDepositEscrow } = await import('@/services/diaspora-commands');
-    const reply = await handleDepositEscrow(session.userId, smeName, amount);
-    await sendWhatsAppMessage(from, reply);
-    await addExchange(from, 'assistant', reply);
-    return;
-  }
-
-  if (isAlertCommand(lower)) {
-    const threshold = extractThreshold(text);
-    const smeName = text.replace(/alert\s+(me\s+)?(if|when)\s+/i, '').replace(/\s+drops?\s+(below\s+)?\d+/i, '').trim();
-    if (!smeName) {
-      await sendWhatsAppMessage(from, 'Please specify which SME to monitor. Example: Alert me if Mutare Trucking drops below 60');
-      await addExchange(from, 'assistant', 'No SME specified');
-      return;
-    }
-    const { handleCreateAlert } = await import('@/services/diaspora-commands');
-    const reply = await handleCreateAlert(session.userId, smeName, threshold || undefined);
-    await sendWhatsAppMessage(from, reply);
-    await addExchange(from, 'assistant', reply);
-    return;
-  }
-
-  if (isFdgRegister(lower)) {
-    const { getFiscalComplianceStatus, registerFiscalDevice } = await import('@/services/zimra-fiscal');
-    const status = await getFiscalComplianceStatus(session.userId);
-    if (status.status === 'registered') {
-      await sendWhatsAppMessage(from, `✅ Your fiscal device is already registered (${status.deviceId}). Expires: ${status.certificateExpiry?.slice(0, 10) || 'N/A'}. Reply "my compliance status" for full details.`);
-    } else {
-      const result = await registerFiscalDevice(session.userId, 'software');
-      if (result.success) {
-        await sendWhatsAppMessage(from, `✅ Fiscal device registered! ID: ${result.deviceId}. Certificate valid for 12 months. Reply "issue receipt $X for description" to issue your first receipt.`);
-      } else {
-        await sendWhatsAppMessage(from, `❌ ${result.error || 'Registration failed.'} Make sure your ZIMRA taxpayer ID is set in your profile, or register via web at radbitstudios.co.zw/zimra-fiscal-device-registration`);
-      }
-    }
-    await addExchange(from, 'assistant', 'FDG register response');
-    return;
-  }
-
-  if (isIssueReceipt(lower)) {
-    const { openFiscalDay, submitFiscalReceipt } = await import('@/services/zimra-fiscal');
-    const amountMatch = text.match(/\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/);
-    if (!amountMatch) {
-      await sendWhatsAppMessage(from, 'Please specify amount. Example: Issue receipt $50 for consultation fees');
-      await addExchange(from, 'assistant', 'No amount');
-      return;
-    }
-    const amount = parseFloat(amountMatch[1].replace(/,/g, ''));
-    const description = text.replace(/issue\s+receipt\s+\$?[\d,]+\.?\d*\s*/i, '').trim() || 'Sale';
-    await openFiscalDay(session.userId).catch(() => {});
-    const result = await submitFiscalReceipt(session.userId, {
-      receiptType: 'FISCALINVOICE',
-      currency: 'USD',
-      totalAmount: amount,
-      vatAmount: Math.round(amount * 0.155 * 100) / 100,
-      description,
-      taxLines: [
-        { taxID: 1, taxCode: 'VAT', taxPercent: 15.5, taxAmountCents: Math.round(amount * 0.155 * 100), salesAmountWithTaxCents: Math.round(amount * 100) },
-      ],
-    });
-    if (result.success) {
-      await sendWhatsAppMessage(from, `🧾 Receipt issued!\n\nReceipt: ${result.receiptNumber}\nAmount: $${amount.toFixed(2)}\nVAT (15.5%): $${(amount * 0.155).toFixed(2)}\nSignature: ${result.receiptDeviceSignature?.slice(-8) || 'N/A'}\nQR: ${result.receiptQrCode || 'N/A'}\n\nPowered by Radbit — ZIMRA FDG compliant`);
-    } else {
-      await sendWhatsAppMessage(from, `❌ ${result.error || 'Failed to issue receipt.'}`);
-    }
-    await addExchange(from, 'assistant', 'Issue receipt response');
-    return;
-  }
-
-  if (isComplianceStatus(lower)) {
-    const { getFiscalComplianceStatus, getFiscalThresholds } = await import('@/services/zimra-fiscal');
-    const status = await getFiscalComplianceStatus(session.userId);
-    const thresholds = getFiscalThresholds();
-    if (status.status === 'not_registered') {
-      await sendWhatsAppMessage(from, `📋 No fiscal device registered. Reply "register FDG" to get started.\n\nThresholds:\n• VAT registration: US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}\n• Fiscal device mandate: US$${thresholds.fiscalDeviceMandatoryTurnoverUsd.toLocaleString()}\n• Penalty: up to US$${thresholds.penaltyNonComplianceUsd}`);
-    } else {
-      await sendWhatsAppMessage(from, `📋 Compliance Status\n\nDevice: ${status.deviceId}\nType: ${status.deviceType}\nStatus: ${status.status}\nExpires: ${status.certificateExpiry?.slice(0, 10) || 'N/A'}\nLast fiscal day: ${status.lastFiscalDay?.slice(0, 10) || 'Not closed'}\n\nThresholds:\n• VAT registration: US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}\n• Penalty: up to US$${thresholds.penaltyNonComplianceUsd}`);
-    }
-    await addExchange(from, 'assistant', 'Compliance status response');
-    return;
-  }
-
-  if (isVatThreshold(lower)) {
-    const { getFiscalThresholds } = await import('@/services/zimra-fiscal');
-    const thresholds = getFiscalThresholds();
-    await sendWhatsAppMessage(from, `📊 VAT Threshold Tracker\n\nRegistration threshold: US$${thresholds.vatRegistrationTurnoverUsd.toLocaleString()}\nFiscal device mandate: US$${thresholds.fiscalDeviceMandatoryTurnoverUsd.toLocaleString()}\n\nReply "register FDG" to register your fiscal device.\nSet up alerts to be notified before you hit the threshold.`);
-    await addExchange(from, 'assistant', 'VAT threshold response');
-    return;
-  }
-
-  if (isSyncReceipts(lower)) {
-    await sendWhatsAppMessage(from, '🔄 Offline receipts are synced automatically when connectivity returns. No action needed. Reply "my compliance status" to verify your last sync.');
-    await addExchange(from, 'assistant', 'Sync receipts response');
-    return;
-  }
-
-  let flowType: string;
-  if (isTenderSearch(lower)) {
-    flowType = 'tender_search';
-    await setActiveFlow(from, 'tender_search');
-  } else if (isTaxQuery(lower)) {
-    flowType = 'tax';
-    await setActiveFlow(from, 'tax');
-  } else {
-    flowType = 'mentor';
-    await setActiveFlow(from, 'mentor');
-  }
-
-  const userDoc = await adminDb.doc(`users/${session.userId}`).get();
-  const userData = userDoc.data() || {};
-
-  const contextStr = session.context
-    .slice(-6)
-    .map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
-    .join('\n');
-
-  const systemPrompts: Record<string, string> = {
-    mentor: `You are a business mentor for Zimbabwean SMEs. Answer concisely (max 400 chars for WhatsApp). Provide actionable advice. Be friendly and encouraging.`,
-    tender_search: `You help find tender opportunities for Zimbabwean businesses. Respond concisely (max 400 chars). Ask clarifying questions about sector, location, or budget.`,
-    tax: `You are a ZIMRA tax compliance assistant for Zimbabwean SMEs. Respond concisely (max 400 chars). Include relevant regulation references. Note: consult a professional accountant for specific filings.`,
-  };
-
-  const prompt = `User business: ${userData.businessName || 'Not set'} | ${userData.industry || 'Not set'}
-${userData.businessDescription ? `Description: ${userData.businessDescription}` : ''}
-
-Previous conversation:
-${contextStr || 'No prior conversation.'}
-
-User's message: ${text}
-
-Respond in a friendly, helpful tone. Keep it under 400 characters.`;
-
-  try {
-    const result = await gateway.generate({
-      prompt,
-      systemPrompt: systemPrompts[flowType] || systemPrompts.mentor,
-      difficulty: 'simple',
-      maxTokens: 512,
-      temperature: 0.7,
-      userId: session.userId,
-    });
-
-    const reply = result.content.slice(0, 4096);
-    await sendWhatsAppMessage(from, reply);
-    await addExchange(from, 'assistant', reply);
-  } catch (error) {
-    console.error('[WhatsApp] AI generation failed:', error);
-    const fallback = 'Sorry, I had trouble processing your request. Please try again or contact support.';
-    await sendWhatsAppMessage(from, fallback);
-    await addExchange(from, 'assistant', fallback);
-  }
+  await sendWhatsAppMessage(
+    from,
+    'Radbit WhatsApp account services are temporarily unavailable. Please sign in at https://radbitstudios.co.zw to access your account. Radbit does not register fiscal devices, issue official receipts, verify investments, or hold deposits through WhatsApp.',
+  );
 }

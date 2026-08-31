@@ -23,12 +23,12 @@ export default function PrivacyNoticePage() {
       <p className="mt-3 max-w-2xl text-muted-foreground">
         This notice describes the information currently handled through Radbit&apos;s website, accounts and software tools. It does not claim that every proposed or pilot capability is available.
       </p>
-      <p className="mt-5 text-sm text-muted-foreground">Effective 30 August 2026 · Version 1.0</p>
+      <p className="mt-5 text-sm text-muted-foreground">Effective 31 August 2026 · Version 1.1</p>
 
       <div className="mt-12 space-y-8">
         <Section title="1. Who is responsible">
           <p>{RADBIT_BRAND.operatorStatement} Nexus Agronomics is responsible for personal information used to operate Radbit accounts, enquiries, billing, communications and the public website.</p>
-          <p>Contact: {RADBIT_BRAND.location} · <a className="underline underline-offset-4" href={`mailto:${RADBIT_BRAND.privacyEmail}`}>{RADBIT_BRAND.privacyEmail}</a>.</p>
+          <p>Contact: {RADBIT_BRAND.location} · <a className="underline underline-offset-4" href={`mailto:${RADBIT_BRAND.privacyEmail}`}>{RADBIT_BRAND.privacyEmail}</a> · <a className="underline underline-offset-4" href={RADBIT_BRAND.phoneHref}>{RADBIT_BRAND.phone}</a>.</p>
           <p>For customer projects, Nexus Agronomics may process records on a customer&apos;s documented instructions. Those responsibilities should be set out in the applicable service agreement or data-processing addendum.</p>
         </Section>
 
@@ -46,6 +46,7 @@ export default function PrivacyNoticePage() {
         <Section title="3. Why we use it">
           <p>We use personal information to provide requested services, authenticate users, manage projects and subscriptions, respond to enquiries, secure the platform, maintain records, and comply with applicable obligations.</p>
           <p>Optional analytics help us understand aggregate product use. Marketing communications are sent only where requested or otherwise permitted, and each message should provide a way to unsubscribe.</p>
+          <p>Email and authentication information are required to create and secure an account; without them, an account cannot be provided. Profile, phone, marketing, analytics and WhatsApp information are optional unless a specific requested service requires them. Declining an optional purpose does not prevent access to unrelated core features.</p>
           <p>We do not sell personal information. We do not use customer project data to train unrelated Radbit models unless that use is separately agreed and legally justified.</p>
         </Section>
 
@@ -61,7 +62,7 @@ export default function PrivacyNoticePage() {
 
         <Section title="6. Retention and deletion">
           <p>We keep information only for as long as reasonably required for the stated purpose, security, dispute handling and applicable record-keeping duties. Different records have different retention periods; payment and accounting records may need to be retained after an account closes.</p>
-          <p>Account deletion removes covered active account data through the platform process. Backup expiry, legally required records and records controlled by a customer may follow separate schedules. We do not promise immediate or universal deletion where retention is required or technically pending.</p>
+          <p>Account deletion removes the authentication identity and covered active account data through the platform process. Parsed financial-statement records are marked for expiry after 90 days and can be removed earlier through account deletion. Backup expiry, legally required records and records controlled by a customer may follow separate schedules. We do not promise immediate or universal deletion where retention is required or technically pending.</p>
         </Section>
 
         <Section title="7. Security">

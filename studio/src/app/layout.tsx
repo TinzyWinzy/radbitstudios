@@ -3,7 +3,6 @@ import { Inter, Syne } from "next/font/google";
 import "./globals.css";
 import { getLocale } from 'next-intl/server';
 import { organizationSchema, websiteSchema, localBusinessSchema } from "@/lib/seo";
-import { aggregateRatingSchema } from "@/data/testimonials";
 import { CookieBanner } from "@/components/cookie-banner";
 import { GA4Script } from "@/components/analytics/ga4";
 import { DeviceProvider } from "@/contexts/device-context";
@@ -137,8 +136,6 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
         <script type="application/ld+json" suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }} />
-        <script type="application/ld+json" suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema()) }} />
       </head>
       <body className={`${inter.variable} ${syne.variable} font-body antialiased`}>
         <DeviceProvider>

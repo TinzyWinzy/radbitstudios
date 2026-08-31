@@ -1,6 +1,5 @@
 import { adminDb } from '@/lib/firebase/firebase-admin';
 import { getPrazProfile } from './praz-compliance';
-import { getFiscalComplianceStatus } from './zimra-fiscal';
 import type { ComplianceCertificate } from './compliance-tracker';
 
 export type ArmorStatus = 'green' | 'yellow' | 'red';
@@ -78,17 +77,12 @@ export async function runTenderArmor(userId: string): Promise<TenderArmorResult>
     remediationSteps.push('Register with NSSA and obtain compliance certificate');
   }
 
-  // 4. Fiscal Device
-  try {
-    const fiscal = await getFiscalComplianceStatus(userId);
-    if (fiscal.status === 'registered' || fiscal.status === 'pending') {
-      checks.push({ label: 'ZIMRA Fiscal Device', status: 'pass', detail: `Fiscal device ${fiscal.status}` });
-    } else {
-      checks.push({ label: 'ZIMRA Fiscal Device', status: 'warn', detail: 'Fiscal device not registered — may be required for VAT-registered businesses' });
-    }
-  } catch {
-    checks.push({ label: 'ZIMRA Fiscal Device', status: 'untracked', detail: 'Fiscal device status unavailable' });
-  }
+  // Radbit does not verify or register fiscal devices.
+  checks.push({
+    label: 'ZIMRA Fiscal Device',
+    status: 'untracked',
+    detail: 'Not verified by Radbit. Confirm status directly with ZIMRA or a qualified tax professional.',
+  });
 
   // 5. Bid Bond / Bank Guarantee
   try {

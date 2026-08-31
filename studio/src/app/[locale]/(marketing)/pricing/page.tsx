@@ -102,7 +102,7 @@ const ERP_TIERS = [
       "Inventory management",
       "Accounting (GL, P&L, Balance Sheet)",
       "Invoicing & quotations",
-      "ZIMRA FDMS compliant",
+      "Bookkeeping and invoicing workspace",
       "Email support",
       "Monthly backups",
     ],
@@ -411,7 +411,7 @@ export default function PricingPage() {
             <h3 className="font-headline text-xl font-bold mb-2">ERP Systems</h3>
             <p className="text-sm text-muted-foreground max-w-xl mx-auto">
               Streamline operations with integrated accounting, inventory, HR, and CRM.
-              ZIMRA FDMS compliant. All prices in USD.
+              Fiscalisation and tax filing are not included. All listed prices are in USD.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -468,8 +468,8 @@ export default function PricingPage() {
             ))}
           </div>
           <p className="text-center text-xs text-muted-foreground mt-6">
-            Implementation fee included in first 3 months. All systems ZIMRA FDMS compliant.
-            On-site support available at $25/hr.
+            Implementation scope is confirmed in writing before work begins.
+            On-site support may be quoted separately.
           </p>
         </section>
 
@@ -559,11 +559,11 @@ export default function PricingPage() {
             {[
               {
                 q: "Do you accept ZiG payments?",
-                a: "Yes. We accept ZiG at the prevailing interbank rate (~26 ZiG per USD). EcoCash and bank transfers are available for ZiG payments.",
+                a: "Where ZiG payment is offered, the applicable exchange rate and final amount are confirmed in writing before payment.",
               },
               {
                 q: "What payment methods do you accept?",
-                a: "We accept EcoCash, PayNow (Zimbabwe), PayFast (South Africa), Stripe (credit/debit cards), bank transfers, and ZiG cash. All payments are processed securely.",
+                a: "Available payment methods are shown in the invoice or checkout. Card and mobile-money payments may be handled by third-party payment providers under their own terms.",
               },
               {
                 q: "Can I switch between SaaS plans later?",

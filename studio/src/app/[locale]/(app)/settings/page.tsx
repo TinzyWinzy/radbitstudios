@@ -59,8 +59,7 @@ import { updateProfile } from 'firebase/auth';
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
 import Image from 'next/image';
-import { subscriptionPlans, SubscriptionPlan, PLAN_ORDER, normalizePlanName, normalizeSubscriptionPlanId } from '@/lib/subscriptions';
-import { SubscriptionEngine } from '@/services/payment/subscription-engine';
+import { subscriptionPlans, SubscriptionPlan } from '@/lib/subscriptions';
 import { UpgradeModal } from '@/components/upgrade-modal';
 import type { UpgradeInfo } from '@/services/feature-gate';
 import { getCachedQuery, setCachedQuery, buildQueryKey } from '@/services/query-cache';
@@ -118,7 +117,6 @@ export default function SettingsPage() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isChangingPlan, setIsChangingPlan] = useState(false);
   const [upgradeInfo, setUpgradeInfo] = useState<UpgradeInfo | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -342,76 +340,12 @@ export default function SettingsPage() {
 
   const handlePlanChange = async (newPlan: SubscriptionPlan) => {
     if (!user) return;
-
-    const currentPlanName = normalizePlanName(user.plan || 'Free');
-    const currentIdx = PLAN_ORDER.indexOf(currentPlanName);
-    const newIdx = PLAN_ORDER.indexOf(newPlan.name);
-    const isUpgrade = newIdx > currentIdx;
-
-    if (newPlan.name === 'Enterprise') {
-      toast({
-        title: 'Contact Sales',
-        description: 'Enterprise pricing is custom. Please contact our team to get started.',
-      });
-      window.open('mailto:hanzohanic@gmail.com?subject=Enterprise Plan Inquiry', '_blank');
-      return;
-    }
-
-    if (String(newPlan.name) === 'Enterprise' || newPlan.price === 0 || !isUpgrade) {
-      setIsChangingPlan(true);
-      try {
-        const userDocRef = doc(db, 'users', user.uid);
-        await updateDoc(userDocRef, {
-          plan: normalizePlanName(newPlan.name),
-          usage: newPlan.credits,
-        });
-        await refreshUserData();
-        toast({ title: 'Plan Changed!', description: `You are now on the ${newPlan.name} plan.` });
-      } catch (error) {
-        console.error('Error changing plan:', error);
-        toast({ title: 'Error', description: 'Could not change your subscription plan.', variant: 'destructive' });
-      } finally {
-        setIsChangingPlan(false);
-      }
-      return;
-    }
-
-    // Upgrade to paid plan: initiate payment
-    setIsChangingPlan(true);
-    try {
-      const engine = new SubscriptionEngine();
-      const country = user.countryCode || 'ZW';
-      const currency =
-        user.currencyPreference ||
-        (country === 'ZA' ? 'ZAR' : country === 'BW' ? 'BWP' : country === 'ZM' ? 'ZMW' : 'USD');
-      const result = await engine.createSubscription(
-        user.uid,
-        normalizeSubscriptionPlanId(newPlan.name),
-        'monthly',
-        country,
-        currency
-      );
-
-      if (result.redirectUrl) {
-        const paymentWindow = window.open(result.redirectUrl, '_blank');
-        if (!paymentWindow) {
-          window.location.href = result.redirectUrl;
-        }
-        toast({
-          title: 'Payment Required',
-          description: `Complete payment to activate ${newPlan.name}. You'll be redirected after payment.`,
-        });
-      }
-    } catch (error: unknown) {
-      console.error('Error initiating payment:', error);
-      toast({
-        title: 'Payment Not Initiated',
-        description: `Could not start payment for ${newPlan.name}. No payment provider is configured — your plan was NOT changed.`,
-        variant: 'destructive',
-      });
-    } finally {
-      setIsChangingPlan(false);
-    }
+    const subject = encodeURIComponent(`${newPlan.name} plan request — ${user.email || user.uid}`);
+    toast({
+      title: 'Plan request',
+      description: 'Plan changes are confirmed in writing before billing or access changes occur.',
+    });
+    window.open(`mailto:hanzohanic@gmail.com?subject=${subject}`, '_blank');
   };
 
   const handleTabChange = (value: string) => {
@@ -668,12 +602,9 @@ export default function SettingsPage() {
                     <CardFooter className="p-4 md:p-6 pt-0 md:pt-0">
                       <Button
                         className="w-full h-11 text-sm"
-                        disabled={isChangingPlan || plan.name === currentPlanName}
+                        disabled={plan.name === currentPlanName}
                         onClick={() => handlePlanChange(plan)}
                       >
-                        {isChangingPlan && plan.name !== currentPlanName ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : null}
                         {plan.name === currentPlanName ? 'Current Plan' : `Switch to ${plan.name}`}
                       </Button>
                     </CardFooter>

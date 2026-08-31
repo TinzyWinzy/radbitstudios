@@ -120,7 +120,7 @@ export default function ZidaInvestPage() {
         <ul className="space-y-3 text-sm">
           <li className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-            <span><strong>Verified by Radbit:</strong> Diaspora investors can view verified operational snapshots of Zimbabwean SMEs before committing capital.</span>
+            <span><strong>Records, not verification:</strong> Any SME information shown by Radbit is user-provided or derived from identified records and must be independently checked before an investment decision.</span>
           </li>
           <li className="flex items-start gap-2">
             <ArrowRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
